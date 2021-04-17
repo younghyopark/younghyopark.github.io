@@ -1,10 +1,10 @@
 <!DOCTYPE html><html lang="en">
   <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[NIPS 2017] Hindsight Experience Replay  - Younghyo Park</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[Control Theory] Kalman Filter Tutorial - Younghyo Park</title>
 
-<meta name="description" content="IntroductionDesigning a reward function is important, but not easy.  common challenge of RL is to carefully enegineer the reward function → not only reflecti...">
-<link rel="canonical" href="http://localhost:4000/notion_to_markdown/%5BNIPS%202017%5D%20Hindsight%20Experience%20Replay%206daf8b2ade014cf58ea2d223723e0390/"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
+<meta name="description" content="Kalman FilterProblem Statement  Vehicle state, position, velocity estimated from IMU / GNSS      Three dimensional position and velocity comprise the state v...">
+<link rel="canonical" href="http://localhost:4000/notion_to_markdown/%5BTutorial%5D%20Kalman%20Filter%20Applications%20cc2de64bc6e14a9c9129c72f8085032c/"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
 <!--<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
 
 <meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
@@ -305,257 +305,222 @@ fill="#000000" stroke="none">
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
 <!-- end custom main top snippet -->
-<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[NIPS 2017] Hindsight Experience Replay </h1></header><span class="split-space">&nbsp;</span>
+<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[Control Theory] Kalman Filter Tutorial</h1></header><span class="split-space">&nbsp;</span>
           <a class="edit-on-github"
             title="Edit on Github"
-            href="https://github.com/younghyopark/younghyopark.github.io/tree/main/_posts/2021-04-13-hindsight-experience-replay.md">
-            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[NIPS 2017] Hindsight Experience Replay "><div class="article__info clearfix"><ul class="left-col menu"><li>
+            href="https://github.com/younghyopark/younghyopark.github.io/tree/main/_posts/2021-03-11-kalman-filter-tutorials.md">
+            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[Control Theory] Kalman Filter Tutorial"><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
+                href="/archive.html?tag=Control">Control</a>
             </li><li>
               <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Multi-Reward%2FObjective">Multi-Reward/Objective</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 13, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-13T00:00:00+09:00">
-    <meta itemprop="keywords" content="Reinforcement-Learning,Multi-Reward/Objective"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
+                href="/archive.html?tag=Theory%2FSurvey">Theory/Survey</a>
+            </li><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Tutorial">Tutorial</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Mar 11, 2021</span>
+            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-03-11T00:00:00+09:00">
+    <meta itemprop="keywords" content="Control,Theory/Survey,Tutorial"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
 
 <!-- end custom article top snippet -->
-<div class="article__content" itemprop="articleBody"><h2 id="introduction">Introduction</h2>
+<div class="article__content" itemprop="articleBody"><h2 id="kalman-filter">Kalman Filter</h2>
 
-<h3 id="designing-a-reward-function-is-important-but-not-easy">Designing a reward function is important, but not easy.</h3>
-
-<ul>
-  <li>common challenge of RL is to carefully enegineer the reward function → not only reflecting the task at hand, but also carefully shaped to guide the policy optimization.</li>
-  <li>The necessity of cost engineering limits the applicability of RL in the real world, because it requires both RL expertise and domain-specific knowledge.</li>
-  <li>Not applicable in situations where we do not know what admissible behaviour may look like.</li>
-  <li><strong>Therefore, we need to develop algorithms which can learn from unshaped reward signals (e.g. a binary signal indicating successful task completion)</strong></li>
-</ul>
-
-<h3 id="what-can-humans-do">What can humans do?</h3>
+<h3 id="problem-statement">Problem Statement</h3>
 
 <ul>
+  <li>Vehicle state, position, velocity estimated from IMU / GNSS</li>
   <li>
-    <p>humans can learn almost as much from achieveing an undesired outcome as from the desired one.</p>
+    <p>Three dimensional position and velocity comprise the state vector</p>
 
-    <p>인간은 실패로부터 배울 수 있다는데, 왜 RL은 못 하냐.. For example, 사람은 하키를 치는 방법을 배운다 쳤을 때, 반드시 골을 넣어야만 배우는 건 아니잖음? 네트의 오른쪽에 맞았을 때는 내가 좀 왼쪽으로 쳐야겠구나 뭐 이런 것을 배울 수 있으니.. 근데 RL은 네트에 골인하지 못하고 살짝 오른쪽으로 빗겨나갔을 때의 failed situation에서 배울 수 있는게 거의 없음.</p>
+\[\mathbf{x}=[\mathbf{p}^T, \mathbf{v}^T ] ^T\]
+
+    <p>where $\mathbf{p}= [p_x, p_y, p_z]^T$ and $\mathbf{v}= [v_x, v_y, v_z ] ^T$ are each position and velocity vector</p>
   </li>
   <li>
-    <p>It is however possible to draw another conclusion: ⭐ <strong>this sequence of actions would be succesful if the net had been placed further to the right</strong> ⭐</p>
+    <p>The state in time $k$ can be predicted by the previous state in time $k-1$ as</p>
 
-    <p>RL은 네트에 골인을 해야만 무언가를 학습할 수 있다고 하면, 네트를 여러개 두면 안됨? 오른쪽으로 빗나간 케이스였으면, 살짝 오른쪽에 있는 네트에 대해서는 학습이 가능할 수도 있는거 아닌가?</p>
-  </li>
-</ul>
+\[\mathbf{x}_k = \begin{bmatrix} \mathbf{p}_k \\ \mathbf{v}
+  _k \end{bmatrix} = \begin{bmatrix} \mathbf{p}_{k-1}+\mathbf{v}_{k-1} \Delta t + \frac{1}{2}\tilde {\mathbf{a}}_{k-1}\Delta t^2  \\ \mathbf{v}_{k-1}+ \tilde {\mathbf{a}}_{k-1} \Delta t \end{bmatrix}\]
 
-<h3 id="authors-propose-hindsight-experience-replay">Authors propose “Hindsight Experience Replay”</h3>
-
-<ul>
-  <li>allows the algorithm to perform exactly this kind of reasoning and can be combined with any off-policy RL algorithm.</li>
-  <li>multiple goals → always applicable.  (e.g. achieving each state of the system may be treated as a separate goal)</li>
-  <li>makes the training easier, even if the reward signal is sparse and binary</li>
-</ul>
-
-<h2 id="background">Background</h2>
-
-<h3 id="deep-q-networks-dqn">Deep Q-Networks (DQN)</h3>
-
-<ul>
-  <li>model-free RL algorithm for discrete action spaces</li>
-  <li>
-    <p>$\epsilon$-greedy policy w.r.t. Q is defined as:</p>
-
-    <p>a) take the greedy action $\pi_Q (s) = \argmax _{a\in \mathcal{A}} Q(s,a)$ with probability $1-\epsilon$</p>
-
-    <p>b) take a random action sampled uniformly in $\mathcal{A}$ with probability $\epsilon$</p>
-  </li>
-  <li>taking an $\epsilon$-greedy policy, generate episodes</li>
-  <li>transition tuples $\langle s_t, a_t, r_t, s_{t+1} \rangle$ is stored inside the replay buffer</li>
-  <li>
-    <p>network is trained using mini-batch gradient descent on the loss $\mathcal{L}$ which encourages the approximated Q-function to satisfy the Bellman equation.</p>
-
-\[\begin{aligned} y_t = r_t + \gamma \max_{a'\in \mathcal{A}} Q(s_{t+1}, a')\\ \mathcal{L} = \mathbb{E} (Q(s_t, a_t) - y_t)^2 \end{aligned}\]
+    <p>where $\tilde {\mathbf{a}}_{k-1}$ is the <strong>real</strong> acceleration applied to the vehicle.</p>
   </li>
   <li>
-    <p>to make the optimization procedure more stable, targets $y_t$ are usually computed using a seperate target network, changes at a slower pace than the main network</p>
+    <p>Above equation can be rewritten as:</p>
 
-    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="c1"># update is done every n epochs/iterations, but way slower than the policy network
-</span>  <span class="n">target_network</span><span class="p">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">policy_network</span><span class="p">.</span><span class="n">state_dict</span><span class="p">())</span>
-</code></pre></div>    </div>
+\[\mathbf{x}_k = \begin{bmatrix} \mathbf{p}_k \\ \mathbf{v}_k \end{bmatrix} = \begin{bmatrix} \mathbf{I}_{3\times 3}&amp;\mathbf{I}_{3\times 3}\Delta t\\ \mathbf{O}_{3\times3}&amp;\mathbf{I}_{3\times 3} \end{bmatrix} \begin{bmatrix} \mathbf{p}_{k-1} \\ \mathbf{v}_{k-1} \end{bmatrix} + \begin{bmatrix} \frac{1}{2}\mathbf{I}_{3\times3}\Delta t ^2 \\ \mathbf{I}_{3\times3}\Delta t\end{bmatrix}\tilde {\mathbf{a}}_{k-1}\\\mathbf{x}_k = \begin{bmatrix} \mathbf{I}_{3\times 3}&amp;\mathbf{I}_{3\times 3}\Delta t\\ \mathbf{O}_{3\times3}&amp;\mathbf{I}_{3\times 3} \end{bmatrix} \mathbf{x}_{k-1}+ \begin{bmatrix} \frac{1}{2}\mathbf{I}_{3\times3}\Delta t ^2 \\ \mathbf{I}_{3\times3}\Delta t\end{bmatrix}\tilde {\mathbf{a}}_{k-1}\]
+  </li>
+  <li>
+    <p>Defining</p>
+
+\[\mathbf{F}=\begin{bmatrix} \mathbf{I}_{3\times 3}&amp;\mathbf{I}_{3\times 3}\Delta t\\ \mathbf{O}_{3\times3}&amp;\mathbf{I}_{3\times 3} \end{bmatrix} \\ \mathbf{B}=\begin{bmatrix} \frac{1}{2}\mathbf{I}_{3\times3}\Delta t ^2 \\ \mathbf{I}_{3\times3}\Delta t\end{bmatrix}\]
+
+    <p>we can rewrite the equation above</p>
+
+\[\mathbf{x}_k = \mathbf{F}\mathbf{x}_{k-1} + \mathbf{B} \tilde {\mathbf{a}}_{k-1}\]
+  </li>
+  <li>
+    <p>Note that the acceleration (measured by the accelerometer) has a process noise</p>
+
+\[\mathbf{a}_{k-1} = \tilde {\mathbf{a}}_{k-1} + \mathbf{e}_{k-1}\]
+
+    <p>where $\mathbf{e}_{k-1}$ denotes the noise of the accelerometer output.</p>
+  </li>
+  <li>
+    <p>Then, we can rewrite the equation</p>
+
+\[\mathbf{x}\_k = \mathbf{F}\mathbf{x}_{k-1} + \mathbf{B} \mathbf{a}_{k-1} - \mathbf{B} \mathbf{e}_{k-1}\]
+  </li>
+  <li>
+    <p>Let’s assume $\mathbf{e}_{k-1} \sim \mathcal{N}(\mathbf{0}, \mathbf{I}_{3\times 3} \sigma _e ^2)$. Then, the covariance matrix of process noise $\mathbf{B}\mathbf{e}_{k-1}$ can be calculated using $\text{cov}(\mathbf{Ax})=\mathbf{A}\text{cov}(\mathbf{x})\mathbf{A}^T$</p>
+
+\[\mathbf{Q}= \mathbf{B}\sigma_e^2 \mathbf{B}^T = \begin{bmatrix} \frac{1}{4}\mathbf{I}_{3\times 3}\Delta t^4 &amp; \mathbf{0}_{3\times 3} \\\mathbf{0}_{3\times 3}&amp; \mathbf{I}_{3\times 3} \Delta t^2\end{bmatrix}\sigma_e^2\]
   </li>
 </ul>
 
-<h3 id="deep-determinisitc-policy-gradients-ddpg">Deep Determinisitc Policy Gradients (DDPG)</h3>
+<h3 id="process-model">Process Model</h3>
 
 <ul>
-  <li>DDPG is a model-free RL algoirithm for continuous action spaces.</li>
-  <li>DDPG use two neural networks
-    <ol>
-      <li>target poclicy (actor) $\pi : \mathcal{S} \rightarrow \mathcal{A}$</li>
-      <li>action-value function approximator (critic) : $Q: \mathcal{S} \times \mathcal{A} \rightarrow \mathbb{R}$</li>
-    </ol>
-  </li>
   <li>
-    <p>critic’s job is to approximate the actor’s action-value function $Q^\pi$</p>
-  </li>
-  <li>
-    <p>Episodes are generated using a behaviooral policy ($\pi_b$ ) - noisy version of target policy ($\pi$)</p>
+    <p>Now, we have the process model</p>
 
-\[\pi_b (s) = \pi(s) + \mathcal{N}(0,1)\]
-  </li>
-  <li>episodes stored inside the replay buffer</li>
-  <li>$y_t = r_t + \gamma Q(s_{t+1}, \pi(s_{t+1}) )$ target is computed by the actor, not the max function of Q-function</li>
-  <li>
-    <p>The actor is trained with mini-batch gradient descent on the loss</p>
+\[\mathbf{x}_{k}= \mathbf{Fx}_{k-1} + \mathbf{B}\mathbf{a}_{k-1} + \mathbf{w}_{k-1}\]
 
-\[\mathcal{L}_a = - \mathbb{E}_s Q(s,\pi(s))\]
+    <p>where $\mathbf{F}$ and $\mathbf{B}$ is defined above, and $\mathbf{w}_{k-1} \sim \mathcal{N}(0, \mathbf{Q})$</p>
+  </li>
+  <li>
+    <p>Now, the GNSS reciever provides the position and velocity measurement corrupted by measurement noise $\mathbf{v}_{k}$</p>
+
+\[\mathbf{z}_{k}= \begin{bmatrix} \mathbf{p}_k \\ \mathbf{v}_k \end{bmatrix}+ \mathbf{v}_k\]
+
+    <p>which can be rewritten as</p>
+
+\[\mathbf{z}_k = \mathbf{Hx}_k + \mathbf{v}_k\]
+
+    <p>where</p>
+
+\[\mathbf{H}= \mathbf{I}_{6\times 6}\\ \mathbf{v}_k \sim \mathcal{N}(0, \mathbf{R})\]
   </li>
 </ul>
 
-<h3 id="universal-value-function-approximators-uvfa">Universal Value Function Approximators (UVFA)</h3>
-
-<p><a href="https://www.notion.so/ICML-2015-Universal-Value-Function-Approximators-7f40ff1fd4d54484990b57dd8c2d4b14">[ICML 2015] Universal Value Function Approximators</a></p>
+<h3 id="simulation">Simulation</h3>
 
 <ul>
-  <li>UVFA is extended version of DQN, where there is more than one goal we may try to achieve</li>
-  <li>Let $\mathcal{G}$ be the space of possible goals.</li>
-  <li>
-    <p>Every goal $g\in \mathcal{G}$ corresponds to some reward function</p>
-
-\[r_g : \mathcal{S\times A} \rightarrow \mathbb{R}\]
-  </li>
-  <li>every episode starts with sampling a state-goal pair from some distribution $p(s_0, g)$, and the goal stays fixed for the entire episode.</li>
-  <li>
-    <p>At every timestep, the agent gets as input not only the current state, but also the current goal.</p>
-
-\[\pi : \mathcal{S\times G} \rightarrow \mathcal{A}\]
-
-    <p>and gets the reward</p>
-
-\[r_t  = r_g (s_t, a_t )\]
-  </li>
-  <li>
-    <p>Q-function now depends not only on state action pair, but also on goal. Thus,</p>
-
-\[Q^\pi (s_t, a_t, g) = \mathbb{E}[R_t |s_t, a_t, g]\]
-  </li>
-  <li>we can similarly train an approximator Q-function using the Bellman equation, just like DQN.</li>
-</ul>
-
-<h2 id="hindsight-experience-replay">Hindsight Experience Replay</h2>
-
-<h3 id="a-motivating-example">A motivating example</h3>
-
-<ul>
-  <li>state space $\mathcal{S} = {0,1}^n$</li>
-  <li>action space $\mathcal{A} = {0,1,\cdots, n-1}$   → action $i$ flips the $i$-th bit of the state</li>
-  <li>There’s a goal $g \in \mathcal{S}$</li>
-  <li>
-    <p>The agent receives a reward $r_g (s,a) =-[s\not = g]$.</p>
-
-    <p>bit-flipping operation을 통해서 특정 n-bit binary code와 똑같이 만들지 못하는 이상 계속 -1 reward 밖에 못 받음. 당연히 $n$이 커지면 커질수록 reward는 점점 더 sparse 해질 것이고, 학습을 불안정하게 만들 것. As a matter of fact…</p>
-
+  <li>To conduct a simulation, consider $N=20$  time steps ($k=1,2,\cdots,N$)</li>
+  <li>First generate the series of true accelerations over time → integrate to get true velocity &amp; position
     <ul>
-      <li>Standard RL algorithms fail in this environment for $n&gt;40$</li>
-      <li>
-        <p>One solution might be using a more informative reward function</p>
-
-\[r_g (s,a) = -\|s-g\|^2\]
-
-        <p>however it might not be applicable to more complicated problems.</p>
-      </li>
+      <li>In this example, set the true acceleration as zero, and a constant velocity $\mathbf{v}_k = [5,5,0]^T$ and initial position $\mathbf{p}_0 = [0,0,0]^T$</li>
     </ul>
   </li>
-</ul>
-
-<h3 id="how-should-we-tackle-this-problem">How should we tackle this problem?</h3>
-
-<ul>
-  <li>consider an episode with state $s_1, \cdots, s_T$</li>
   <li>
-    <p>and our goal is $g \not = s_1, \cdots, s_T$</p>
+    <p>Generate noise of the acceleration output → set variance of $0.3^2$</p>
 
-    <p>→ this means that the agent received a reward of -1 at every timestep.</p>
+\[\mathbf{Q}= \begin{bmatrix} \frac{1}{4}\mathbf{I}_{3\times 3}\Delta t^4 &amp; \mathbf{0}_{3\times 3} \\\mathbf{0}_{3\times 3}&amp; \mathbf{I}_{3\times 3} \Delta t^2\end{bmatrix}0.3^2\]
+  </li>
+  <li>Generate noise of the GNSS measurements
+    <ul>
+      <li>GNSS position measurement → set variance of $3^2$</li>
+      <li>GNSS velocity measruement → set variance of $0.03^2$</li>
+    </ul>
+
+\[\mathbf{R}= \begin{bmatrix} \mathbf{I}_{3\times 3}3^2 &amp; \mathbf{0}_{3\times 3}\\ \mathbf{0}_{3\times 3} &amp; \mathbf{I}_{3\times 3}0.03^2 \end{bmatrix}\]
+
+    <p>Have in mind that in real applications, we do not know the real statistics of the noises and the noises are often not Gaussian. Common practice is to conservatively set $\mathbf{Q}$ and $\mathbf{R}$ slightly larger than the expected values to get robusteness.</p>
   </li>
   <li>
-    <p>we now reexamine the same trajectory with a different goal!</p>
+    <p>Start with an initial guess:</p>
 
-    <p>→ this information can be harvested by using RL algorithm and experience replay <strong>where we replace $g$ in the replay buffer by $s_T$.</strong></p>
-
-    <p>이왕 final state $s_T$ 까지 간거, 그 곳을 goal 이라고 생각하면 뭔가라도 얻을 수 있잖음?</p>
-  </li>
-  <li>by implementing HER technique, DQN with HER easily solves the task for $n$ up to 50!</li>
-</ul>
-
-<h3 id="multi-goal-rl">Multi-goal RL</h3>
-
-<ul>
-  <li>
-    <p>follow the approach from UVFA, train policies and value functions which take as input not only a state $s\in \mathcal{S}$ but also a goal $g\in \mathcal{G}$.</p>
-
-    <p>Authors also prove that
-  “training an agent to perform multiple tasks can be easier than training it to perform only one task”  → 자기네들 방법론이 다방면으로 사용될 수 있다는 것!</p>
-  </li>
-  <li>
-    <p>They assume that every goal $g \in \mathcal{G}$ corresponds to some predicate</p>
-
-\[f_g : \mathcal{S} \rightarrow \{0,1\}\]
-  </li>
-  <li>
-    <p>Agent’s goal is to acheve any state that satisfies</p>
-
-\[f_g(s)=1\]
-  </li>
-  <li>
-    <p>One example of goal space is</p>
-
-    <p>state space $\mathcal{S}$ 의 특정 state 하나를 goal 로 지정하는 경우</p>
-
-\[\begin{aligned} \mathcal{S}&amp;=\mathcal{G} \\ f_g(s) &amp;= [s=g]\end{aligned}\]
-  </li>
-  <li>
-    <p>Another example of goal space might be</p>
-
-    <p>$\mathbb{R}^2$ state space 에서 특정 $x$  좌표값을 goal 로 지정하고 싶은 경우</p>
-
-\[\begin{aligned} \mathcal{S}&amp;=\mathbb{R}^2 \\ \mathcal{G} &amp; = \mathbb{R} \\ f_g((x,y)) &amp;= [x=g]\end{aligned}\]
-  </li>
-  <li>
-    <p>assume that, for a given state $s$, we can easily find a goal $g$  which is satisfied in this state. More formally, we assume that there is given a mapping</p>
-
-\[m: \mathcal{S\rightarrow G}\ \ \text{s.t.} \ \ \forall s\in \mathcal{S}, \  f_{m(s)}(s) = 1\]
-
-    <p>자신이 있는 state을 goal 이 되도록 해주는 mapping이라는 건데, 위 첫번째 예시에서는 $m(s) = s$, 두 번째 예시에서는 $m((x,y)) = x$. state space $\mathcal{S}$ 와 goal space $\mathcal{G}$ 가 항상 같지 않을 수 있으니 필요한 정의인 듯.</p>
+\[\hat {\mathbf{x}}_0 = [2,-2,0,5,5.1,0.1]^T \\ \mathbf{P}_0 = \begin{bmatrix} \mathbf{I}_{3\times 3}4^2 &amp; \mathbf{0}_{3\times 3} \\ \mathbf{0}_{3\times 3} &amp; \mathbf{I}_{3\times 3}0.4^2\end{bmatrix}\]
   </li>
 </ul>
 
-<h3 id="main-algorithm--hindsight-experience-replay-her">Main Algorithm : Hindsight Experience Replay (HER)</h3>
+<h3 id="python-implementation-of-kf">Python Implementation of KF</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="kn">import</span> <span class="n">inv</span>
+
+<span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">kalman_filter</span><span class="p">(</span><span class="n">z_meas</span><span class="p">,</span> <span class="n">x_esti</span><span class="p">,</span> <span class="n">P</span><span class="p">):</span>
+    <span class="s">"""Kalman Filter Algorithm."""</span>
+    <span class="c1"># (1) Prediction.
+</span>    <span class="n">x_pred</span> <span class="o">=</span> <span class="n">A</span> <span class="o">@</span> <span class="n">x_esti</span>
+    <span class="n">P_pred</span> <span class="o">=</span> <span class="n">A</span> <span class="o">@</span> <span class="n">P</span> <span class="o">@</span> <span class="n">A</span><span class="p">.</span><span class="n">T</span> <span class="o">+</span> <span class="n">Q</span>
+
+    <span class="c1"># (2) Kalman Gain.
+</span>    <span class="n">K</span> <span class="o">=</span> <span class="n">P_pred</span> <span class="o">@</span> <span class="n">H</span><span class="p">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">inv</span><span class="p">(</span><span class="n">H</span> <span class="o">@</span> <span class="n">P_pred</span> <span class="o">@</span> <span class="n">H</span><span class="p">.</span><span class="n">T</span> <span class="o">+</span> <span class="n">R</span><span class="p">)</span>
+
+    <span class="c1"># (3) Estimation.
+</span>    <span class="n">x_esti</span> <span class="o">=</span> <span class="n">x_pred</span> <span class="o">+</span> <span class="n">K</span> <span class="o">@</span> <span class="p">(</span><span class="n">z_meas</span> <span class="o">-</span> <span class="n">H</span> <span class="o">@</span> <span class="n">x_pred</span><span class="p">)</span>
+
+    <span class="c1"># (4) Error Covariance.
+</span>    <span class="n">P</span> <span class="o">=</span> <span class="n">P_pred</span> <span class="o">-</span> <span class="n">K</span> <span class="o">@</span> <span class="n">H</span> <span class="o">@</span> <span class="n">P_pred</span>
+
+    <span class="k">return</span> <span class="n">x_esti</span><span class="p">,</span> <span class="n">P</span>
+</code></pre></div></div>
+
+<h2 id="extended-kalman-filter">Extended Kalman Filter</h2>
+
+<h3 id="target-tracking">Target Tracking</h3>
 
 <ul>
-  <li>after experiencing some episode $s_0, s_1, \cdots, s_T$ we store in the replay buffer every trainsition $s_t \rightarrow s_{t+1}$ not only with the original goal used for this episode, but also with a subset of other goals.</li>
-  <li>One choice which has to be made to use HER → set of additional goals used for replay.</li>
-  <li>simplest version? we replay each trajectory with the goal $m(s_T)$ → goal which is achieved in the final state of the episode.</li>
+  <li>We are going to estimate a 3-dimensional target state (position and velocity) by using measurements provided by a range sensor and an angle sensor → ex) Radar system can provide range and angle measurement</li>
+  <li>
+    <p>Define target state as</p>
+
+\[\mathbf{x}=[\mathbf{p}^T, \mathbf{v}^T ] ^T\]
+  </li>
+</ul>
+
+<h3 id="system-model">System Model</h3>
+
+<ul>
+  <li>
+    <p>System model is described as a near-constant-velocity model</p>
+
+\[\mathbf{x}_k = \begin{bmatrix} \mathbf{p}_k \\ \mathbf{v}_k \end{bmatrix} = \mathbf{f}(\mathbf{x}_{k-1}, \mathbf{w}_{k-1})=\begin{bmatrix} \mathbf{p}_{k-1}+\mathbf{v}_{k-1} \Delta t   \\ \mathbf{v}_{k-1}\end{bmatrix}+ \mathbf{w}_{k-1}\]
+
+    <p>where the process noise has the covariance of $\mathbf{w}_{k-1} \sim \mathcal{N}(0, \mathbf{Q})$</p>
+  </li>
+  <li>
+    <p>Measurement vector is composed of line-of-sight angles to the target</p>
+  </li>
 </ul>
 
 <center><img src="Untitled.png" width="500" /></center>
 
-<p>Simple!</p>
+<p>Measurement has nonlinear relationship with the target state → cannot be expressed in a matrix form → apply EKF → take first derivatives of the process model</p>
 
-<h2 id="results">Results</h2>
-<center>
-<iframe width="560" height="315" src="https://www.youtube.com/embed/Dz_HuzgMxzo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></center>
-
-<p><img src="Untitled%201.png" alt="Untitled%201.png" /></p>
-</div><section class="article__sharing d-print-none"></section><div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-04-13T00:00:00+09:00"><!-- start custom article footer snippet -->
+<center><img src="Untitled%201.png" width="500" /></center>
+</div><section class="article__sharing d-print-none"></section><div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-03-11T00:00:00+09:00"><!-- start custom article footer snippet -->
 
 <!-- end custom article footer snippet -->
-<div class="article__subscribe"><div class="subscribe"><i class="fas fa-rss"></i> <a type="application/rss+xml" href="/feed.xml">Subscribe</a></div>
-</div><div class="article__license"><div class="license">
+<div itemscope itemtype="http://schema.org/Person" class="author-profile card card--flat item"><a href="younghyopark.github.io" class="item__image"><img class="author-profile__avatar" itemprop="image" src="/formal_profile.jpg" /></a><div class="item__content"><meta itemprop="name" content="Younghyo Park">
+        <p class="author-profile__name"><meta itemprop="url" content="younghyopark.github.io">
+            <a href="younghyopark.github.io">Younghyo Park</a></p><p itemprop="description">I'm currently undergoing a B.S. course in Seoul National University, majoring in Mechanical Engineering. I'm interested in Robotics, Control and Machine Learning. Besides that, I love traveling, playing piano and learning new stuffs.</p><div class="author-profile__links"><div class="author-links">
+  <ul class="menu menu--nowrap menu--inline"><link itemprop="url" href="younghyopark.github.io"><li title="Send me an Email.">
+      <a class="button button--circle mail-button" itemprop="email" href="mailto:parkyh9492@snu.ac.kr" target="_blank">
+        <i class="fas fa-envelope"></i>
+      </a><li title="Follow me on Github.">
+        <a class="button button--circle github-button" itemprop="sameAs" href="https://github.com/younghyopark.github.io" target="_blank">
+          <div class="icon"><svg fill="#000000" width="24px" height="24px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path class="svgpath" data-index="path_0" fill="#272636" d="M0 525.2c0 223.6 143.3 413.7 343 483.5 26.9 6.8 22.8-12.4 22.8-25.4l0-88.7c-155.3 18.2-161.5-84.6-172-101.7-21.1-36-70.8-45.2-56-62.3 35.4-18.2 71.4 4.6 113.1 66.3 30.2 44.7 89.1 37.2 119 29.7 6.5-26.9 20.5-50.9 39.7-69.6C248.8 728.2 181.7 630 181.7 513.2c0-56.6 18.7-108.7 55.3-150.7-23.3-69.3 2.2-128.5 5.6-137.3 66.5-6 135.5 47.6 140.9 51.8 37.8-10.2 80.9-15.6 129.1-15.6 48.5 0 91.8 5.6 129.8 15.9 12.9-9.8 77-55.8 138.8-50.2 3.3 8.8 28.2 66.7 6.3 135 37.1 42.1 56 94.6 56 151.4 0 117-67.5 215.3-228.8 243.7 26.9 26.6 43.6 63.4 43.6 104.2l0 128.8c0.9 10.3 0 20.5 17.2 20.5C878.1 942.4 1024 750.9 1024 525.3c0-282.9-229.3-512-512-512C229.1 13.2 0 242.3 0 525.2L0 525.2z" />
+</svg>
+</div>
+        </a>
+      </li></ul>
+</div>
+</div>
+
+    </div>
+</div>
+<div class="article__license"><div class="license">
     <p>This work is licensed under a <a itemprop="license" rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">Attribution-NonCommercial 4.0 International</a> license.
       <a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">
         <img alt="Attribution-NonCommercial 4.0 International" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" />
       </a>
     </p>
   </div></div></footer>
-<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/notion_to_markdown/%5BJAIR%202013%5D%20A%20Survey%20of%20Multi-Objective%20Sequential%202596a1a7dc934dbc9ed305d644b17155/">[JAIR 2013] A Survey of Multi-Objective Sequential Decision-Making</a></div><div class="next"><span>NEXT</span><a href="/notion_to_markdown/%5BNIPS%202017%5D%20Hybrid%20Reward%20Architecture%20for%20Reinfor%20ec4b86df520441bab17567b05419da01/">[NIPS 2017] Hybrid Reward Architecture for Reinforcement Learning </a></div></div></div>
+<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/notion_to_markdown/%5BTheory%5D%20Extended%20Unscented%20Kalman%20Filter%20fdfb8f055fb740eb9d4433c806f68fde/">[Control Theory] Extended/Unscented Kalman Filter</a></div><div class="next"><span>NEXT</span><a href="/notion_to_markdown/kalman-filter/">[Control Theory] Kalman Filter</a></div></div></div>
 
 </div>
 

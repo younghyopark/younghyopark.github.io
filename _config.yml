@@ -36,8 +36,8 @@ timezone: # see https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for
 author:
   type      : # "person" (default), "organization"
   name      : Younghyo Park
-  url       :
-  avatar    : # path or url of avatar image (square)
+  url       : younghyopark.github.io
+  avatar    : formal_profile.jpg
   bio       : "I'm currently undergoing a B.S. course in Seoul National University, majoring in Mechanical Engineering.
 I'm interested in Robotics, Control and Machine Learning. 
 Besides that, I love traveling, playing piano and learning new stuffs."
@@ -57,8 +57,8 @@ Besides that, I love traveling, playing piano and learning new stuffs."
 
 ## => GitHub Repository (if the site is hosted by GitHub)
 ##############################
-repository: user_name/repo_name
-repository_tree: master
+repository: younghyopark/younghyopark.github.io
+repository_tree: main
 
 
 ## => Paths

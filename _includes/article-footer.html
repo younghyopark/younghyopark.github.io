@@ -28,7 +28,7 @@
   {%- endif -%}
 
   {%- include article/footer/custom.html -%}
-
+  
   {%- if _show_author_profile -%}
     {%- if page.author -%}
       {%- assign _author = site.data.authors[page.author] -%}
@@ -45,7 +45,7 @@
   {%- if _license != false -%}
     {%- assign _data_license = site.data.licenses-%}
     {%- if site.license -%}
-      {%- assign _license_data = _data_license[site.license] -%}
+    {%- assign _license_data = _data_license[site.license] -%}
     {%- endif -%}
     {%- if _license != true -%}
       {%- assign _license_data = _data_license[_license] -%}
