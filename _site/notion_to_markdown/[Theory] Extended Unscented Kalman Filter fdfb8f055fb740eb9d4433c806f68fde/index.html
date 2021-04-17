@@ -1,10 +1,10 @@
 <!DOCTYPE html><html lang="en">
   <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[NIPS 2017] Hybrid Reward Architecture for Reinforcement Learning  - Younghyo Park</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[Control Theory] Extended/Unscented Kalman Filter - Younghyo Park</title>
 
-<meta name="description" content="Horde vs HRA vs UVFA  Horde architecture learns multiple general value functions(GVFs), each corresponding to different reward functions and other question f...">
-<link rel="canonical" href="http://localhost:4000/notion_to_markdown/%5BNIPS%202017%5D%20Hybrid%20Reward%20Architecture%20for%20Reinfor%20ec4b86df520441bab17567b05419da01/"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
+<meta name="description" content="Introduction      UKF belongs to a bigger class of filters called Sigma-Point Kalman Filters / Linear Regression Kalman Filters → using statistical lineraiza...">
+<link rel="canonical" href="http://localhost:4000/notion_to_markdown/%5BTheory%5D%20Extended%20Unscented%20Kalman%20Filter%20fdfb8f055fb740eb9d4433c806f68fde/"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
 <!--<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
 
 <meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
@@ -305,148 +305,162 @@ fill="#000000" stroke="none">
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
 <!-- end custom main top snippet -->
-<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[NIPS 2017] Hybrid Reward Architecture for Reinforcement Learning </h1></header><span class="split-space">&nbsp;</span>
+<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[Control Theory] Extended/Unscented Kalman Filter</h1></header><span class="split-space">&nbsp;</span>
           <a class="edit-on-github"
             title="Edit on Github"
-            href="https://github.com/user_name/repo_name/tree/master/_posts/2021-04-13-hybrid-reward-architecture.md">
-            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[NIPS 2017] Hybrid Reward Architecture for Reinforcement Learning "><div class="article__info clearfix"><ul class="left-col menu"><li>
+            href="https://github.com/user_name/repo_name/tree/master/_posts/2021-03-11-Extended-Kalman-Filter.md">
+            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[Control Theory] Extended/Unscented Kalman Filter"><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
+                href="/archive.html?tag=Control">Control</a>
             </li><li>
               <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Multi-Reward%2FObjective">Multi-Reward/Objective</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 13, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-13T00:00:00+09:00">
-    <meta itemprop="keywords" content="Reinforcement-Learning,Multi-Reward/Objective"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
+                href="/archive.html?tag=Theory%2FSurvey">Theory/Survey</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Mar 11, 2021</span>
+            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-03-11T00:00:00+09:00">
+    <meta itemprop="keywords" content="Control,Theory/Survey"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
 
 <!-- end custom article top snippet -->
-<div class="article__content" itemprop="articleBody"><p><br /></p>
-<center>
-<iframe width="560" height="315" src="https://www.youtube.com/embed/DYNy7Fvonro" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></center>
-
-<h2 id="horde-vs-hra-vs-uvfa">Horde vs HRA vs UVFA</h2>
-
-<ul>
-  <li>Horde architecture learns multiple general value functions(GVFs), each corresponding to different reward functions and other question functions, using multiple demons.</li>
-  <li>UVFA tries to generalize the value functions across different task and goals.</li>
-  <li>
-    <p>HRA, on the other hand, decomposes the reward function into $n$ different reward functions, with the intent to solve a <strong>SINGLE, but COMPLEX</strong> task.</p>
-
-    <p>Reward 가 너무 sparse하거나 function이 너무 high-dimensional일 경우 문제 해결이 어려움 → too much state component들에 dependent한 reward function을 여러 개의 small reward function (dependent on less state components) 들의 합으로 해석함</p>
-
-    <p>→ Reward Function Decomposition 이라는 topic도 therefore closely related!</p>
-  </li>
-</ul>
-
-<h2 id="proposed-method">Proposed Method</h2>
+<div class="article__content" itemprop="articleBody"><h2 id="introduction">Introduction</h2>
 
 <ul>
   <li>
-    <p>Let’s decompose the reward function $R_{env}$ into $n$ reward functions!</p>
+    <p>UKF belongs to a bigger class of filters called Sigma-Point Kalman Filters / Linear Regression Kalman Filters → using <strong>statistical lineraization technique</strong>.</p>
 
-\[R_{env} (s,a,s') = \sum_{k=1}^n  R_k(s,a,s')\]
-
-    <p>and train separate RL agent on each of these reward functions.</p>
+    <p><strong>Statistical linearization technique</strong> = technique that linearizes a nonlinear function of a random variable through a linear regression between $n$ points drawn from the prior distribution of the random variable.</p>
   </li>
-  <li>
-    <p>Because agent $k$ has its own reward function, it has also its own Q-value function, $Q_k$.</p>
-
-    <p>In general, different agents can share multiple lower-level layers of deep Q-network. Hence, authors use a single vector $\theta$ to describe the combined weights of the agents!</p>
-  </li>
-  <li>
-    <p>Combined network that represents all $Q$-value functions = <strong>Hybrid Reward Architecture</strong></p>
-
-\[Q_{\text{HRA}}(s,a;\theta) = \sum_{k=1}^n Q_k (s,a;\theta)\]
-  </li>
-  <li>
-    <p>The collection of agents can be viewed as a single agent with multiple heads!</p>
-
-    <p>Lower-level layer는 고정되어 있는 상태에서 higher-level layer들의 weight들만 각 reward function에 대해 달라지는 것임.</p>
-  </li>
-  <li>
-    <p>Loss function associated with HRA</p>
-
-\[\begin{aligned} \mathcal{L}_i (\theta_i ) &amp; = \mathbb{E}_{s,a,r,s'}\bigg [ \sum_{k=1}^n (y_{k,i} - Q_k (s,a;\theta_i ))^2 \bigg ] , \\ \text{with }  &amp; y_{k,i} = R_k (s,a,s') + \gamma \max_{a'} Q_k (s',a'; \theta_{k-1}) \end{aligned}\]
-  </li>
-  <li>
-    <p>To that end, we get an optimal weight $\theta^\star$</p>
-
-\[Q_k ^\star (s,a) = Q_k (s,a;\theta^\star)\]
-
-    <p>where</p>
-
-\[Q_{\text{HRA}}^\star(s,a) := \sum_{k=1}^n Q_k^\star (s,a)\]
-  </li>
-</ul>
-
-<p>Resulting $Q_{\text{HRA}}^\star$ is different from $Q_{env}^\star$  which is generated by $R_{env}$.</p>
-
-<center><img src="Untitled.png" width="400" /></center>
-
-<h2 id="whats-good-about-hra">What’s good about HRA?</h2>
-
-<ul>
-  <li>Easily exploit more domain knowledge!
+  <li>Similar line of filters include..
     <ol>
-      <li>Remove irrelevant features : reward에 영향을 주지 않는 feature들은 과감히 배제시켜버릴 수 있음</li>
-      <li>Identifying terminal states : terminal state에 대해서는 학습을 하지 않도록 refrain 시켜 weight들이 오로지 meaningful 한 non-terminal state을 estimate 하는데 사용되도록 할 수 있음</li>
-      <li>Using pseudo-reward functions : 실제 environment reward function을 decompose하는 것이 아니라, pseudo-reward function 을 사용하여 $\theta$ 를 update할 수도 있음.</li>
+      <li>The Central Difference Kalman Filter (CDKF)</li>
+      <li>The Divided Difference Filter (DDF)</li>
+      <li>Square-Root alternatives of UKF and CDKF</li>
     </ol>
   </li>
+  <li>In EKF, the state distribution is propagated analytically through the <strong>first-order linearization</strong> )(by derivative) of the nonlinear system. → posterior mean and covariance could be corrupted.</li>
+  <li>The UKF, a derivative-free alternative to EKF, overcomes this problem by using a deterministic sampling approach.</li>
 </ul>
 
-<h2 id="experiments">Experiments</h2>
+<h2 id="extended-kalman-filter">Extended Kalman Filter</h2>
 
-<h3 id="experiment-setting--fruit-collection-task">Experiment Setting : Fruit Collection Task</h3>
+<p>In extended Kalman filter, the state transition and observation models don’t need to be linear functions, but may instead be differentiable functions.</p>
+
+\[\mathbf{x}_k = f(\mathbf{x}_{k-1} , \mathbf{u}_k ) + \mathbf{w}_k  \\ \mathbf{z}_k = h (\mathbf{x}_k) + \mathbf{v}_k\]
+
+<p>where $\mathbf{w}_k \sim \mathcal{N}(0, \mathbf{Q}_k )$  and $\mathbf{v}_k \sim \mathcal{N}(0, \mathbf{R}_k )$.</p>
+
+<p>In this case, we first cannot calculate ethe error covariance matrix term efficiently: since the error itself isn’t Gaussian anymore.</p>
+
+\[\hat {\mathbf{x}}_k = \hat {\mathbf{x}}_k ' + \mathbf{K}_k (h( \mathbf{x}_k) + \mathbf{v}_k  - h(\hat {\mathbf{x}}_k '))\\ \hat {\mathbf{x}}_k - \mathbf{x}_k = (\hat {\mathbf{x}}_k ' - \mathbf{K}_k h(\hat{ \mathbf{x}}_k ' )) +(\mathbf{K}_k h (\mathbf{x}_k )-\mathbf{x}_k  )+ \mathbf{K}_k \mathbf{v}_k\]
+
+<p>Extended Kalman Filter(EKF) approximates the non-linear function as a linear function by taking the first order Jacobian: the state transition and observation matrices are defined to be the following Jacobians.</p>
+
+\[\mathbf{F}_k = \frac{\partial f}{\partial \mathbf{x}}\Big |_{\hat {\mathbf{x}}_{k-1} , \mathbf{u}_k}\\ \mathbf{H}_k = \frac{\partial h}{\partial \mathbf{x}}\Big|_{\hat {\mathbf{x}}_k'}\]
+
+<h3 id="predict">Predict</h3>
 
 <ul>
-  <li>10x10 격자에 과일들이 놓임</li>
-  <li>과일들이 놓일 수 있는 위치는 10개가 있고, each episode마다 과일들은 랜덤한 5개 위치에 놓임</li>
-  <li>agent는 랜덤한 위치에서 시작하고</li>
-  <li>과일을 하나 먹을 때마다 reward +1 이 주어짐</li>
+  <li>Predict a priori state estimate : $\hat {\mathbf{x}}_k ‘  = f(\hat {\mathbf{x}}_{k-1},\mathbf{u}_k)$</li>
+  <li>Predict a priori covariance estimate : $\mathbf{P}_k ‘ = \mathbf{F}_k \mathbf{P}_{k-1}\mathbf{F}_k ^T + \mathbf{Q}_k$</li>
+</ul>
+
+<h3 id="update">Update</h3>
+
+<ul>
+  <li>Updated a posteriori state estimate : $\hat {\mathbf{x}}_k = \hat {\mathbf{x}}_k ^\prime + \mathbf{K}_k (\mathbf{z}_k - h(\hat {\mathbf{x}}_k ^\prime))$</li>
+  <li>Updated a posteriori covariance estimate : $\mathbf{P}_k = (\mathbf{I}- \mathbf{K}_k \mathbf{H}_k)\mathbf{P}_k^\prime$</li>
+  <li>Near-Optimal Kalman Gain : $\mathbf{K}_k = \mathbf{P}_k ^\prime \mathbf{H}_k^T (\mathbf{H}_k\mathbf{P}_k ^\prime \mathbf{H}_k^T + \mathbf{R}_k)^{-1}$</li>
+</ul>
+
+<p>Note that extended Kalman filter is not an optimal estimator.</p>
+
+<h2 id="ukf-algorithm">UKF Algorithm</h2>
+
+<p>The UKF addresses the approximation issues with the EKF. The state distribution is specified using a minimal set of carefully chosen sample points. These sample points completely capture the true mean and covariance of the Gaussian Random Variable (GRV), and when propagated through the true non-linear system, captures the posterior mean and covariance accruately to the 3rd order for any nonlinearlity.</p>
+
+<h3 id="unscented-transformation-ut">Unscented Transformation (UT)</h3>
+
+<p>Unscented Transformation is a method for calculating the statistics of a random variable which undergoes a nonlinear transformation. Consider propagating a random variable $\mathbf{x}$ with dimension $L$ through a nonlinear function</p>
+
+\[\mathbf{y}=g(\mathbf{x}).\]
+
+<p>Let’s assume that $\mathbf{x}$ has mean $\bar {\mathbf{x}}$ and covariance $\mathbf{P_x}$. Now, to calculate the statistics of $\mathbf{y}$, we form a matrix $\mathcal{X}$ of $2L+1$ sigma vectors $\mathcal{X}_i$  with corresponding weights $W_i$</p>
+
+<center><img src="Untitled.png" width="450" /></center>
+
+<ul>
+  <li>Scaling parameter : $\lambda = \alpha^2 (L+ \kappa )- L$</li>
+  <li>Parameter determining the spread of sigma points around $\bar {\mathbf{x}}$ : $\alpha$</li>
+  <li>Secondary scaling parameter : $\kappa$</li>
+  <li>Incorporate prior knowledge about the distribution : $\beta$</li>
+</ul>
+
+<p>Now, these sigma vectors are propagated through the nonlinear function</p>
+
+\[\mathcal{Y}_i = g(\mathcal{X}_i) \ \ \ \text{for } i=0, \cdots, 2L\]
+
+<p>and the mean and covariance for $\mathbf{y}$ are approximated using a weighted sample mean and covariance of the <strong>posterior sigma points</strong> $\mathcal{Y}_i$ .</p>
+
+\[\bar {\mathbf{y}} \approx \sum_{i=0}^{2L} W_i ^{(m)}\mathcal{Y}_i \\ \mathbf{P_y} \approx \sum_{i=0}^{2L}W_i^{(c)}\{ \mathcal{Y} - \bar {\mathbf{y}}_i \} \{\mathcal{Y}_i - \bar {\mathbf{y}}\}^T\]
+
+<ul>
+  <li>Comparison with Monte-Carlo Sampling : UT needs much less sampling points</li>
+  <li>For non Gaussian inputs, approximations are accurate up to the second order.</li>
+</ul>
+
+<center><img src="Untitled%201.png" width="450" /></center>
+
+<h3 id="state-space-system">State-Space System</h3>
+
+<ul>
+  <li>Basic framework of EKF (note that it is no longer a linear system)</li>
+</ul>
+
+\[\mathbf{x}_{k+1} = \mathbf{F}(\mathbf{x}_k , \mathbf{v}_k)\\ \mathbf{y}_k = \mathbf{H}(\mathbf{x}_k , \mathbf{n}_k)\]
+
+<ul>
+  <li>$\mathbf{x}_k$  represent the unobserved state of the system, $\mathbf{y}_k$ is the only observed signal.</li>
+  <li>The process noise $\mathbf{v}_k$  drives the dynamic system, and the observation noise is given by $\mathbf{n}_k$</li>
+  <li><strong>We are not assuming the additivity of noises</strong>.</li>
+  <li>System dynamic model $\mathbf{F}$ and $\mathbf{H}$ are assumed known.</li>
+</ul>
+
+<h3 id="unscented-kalman-filter-algorithm">Unscented Kalman Filter Algorithm</h3>
+
+<ol>
   <li>
-    <p>each episode는 과일 5개를 다 먹거나 300 step 이 지나면 끝남</p>
+    <p><strong>Define:</strong></p>
+
+\[\mathbf{x}_k^a = [ \mathbf{x}_k ^T \ \ \mathbf{v}_k ^T \ \ \mathbf{n}_k^T]^T\\ \mathcal{X}_k ^a = [(\mathcal{X}_k ^x)^T\ \ (\mathcal{X}_k ^v)^T\ \ (\mathcal{X}_k ^n)^T]^T\]
+
+    <p>and $\mathbf{P_v}$ as the process noise covariance matrix, and $\mathbf{P_n}$ as the measurement noise covariance matrix.</p>
   </li>
-  <li>이 문제를 일반적인 DQN 으로 풀었을 때와 HRA로 풀었을 때 두 가지를 비교했음.</li>
-  <li>HRA의 경우 → reward function을 10개의 다른 small-reward function으로 decompose했음, one per possible fruit location.</li>
-  <li><strong>HRA network 의 실제 구성</strong>
+  <li>
+    <p><strong>Initialize with:</strong></p>
+
+\[\hat {\mathbf{x}}_0 = \mathbb{E}[\mathbf{x}_0 ]\\ \mathbf{P}_0 = \mathbb{E}[ (\mathbf{x}_0 - \hat{ \mathbf{x}}_0 )(\mathbf{x}_0 - \hat {\mathbf{x}}_0 )^T]\]
+
+\[\mathbf{x}_0^a = \mathbb{E}[\mathbf{x}^a ] = [\hat {\mathbf{x}}_0 ^T \ \ 0 \ \  0 ] ^T\\ \mathbf{P}_0 ^a = \mathbb{E}[(\mathbf{x}_0^a-\hat {\mathbf{x}}_0^a)(\mathbf{x}_0^a-\hat {\mathbf{x}}_0^a)^T] = \begin{bmatrix}\mathbf{P_0}&amp;0&amp;0\\0&amp;\mathbf{P_v}&amp;0\\0&amp;0&amp;\mathbf{P_n} \end{bmatrix}\]
+  </li>
+  <li><strong>Calculate the sigma points</strong> : $\mathcal{X}_{k-1}^a$</li>
+  <li><strong>Time Update :</strong>
     <ul>
-      <li>input = 110 binary code (100 for encoding the agent’s position, and the remaining 10 for encoding whether the fruit is in each of the possible positions)</li>
-      <li>FC layer 110 → 250 → (10 heads of) 4   (each consisting of the action values of 4 actions)</li>
-      <li>Mean of all heads is computed through a final linear layer  (with fixed weights 1)</li>
+      <li>Pass the sigma points through $\mathbf{F}$ : $\mathcal{X}_{k \vert k-1}^x = \mathbf{F} (\mathcal{X}_{k-1}^x, \mathcal{X}_{k-1}^v)$</li>
+      <li>Estimate the state using the posterior sigma points : $\hat {\mathbf{x}}_k ‘ = \sum_{i=0}^{2L} W_i ^{(m)} \mathcal{X}_{i,k \vert k-1}^x$</li>
+      <li>Estimate the covariance : $\mathbf{P}_k ‘ = \sum_{i=0}^{2L}W_i ^{(c)}[\mathcal{X}_{i,k \vert k-1}^x- \hat {\mathbf{x}}_k ‘ ] [\mathcal{X}_{i,k \vert k-1}^x - \hat {\mathbf{x}}_k ‘ ] ^T$</li>
+      <li>Pass the sigma points through $\mathbf{H}$ : $\mathcal{Y}_{k \vert k-1} = \mathbf{H}[\mathcal{X}_{k \vert k-1}^x, \mathcal{X}_{k-1}^n]$</li>
+      <li>Estimate the observation: $\hat {\mathbf{y}}_k ‘ = \sum_{i=0}^{2L} W_i^{(m)}\mathcal{Y}_{i,k \vert k-1}$</li>
     </ul>
   </li>
-</ul>
-
-<center><img src="Untitled%201.png" width="400" /></center>
-
-<p>위 그림에서, DQN은 맨 마지막 layer에서 나온 reward 를 가지고 loss function을 minimize한다면, HRA는 그 직전 layer에서 나온 reward (vector)들을 가지고 each agent들을 업데이트하는 것.</p>
-
-<ul>
   <li>
-    <p>여기서 HRA+3 에 주목하고 싶은데, decomposing the existing reward (fruit-related) 에 더해서 pseudo-reward 를 추가한 실험임. <strong>(reward is given when the agent GOT TO the predefined 10 places)</strong></p>
+    <p><strong>Measurement update equations</strong> :</p>
 
-    <p>→ 그 장소에 과일이 없더라도 뭔가를 배울 수 있음</p>
+    <center><img src="Untitled%202.png" width="450" /></center>
   </li>
-</ul>
+</ol>
 
-<center><img src="Untitled%202.png" width="600" /></center>
+<h2 id="references">References</h2>
 
-<ul>
-  <li>그 결과 DQN보다 HRA를 썼을 때 훨씬 더 학습을 잘 했다는 것을 볼 수 있음. 특히, pseudo-reward를 썼을 때의 효과는 아주 강력했는데, 아무것도 쓰지 않는 상태와 비교해 아주 빠르게 학습을 완료함을 볼 수 있음.</li>
-</ul>
-
-<h3 id="mspac-man">Ms.Pac-Man</h3>
-
-<ul>
-  <li>
-    <p>이 논문은 Ms.Pac-Man 게임에서 SOTA를 찍었다고 해서 꽤나 유명세를 탄 논문인데, 뭐 결론은 (전혀 놀랍지 않게도) HRA가 DQN보다 잘한다는 것이었음.</p>
-  </li>
-  <li>
-    <p>reward function이 복잡해? → small reward function으로 쪼개세요!</p>
-  </li>
-</ul>
-</div><section class="article__sharing d-print-none"></section><div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-04-13T00:00:00+09:00"><!-- start custom article footer snippet -->
+<p><a href="https://www.cs.ubc.ca/~murphyk/Papers/Julier_Uhlmann_mar04.pdf">https://www.cs.ubc.ca/~murphyk/Papers/Julier_Uhlmann_mar04.pdf</a></p>
+</div><section class="article__sharing d-print-none"></section><div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-03-11T00:00:00+09:00"><!-- start custom article footer snippet -->
 
 <!-- end custom article footer snippet -->
 <div class="article__subscribe"><div class="subscribe"><i class="fas fa-rss"></i> <a type="application/rss+xml" href="/feed.xml">Subscribe</a></div>
@@ -457,7 +471,7 @@ fill="#000000" stroke="none">
       </a>
     </p>
   </div></div></footer>
-<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/notion_to_markdown/%5BNIPS%202017%5D%20Hindsight%20Experience%20Replay%206daf8b2ade014cf58ea2d223723e0390/">[NIPS 2017] Hindsight Experience Replay </a></div><div class="next"><span>NEXT</span><a href="/notion_to_markdown/%5BICML%202015%5D%20Universal%20Value%20Function%20Approximators%207120334d6860455c801cd9284c92970b/">[ICML 2015] Universal Value Function Approximators</a></div></div></div>
+<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/notion_to_markdown/%5BPaper%20Review%5D%20Memorizing%20Normality%20to%20Detect%20Anom%209d61a839fc9a41a68d1fd4d65a8ace01/">[ICCV 2019] Memorizing Normality to Detect Anomaly: Memory-augmented Deep Autoencoder for Unsupervised Anomaly Detection</a></div><div class="next"><span>NEXT</span><a href="/notion_to_markdown/kalman-filter/">[Control Theory] Kalman Filter</a></div></div></div>
 
 </div>
 

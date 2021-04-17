@@ -1,10 +1,10 @@
 <!DOCTYPE html><html lang="en">
   <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[NIPS 2017] Hybrid Reward Architecture for Reinforcement Learning  - Younghyo Park</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[Control Theory] Kalman Filter - Younghyo Park</title>
 
-<meta name="description" content="Horde vs HRA vs UVFA  Horde architecture learns multiple general value functions(GVFs), each corresponding to different reward functions and other question f...">
-<link rel="canonical" href="http://localhost:4000/notion_to_markdown/%5BNIPS%202017%5D%20Hybrid%20Reward%20Architecture%20for%20Reinfor%20ec4b86df520441bab17567b05419da01/"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
+<meta name="description" content="IntroductionKalman filters are used to estimate states based on linear dynamical systems in state-space format.\[\mathbf{x}_k  = \mathbf{F}_k \mathbf{x}_{k-1...">
+<link rel="canonical" href="http://localhost:4000/notion_to_markdown/kalman-filter/"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
 <!--<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
 
 <meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
@@ -305,148 +305,225 @@ fill="#000000" stroke="none">
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
 <!-- end custom main top snippet -->
-<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[NIPS 2017] Hybrid Reward Architecture for Reinforcement Learning </h1></header><span class="split-space">&nbsp;</span>
+<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[Control Theory] Kalman Filter</h1></header><span class="split-space">&nbsp;</span>
           <a class="edit-on-github"
             title="Edit on Github"
-            href="https://github.com/user_name/repo_name/tree/master/_posts/2021-04-13-hybrid-reward-architecture.md">
-            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[NIPS 2017] Hybrid Reward Architecture for Reinforcement Learning "><div class="article__info clearfix"><ul class="left-col menu"><li>
+            href="https://github.com/user_name/repo_name/tree/master/_posts/2021-03-11-kalman-filter.md">
+            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[Control Theory] Kalman Filter"><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
+                href="/archive.html?tag=Control">Control</a>
             </li><li>
               <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Multi-Reward%2FObjective">Multi-Reward/Objective</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 13, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-13T00:00:00+09:00">
-    <meta itemprop="keywords" content="Reinforcement-Learning,Multi-Reward/Objective"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
+                href="/archive.html?tag=Theory%2FSurvey">Theory/Survey</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Mar 11, 2021</span>
+            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-03-11T00:00:00+09:00">
+    <meta itemprop="keywords" content="Control,Theory/Survey"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
 
 <!-- end custom article top snippet -->
-<div class="article__content" itemprop="articleBody"><p><br /></p>
-<center>
-<iframe width="560" height="315" src="https://www.youtube.com/embed/DYNy7Fvonro" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></center>
+<div class="article__content" itemprop="articleBody"><h2 id="introduction">Introduction</h2>
 
-<h2 id="horde-vs-hra-vs-uvfa">Horde vs HRA vs UVFA</h2>
+<p>Kalman filters are used to estimate states based on linear dynamical systems in state-space format.</p>
 
-<ul>
-  <li>Horde architecture learns multiple general value functions(GVFs), each corresponding to different reward functions and other question functions, using multiple demons.</li>
-  <li>UVFA tries to generalize the value functions across different task and goals.</li>
-  <li>
-    <p>HRA, on the other hand, decomposes the reward function into $n$ different reward functions, with the intent to solve a <strong>SINGLE, but COMPLEX</strong> task.</p>
+\[\mathbf{x}_k  = \mathbf{F}_k \mathbf{x}_{k-1} + \mathbf{B}_k \mathbf{u}_{k-1}+\mathbf{w}_{k-1}\]
 
-    <p>Reward 가 너무 sparse하거나 function이 너무 high-dimensional일 경우 문제 해결이 어려움 → too much state component들에 dependent한 reward function을 여러 개의 small reward function (dependent on less state components) 들의 합으로 해석함</p>
+<p>where $ \mathbf{x}_{k} $ is the state vector, $\mathbf{F}$ is the state transitiion matrix, $\mathbf{B}$ is the control-input matrix, and $\mathbf{w}_{k-1}$ is the process noise vector that is assumed to be zero-mean Gaussian with the covariance $\mathbf{Q}_k$, i.e., $\mathbf{w}_{k-1}\sim \mathcal{N}(0,\mathbf{Q}_k)$.</p>
 
-    <p>→ Reward Function Decomposition 이라는 topic도 therefore closely related!</p>
-  </li>
-</ul>
+<p>This process model is paried with thte measurement model that describes the relationship between the state and the measurement at the current time step $k$ as:</p>
 
-<h2 id="proposed-method">Proposed Method</h2>
+\[\mathbf{z}_k = \mathbf{H}_k \mathbf{x}_k + \mathbf{v}_k\]
 
-<ul>
-  <li>
-    <p>Let’s decompose the reward function $R_{env}$ into $n$ reward functions!</p>
+<p>where $\mathbf{z}_k$ is the measurement vector, $\mathbf{H}_k$ is the measurement matrix, and $\mathbf{v}_k$ is the measurement noise vector that is assumed to be zero-mean Gaussian with the covariance $\mathbf{R}_k$, i.e., $\mathbf{v}_k \sim \mathcal{N}(0,\mathbf{R}_k
+)$.</p>
 
-\[R_{env} (s,a,s') = \sum_{k=1}^n  R_k(s,a,s')\]
+<p>Recall the definition of covariance matrix:  $\mathbb{E}[\mathbf{v}_k\mathbf{v}_k^T]=\mathbf{R}_k$ and $\mathbb{E}[\mathbf{w}_k\mathbf{w}_k^T]=\mathbf{Q}_k$</p>
 
-    <p>and train separate RL agent on each of these reward functions.</p>
-  </li>
-  <li>
-    <p>Because agent $k$ has its own reward function, it has also its own Q-value function, $Q_k$.</p>
+<h2 id="what-is-a-kalman-filter">What is a Kalman Filter?</h2>
 
-    <p>In general, different agents can share multiple lower-level layers of deep Q-network. Hence, authors use a single vector $\theta$ to describe the combined weights of the agents!</p>
-  </li>
-  <li>
-    <p>Combined network that represents all $Q$-value functions = <strong>Hybrid Reward Architecture</strong></p>
+<p>The role of Kalmn filter is to provide an <strong>optimal</strong> estimate of $\mathbf{x}_k$ at time $k$, given the initial estimate of $\mathbf{x}_0$, the series of measurement $\mathbf{z}_1, \mathbf{z}_2, \cdots, \mathbf{z}_k$, and the information of the system described by the matrices $\mathbf{F},\mathbf{B},\mathbf{H},\mathbf{Q}$ and $\mathbf{R}$. (If these matrices does not have subscripts, we are assuming that these are invariant over time, which is still a reasonable assumption in most cases.)</p>
 
-\[Q_{\text{HRA}}(s,a;\theta) = \sum_{k=1}^n Q_k (s,a;\theta)\]
-  </li>
-  <li>
-    <p>The collection of agents can be viewed as a single agent with multiple heads!</p>
+<p>Note that the matrices $\mathbf{Q}$ and $\mathbf{R}$, associated with the noise vectors, cannot be precisely determined. Thus, $\mathbf{Q}$ and $\mathbf{R}$ are usually used as tuning parameters that the user can adjust to get desired performance.</p>
 
-    <p>Lower-level layer는 고정되어 있는 상태에서 higher-level layer들의 weight들만 각 reward function에 대해 달라지는 것임.</p>
-  </li>
-  <li>
-    <p>Loss function associated with HRA</p>
-
-\[\begin{aligned} \mathcal{L}_i (\theta_i ) &amp; = \mathbb{E}_{s,a,r,s'}\bigg [ \sum_{k=1}^n (y_{k,i} - Q_k (s,a;\theta_i ))^2 \bigg ] , \\ \text{with }  &amp; y_{k,i} = R_k (s,a,s') + \gamma \max_{a'} Q_k (s',a'; \theta_{k-1}) \end{aligned}\]
-  </li>
-  <li>
-    <p>To that end, we get an optimal weight $\theta^\star$</p>
-
-\[Q_k ^\star (s,a) = Q_k (s,a;\theta^\star)\]
-
-    <p>where</p>
-
-\[Q_{\text{HRA}}^\star(s,a) := \sum_{k=1}^n Q_k^\star (s,a)\]
-  </li>
-</ul>
-
-<p>Resulting $Q_{\text{HRA}}^\star$ is different from $Q_{env}^\star$  which is generated by $R_{env}$.</p>
-
-<center><img src="Untitled.png" width="400" /></center>
-
-<h2 id="whats-good-about-hra">What’s good about HRA?</h2>
+<p>To summarize, Kalman Filter solves the problem stated below:</p>
 
 <ul>
-  <li>Easily exploit more domain knowledge!
-    <ol>
-      <li>Remove irrelevant features : reward에 영향을 주지 않는 feature들은 과감히 배제시켜버릴 수 있음</li>
-      <li>Identifying terminal states : terminal state에 대해서는 학습을 하지 않도록 refrain 시켜 weight들이 오로지 meaningful 한 non-terminal state을 estimate 하는데 사용되도록 할 수 있음</li>
-      <li>Using pseudo-reward functions : 실제 environment reward function을 decompose하는 것이 아니라, pseudo-reward function 을 사용하여 $\theta$ 를 update할 수도 있음.</li>
-    </ol>
-  </li>
-</ul>
-
-<h2 id="experiments">Experiments</h2>
-
-<h3 id="experiment-setting--fruit-collection-task">Experiment Setting : Fruit Collection Task</h3>
-
-<ul>
-  <li>10x10 격자에 과일들이 놓임</li>
-  <li>과일들이 놓일 수 있는 위치는 10개가 있고, each episode마다 과일들은 랜덤한 5개 위치에 놓임</li>
-  <li>agent는 랜덤한 위치에서 시작하고</li>
-  <li>과일을 하나 먹을 때마다 reward +1 이 주어짐</li>
-  <li>
-    <p>each episode는 과일 5개를 다 먹거나 300 step 이 지나면 끝남</p>
-  </li>
-  <li>이 문제를 일반적인 DQN 으로 풀었을 때와 HRA로 풀었을 때 두 가지를 비교했음.</li>
-  <li>HRA의 경우 → reward function을 10개의 다른 small-reward function으로 decompose했음, one per possible fruit location.</li>
-  <li><strong>HRA network 의 실제 구성</strong>
+  <li><strong>Given Information</strong>
     <ul>
-      <li>input = 110 binary code (100 for encoding the agent’s position, and the remaining 10 for encoding whether the fruit is in each of the possible positions)</li>
-      <li>FC layer 110 → 250 → (10 heads of) 4   (each consisting of the action values of 4 actions)</li>
-      <li>Mean of all heads is computed through a final linear layer  (with fixed weights 1)</li>
+      <li>
+        <p>Matrices $\mathbf{F},\mathbf{B},\mathbf{H},\mathbf{Q}$ and $\mathbf{R}$ involved with the dynamic state-space system below</p>
+
+\[\mathbf{x}_k  =\mathbf{F}_k \mathbf{x}_{k-1} + \mathbf{B}_k  \mathbf{u}_{k-1}+\mathbf{w}_{k-1} \\ \mathbf{z}_k = \mathbf{H} _k \mathbf{x}_k + \mathbf{v}_k\]
+      </li>
+      <li>Initial Estimate of $\hat{\mathbf{x}}_0$</li>
+      <li>Series of measurement $\mathbf{z}_1, \mathbf{z}_2, \cdots, \mathbf{z}_k$</li>
     </ul>
   </li>
+  <li><strong>Objective</strong> : <strong>Optimally</strong> Estimate the state $\hat{\mathbf{x}}_k$</li>
 </ul>
 
-<center><img src="Untitled%201.png" width="400" /></center>
+<h2 id="optimal-in-what-sense">Optimal in what sense?</h2>
 
-<p>위 그림에서, DQN은 맨 마지막 layer에서 나온 reward 를 가지고 loss function을 minimize한다면, HRA는 그 직전 layer에서 나온 reward (vector)들을 가지고 each agent들을 업데이트하는 것.</p>
+<p>One might ask, “in what sense” should we determine whether our estimation is optimal or not? Thus, it might be necessary to define a <strong>cost / loss function</strong> that can measure how well a filter performs this estimation task. Indeed, we may define the goal of the filter to be the minimisation of such loss function.</p>
+
+<p>Our overall objective is to estimate $\mathbf{x}_k$. Thus, the difference between the estimate $\hat {\mathbf{x}}_k$ and $\mathbf{x}_k$ itself is termed as an error. The particular shape of loss function is dependent upon the application, while squared error function is most widely used.</p>
+
+\[f(\mathbf{e}_k) = f(\mathbf{x}_k - \hat {\mathbf{x}}_k)= \|\hat {\mathbf{x}}_k -\mathbf{x}_k \|^2\]
+
+<p>Since it is necessary to consider the ability of the filter to predict many data over a period of time, a more meaningful  metric is the expected value of the error function:</p>
+
+\[\text{MSE}= \mathbb{E}\big(\|\hat {\mathbf{x}}_k - \mathbf{x}_k \|^2 \big)\]
+
+<p>Note that $\mathbf{P}_k$ is the error covariance matrix at time $k$</p>
+
+\[\mathbf{P}_k = \mathbb{E}[\mathbf{e}_k \mathbf{e}_k ^T] = \mathbb{E} \big [(\hat {\mathbf{x}}_k - \mathbf{x}_k )(\hat {\mathbf{x}}_k - \mathbf{x}_k )^T \big ]\]
+
+<h2 id="kalman-filter-derivation">Kalman Filter Derivation</h2>
+
+<h3 id="deriving-the-posteriori-estimate-covariance-matrix">Deriving the posteriori estimate covariance matrix</h3>
+
+<p>Assuming the prior estimate of $\hat {\mathbf{x}}_k$ as $\hat {\mathbf{x}}_k’$, it is possible to write an update the equation for the new estimate, combining the old estimate $\hat {\mathbf{x}}_k’$ with new measurement $\mathbf{z}_k$</p>
+
+\[\hat {\mathbf{x}}_k = \hat {\mathbf{x}}_k ' + \mathbf{K}_k (\mathbf{z}_k - \mathbf{H}_k\hat {\mathbf{x}}_k ')\]
+
+<p>where $\mathbf{K}_k$  is the Kalman gain, and the term $\mathbf{z}_k - \mathbf{H}\hat {\mathbf{x}}_k ‘$ is known as the <strong>innovation</strong> or <strong>measurement residual</strong>.</p>
+
+\[\mathbf{i}_k = \mathbf{z}_k - \mathbf{H}_k\hat {\mathbf{x}}_k '\]
+
+<p>Our first goal is to find out the Kalman gain matrix $\mathbf{K}_k$!</p>
+
+<p>Rewriting the equation above:</p>
+
+\[\hat {\mathbf{x}}_k = \hat {\mathbf{x}}_k ' + \mathbf{K}_k (\mathbf{H}_k \mathbf{x}_k + \mathbf{v}_k  - \mathbf{H}_k\hat {\mathbf{x}}_k ')\\ \hat {\mathbf{x}}_k - \mathbf{x}_k = (\mathbf{K}_k \mathbf{H}_k-\mathbf{I})(\mathbf{x}_k - \hat {\mathbf{x}}_k')+\mathbf{K}_k \mathbf{v}_k\]
+
+<p>Substituting above equation into the error covariance matrix term:</p>
+
+\[\mathbf{P}_k  =\mathbb{E} \Big [\big[ (\mathbf{I}-\mathbf{K}_k \mathbf{H}_k)(\mathbf{x}_k - \hat {\mathbf{x}}_k ') -\mathbf{K}_k \mathbf{v}_k \big ]\\  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \big[ (\mathbf{I}-\mathbf{K}_k \mathbf{H}_k)(\mathbf{x}_k - \hat {\mathbf{x}}_k ') -\mathbf{K}_k \mathbf{v}_k \big ]^T \Big ]\]
+
+<p>Note that $\mathbf{x}_k - \hat {\mathbf{x}}_k ‘$  is the error of the prior estimate. Defining $P_k ‘$  is the prior estimate of $P_k$ :</p>
+
+\[\mathbf{P}_k = (\mathbf{I}- \mathbf{K}_k \mathbf{H}_k)\  \mathbb{E}[ (\mathbf{x}_k - \hat {\mathbf{x}}_k ')(\mathbf{x}_k - \hat {\mathbf{x}}_k ')^T](\mathbf{I}-\mathbf{K}_k \mathbf{H}_k)^T + \mathbf{K}_k \mathbb{E}[v_k v_k ^T] \mathbf{K}_k ^T\]
+
+\[\mathbf{P}_k = (\mathbf{I}-\mathbf{K}_k \mathbf{H}_k) \ \mathbf{P}_k '   \ (\mathbf{I}-\mathbf{K}_k \mathbf{H}_k)^T + \mathbf{K}_k \mathbf{R} \mathbf{K}_k ^T\]
+
+<p>Expanding above equation:</p>
+
+\[\mathbf{P}_k = \mathbf{P}_k ' -\mathbf{K}_k \mathbf{H}_k\mathbf{P}_k ' - \mathbf{P}_k ' \mathbf{H}_k^T \mathbf{K}_k ^T + \mathbf{K}_k (\mathbf{H}_k\mathbf{P}_k ' \mathbf{H}_k^T + \mathbf{R}_k)\mathbf{K}_k ^T\]
+
+<h3 id="deriving-the-kalman-gain">Deriving the Kalman Gain</h3>
+
+<p>Since this Kalman filter is trying to minimze the expected value of MSE  $\mathbb{E}\big(|\hat {\mathbf{x}}_k - \mathbf{x}_k |^2 \big)$, which is equivalent to <strong>minimizing the trace of $\mathbf{P}_k$</strong>, we can find out the optimal Kalman gain $\mathbf{K}_k$ by taking the derivative with repsect to $\mathbf{K}_k$.</p>
+
+\[\frac{\partial \ \text{tr}(\mathbf{P}_k )}{\partial \mathbf{K}_k } = -2(\mathbf{H}_k \mathbf{P}_k')^T + 2\mathbf{K}_k (\mathbf{H}_k\mathbf{P}_k ' \mathbf{H}_k^T + \mathbf{R}_k)=0\]
+
+<p>Solving this for $\mathbf{K}_k$ gives us the optimal Kalman gain:</p>
+
+\[\mathbf{K}_k = \mathbf{P}_k ' \mathbf{H}_k^T (\mathbf{H}_k\mathbf{P}_k ' \mathbf{H}_k^T + \mathbf{R}_k)^{-1}\]
+
+<p>Defining</p>
+
+\[\mathbf{S}_k = \mathbf{H}_k\mathbf{P}_k ' \mathbf{H}_k^T + \mathbf{R}_k,\]
+
+<p>we can further simplify the equation</p>
+
+\[\mathbf{K}_k = \mathbf{P}_k ' \mathbf{H}_k^T \mathbf{S}_k ^{-1}\]
+
+<p>which can be alternatively written as follows.</p>
+
+\[\mathbf{K}_k \mathbf{S}_k \mathbf{K}_k ^T = \mathbf{P}_k ' \mathbf{H}_k^T \mathbf{K}_k ^T\]
+
+<p>Now, the formula for posteriroi error covariance $\mathbf{P}_k$ being</p>
+
+\[\mathbf{P}_k = \mathbf{P}_k ' -\mathbf{K}_k \mathbf{H}_k\mathbf{P}_k ' - \mathbf{P}_k ' \mathbf{H}_k^T \mathbf{K}_k ^T + \mathbf{P}_k ' \mathbf{H}_k^T \mathbf{K}_k ^T  = (\mathbf{I}- \mathbf{K}_k \mathbf{H}_k)\mathbf{P}_k'\]
+
+<p>Note that this formula is computationally cheaper, and thus almost always used in practice, but it is only correct in case where $\mathbf{K}_k$  is defined as an optimal Kalman gain.</p>
+
+<h3 id="obtaining-the-a-priori-estimated-state--covariance">Obtaining the a priori estimated state / covariance</h3>
+
+<p>First, the a priori state estimation is obtained by ignoring the noice vector $\mathbf{w}_{k-1}$  term in the governing equation at the top.</p>
+
+\[\hat {\mathbf{x}}_{k+1}' = \mathbf{F}_k \hat {\mathbf{x}}_{k}+ \mathbf{B}_k \mathbf{u}_k\]
+
+<p>To complete the recursion, we have to calculate the error covariance matrix as well. First, let’s find out the a priori error term.</p>
+
+\[\mathbf{e}_{k+1}' = \mathbf{x}_{k+1} - \hat {\mathbf{x}}_{k+1}' \\ \mathbf{e}_{k+1}'= (\mathbf{F}_k \mathbf{x}_k + \mathbf{B}_k \mathbf{u}_k + \mathbf{w}_k ) \ - \ (\mathbf{F}_k \hat {\mathbf{x}}_k + \mathbf{B}_k \mathbf{u}_k )\\ \mathbf{e}_{k+1}'= \mathbf{F}_k \mathbf{e}_k + \mathbf{w}_k\]
+
+<p>Now, let’s</p>
+
+\[\mathbf{P}_{k+1} '= \mathbb{E}[\mathbf{e}_{k+1}' \mathbf{e}_{k+1}'^{\ T}] = \mathbb{E}[ (\mathbf{F}_k \mathbf{e}_k + \mathbf{w}_k )(\mathbf{F}_k \mathbf{e}_k + \mathbf{w}_k )^T ]\\ \mathbf{P}_{k+1} '= \mathbf{F_k }\mathbb{E}[\mathbf{e}_k \mathbf{e}_k ^T] \mathbf{F}_k ^T + \mathbb{E} [ \mathbf{w}_k \mathbf{w}_k ^T] \\ \mathbf{P}_{k+1} '=\mathbf{F}_k \mathbf{P}_k \mathbf{F}_k ^T + \mathbf{Q}_k\]
+
+<h2 id="kalman-filter-algorithm">Kalman Filter Algorithm</h2>
+
+<p>Kalman filter is a recursive algorithm, which needs only the <strong>estimated state from the previous time step</strong> and the <strong>measurement at current time step</strong> to estimate the <strong>current state.</strong> (No history estimations are required.)</p>
+
+<p>The Kalman filter can be written as a single equation, however, it is most often conceptualized as two distinct phases: “Predict” and “Update”. The predict phase uses the state estimate from the previous timestep to produce an estimate of the state at the current timestep. This predicted state estimate is also known as the a priori state estimate because, although it is an estimate of the state at the current timestep, it does not include observation information from the current timestep. In the update phase, the current a priori prediction is combined with current observation information to refine the state estimate. This improved estimate is termed the a posteriori state estimate.</p>
+
+<h3 id="predict">Predict</h3>
 
 <ul>
-  <li>
-    <p>여기서 HRA+3 에 주목하고 싶은데, decomposing the existing reward (fruit-related) 에 더해서 pseudo-reward 를 추가한 실험임. <strong>(reward is given when the agent GOT TO the predefined 10 places)</strong></p>
-
-    <p>→ 그 장소에 과일이 없더라도 뭔가를 배울 수 있음</p>
-  </li>
+  <li>Predict a priori state estimate : $\hat {\mathbf{x}}_k ‘  = \mathbf{F}_k \hat {\mathbf{x}}_{k-1} + \mathbf{B}_k\mathbf{u}_k$</li>
+  <li>Predict a priori covariance estimate : $\mathbf{P}_k ‘ = \mathbf{F}_k \mathbf{P}_{k-1}\mathbf{F}_k ^T + \mathbf{Q}_k$</li>
 </ul>
 
-<center><img src="Untitled%202.png" width="600" /></center>
+<h3 id="update">Update</h3>
 
 <ul>
-  <li>그 결과 DQN보다 HRA를 썼을 때 훨씬 더 학습을 잘 했다는 것을 볼 수 있음. 특히, pseudo-reward를 썼을 때의 효과는 아주 강력했는데, 아무것도 쓰지 않는 상태와 비교해 아주 빠르게 학습을 완료함을 볼 수 있음.</li>
+  <li>Updated a posteriori state estimate : $\hat {\mathbf{x}}_k = \hat {\mathbf{x}}_k ‘ + \mathbf{K}_k (\mathbf{z}_k - \mathbf{H}_k\hat {\mathbf{x}}_k ‘)$</li>
+  <li>Updated a posteriori covariance estimate : $\mathbf{P}_k = (\mathbf{I}- \mathbf{K}_k \mathbf{H}_k)\mathbf{P}_k’$</li>
+  <li>Optimal Kalman Gain : $\mathbf{K}_k = \mathbf{P}_k ‘ \mathbf{H}_k^T (\mathbf{H}_k\mathbf{P}_k ‘ \mathbf{H}_k^T + \mathbf{R}_k)^{-1}$</li>
 </ul>
 
-<h3 id="mspac-man">Ms.Pac-Man</h3>
+<h2 id="extended-kalman-filter">Extended Kalman Filter</h2>
+
+<p>In extended Kalman filter, the state transition and observation models don’t need to be linear functions, but may instead be differentiable functions.</p>
+
+\[\mathbf{x}\_k = f(\mathbf{x}\_{k-1} , \mathbf{u}\_k ) + \mathbf{w}\_k  \\ \mathbf{z}\_k = h (\mathbf{x}\_k) + \mathbf{v}\_k\]
+
+<p>where $\mathbf{w}_k \sim \mathcal{N}(0, \mathbf{Q}_k )$  and $\mathbf{v}_k \sim \mathcal{N}(0, \mathbf{R}_k )$.</p>
+
+<p>In this case, we first cannot calculate ethe error covariance matrix term efficiently: since the error itself isn’t Gaussian anymore.</p>
+
+\[\hat {\mathbf{x}}_k = \hat {\mathbf{x}}_k ' + \mathbf{K}_k (h( \mathbf{x}_k) + \mathbf{v}_k  - h(\hat {\mathbf{x}}_k '))\\ \hat {\mathbf{x}}_k - \mathbf{x}_k = (\hat {\mathbf{x}}_k ' - \mathbf{K}_k h(\hat {\mathbf{x}}_k ' )) +(\mathbf{K}_k h (\mathbf{x}_k )-\mathbf{x}_k  )+ \mathbf{K}_k \mathbf{v}_k\]
+
+<p>Extended Kalman Filter(EKF) approximates the non-linear function as a linear function by taking the first order Jacobian: the state transition and observation matrices are defined to be the following Jacobians.</p>
+
+\[\mathbf{F}\_k = \frac{\partial f}{\partial \mathbf{x}}\Big |_{\hat {\mathbf{x}}_{k-1} , \mathbf{u}_k}\\ \mathbf{H}\_k = \frac{\partial h}{\partial \mathbf{x}}\Big|_{\hat {\mathbf{x}}_k'}\]
+
+<h3 id="predict-1">Predict</h3>
 
 <ul>
-  <li>
-    <p>이 논문은 Ms.Pac-Man 게임에서 SOTA를 찍었다고 해서 꽤나 유명세를 탄 논문인데, 뭐 결론은 (전혀 놀랍지 않게도) HRA가 DQN보다 잘한다는 것이었음.</p>
-  </li>
-  <li>
-    <p>reward function이 복잡해? → small reward function으로 쪼개세요!</p>
-  </li>
+  <li>Predict a priori state estimate : $\hat {\mathbf{x}}_k ^\prime  = f(\hat {\mathbf{x}}_{k-1},\mathbf{u}_k)$</li>
+  <li>Predict a priori covariance estimate : $\mathbf{P}_k ^\prime = \mathbf{F}_k \mathbf{P}_{k-1}\mathbf{F}_k ^T + \mathbf{Q}_k$</li>
 </ul>
-</div><section class="article__sharing d-print-none"></section><div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-04-13T00:00:00+09:00"><!-- start custom article footer snippet -->
+
+<h3 id="update-1">Update</h3>
+
+<ul>
+  <li>Updated a posteriori state estimate : $\hat {\mathbf{x}}_k = \hat {\mathbf{x}}_k ^\prime + \mathbf{K}_k (\mathbf{z}_k - h(\hat {\mathbf{x}}_k ‘))$</li>
+  <li>Updated a posteriori covariance estimate : $\mathbf{P}_k = (\mathbf{I}- \mathbf{K}_k \mathbf{H}_k)\mathbf{P}_k’$</li>
+  <li>Nar-Optimal Kalman Gain : $\mathbf{K}_k = \mathbf{P}_k ‘ \mathbf{H}_k^T (\mathbf{H}_k\mathbf{P}_k ‘ \mathbf{H}_k^T + \mathbf{R}_k)^{-1}$</li>
+</ul>
+
+<p>Note that extended Kalman filter is not an optimal estimator.</p>
+
+<p><a href="https://www.notion.so/Tutorial-Kalman-Filter-Applications-59df15d05fb14feebc087ebc2adc5730">[Tutorial] Kalman Filter Applications</a></p>
+
+<h2 id="references">References</h2>
+
+<p><a href="https://en.wikipedia.org/wiki/Extended_Kalman_filter">https://en.wikipedia.org/wiki/Extended_Kalman_filter</a></p>
+
+<p><a href="https://en.wikipedia.org/wiki/Kalman_filter">https://en.wikipedia.org/wiki/Kalman_filter</a></p>
+
+<p><a href="https://web.stanford.edu/~jduchi/projects/matrix_prop.pdf">https://web.stanford.edu/~jduchi/projects/matrix_prop.pdf</a></p>
+
+<p><a href="https://stanford.edu/class/ee363/lectures/ekf.pdf">https://stanford.edu/class/ee363/lectures/ekf.pdf</a></p>
+
+<p><a href="https://www.seas.harvard.edu/courses/cs281/papers/unscented.pdf">https://www.seas.harvard.edu/courses/cs281/papers/unscented.pdf</a></p>
+
+<p><a href="https://perso.crans.org/club-krobot/doc/kalman.pdf">https://perso.crans.org/club-krobot/doc/kalman.pdf</a></p>
+
+<p><a href="http://biorobotics.ri.cmu.edu/papers/sbp_papers/integrated3/kleeman_kalman_basics.pdf">http://biorobotics.ri.cmu.edu/papers/sbp_papers/integrated3/kleeman_kalman_basics.pdf</a></p>
+
+<p><a href="https://faculty.washington.edu/eeholmes/Files/Intro_to_kalman.pdf">https://faculty.washington.edu/eeholmes/Files/Intro_to_kalman.pdf</a></p>
+</div><section class="article__sharing d-print-none"></section><div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-03-11T00:00:00+09:00"><!-- start custom article footer snippet -->
 
 <!-- end custom article footer snippet -->
 <div class="article__subscribe"><div class="subscribe"><i class="fas fa-rss"></i> <a type="application/rss+xml" href="/feed.xml">Subscribe</a></div>
@@ -457,7 +534,7 @@ fill="#000000" stroke="none">
       </a>
     </p>
   </div></div></footer>
-<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/notion_to_markdown/%5BNIPS%202017%5D%20Hindsight%20Experience%20Replay%206daf8b2ade014cf58ea2d223723e0390/">[NIPS 2017] Hindsight Experience Replay </a></div><div class="next"><span>NEXT</span><a href="/notion_to_markdown/%5BICML%202015%5D%20Universal%20Value%20Function%20Approximators%207120334d6860455c801cd9284c92970b/">[ICML 2015] Universal Value Function Approximators</a></div></div></div>
+<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/notion_to_markdown/%5BTheory%5D%20Extended%20Unscented%20Kalman%20Filter%20fdfb8f055fb740eb9d4433c806f68fde/">[Control Theory] Extended/Unscented Kalman Filter</a></div><div class="next"><span>NEXT</span><a href="/notion_to_markdown/%5BPaper%20Review%5D%20The%20Lottery%20Ticket%20Hypothesis%20Findi%203d18358bc43c4a62ba460c6d8c5f75c7/">[ICLR 2019] The Lottery Ticket Hypothesis: Finding sparse, trainable neural networks</a></div></div></div>
 
 </div>
 

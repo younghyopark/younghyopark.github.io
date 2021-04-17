@@ -4,7 +4,6 @@ tags: Reinforcement-Learning Multi-Reward/Objective
 permalink: "/notion_to_markdown/%5BICML%202015%5D%20Universal%20Value%20Function%20Approximators%207120334d6860455c801cd9284c92970b/"
 ---
 
-
 ## Introduction
 
 ### Extending the purpose of value function

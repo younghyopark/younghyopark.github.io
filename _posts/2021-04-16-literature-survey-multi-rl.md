@@ -1,6 +1,6 @@
 ---
 title: "[Literature Survey] Multi-Reward/Objective Reinforcement Learning"
-tags: Reinforcement-Learning Multi-Reward/Objective
+tags: Reinforcement-Learning Multi-Reward/Objective Theory/Survey
 permalink: "/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/"
 ---
 
