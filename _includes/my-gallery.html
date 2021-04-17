@@ -1,0 +1,9 @@
+<div class ="image-gallery">
+    {% for link in site.data.google-photos %}
+        {% if page.title == link.tag %}
+            <div class="box"><a href="https://drive.google.com/uc?id={{link.name}}" title="{{ link.name }}">
+                <img src="https://drive.google.com/thumbnail?id={{link.name}}" alt="{{ link.name }}"  class="img-gallery" />
+            </a></div>
+        {% endif %}
+    {% endfor %}
+</div>

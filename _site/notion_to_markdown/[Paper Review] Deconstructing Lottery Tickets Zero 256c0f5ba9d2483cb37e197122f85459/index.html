@@ -1,0 +1,1233 @@
+<!DOCTYPE html><html lang="en">
+  <head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[NIPS 2019] Deconstructing Lottery Tickets: Zeros, Signs, and the Supermask - Younghyo Park</title>
+
+<meta name="description" content="Generalizing the Lottery Ticket HypothesisLottery Ticket (LT) Algorithm is in fact doing…  Initiailize a mask $m$ to one (no pruning at all). Randomize the p...">
+<link rel="canonical" href="http://localhost:4000/notion_to_markdown/%5BPaper%20Review%5D%20Deconstructing%20Lottery%20Tickets%20Zero%20256c0f5ba9d2483cb37e197122f85459/"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
+<!--<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
+
+<meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
+
+<meta name="theme-color" content="#ffffff"> -->
+
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+<!-- end favicons snippet --><link rel="stylesheet" href="/assets/css/main.css"><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.15.1/css/all.css" ><!-- start custom head snippets -->
+
+<!-- end custom head snippets -->
+<script>(function() {
+  window.isArray = function(val) {
+    return Object.prototype.toString.call(val) === '[object Array]';
+  };
+  window.isString = function(val) {
+    return typeof val === 'string';
+  };
+
+  window.hasEvent = function(event) {
+    return 'on'.concat(event) in window.document;
+  };
+
+  window.isOverallScroller = function(node) {
+    return node === document.documentElement || node === document.body || node === window;
+  };
+
+  window.isFormElement = function(node) {
+    var tagName = node.tagName;
+    return tagName === 'INPUT' || tagName === 'SELECT' || tagName === 'TEXTAREA';
+  };
+
+  window.pageLoad = (function () {
+    var loaded = false, cbs = [];
+    window.addEventListener('load', function () {
+      var i;
+      loaded = true;
+      if (cbs.length > 0) {
+        for (i = 0; i < cbs.length; i++) {
+          cbs[i]();
+        }
+      }
+    });
+    return {
+      then: function(cb) {
+        cb && (loaded ? cb() : (cbs.push(cb)));
+      }
+    };
+  })();
+})();
+(function() {
+  window.throttle = function(func, wait) {
+    var args, result, thisArg, timeoutId, lastCalled = 0;
+
+    function trailingCall() {
+      lastCalled = new Date;
+      timeoutId = null;
+      result = func.apply(thisArg, args);
+    }
+    return function() {
+      var now = new Date,
+        remaining = wait - (now - lastCalled);
+
+      args = arguments;
+      thisArg = this;
+
+      if (remaining <= 0) {
+        clearTimeout(timeoutId);
+        timeoutId = null;
+        lastCalled = now;
+        result = func.apply(thisArg, args);
+      } else if (!timeoutId) {
+        timeoutId = setTimeout(trailingCall, remaining);
+      }
+      return result;
+    };
+  };
+})();
+(function() {
+  var Set = (function() {
+    var add = function(item) {
+      var i, data = this._data;
+      for (i = 0; i < data.length; i++) {
+        if (data[i] === item) {
+          return;
+        }
+      }
+      this.size ++;
+      data.push(item);
+      return data;
+    };
+
+    var Set = function(data) {
+      this.size = 0;
+      this._data = [];
+      var i;
+      if (data.length > 0) {
+        for (i = 0; i < data.length; i++) {
+          add.call(this, data[i]);
+        }
+      }
+    };
+    Set.prototype.add = add;
+    Set.prototype.get = function(index) { return this._data[index]; };
+    Set.prototype.has = function(item) {
+      var i, data = this._data;
+      for (i = 0; i < data.length; i++) {
+        if (this.get(i) === item) {
+          return true;
+        }
+      }
+      return false;
+    };
+    Set.prototype.is = function(map) {
+      if (map._data.length !== this._data.length) { return false; }
+      var i, j, flag, tData = this._data, mData = map._data;
+      for (i = 0; i < tData.length; i++) {
+        for (flag = false, j = 0; j < mData.length; j++) {
+          if (tData[i] === mData[j]) {
+            flag = true;
+            break;
+          }
+        }
+        if (!flag) { return false; }
+      }
+      return true;
+    };
+    Set.prototype.values = function() {
+      return this._data;
+    };
+    return Set;
+  })();
+
+  window.Lazyload = (function(doc) {
+    var queue = {js: [], css: []}, sources = {js: {}, css: {}}, context = this;
+    var createNode = function(name, attrs) {
+      var node = doc.createElement(name), attr;
+      for (attr in attrs) {
+        if (attrs.hasOwnProperty(attr)) {
+          node.setAttribute(attr, attrs[attr]);
+        }
+      }
+      return node;
+    };
+    var end = function(type, url) {
+      var s, q, qi, cbs, i, j, cur, val, flag;
+      if (type === 'js' || type ==='css') {
+        s = sources[type], q = queue[type];
+        s[url] = true;
+        for (i = 0; i < q.length; i++) {
+          cur = q[i];
+          if (cur.urls.has(url)) {
+            qi = cur, val = qi.urls.values();
+            qi && (cbs = qi.callbacks);
+            for (flag = true, j = 0; j < val.length; j++) {
+              cur = val[j];
+              if (!s[cur]) {
+                flag = false;
+              }
+            }
+            if (flag && cbs && cbs.length > 0) {
+              for (j = 0; j < cbs.length; j++) {
+                cbs[j].call(context);
+              }
+              qi.load = true;
+            }
+          }
+        }
+      }
+    };
+    var load = function(type, urls, callback) {
+      var s, q, qi, node, i, cur,
+        _urls = typeof urls === 'string' ? new Set([urls]) : new Set(urls), val, url;
+      if (type === 'js' || type ==='css') {
+        s = sources[type], q = queue[type];
+        for (i = 0; i < q.length; i++) {
+          cur = q[i];
+          if (_urls.is(cur.urls)) {
+            qi = cur;
+            break;
+          }
+        }
+        val = _urls.values();
+        if (qi) {
+          callback && (qi.load || qi.callbacks.push(callback));
+          callback && (qi.load && callback());
+        } else {
+          q.push({
+            urls: _urls,
+            callbacks: callback ? [callback] : [],
+            load: false
+          });
+          for (i = 0; i < val.length; i++) {
+            node = null, url = val[i];
+            if (s[url] === undefined) {
+              (type === 'js' ) && (node = createNode('script', { src: url }));
+              (type === 'css') && (node = createNode('link', { rel: 'stylesheet', href: url }));
+              if (node) {
+                node.onload = (function(type, url) {
+                  return function() {
+                    end(type, url);
+                  };
+                })(type, url);
+                (doc.head || doc.body).appendChild(node);
+                s[url] = false;
+              }
+            }
+          }
+        }
+      }
+    };
+    return {
+      js: function(url, callback) {
+        load('js', url, callback);
+      },
+      css: function(url, callback) {
+        load('css', url, callback);
+      }
+    };
+  })(this.document);
+})();
+</script><script>
+  (function() {
+    var TEXT_VARIABLES = {
+      version: '2.2.6',
+      sources: {
+        font_awesome: 'https://cdn.bootcdn.net/ajax/libs/font-awesome/5.15.1/css/all.css',
+        jquery: 'https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js',
+        leancloud_js_sdk: '//cdn.jsdelivr.net/npm/leancloud-storage@3.13.2/dist/av-min.js',
+        chart: 'https://cdn.bootcss.com/Chart.js/2.7.2/Chart.bundle.min.js',
+        gitalk: {
+          js: 'https://cdn.bootcss.com/gitalk/1.2.2/gitalk.min.js',
+          css: 'https://cdn.bootcss.com/gitalk/1.2.2/gitalk.min.css'
+        },
+        valine: 'https://unpkg.com/valine/dist/Valine.min.js',
+        mathjax: 'https://cdn.bootcss.com/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML',
+        mermaid: 'https://cdn.bootcss.com/mermaid/8.0.0-rc.8/mermaid.min.js'
+      },
+      site: {
+        toc: {
+          selectors: 'h1,h2,h3'
+        }
+      },
+      paths: {
+        search_js: '/assets/search.js'
+      }
+    };
+    window.TEXT_VARIABLES = TEXT_VARIABLES;
+  })();
+</script>
+</head>
+  <body>
+    <div class="root" data-is-touch="false">
+      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport has-aside cell cell--auto">
+
+      <div class="page__main-inner"><div class="page__header d-print-none"><header class="header"><div class="main">
+      <div class="header__title">
+        <div class="header__brand"><?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+ "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+ width="256.000000pt" height="256.000000pt" viewBox="0 0 256.000000 256.000000"
+ preserveAspectRatio="xMidYMid meet">
+
+<g transform="translate(0.000000,256.000000) scale(0.100000,-0.100000)"
+fill="#000000" stroke="none">
+<path d="M1190 2439 c-442 -29 -858 -343 -1005 -758 -58 -163 -68 -226 -68
+-406 0 -152 3 -181 26 -270 33 -125 57 -187 109 -284 131 -243 320 -412 599
+-533 19 -9 80 -28 135 -44 93 -27 110 -28 294 -28 184 0 201 1 294 28 103 29
+131 40 226 86 196 95 365 251 488 450 49 80 95 195 129 325 25 91 27 116 27
+275 -1 156 -4 185 -27 270 -33 121 -65 201 -116 292 -68 119 -75 128 -181 241
+-117 123 -248 213 -390 269 -41 16 -84 33 -95 38 -41 18 -213 49 -285 52 -41
+2 -113 0 -160 -3z m-536 -732 c16 -34 65 -136 108 -226 l80 -163 45 93 c25 52
+50 101 54 109 5 8 14 26 19 40 6 14 15 32 20 40 6 8 15 26 21 40 5 14 21 49
+35 78 l25 52 95 0 c94 0 95 0 89 -22 -4 -13 -15 -35 -26 -50 -10 -15 -19 -34
+-19 -42 0 -8 -4 -17 -9 -21 -5 -3 -27 -40 -49 -83 -82 -161 -117 -227 -123
+-232 -3 -3 -24 -43 -47 -90 l-42 -85 -3 -175 -2 -175 -82 -3 -83 -3 0 185 c0
+101 -4 186 -8 188 -4 2 -17 21 -28 43 -27 54 -130 250 -158 300 -52 94 -123
+231 -129 248 -6 15 2 17 91 17 l97 0 29 -63z m876 -142 l0 -205 215 0 215 0 0
+205 0 206 88 -3 87 -3 0 -485 0 -485 -87 -3 -88 -3 0 221 0 220 -212 -2 -213
+-3 -5 -215 -5 -215 -82 -3 -83 -3 0 491 0 490 85 0 85 0 0 -205z"/>
+</g>
+</svg>
+<a title="Your Site Description
+" href="/">Younghyo Park</a></div><button class="button button--secondary button--circle search-button js-search-toggle"><i class="fas fa-search"></i></button></div><nav class="navigation">
+        <ul><li class="navigation__item"><a href="/about.html">About</a></li><li class="navigation__item"><a href="/projects.html">Projects</a></li><li class="navigation__item"><a href="/archive.html">Archive</a></li><li><button class="button button--secondary button--circle search-button js-search-toggle"><i class="fas fa-search"></i></button></li></ul>
+      </nav></div>
+  </header>
+</div><div class="page__content"><div class ="main"><div class="grid grid--reverse">
+
+              <div class="col-aside d-print-none js-col-aside"><aside class="page__aside js-page-aside"><div class="toc-aside js-toc-root"></div>
+</aside></div>
+
+              <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
+
+<!-- end custom main top snippet -->
+<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[NIPS 2019] Deconstructing Lottery Tickets: Zeros, Signs, and the Supermask</h1></header><span class="split-space">&nbsp;</span>
+          <a class="edit-on-github"
+            title="Edit on Github"
+            href="https://github.com/user_name/repo_name/tree/master/_posts/2021-04-01-deconstructing-lottery-tickets.md">
+            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[NIPS 2019] Deconstructing Lottery Tickets: Zeros, Signs, and the Supermask"><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Model-Compression">Model-Compression</a>
+            </li><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Network-Pruning">Network-Pruning</a>
+            </li><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Lottery-Ticket">Lottery-Ticket</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 01, 2021</span>
+            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-01T00:00:00+09:00">
+    <meta itemprop="keywords" content="Model-Compression,Network-Pruning,Lottery-Ticket"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
+
+<!-- end custom article top snippet -->
+<div class="article__content" itemprop="articleBody"><h2 id="generalizing-the-lottery-ticket-hypothesis">Generalizing the Lottery Ticket Hypothesis</h2>
+
+<h3 id="lottery-ticket-lt-algorithm-is-in-fact-doing">Lottery Ticket (LT) Algorithm is in fact doing…</h3>
+
+<ol>
+  <li>Initiailize a mask $m$ to one (no pruning at all). Randomize the parameters $w$ of a network. Network is $f(x; w \odot m)$</li>
+  <li>Train the parameters $w$ of the network. Initial weights before the training is denoted as $w_i$  and weights after the training is denoted as $w_f$.</li>
+  <li>To determine the weights to prune, we use a <strong>‘mask criterion’</strong>. Mask criterion is defined as a scalar function $M(w_i, w_f )$ defined by both the initial and final weights. Specific shape of the  function $M$ is yet undetermined, while the original LT algorithm used $M(w_i , w_f) = \vert w_f \vert$. After that, we rank the weights by the value obtained from $M$, and the mask corresponding to top $p\%$ of weights are set to 1, and the bottom $(100-p)\%$ to 1.</li>
+  <li>For the weights which its corresponding mask values are 1, <strong>“Mask-1 Actions”</strong> are taken. In the original LT algorithm, “Mask-1 Action” was to reinitialize its weights to their initial values, and marking as a trainable parameter in the subsequent training.</li>
+  <li>For the weights which its corresponding mask values are 0, <strong>“Mask-0 Actions”</strong> are taken. In the original LT algorithm, “Mask-0 Action” was to freeze those weights with mask value 0.</li>
+  <li>Repeat above procedure for iterative pruning.</li>
+</ol>
+
+<h3 id="this-paper-tries-to-generalize-the-lt-algorithm-by">This paper tries to generalize the LT algorithm by…</h3>
+
+<ol>
+  <li>
+    <p><strong>Trying various versions of “mask criteria”</strong></p>
+
+    <center><img src="Untitled.png" width="700" /></center>
+  </li>
+  <li>
+    <p><strong>Trying various versions of “mask-1 actions”</strong></p>
+
+    <center><img src="Untitled%201.png" width="700" /></center>
+  </li>
+  <li>
+    <p><strong>Trying various versions of “mask-0 actions”</strong></p>
+  </li>
+</ol>
+
+<h3 id="in-this-summary-article-i-will">In this summary article, I will…</h3>
+
+<p>(since this paper further analyzes the LT algorithm, which in my opinion can give us a deeper insight about the network pruning) summarize the experiment details &amp; insights which can be applied to our experiment trying to connect pruning with outlier detection.</p>
+
+<h2 id="step-1-trying-various-masking-criterions">Step 1. Trying various masking criterions</h2>
+
+<p>Authors focused on intial weights $w_i$ and final weights $w_f$. Maybe they believed that the <em>importance</em> of weights can be sufficiently expressed by $w_i$  and $w_f$. Note that authors visualize different masking criterions using a cartoon-form ellipse area of $w_i$ and $w_f$ space like below.</p>
+
+<center><img src="Untitled%202.png" width="700" /></center>
+
+<center><img src="Untitled%203.png" width="700" /></center>
+
+<p>Result shows that, while $\texttt{large_final}$ criterion, which is originally used in the LT algorithm (and the one I am using for outlier detection experiments), is a very competitive masking criterion, <strong>other criterion such as $\texttt{magnitude_increase}$ / $\texttt{large_init_large_final}$ $\texttt{movement}$ shows similar behavior.</strong></p>
+
+<center><img src="Untitled%204.png" width="700" /></center>
+
+<p>However, what we still don’t know is the “Why” question. <strong>“Why does those $\texttt{magnitude_increase}$ or $\texttt{large_final}$ criteria work better than the others?”</strong></p>
+
+<h2 id="mask-1-action--sign-is-everything">Mask-1 Action : sign is everything.</h2>
+
+<p>For those lucky weights that survived the pruning process, <strong>we have to decide the initialization method for training</strong>. Recall, original LT algorithm paper stated that, to make the pruned network to learn successfully from scratch, we need to <strong>rewind</strong> the intialization to the original one: randomly reintializing degrades the performance. However, it is still unknown exactly which component of reinitialization process is responsible for the subsequent training procedure. <strong>To find out, authors tried out three variants for Mask-1 Actions.</strong></p>
+
+<ul>
+  <li>Reinitializing : reintialize the kept-weights based on the initialization distribution $\mathcal{D}_\theta$</li>
+  <li>Reshuffling : within the trained kept-weights, shuffle them.</li>
+  <li>Constants : Every weight on a layer becomes one of three values $-\alpha, 0 , \alpha$ while $\alpha$ is the standard deviation of each layer’s $\mathcal{D}_\theta$</li>
+</ul>
+
+<center><img src="Untitled%205.png" width="700" /></center>
+
+<p>Well, the result showed that, it is not easy to win the “rewind” technique (original LT algorithm) - none of above three intialization techniques showed promising results. Meanwhile, the authors didn’t stop there: they asked themselves below questions.</p>
+
+<p>All of above intialization techniques doesn’t preserve the ‘signs’ of original weights. <strong>What if we preserve the signs of new-intialization?</strong></p>
+
+<p>Well, surprisingly, as soon as we ensured the new values of kept weights to have the same sign as their original initial values, all three variants above worked better (solid-line in Figure 4). We can clearly see that the <strong>key-point of using the original initialization is preserving the sign</strong>. This might allow us to state an interesting corollary about the behaviour of optimizers.</p>
+
+<p><strong>Optimizers work well anywhere in the correct sign quadrant for the weights, but encounter difficulty crossing the zero barrier between signs.</strong></p>
+
+<h2 id="mask-0-action--masking-is-in-fact-a-new-type-of-training">Mask-0 Action : masking is in fact a new type of training.</h2>
+
+<p>Authors asked themselves a quite unique question.</p>
+
+<p><strong>What should we do with the pruned weights? Just simply leave them and fix it to zero? Hmm. something more could have been done there as well.</strong></p>
+
+<p>The term ‘pruning’ implies that we want to disconnect the connections between the neurons. Thus, fixing the pruned weights to zero might be a reasonable thing to do. However, if we think it differently, we might construe the pruned connections being “unimportant” to the performance of the network. <strong>In other words, we might think that the network “doesn’t care that much” about those pruned weights! If that’s the case, (authors wondered) why don’t we set them to some other non-zero value?</strong></p>
+
+<p>To that end, authors designed an interesting experiment.</p>
+
+<ul>
+  <li>Experiment A : (original LT) <strong>reintialize the pruned weights to zero</strong> + freeze during training</li>
+  <li>Experiment B : <strong>reintialize the pruned weights to their initial value</strong> + freeze during training.</li>
+</ul>
+
+<p>By conducting above experiment, we can get a sense how important the zero-ing procedure is!</p>
+
+<p>If Experiment B wins (or at least perform similarly), it means that the zero-ing process isn’t that significant.</p>
+
+<center><img src="Untitled%206.png" width="700" /></center>
+
+<p><strong>However, the results showed that zero-ing process is actually very important.</strong> Authors then stated an hypothesis, which I personally consider really interesting.</p>
+
+<p>Hypothesis: Mask criterion we use ($\texttt{large_final}$) tends to mask the weights that were headed to zero anyway!</p>
+
+<p>To test above hypothesis, authors designed another experiment (mask-0 action) as well.</p>
+
+<ul>
+  <li>Experiment C : <strong>for the weights that are pruned</strong>, we set it and fix it to zero if they move towards zero during the training process, and set it to the initial value otherwise.</li>
+  <li>Experiment D : <strong>for every weights in the network</strong>, we set it and fix it to zero if they move towards zero during the training process → this experiment actually doesn’t prune the network.</li>
+</ul>
+
+<p>Above experiments C and D each correspond to Variant 1 and Variant 2 in Figure 5 above. <strong>Surprisingly, jusy by masking the weights</strong> without any further training, it works better than non-pruned network. Also, since experiment D outperformed experiment C, we can conclude that this masking action of considering the ‘movement of weights’ during the training process is not only beneficial to mask-0 , but in fact also beneficial to mask-1 weights.</p>
+
+<p>To that end, authors conclude an interesting approach;</p>
+
+<p><strong>Masking can be considered as a novel type of training procedure!</strong></p>
+
+<p>Now, we can gain a new perspective to answer</p>
+
+<ol>
+  <li>why certain mask criteria works better than others →  $\texttt{large_final}$ , pruning the weights that are small and setting it to zero, is in fact <strong>effectively pushing them further in the direction they were heading anyway.</strong></li>
+  <li>important contribution of the value of the pruned weights to the overall performance of pruned networks</li>
+  <li>benefit of setting these select weights to zero as a better intialization for the network</li>
+</ol>
+
+<h2 id="supermask-if-masking-is-training-lets-realllly-use-it-for-training">Supermask: if masking is training, let’s realllly use it for training</h2>
+
+<h3 id="no-training-at-all-but-a-simple-masking-to-the-randomly-initialized-network">No training at all, but a simple masking to the randomly initialized network.</h3>
+
+<p>It turns out, that a well-chosen mask can already attain a test accuracy far better than chance! (MNIST classifier - random accuracy 10% → well-chosen mask operation 40%) Authors call those masks <strong>“supermask”</strong>, which is a mask that can produce better-than-chance accuracy without training of the underlying weights.</p>
+
+<h3 id="how-can-we-find-a-supermask">How can we find a supermask?</h3>
+
+<p>Authors first tested below types of masks. It turns out, <strong>just by applying a large-final mask with additional same-sign constraint</strong> can improve the accuracy of original network by far without any training. (<strong>Orange solid line</strong> in Figure 7)</p>
+
+<center><img src="Untitled%207.png" width="700" /></center>
+
+<center><img src="Untitled%208.png" width="200" /></center>
+<p>We can apply this method for model compression ; simply saving a binary mask and a random seed can reconstruct the full weights of the network.</p>
+
+<h3 id="bit-more-optimizing-the-supermask-training-the-mask-not-the-weights">Bit more? Optimizing the supermask: training the mask, not the weights.</h3>
+
+<p>For an original weight tensor $w$ and a mask tensor $m$ of the same shape, we define an effective weight</p>
+
+\[w' = w_i  \odot g(m)\]
+
+<p>Training the mask with</p>
+
+\[g(m) = \text{Bern}(S(m))\]
+
+<p>where $\text{Bern}(p)$ is the bernoulli sample with probability $p$ and $S(m)$ is the sigmoid function. <strong>Training the $m$ matrix with SGD, authors obtained 95.3% test accuracy on MNIST and 65.4% on CIFAR-10.</strong> (<strong>red dashed-line</strong> in Figure 7)</p>
+
+<center><img src="Untitled%209.png" width="700" /></center>
+
+<h3 id="a-simple-trick-during-training--dynamic-weight-rescaling">A Simple trick during training : Dynamic Weight Rescaling</h3>
+
+<p>For each training iteration and for each layer, we multiply the underlying weights by the ratio of the total number of weigts in the layer over the number of ones in the corresponding mask.</p>
+
+<h2 id="final-results--remarks">Final Results &amp; Remarks</h2>
+
+<center><img src="Untitled%2010.png" width="700" /></center>
+
+<p><strong>Network upon initialization already contains powerful subnetworks that work well without training!</strong></p>
+
+<h2 id="so-whats-left-for-me-opinions--insights">So.. what’s left for me? Opinions &amp; Insights</h2>
+
+<p>흥미로운 페이퍼였다고 생각함. Lottery Ticket 페이퍼의 경우는 사실 “해봤더니 되었다” 정도여서 오호 그렇구나 정도였고 사실 크게 감흥은 없었는데.. 이 페이퍼의 경우 (물론 theoretical한 설명을 준 건 아니지만) 적어도 “왜 intialization을 그렇게 해야하는지” 라는 질문에 대해 어느 정도 안개를 걷어준 것 같아서 재미있게 읽었음. 뭔가 연구에서 인사이트와 적절한 실험 설계의 중요성을 보여준 것 같달까..</p>
+
+<p>일단 제일 먼저.. 두 페이퍼의 가장 큰 contribution이 무엇일지를 한번 생각해봐야될 것 같은데… 왜냐하면… 사실 굳이 복잡하게 왜 intialization을 하려고 하냐 하는지를 사실 잘 이해를 못하겠어서임. LeCun이 subnetwork에서 아무렇게나 initialize하면 training이 잘 안된다고 이미 말한 사실이 있는데, 그 문제를 굳이 왜 태클하려고 하냐 이 말임. 어차피 <strong>LT algorithm의 경우 pruning을 하기 위해서 일단 한번은 training을 해야되는데</strong>, 차라리 거기서 굳이 initialize를 또 하지 않고 바로 fine-tuning을 해버리면 일이 쉬워지는데.. 굳이 이런 걸 연구해야 해? 하는 생각을 할 수도 있으니까.</p>
+
+<p>근데 학계의 관심이 Lottery Ticket 페이퍼에 쏠리게 된 데에는 그 만한 이유가 있을 것이라고 생각. 지금이야 over-parameterized된 네트워크에서 smaller network로 축소시키는 과정에서  $w_f$ (weight after training)을 써야 하지만, 나중에 혹시 아나? training 없이, 혹은 아주 짧은 training 과정만으로 위 두 논문에서 보인 effective sub-network 을 찾아내게 될 수 있을지 (pruning 을 할 수 있을지)?  <strong>그럴 경우 어쨌든 간에 그런 subnetwork를 (거의) scratch로부터 training을 시켜야 할텐데 그 때 충분히 유용하게 쓰일 내용일 것이고, 그래서 사람들의 attention이 모이지 않았나 하는 생각이 든다.</strong></p>
+
+<p>그럼 이제 나에게 남은 문제는.. 이 두 편의 논문을 읽으면서 내가 얻었던 insight들과 그것들이 내 연구에 어떻게 활용될 수 있을지를 생각해봐야될텐데, 일단 먼저 위 연구들에서 추가적으로 확인하고 싶은 내용들을 몇 가지 적어보면서 생각을 정리해봐야겠음.</p>
+
+<ol>
+  <li>일단 당장 이 논문에서 masking criterion을 $M(w_i , w_f )$ 로 정의했는데, 사실 variable 들을 저렇게 두 개 사용하겠다고 한 것도 사실은 human choice였던 거고.. specific 한 function shape도 사실 intuition에 의지해서 hand-crafted되어 있는 함수들이어서.. 논문에서 네이밍한 $\texttt{large_final}$ criterion이 반드시 optimal한 (<strong>optimal in what sense?</strong>의 문제가 남아있긴 하지만..) masking criterion이라는 보장은 없지 않나 싶음.</li>
+</ol>
+
+<p>또 $w_f$를 criterion의 변수로 쓰는 순간 사실 original big (over-parameterized) network 에 대한 training을 한 번은 진행해야 하는데..  아까 말했듯 그런 경우 그냥 fine-tuning을 하면 되지 않냐? 는 질문을 할 수도 있을 거고.</p>
+
+<p><strong>어쨌든 적절한 masking criterion이 무엇인지에 대한 문제를 조금 살펴봐야될 듯함.</strong></p>
+
+<p>근데 이 과정에서.. <strong>optimal in what sense?</strong> 라는 질문에 답을 해야 함. 대다수의 LT 후속 논문들, 그리고 대부분의 model compression 관련 페이퍼들은 classifier에 대해서 다루고 있고, 일련의 optimization problem에서 minimization function을 “remaining weight의 숫자”, primal equality/inequality constraint를 “classifier accuracy의 보존 혹은 향상”으로 잡고 있는데, 지금 내가 다루고자 하는 <strong>autoencoder + outlier detection + pruning</strong> 문제의 경우 그것들과 같은 선상에서 다룰 수 있는 문제가 아님.</p>
+
+<p>우리 상황에서는, autoencoder의 accuracy격인.. training data 에 대한 mean reconstruction error가 pruning 이후에 기존의 bigger network 와 비교했을 때 높아진다 하더라도 크게 상관이 없음. <strong>우리가 원하는 것은 IND 와 OOD의 reconstruction error 사이 간격이 더 벌어지기를 바랄 뿐이지, IND의 RE가 보존되길 바라는 것이 아님.</strong> 그렇다면 여러 masking criterion 중 무엇이 optimal인지를 결정할 때, 무엇을 바탕으로 결정을 해야 하는가? <strong>outlier detection 성능?</strong> 근데 그것은 이 세상에 존재하는 모든 outlier 에 대해서 다 실험을 해보지 않는 이상 그리 좋은 방법이 아닌듯 하고.. 상웅 조교님이 말씀하신 NAE의 objective function을 optimality의 기준으로 삼는 것이 이 시점에서는 가장 적절해 보이긴 하는데.. EBGAN의 objective을 써도 될 것 같기도 하고. 이건 autoencoder 쪽 논문을 더 읽어봐야 하나… 일단 조금 더 고민을 해봐야겠음.</p>
+
+<ol>
+  <li>Supermask에 대한 내용은 무척 흥미롭게 읽었던 부분 중 하나인데, 일단 weight 대신에 mask를 training 한다는 것 자체가 매우 흥미로웠음. which neuron 간의 연결을 끊어버릴지를 learning을 통해서 학습을 한다는 것인데, 조금 거창히 말하자면 <strong>optimal 한 network architecture를 learning으로 학습</strong>하는 것과 같다고 생각함. 사실 지금까지 (특히 computer vision 분야에서) network architecture는 대부분 hand-crafted되는 경우가 많았던 것 같은데 - 이는 개인적으로 (그럴 깜냥도 안되지만) computer vision 분야의 deep learning 관련 성능 향상 progress가 그다지 흥미롭게 느껴지지 않는 이유이기도 했고 - supermask의 경우 optimal한 network architecture를 찾아내는 나름 합리적인 방법인 것 같다는 점에서 아주 인상적이었음.</li>
+</ol>
+
+<p>그러나 이 논문에서 소개된 supermask 의 경우 pruning ratio를 explicit하게 조절할 수는 없어 보이는데 (supermask 형성 과정 자체가 stochastic한 측면이 있고, 논문에서도 20~80% 사이의 pruning ratio 정도만 obtain할 수 있었던 것으로 보임) pruning ratio를 직접적으로 정해야 하는 상황이라면 문제가 될 수도 있을 것 같음 (근데 그런 상황이 있나?)</p>
+
+<p>또한, supermask generating function을  $g(m) = \text{Bern}(\text{sigmoid}(m))$ 으로 결정하였는데 이것도 다른 방법이 있을 것이라고 생각함. 당장 생각나는 건 예를 들어</p>
+
+\[g(m) = u{(\text{sigmoid}(m))}\]
+
+<p>where</p>
+
+\[u(s;t \in (0,1))=\begin{cases}1 &amp; \text{if } s&gt;t \\ 0&amp; \text{else}\end{cases}\]
+
+<p>이렇게 정의를 한다면 $t$를 조절하면서 간접적으로 pruning ratio를 조절할 수 있을 수도 있을 것 같고, supermask generating 과정이 stochastic하지 않기 때문에 조금 더 나을 수도 (물론 못할 수도) 있을 것 같고. 실험을 해봐야될 것 같음.</p>
+
+<p>이 supermask 에 대한 논의도 마찬가지로, 현재 우리의 문제인 autoencoder + pruning + outlier detection 쪽에다가 적용을 하려면 무엇을 objective function으로 삼아 training할 것인지를 결정해야됨. 일단 가장 간단하게 생각 나는 것은 일반적인 AE를 학습하듯 mean RE를 minimize하는 방안인데, 이것이 흥미로운 결과가 되려면</p>
+
+<p><strong>Result A</strong> - weight를 학습 (original)
+<strong>Result B</strong> - weight는 first initialization 상태 그대로 fix 시켜둔 상태에서 mask 를 학습
+<strong>Result C</strong> - Result 2의 결과에서 학습된 mask를 통해 pruned된 weight들은 고정시켜둔 상태에서 한 차례 더 weight들을 fine-tuning</p>
+
+<p>Result B 혹은 C 에서 Result A와 비교해 comparable or better outlier detection performance를 보여줄 수 있어야 함.</p>
+
+<p>만약 Result B 혹은 C의 결과가 동일한 pruning ratio를 가진 base pruning method 결과보다 좋다면 또 다른 의미를 찾을 수도 있을 것 같음.</p>
+
+<ol>
+  <li>쓰다가 또 든 생각인데, <strong>autoencoder + pruning + outlier detection 쪽에 supermask의 아이디어를 적용하는 것의 장점은 뭐지?</strong></li>
+</ol>
+
+<p>일단 지금까지 했던 pruning 실험과 supermask가 다른 점은..</p>
+<ul>
+  <li>pruning : $\texttt{large_final}$ mask criterion을 사용한 hand-crafted pruning process + precise weight fine-tuning</li>
+  <li>supermask : original objective function를 minimize하기 위한 mask function을 학습</li>
+</ul>
+
+<p>supermask 테크닉의 경우 minimize하고자 하는 <strong>objective function 을</strong> precise하게 minimize 한다기보다는 <strong>조금 rough 하게 minimize 시킨다는 특징이</strong> 있는 것 같은데, <strong>better outlier detection을 위해서 precise한 training이 좋을지, rough한 training이 좋을지는 모르는 일 아닌가?</strong> (당장 rough한 training이라는게 뭔지,, 구체적으로 정의할 수 있는 개념도 아닌 듯 하고..)</p>
+
+<p>objective function이 NAE처럼 outlier detection task를 잘 하기 위해 specifically design 되어 있다면 해당 objective function을 매우 precise하게 minimize하는게 중요하겠지만, outlier에 대한 고려가 되지 않은 채 설계된 objective function의 경우 regularizing term 을 적절히 잘 넣는 것이 (= rough 하게 training 시키는 것과 동의어일 것 같긴 한데) outlier detection에 도움이 될 수도 있을 것 같고…</p>
+
+<ol>
+  <li>Training from scratch 가 outlier detection 성능에 영향을 줄 수 있을까? 도 고민해봐야 할 것 같음. 상웅 조교님이 지지난 미팅 과정에서 언뜻 임의의 criterion을 가지고 pruned 된 네트워크를 scratch에서 training 시키는 것도 한 번 해보면 좋을 것 같다고 하시긴 하셨는데, 사실 LT 페이퍼에 의하면 이게 쉬운 일은 아니라고 하니까. 근데 pruning + finetuning 과 pruning + training from scratch 의 결과가 많이 다를까? 잘 모르겠음.</li>
+</ol>
+</div><section class="article__sharing d-print-none"></section><div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-04-01T00:00:00+09:00"><!-- start custom article footer snippet -->
+
+<!-- end custom article footer snippet -->
+<div class="article__subscribe"><div class="subscribe"><i class="fas fa-rss"></i> <a type="application/rss+xml" href="/feed.xml">Subscribe</a></div>
+</div><div class="article__license"><div class="license">
+    <p>This work is licensed under a <a itemprop="license" rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">Attribution-NonCommercial 4.0 International</a> license.
+      <a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">
+        <img alt="Attribution-NonCommercial 4.0 International" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" />
+      </a>
+    </p>
+  </div></div></footer>
+<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/notion_to_markdown/%5BPaper%20Review%5D%20Shared%20Autonomy%20via%20Hindsight%20Optim%20738343bab70c49ef93e56604a8941ee8/">[RSS 2015] Shared Autonomy via Hindsight Optimization</a></div><div class="next"><span>NEXT</span><a href="/notion_to_markdown/%5BNIPS%202000%5D%20Balancing%20Multiple%20Sources%20of%20Reward%20i%20d60cc762d6104f86a42d227fabdf7e6f/">[NIPS 2000] Balancing Multiple Sources of Reward in Reinforcement Learning</a></div></div></div>
+
+</div>
+
+<script>(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    $(function() {
+      var $this ,$scroll;
+      var $articleContent = $('.js-article-content');
+      var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+      var scroll = hasSidebar ? '.js-page-main' : 'html, body';
+      $scroll = $(scroll);
+
+      $articleContent.find('.highlight').each(function() {
+        $this = $(this);
+        $this.attr('data-lang', $this.find('code').attr('data-lang'));
+      });
+      $articleContent.find('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]').each(function() {
+        $this = $(this);
+        $this.append($('<a class="anchor d-print-none" aria-hidden="true"></a>').html('<i class="fas fa-anchor"></i>'));
+      });
+      $articleContent.on('click', '.anchor', function() {
+        $scroll.scrollToAnchor('#' + $(this).parent().attr('id'), 400);
+      });
+    });
+  });
+})();
+</script>
+</div><section class="page__comments d-print-none"></section></article><!-- start custom main bottom snippet -->
+
+<!-- end custom main bottom snippet -->
+</div>
+            </div></div></div><div class="page__footer d-print-none">
+<footer class="footer py-4 js-page-footer">
+  <div class="main"><div itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Younghyo Park"><meta itemprop="url" content="/"><meta itemprop="description" content="I'm currently undergoing a B.S. course in Seoul National University, majoring in Mechanical Engineering. I'm interested in Robotics, Control and Machine Learning. Besides that, I love traveling, playing piano and learning new stuffs."><div class="footer__author-links"><div class="author-links">
+  <ul class="menu menu--nowrap menu--inline"><li title="Send me an Email.">
+      <a class="button button--circle mail-button" itemprop="email" href="mailto:parkyh9492@snu.ac.kr" target="_blank">
+        <i class="fas fa-envelope"></i>
+      </a><li title="Follow me on Github.">
+        <a class="button button--circle github-button" itemprop="sameAs" href="https://github.com/younghyopark.github.io" target="_blank">
+          <div class="icon"><svg fill="#000000" width="24px" height="24px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path class="svgpath" data-index="path_0" fill="#272636" d="M0 525.2c0 223.6 143.3 413.7 343 483.5 26.9 6.8 22.8-12.4 22.8-25.4l0-88.7c-155.3 18.2-161.5-84.6-172-101.7-21.1-36-70.8-45.2-56-62.3 35.4-18.2 71.4 4.6 113.1 66.3 30.2 44.7 89.1 37.2 119 29.7 6.5-26.9 20.5-50.9 39.7-69.6C248.8 728.2 181.7 630 181.7 513.2c0-56.6 18.7-108.7 55.3-150.7-23.3-69.3 2.2-128.5 5.6-137.3 66.5-6 135.5 47.6 140.9 51.8 37.8-10.2 80.9-15.6 129.1-15.6 48.5 0 91.8 5.6 129.8 15.9 12.9-9.8 77-55.8 138.8-50.2 3.3 8.8 28.2 66.7 6.3 135 37.1 42.1 56 94.6 56 151.4 0 117-67.5 215.3-228.8 243.7 26.9 26.6 43.6 63.4 43.6 104.2l0 128.8c0.9 10.3 0 20.5 17.2 20.5C878.1 942.4 1024 750.9 1024 525.3c0-282.9-229.3-512-512-512C229.1 13.2 0 242.3 0 525.2L0 525.2z" />
+</svg>
+</div>
+        </a>
+      </li></ul>
+</div>
+</div>
+    </div><div class="site-info mt-2">
+      <div>© Younghyo Park 2021,
+        Powered by <a title="Jekyll is a simple, blog-aware, static site generator." href="http://jekyllrb.com/">Jekyll</a> & <a
+        title="TeXt is a super customizable Jekyll theme." href="https://github.com/kitian616/jekyll-TeXt-theme">TeXt Theme</a>.
+      </div>
+    </div>
+  </div>
+</footer>
+</div></div>
+    </div><script>(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $body = $('body'), $window = $(window);
+    var $pageRoot = $('.js-page-root'), $pageMain = $('.js-page-main');
+    var activeCount = 0;
+    function modal(options) {
+      var $root = this, visible, onChange, hideWhenWindowScroll = false;
+      var scrollTop;
+      function setOptions(options) {
+        var _options = options || {};
+        visible = _options.initialVisible === undefined ? false : show;
+        onChange = _options.onChange;
+        hideWhenWindowScroll = _options.hideWhenWindowScroll;
+      }
+      function init() {
+        setState(visible);
+      }
+      function setState(isShow) {
+        if (isShow === visible) {
+          return;
+        }
+        visible = isShow;
+        if (visible) {
+          activeCount++;
+          scrollTop = $(window).scrollTop() || $pageMain.scrollTop();
+          $root.addClass('modal--show');
+          $pageMain.scrollTop(scrollTop);
+          activeCount === 1 && ($pageRoot.addClass('show-modal'), $body.addClass('of-hidden'));
+          hideWhenWindowScroll && window.hasEvent('touchstart') && $window.on('scroll', hide);
+          $window.on('keyup', handleKeyup);
+        } else {
+          activeCount > 0 && activeCount--;
+          $root.removeClass('modal--show');
+          $window.scrollTop(scrollTop);
+          activeCount === 0 && ($pageRoot.removeClass('show-modal'), $body.removeClass('of-hidden'));
+          hideWhenWindowScroll && window.hasEvent('touchstart') && $window.off('scroll', hide);
+          $window.off('keyup', handleKeyup);
+        }
+        onChange && onChange(visible);
+      }
+      function show() {
+        setState(true);
+      }
+      function hide() {
+        setState(false);
+      }
+      function handleKeyup(e) {
+        // Char Code: 27  ESC
+        if (e.which ===  27) {
+          hide();
+        }
+      }
+      setOptions(options);
+      init();
+      return {
+        show: show,
+        hide: hide,
+        $el: $root
+      };
+    }
+    $.fn.modal = modal;
+  });
+})();
+</script><div class="modal modal--overflow page__search-modal d-print-none js-page-search-modal"><script>
+(function () {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    // search panel
+    var search = (window.search || (window.search = {}));
+    var useDefaultSearchBox = window.useDefaultSearchBox === undefined ?
+      true : window.useDefaultSearchBox ;
+
+    var $searchModal = $('.js-page-search-modal');
+    var $searchToggle = $('.js-search-toggle');
+    var searchModal = $searchModal.modal({ onChange: handleModalChange, hideWhenWindowScroll: true });
+    var modalVisible = false;
+    search.searchModal = searchModal;
+
+    var $searchBox = null;
+    var $searchInput = null;
+    var $searchClear = null;
+
+    function getModalVisible() {
+      return modalVisible;
+    }
+    search.getModalVisible = getModalVisible;
+
+    function handleModalChange(visible) {
+      modalVisible = visible;
+      if (visible) {
+        search.onShow && search.onShow();
+        useDefaultSearchBox && $searchInput[0] && $searchInput[0].focus();
+      } else {
+        search.onShow && search.onHide();
+        useDefaultSearchBox && $searchInput[0] && $searchInput[0].blur();
+        setTimeout(function() {
+          useDefaultSearchBox && ($searchInput.val(''), $searchBox.removeClass('not-empty'));
+          search.clear && search.clear();
+          window.pageAsideAffix && window.pageAsideAffix.refresh();
+        }, 400);
+      }
+    }
+
+    $searchToggle.on('click', function() {
+      modalVisible ? searchModal.hide() : searchModal.show();
+    });
+    // Char Code: 83  S, 191 /
+    $(window).on('keyup', function(e) {
+      if (!modalVisible && !window.isFormElement(e.target || e.srcElement) && (e.which === 83 || e.which === 191)) {
+        modalVisible || searchModal.show();
+      }
+    });
+
+    if (useDefaultSearchBox) {
+      $searchBox = $('.js-search-box');
+      $searchInput = $searchBox.children('input');
+      $searchClear = $searchBox.children('.js-icon-clear');
+      search.getSearchInput = function() {
+        return $searchInput.get(0);
+      };
+      search.getVal = function() {
+        return $searchInput.val();
+      };
+      search.setVal = function(val) {
+        $searchInput.val(val);
+      };
+
+      $searchInput.on('focus', function() {
+        $(this).addClass('focus');
+      });
+      $searchInput.on('blur', function() {
+        $(this).removeClass('focus');
+      });
+      $searchInput.on('input', window.throttle(function() {
+        var val = $(this).val();
+        if (val === '' || typeof val !== 'string') {
+          search.clear && search.clear();
+        } else {
+          $searchBox.addClass('not-empty');
+          search.onInputNotEmpty && search.onInputNotEmpty(val);
+        }
+      }, 400));
+      $searchClear.on('click', function() {
+        $searchInput.val(''); $searchBox.removeClass('not-empty');
+        search.clear && search.clear();
+      });
+    }
+  });
+})();
+</script><div class="search search--dark">
+  <div class="main">
+    <div class="search__header">Search</div>
+    <div class="search-bar">
+      <div class="search-box js-search-box">
+        <div class="search-box__icon-search"><i class="fas fa-search"></i></div>
+        <input type="text" />
+        <div class="search-box__icon-clear js-icon-clear">
+          <a><i class="fas fa-times"></i></a>
+        </div>
+      </div>
+      <button class="button button--theme-dark button--pill search__cancel js-search-toggle">
+        Cancel</button>
+    </div>
+    <div class="search-result js-search-result"></div>
+  </div>
+</div>
+<script>var SOURCES = window.TEXT_VARIABLES.sources;
+var PAHTS = window.TEXT_VARIABLES.paths;
+window.Lazyload.js([SOURCES.jquery, PAHTS.search_js], function() {
+  var search = (window.search || (window.search = {}));
+  var searchData = window.TEXT_SEARCH_DATA || {};
+
+  function memorize(f) {
+    var cache = {};
+    return function () {
+      var key = Array.prototype.join.call(arguments, ',');
+      if (key in cache) return cache[key];
+      else return cache[key] = f.apply(this, arguments);
+    };
+  }
+
+  /// search
+  function searchByQuery(query) {
+    var i, j, key, keys, cur, _title, result = {};
+    keys = Object.keys(searchData);
+    for (i = 0; i < keys.length; i++) {
+      key = keys[i];
+      for (j = 0; j < searchData[key].length; j++) {
+        cur = searchData[key][j], _title = cur.title;
+        if ((result[key] === undefined || result[key] && result[key].length < 4 )
+          && _title.toLowerCase().indexOf(query.toLowerCase()) >= 0) {
+          if (result[key] === undefined) {
+            result[key] = [];
+          }
+          result[key].push(cur);
+        }
+      }
+    }
+    return result;
+  }
+
+  var renderHeader = memorize(function(header) {
+    return $('<p class="search-result__header">' + header + '</p>');
+  });
+
+  var renderItem = function(index, title, url) {
+    return $('<li class="search-result__item" data-index="' + index + '"><a class="button" href="' + url + '">' + title + '</a></li>');
+  };
+
+  function render(data) {
+    if (!data) { return null; }
+    var $root = $('<ul></ul>'), i, j, key, keys, cur, itemIndex = 0;
+    keys = Object.keys(data);
+    for (i = 0; i < keys.length; i++) {
+      key = keys[i];
+      $root.append(renderHeader(key));
+      for (j = 0; j < data[key].length; j++) {
+        cur = data[key][j];
+        $root.append(renderItem(itemIndex++, cur.title, cur.url));
+      }
+    }
+    return $root;
+  }
+
+  // search box
+  var $result = $('.js-search-result'), $resultItems;
+  var lastActiveIndex, activeIndex;
+
+  function clear() {
+    $result.html(null);
+    $resultItems = $('.search-result__item'); activeIndex = 0;
+  }
+  function onInputNotEmpty(val) {
+    $result.html(render(searchByQuery(val)));
+    $resultItems = $('.search-result__item'); activeIndex = 0;
+    $resultItems.eq(0).addClass('active');
+  }
+
+  search.clear = clear;
+  search.onInputNotEmpty = onInputNotEmpty;
+
+  function updateResultItems() {
+    lastActiveIndex >= 0 && $resultItems.eq(lastActiveIndex).removeClass('active');
+    activeIndex >= 0 && $resultItems.eq(activeIndex).addClass('active');
+  }
+
+  function moveActiveIndex(direction) {
+    var itemsCount = $resultItems ? $resultItems.length : 0;
+    if (itemsCount > 1) {
+      lastActiveIndex = activeIndex;
+      if (direction === 'up') {
+        activeIndex = (activeIndex - 1 + itemsCount) % itemsCount;
+      } else if (direction === 'down') {
+        activeIndex = (activeIndex + 1 + itemsCount) % itemsCount;
+      }
+      updateResultItems();
+    }
+  }
+
+  // Char Code: 13  Enter, 37  ⬅, 38  ⬆, 39  ➡, 40  ⬇
+  $(window).on('keyup', function(e) {
+    var modalVisible = search.getModalVisible && search.getModalVisible();
+    if (modalVisible) {
+      if (e.which === 38) {
+        modalVisible && moveActiveIndex('up');
+      } else if (e.which === 40) {
+        modalVisible && moveActiveIndex('down');
+      } else if (e.which === 13) {
+        modalVisible && $resultItems && activeIndex >= 0 && $resultItems.eq(activeIndex).children('a')[0].click();
+      }
+    }
+  });
+
+  $result.on('mouseover', '.search-result__item > a', function() {
+    var itemIndex = $(this).parent().data('index');
+    itemIndex >= 0 && (lastActiveIndex = activeIndex, activeIndex = itemIndex, updateResultItems());
+  });
+});
+</script>
+</div></div>
+
+
+<script>(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    function scrollToAnchor(anchor, duration, callback) {
+      var $root = this;
+      $root.animate({ scrollTop: $(anchor).position().top }, duration, function() {
+        window.history.replaceState(null, '', window.location.href.split('#')[0] + anchor);
+        callback && callback();
+      });
+    }
+    $.fn.scrollToAnchor = scrollToAnchor;
+  });
+})();
+(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    function affix(options) {
+      var $root = this, $window = $(window), $scrollTarget, $scroll,
+        offsetBottom = 0, scrollTarget = window, scroll = window.document, disabled = false, isOverallScroller = true,
+        rootTop, rootLeft, rootHeight, scrollBottom, rootBottomTop,
+        hasInit = false, curState;
+
+      function setOptions(options) {
+        var _options = options || {};
+        _options.offsetBottom && (offsetBottom = _options.offsetBottom);
+        _options.scrollTarget && (scrollTarget = _options.scrollTarget);
+        _options.scroll && (scroll = _options.scroll);
+        _options.disabled !== undefined && (disabled = _options.disabled);
+        $scrollTarget = $(scrollTarget);
+        isOverallScroller = window.isOverallScroller($scrollTarget[0]);
+        $scroll = $(scroll);
+      }
+      function preCalc() {
+        top();
+        rootHeight = $root.outerHeight();
+        rootTop = $root.offset().top + (isOverallScroller ? 0 :  $scrollTarget.scrollTop());
+        rootLeft = $root.offset().left;
+      }
+      function calc(needPreCalc) {
+        needPreCalc && preCalc();
+        scrollBottom = $scroll.outerHeight() - offsetBottom - rootHeight;
+        rootBottomTop = scrollBottom - rootTop;
+      }
+      function top() {
+        if (curState !== 'top') {
+          $root.removeClass('fixed').css({
+            left: 0,
+            top: 0
+          });
+          curState = 'top';
+        }
+      }
+      function fixed() {
+        if (curState !== 'fixed') {
+          $root.addClass('fixed').css({
+            left: rootLeft + 'px',
+            top: 0
+          });
+          curState = 'fixed';
+        }
+      }
+      function bottom() {
+        if (curState !== 'bottom') {
+          $root.removeClass('fixed').css({
+            left: 0,
+            top: rootBottomTop + 'px'
+          });
+          curState = 'bottom';
+        }
+      }
+      function setState() {
+        var scrollTop = $scrollTarget.scrollTop();
+        if (scrollTop >= rootTop && scrollTop <= scrollBottom) {
+          fixed();
+        } else if (scrollTop < rootTop) {
+          top();
+        } else {
+          bottom();
+        }
+      }
+      function init() {
+        if(!hasInit) {
+          var interval, timeout;
+          calc(true); setState();
+          // run calc every 100 millisecond
+          interval = setInterval(function() {
+            calc();
+          }, 100);
+          timeout = setTimeout(function() {
+            clearInterval(interval);
+          }, 45000);
+          window.pageLoad.then(function() {
+            setTimeout(function() {
+              clearInterval(interval);
+              clearTimeout(timeout);
+            }, 3000);
+          });
+          $scrollTarget.on('scroll', function() {
+            disabled || setState();
+          });
+          $window.on('resize', function() {
+            disabled || (calc(true), setState());
+          });
+          hasInit = true;
+        }
+      }
+
+      setOptions(options);
+      if (!disabled) {
+        init();
+      }
+      $window.on('resize', window.throttle(function() {
+        init();
+      }, 200));
+      return {
+        setOptions: setOptions,
+        refresh: function() {
+          calc(true, { animation: false }); setState();
+        }
+      };
+    }
+    $.fn.affix = affix;
+  });
+})();
+(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    function toc(options) {
+      var $root = this, $window = $(window), $scrollTarget, $scroller, $tocUl = $('<ul class="toc toc--ellipsis"></ul>'), $tocLi, $headings, $activeLast, $activeCur,
+        selectors = 'h1,h2,h3', container = 'body', scrollTarget = window, scroller = 'html, body', disabled = false,
+        headingsPos, scrolling = false, hasRendered = false, hasInit = false;
+
+      function setOptions(options) {
+        var _options = options || {};
+        _options.selectors && (selectors = _options.selectors);
+        _options.container && (container = _options.container);
+        _options.scrollTarget && (scrollTarget = _options.scrollTarget);
+        _options.scroller && (scroller = _options.scroller);
+        _options.disabled !== undefined && (disabled = _options.disabled);
+        $headings = $(container).find(selectors).filter('[id]');
+        $scrollTarget = $(scrollTarget);
+        $scroller = $(scroller);
+      }
+      function calc() {
+        headingsPos = [];
+        $headings.each(function() {
+          headingsPos.push(Math.floor($(this).position().top));
+        });
+      }
+      function setState(element, disabled) {
+        var scrollTop = $scrollTarget.scrollTop(), i;
+        if (disabled || !headingsPos || headingsPos.length < 1) { return; }
+        if (element) {
+          $activeCur = element;
+        } else {
+          for (i = 0; i < headingsPos.length; i++) {
+            if (scrollTop >= headingsPos[i]) {
+              $activeCur = $tocLi.eq(i);
+            } else {
+              $activeCur || ($activeCur = $tocLi.eq(i));
+              break;
+            }
+          }
+        }
+        $activeLast && $activeLast.removeClass('active');
+        ($activeLast = $activeCur).addClass('active');
+      }
+      function render() {
+        if(!hasRendered) {
+          $root.append($tocUl);
+          $headings.each(function() {
+            var $this = $(this);
+            $tocUl.append($('<li></li>').addClass('toc-' + $this.prop('tagName').toLowerCase())
+              .append($('<a></a>').text($this.text()).attr('href', '#' + $this.prop('id'))));
+          });
+          $tocLi = $tocUl.children('li');
+          $tocUl.on('click', 'a', function(e) {
+            e.preventDefault();
+            var $this = $(this);
+            scrolling = true;
+            setState($this.parent());
+            $scroller.scrollToAnchor($this.attr('href'), 400, function() {
+              scrolling = false;
+            });
+          });
+        }
+        hasRendered = true;
+      }
+      function init() {
+        var interval, timeout;
+        if(!hasInit) {
+          render(); calc(); setState(null, scrolling);
+          // run calc every 100 millisecond
+          interval = setInterval(function() {
+            calc();
+          }, 100);
+          timeout = setTimeout(function() {
+            clearInterval(interval);
+          }, 45000);
+          window.pageLoad.then(function() {
+            setTimeout(function() {
+              clearInterval(interval);
+              clearTimeout(timeout);
+            }, 3000);
+          });
+          $scrollTarget.on('scroll', function() {
+            disabled || setState(null, scrolling);
+          });
+          $window.on('resize', window.throttle(function() {
+            if (!disabled) {
+              render(); calc(); setState(null, scrolling);
+            }
+          }, 100));
+        }
+        hasInit = true;
+      }
+
+      setOptions(options);
+      if (!disabled) {
+        init();
+      }
+      $window.on('resize', window.throttle(function() {
+        init();
+      }, 200));
+      return {
+        setOptions: setOptions
+      };
+    }
+    $.fn.toc = toc;
+  });
+})();
+/*(function () {
+
+})();*/
+</script><script>
+  /* toc must before affix, since affix need to konw toc' height. */(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  var TOC_SELECTOR = window.TEXT_VARIABLES.site.toc.selectors;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window);
+    var $articleContent = $('.js-article-content');
+    var $tocRoot = $('.js-toc-root'), $col2 = $('.js-col-aside');
+    var toc;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+    var hasToc = $articleContent.find(TOC_SELECTOR).length > 0;
+
+    function disabled() {
+      return $col2.css('display') === 'none' || !hasToc;
+    }
+
+    tocDisabled = disabled();
+
+    toc = $tocRoot.toc({
+      selectors: TOC_SELECTOR,
+      container: $articleContent,
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      tocDisabled = disabled();
+      toc && toc.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+  });
+})();
+(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window), $pageFooter = $('.js-page-footer');
+    var $pageAside = $('.js-page-aside');
+    var affix;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+
+    affix = $pageAside.affix({
+      offsetBottom: $pageFooter.outerHeight(),
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      scroll: hasSidebar ? $('.js-page-main').children() : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      affix && affix.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+    window.pageAsideAffix = affix;
+  });
+})();
+</script><script>
+  window.Lazyload.js(['https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js', 'https://cdn.bootcss.com/Chart.js/2.7.2/Chart.bundle.min.js'], function() {
+    var $canvas = null, $this = null, _ctx = null, _text = '';
+    $('.language-chart').each(function(){
+      $this = $(this);
+      $canvas = $('<canvas></canvas>');
+      _text = $this.text();
+      $this.text('').append($canvas);
+      _ctx = $canvas.get(0).getContext('2d');
+      (_ctx && _text) && (new Chart(_ctx, JSON.parse(_text)) && $this.attr('data-processed', true));
+    });
+  });
+</script>
+<script type="text/x-mathjax-config">
+	var _config = { tex2jax: {
+		inlineMath: [['$','$'], ['\\(','\\)']]
+	}};_config.TeX = { equationNumbers: { autoNumber: "all" } };MathJax.Hub.Config(_config);
+</script>
+<script type="text/javascript" src="https://cdn.bootcss.com/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  window.Lazyload.js('https://cdn.bootcss.com/mermaid/8.0.0-rc.8/mermaid.min.js', function() {
+    mermaid.initialize({
+      startOnLoad: true
+    });
+    mermaid.init(undefined, '.language-mermaid');
+  });
+</script>
+
+    </div>
+    <script>(function () {
+  var $root = document.getElementsByClassName('root')[0];
+  if (window.hasEvent('touchstart')) {
+    $root.dataset.isTouch = true;
+    document.addEventListener('touchstart', function(){}, false);
+  }
+})();
+</script>
+  </body>
+</html>
+
