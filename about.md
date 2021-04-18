@@ -106,7 +106,8 @@ Besides that, I love traveling, playing piano and learning new stuffs.</p>
 - **2016 Mar - 2021 Feb**, National Science& Technology Scholarship (4-year Full Tuition)
 
 ### <i class="fab fa-python"></i> Skills
-- **Programming**: Python, PyTorch, MATLAB
+- **Programming**: Python, MATLAB
+- **Libraries**: PyTorch, OpenAI-gym, Mujoco, CVX
 - **Software & Tools**: Linux, Latex
 - **Modeling and Analysis**: SolidWorks, COMSOL
 - **Languages**: Korean (native), English 
