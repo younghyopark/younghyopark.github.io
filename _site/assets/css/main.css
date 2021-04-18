@@ -812,7 +812,7 @@ input:focus { outline: none; }
 
 ul.toc { display: block; margin: 0; list-style-type: none; }
 ul.toc > li { margin: .2rem 0; }
-ul.toc > li.active a { color: #333; background-color: #f2f2f2; box-shadow: 0 0 0 2px rgba(242, 242, 242, 0.4); }
+ul.toc > li.active a { color: #333; background-color: #f700003a; box-shadow: 0 0 0 0px rgba(247, 0, 0, 0.4); }
 ul.toc a { display: inline-block; padding: .2rem .8rem .2rem .8rem; text-decoration: none !important; border-radius: 0.4rem; -webkit-transition: all 0.2s ease-in-out; transition: all 0.2s ease-in-out; }
 ul.toc a svg path { -webkit-transition: all 0.2s ease-in-out; transition: all 0.2s ease-in-out; }
 ul.toc a, ul.toc a:link, ul.toc a:visited { color: #222; }
