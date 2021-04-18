@@ -94,7 +94,7 @@ Besides that, I love traveling, playing piano and learning new stuffs.</p>
 
 
 ### <i class="fas fa-chalkboard-teacher"></i> Teaching Experience
-- **2020 Sep - 2020 Dec**, Undergraduate Tutor, Dynamics / Fluid Dynamics / Introduction to Robotics
+- **2020 Sep - 2020 Feb**, Undergraduate Tutor, Dynamics / Fluid Dynamics / Introduction to Robotics
 - **2020 Mar - 2020 Jun**, Undergraduate Tutor, Solid Mechanics
 
 ### <i class="fas fa-globe-americas"></i> English Proficiency

@@ -1,11 +1,10 @@
 <!DOCTYPE html><html lang="en">
   <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>Home - Younghyo Park</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[Convex Optimization] 5 - Typical Convex Optimization Problems - Younghyo Park</title>
 
-<meta name="description" content="Your Site Description
-">
-<link rel="canonical" href="http://localhost:4000/page3/"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
+<meta name="description" content="Standard Form of Convex Optimization Problems\[\begin{aligned}\min &amp;\ \ f_0 (x) \\\text{s.t.} &amp; \ \ f_i (x)  \leq 0, i=1,\cdots, m\\&amp; \ \ a_i ^T ...">
+<link rel="canonical" href="http://localhost:4000/notion_to_markdown/opt-lecture-5/"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
 <!--<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
 
 <meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
@@ -263,7 +262,7 @@
 </head>
   <body>
     <div class="root" data-is-touch="false">
-      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport cell cell--auto">
+      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport has-aside cell cell--auto">
 
       <div class="page__main-inner"><div class="page__header d-print-none"><header class="header"><div class="main">
       <div class="header__title">
@@ -330,93 +329,509 @@ fill="#000000" stroke="none">
   </header>
 </div><div class="page__content"><div class ="main"><div class="grid grid--reverse">
 
-              <div class="col-aside d-print-none js-col-aside"></div>
+              <div class="col-aside d-print-none js-col-aside"><aside class="page__aside js-page-aside"><div class="toc-aside js-toc-root"></div>
+</aside></div>
 
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
 <!-- end custom main top snippet -->
-<article itemscope itemtype="http://schema.org/WebPage"><header style="display:none;"><h1>Home</h1></header><meta itemprop="headline" content="Home"><meta itemprop="author" content="Younghyo Park"/><div class="js-article-content"><div class="layout--articles"><div class="article-list items items--divided"><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/notion_to_markdown/%5BTutorial%5D%20Kalman%20Filter%20Applications%20cc2de64bc6e14a9c9129c72f8085032c/"><h2 itemprop="headline" class="item__header">[Control Theory] Kalman Filter Tutorial</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Kalman Filter
-
-Problem Statement
-
-
-  Vehicle state, position, velocity estimated from IMU / GNSS
-  
-    Three dimensional position and velocity comprise the state vector
-
-\[\mathbf{x}=[\mathbf{p}^T, \mathbf{v}^T ] ^T\]
-
-    where $\mathbf{p}= [p_x, p_y, p_z]^T$ and $\mathbf{v}= [v_x, v_y, v_z ] ^T$ are each position and velocity vector
-  
-  
-   ...</div><p><a href="/notion_to_markdown/%5BTutorial%5D%20Kalman%20Filter%20Applications%20cc2de64bc6e14a9c9129c72f8085032c/">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[Convex Optimization] 5 - Typical Convex Optimization Problems</h1></header><span class="split-space">&nbsp;</span>
+          <a class="edit-on-github"
+            title="Edit on Github"
+            href="https://github.com/younghyopark/younghyopark.github.io/tree/main/_posts/2021-04-18-opt-lecture-5.md">
+            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[Convex Optimization] 5 - Typical Convex Optimization Problems"><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Control">Control</a>
+                href="/archive.html?tag=Optimization">Optimization</a>
             </li><li>
               <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Theory%2FSurvey">Theory/Survey</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Tutorial">Tutorial</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Mar 11, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-03-11T00:00:00+09:00">
-    <meta itemprop="keywords" content="Control,Theory/Survey,Tutorial"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/notion_to_markdown/%5BTheory%5D%20Extended%20Unscented%20Kalman%20Filter%20fdfb8f055fb740eb9d4433c806f68fde/"><h2 itemprop="headline" class="item__header">[Control Theory] Extended/Unscented Kalman Filter</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Introduction
+                href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 18, 2021</span>
+            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-18T00:00:00+09:00">
+    <meta itemprop="keywords" content="Optimization,Lecture-Note"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
 
+<!-- end custom article top snippet -->
+<div class="article__content" itemprop="articleBody"><h2 id="standard-form-of-convex-optimization-problems">Standard Form of Convex Optimization Problems</h2>
 
-  
-    UKF belongs to a bigger class of filters called Sigma-Point Kalman Filters / Linear Regression Kalman Filters → using statistical lineraization technique.
+\[\begin{aligned}
+\min &amp;\ \ f_0 (x) \\
+\text{s.t.} &amp; \ \ f_i (x)  \leq 0, i=1,\cdots, m\\
+&amp; \ \ a_i ^T x = b_i , i=1,\cdots, p
 
-    Statistical linearization technique = technique that linearizes a nonlinear function of a random variable through a linear regression between $n$ points drawn from t...</div><p><a href="/notion_to_markdown/%5BTheory%5D%20Extended%20Unscented%20Kalman%20Filter%20fdfb8f055fb740eb9d4433c806f68fde/">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Control">Control</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Theory%2FSurvey">Theory/Survey</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Mar 11, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-03-11T00:00:00+09:00">
-    <meta itemprop="keywords" content="Control,Theory/Survey"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/notion_to_markdown/%5BPaper%20Review%5D%20Memorizing%20Normality%20to%20Detect%20Anom%209d61a839fc9a41a68d1fd4d65a8ace01/"><h2 itemprop="headline" class="item__header">[ICCV 2019] Memorizing Normality to Detect Anomaly: Memory-augmented Deep Autoencoder for Unsupervised Anomaly Detection</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Motivation
+\end{aligned}\]
 
+<ul>
+  <li>the objective function must be convex</li>
+  <li>inequality constraint functions must be convex</li>
+  <li>the equality constraint functions should be affine</li>
+  <li>more generally, this problem is said to be convex if the cost function is convex and its feasible set is convex.</li>
+</ul>
 
-  AE can “generalize” so well that it can also reconstruct the abnormal inputs well (same motivation with swyoon’s paper)
-  This paper proposes to augment the deep AE with a memory module : MemAE
-    
-      Given an input, MemAE does not directly feed its encoding into the decoder but uses it as a query to retrieve the most relevant...</div><p><a href="/notion_to_markdown/%5BPaper%20Review%5D%20Memorizing%20Normality%20to%20Detect%20Anom%209d61a839fc9a41a68d1fd4d65a8ace01/">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Autoencoder">Autoencoder</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Mar 09, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-03-09T00:00:00+09:00">
-    <meta itemprop="keywords" content="Autoencoder"></div>
-      </article></div>
-</div><div class="layout--home"><div class="pagination"><p>19 post articles, 3 pages.</p>
-    <div class="pagination__menu">
-      <ul class="menu menu--nowrap"><li><a class="button button--secondary button--circle" href="/page2">
-            <i class="fas fa-angle-left"></i>
-          </a></li><li>
-              <a class="button button--secondary button--circle" href="/"><span>1</span></a>
-            </li><li>
-                <a class="button button--secondary button--circle" href="/page2"><span>2</span></a>
-              </li><li>
-              <div class="button button--primary button--circle focus"><span>3</span></div>
-            </li><li><div class="button button--secondary button--circle disabled">
-            <i class="fas fa-angle-right"></i>
-          </div></li></ul>
-    </div>
-  </div></div>
-<script>/*(function () {
+<h2 id="optimality-in-convex-optimization">Optimality in convex optimization</h2>
 
-})();*/
+<p>In convex optimization problems, any <strong>locally optimal point</strong> is <strong>globally optimal</strong>.</p>
+
+<p><strong>[proof]</strong> We say a feasible point is locally optimal if there is an $R&gt;0$ such that</p>
+
+\[f_0 (x)  =  \inf \{ f_o (z) \ \vert \ z\in \text{feasible set},  \ 
+   \|z-x\|_2 \leq R\}\]
+
+<p>Now, suppose that $x$ is not globally optimal. Thus, therer exists a feasible $y$ such that</p>
+
+\[f_0 (y) &lt;f_0 (x)\]
+
+<p>Evidently, $|y-x|_2 &gt;R$. Consider a point $z$ given by</p>
+
+\[z = (1-\theta ) x + \theta y , \ \ \ \theta = \frac{R}{2\|y-x\|_2 }\]
+
+<p>We set $\theta$ like above, to make</p>
+
+\[\|z-x\|_2 = \|\theta (y-x)\|_2  = \frac{R}{2}\]
+
+<p>By convexity of the feasible set, $z$ is also feasible.</p>
+
+<p>Now, by the convexity of $f_0$, we have</p>
+
+\[f_0 (z) \leq (1-\theta ) f_0 (x) + \theta f_0 (y) &lt;f_0 (x)\]
+
+<p>Finally, a contradiction. $z$ is inside the boundary $R$, but $f_0 (z)$ is smaller than $f_0 (x)$. Thus, $x$ has to be globally optimal.</p>
+
+<h2 id="optimality-condition-for-convex-optimization">Optimality condition for convex optimization</h2>
+
+<h3 id="for-differentiable-f_0-">For differentiable $f_0 $</h3>
+
+<ul>
+  <li>
+    <p>Suppose now that the objective function $f_0 $ is differentiable. Let $X$ denote the feasible set.</p>
+  </li>
+  <li>
+    <p>Then, $x$ is optimal if and only if $x \in X$ and</p>
+
+\[\nabla f_0 (x)^ T (y-x) \geq 0 \ \ \ \forall y \in X\]
+  </li>
+</ul>
+
+<center><img src="image-20210418180403172.png" alt="image-20210418180403172" style="zoom:50%;" /></center>
+
+<p>($\implies$)  Assume that $x\in X$ satisfies the optimality condition.</p>
+
+\[\nabla f_0 (x)^T (y-x) \geq 0 \ \ \ \forall y \in X\]
+
+<p>Since $f_0 $ is a convex function,</p>
+
+\[f_0 (y) \geq f_0 (x) + \nabla f_0 (x)^T (y-x) \geq f_0 (x)\]
+
+<p>Since above inequality holds for entire all $y\in X$, $x$ is optimal.</p>
+
+<p>($\impliedby$) Now Assume $x$ is optimal, and assume that the optimality condition doesn’t hold.</p>
+
+\[\nabla f_0 (x)^T (y-x) &lt;0 \ \ \ \exists y \in X\]
+
+<p>For $t\in [0,1]$, let</p>
+
+\[z(t) = ty+ (1-t)x \in X\]
+
+<p>Now, differentiate $f_0 (z) = f_0 (ty + (1-t)x)$ with $t$.</p>
+
+\[\frac{d}{dt}f_0 (z(t)) \bigg \vert_{t=0}= f_0 ^\prime (z(t)) \frac{dz}{dt} = \nabla f(z(0))^T ( y-x) = \nabla f(x)^T (y-x)&lt;0\]
+
+<p>Thus, for sufficiently small $\epsilon &gt;0$,</p>
+
+\[f_0 (z(\epsilon)) &lt; f_0 (z(0)) = f_0 (x)\]
+
+<p>which is a contradiction. ($x$ is no longer a optimal point)</p>
+
+<h3 id="for-unconstrained-problems">For unconstrained problems</h3>
+
+<ul>
+  <li>For unconstrained problems, the optimality condition reduces to</li>
+</ul>
+
+\[\nabla f_0 (x)=0\]
+
+<ul>
+  <li>
+    <p>Why?</p>
+
+    <ul>
+      <li>
+        <p>Suppose $x$ is optimal, which means $x \in \text{dom }f = X$</p>
+      </li>
+      <li>
+        <p>By the general optimality condition, we have</p>
+
+\[\nabla f_0 (x)^T (y-x) \geq 0\]
+
+        <p>for all feasible $y\in X$.</p>
+      </li>
+      <li>
+        <p>Since $f_0$ is differentiable, the domain is open by definition.</p>
+      </li>
+      <li>
+        <p>Thus, there exists a small positive $t$ such that</p>
+
+\[y:= x- t \nabla f_0 (x) \in X\]
+      </li>
+      <li>
+        <p>Since $y$ is feasible,</p>
+
+\[\nabla f_0 (x)^T (-t \nabla f_0 (x)) = -t \| \nabla f_0 (x)\|_2 ^2 \geq 0\]
+      </li>
+      <li>
+        <p>Thus, we can conclude that</p>
+
+\[\nabla f_0 (x) =0\]
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>For example, consider the problem of minimizing</p>
+
+\[f_0 (x) = \frac{1}{2} x^T Px + q^T x+ r\]
+
+    <p>where $P \in \mathbb{S}^n_+$ . The optimality condition for $x$ is</p>
+
+\[\nabla f_0 (x) = Px+q =0\]
+  </li>
+</ul>
+
+<h3 id="for-the-case-with-equality-constraints">For the case with equality constraints</h3>
+
+\[\begin{aligned}
+\text{min} &amp; \ \ \ f_0 (x) \\
+\text{s.t.} &amp; \ \ \ Ax = b
+
+\end{aligned}\]
+
+<ul>
+  <li>
+    <p>general optimality condition for a feasible $x$</p>
+
+\[\nabla f_0 (x)^T (y-x) \geq 0 , \ \ \ \forall y \ \ \text{s.t.} \ \ Ay = b\]
+  </li>
+  <li>
+    <p>Since $x$ is feasible and the feasible set is affine, every feasible $y$ can be written as</p>
+
+\[y= x+v\]
+
+    <p>for some $v\in \mathcal{N}(A)$.</p>
+  </li>
+  <li>
+    <p>Thus, the optimality condition can be rewritten as</p>
+  </li>
+</ul>
+
+\[\nabla f_0 (x)^T v \geq 0 , \ \ \forall v \in \mathcal{N}(A)\]
+
+<ul>
+  <li>
+    <p>If a linear function is nonnegative on a subspace, then it must be zero on the subspace.</p>
+  </li>
+  <li>
+    <p>Thus,</p>
+
+\[\nabla f_0 (x)^T v =0 \ \ \ \forall v \in \mathcal{N}(A)\]
+
+    <p>which can be also interpreted as</p>
+
+\[\nabla f_0 (x) \perp v \ \ \ \forall v \in \mathcal{N} (A)\]
+  </li>
+  <li>
+    <p>Since the perp of null space is the range space of tranposed matrix,</p>
+  </li>
+</ul>
+
+\[\mathcal{N}(A)^{\perp} = \mathcal{R}(A^T)\]
+
+<p>the optimality condition can be rewritten as</p>
+
+\[\nabla f_0 (x) \in \mathcal{R}(A^T)\]
+
+<ul>
+  <li>Thus, there exists a $v \in \mathbb{R}^p$ such that</li>
+</ul>
+
+\[\nabla f_0 (x) + A^T v =0.\]
+
+<p>which is the optimality constraint with equality constraint.</p>
+
+<h3 id="minimization-over-the-nonnegative-orthant">Minimization over the nonnegative orthant</h3>
+
+\[\begin{aligned}
+\min &amp; \ \ \ f_0 (x) \\
+\text{s.t.} &amp; \ \ \ x\geq 0 
+\end{aligned}\]
+
+<ul>
+  <li>The general optimality condition is</li>
+</ul>
+
+\[\nabla f_0 (x)^T (y-x) \geq 0 \ \ \ \forall y \geq 0\]
+
+<ul>
+  <li>
+    <p>Note that $\nabla f_0 (x)^T y $ is unbounded below on $y\geq 0$, unless $\nabla f_0 (x) \geq 0$.  $\rightarrow$ <strong>think about it for a bit!</strong></p>
+  </li>
+  <li>
+    <p>Thus, $\nabla f_0 (x) \geq 0$.</p>
+  </li>
+  <li>
+    <p>Now, consider $y=0$ for the optimality condition above.</p>
+  </li>
+</ul>
+
+\[x\geq 0 , \ \ \ -\nabla f_0 (x) ^T x \geq 0\]
+
+<ul>
+  <li></li>
+  <li>We know that $\nabla f_0 (x) \geq 0$, and $x\geq 0$. Thus, above inequality can only hold when</li>
+</ul>
+
+\[\nabla f_0 (x)^T x =0\]
+
+<p>especially when</p>
+
+\[(\nabla f_0 (x))_i x_i =0 \ \ \ \forall i\]
+
+<h2 id="linear-programming-lp">Linear Programming (LP)</h2>
+
+<h3 id="definition">Definition</h3>
+
+<p>Objective and constraint functions are all <strong>affine</strong>.</p>
+
+\[\begin{aligned}
+\min &amp; \ \ \ c^Tx +d \\
+\text{s.t.} &amp; \ \ \ Gx \leq h \\
+&amp; \ \ \ Ax = b
+\end{aligned}\]
+
+<h3 id="geometric-interpretation-of-lp">Geometric interpretation of LP</h3>
+
+<center><img src="image-20210418184241659.png" alt="image-20210418184241659" style="zoom:50%;" /></center>
+
+<h3 id="two-forms-of-lp">Two forms of LP</h3>
+
+<ul>
+  <li><strong>Standard form of LP</strong> : replace the inequality constraint with $x\geq 0$.</li>
+</ul>
+
+\[\begin{aligned}
+\min &amp; \ \ \ c^Tx +d \\
+\text{s.t.} &amp; \ \ \ Ax=b \\
+&amp; \ \ \ x\geq 0
+\end{aligned}\]
+
+<ul>
+  <li>Inequality form of LP : there’s no equality constraints.</li>
+</ul>
+
+\[\begin{aligned}
+\min &amp; \ \ \ c^Tx +d \\
+\text{s.t.} &amp; \ \ \ Ax \leq b
+\end{aligned}\]
+
+<h3 id="converting-lps-to-standard-form">Converting LPs to Standard form</h3>
+
+<p>Recall: our general form LP was</p>
+
+\[\begin{aligned}
+\min &amp; \ \ \ c^Tx +d \\
+\text{s.t.} &amp; \ \ \ Gx \leq h \\
+&amp; \ \ \ Ax = b
+\end{aligned}\]
+
+<ol>
+  <li>Introduce slack variables $s_i$ for the inequalities</li>
+</ol>
+
+\[Gx+s = h\\s \geq 0\]
+
+<ol>
+  <li>Express the variable $x$ as</li>
+</ol>
+
+\[x = x^+ - x^-\]
+
+<p>where $x^+, x^- \geq 0 $</p>
+
+<ol>
+  <li>Now, we have a standrad form LP</li>
+</ol>
+
+\[\begin{aligned}
+   \min &amp; \ \ \ c^T x^+ - c^T x^-  +d \\
+   \text{s.t.} &amp; \ \ \ Gx^+ + Gx^- +s  =h \\
+   &amp; \ \ \ Ax^+ - Ax^- = b\\
+   &amp; \ \ \ s\geq 0 , \ x^+ \geq 0 , \ x^ - \geq 0 
+   \end{aligned}\]
+
+<h3 id="minimizing-convex-piecewise-linear-functions">Minimizing convex piecewise-linear functions</h3>
+
+<p>Consider the problem of minimizing a piecewise-linear convex function</p>
+
+\[f(x): = \max_{i = 1, \cdots, m} (a_i ^T x+ b_i )\]
+
+<p>We can create this as an LP by transforming into a epigraphical form</p>
+
+\[\begin{aligned}
+\min &amp; \ \ \ t \\
+\text{s.t.} &amp; \ \ \ a_i ^T x+ b_i \leq t \ \ \ i=1,\cdots, m\\
+\end{aligned}\]
+
+<h2 id="quadratic-programming-qp">Quadratic Programming (QP)</h2>
+
+<h3 id="definition-1">Definition</h3>
+
+<p>When the objective function is convex quadratic, and the constraints are affine.</p>
+
+\[\begin{aligned}
+\min &amp; \ \ \ \frac{1}{2}x^T Px + q^T x+ r\\
+\text{s.t.} &amp; \ \ \ Gx \leq h \\
+&amp; \ \ \ Ax=b
+\end{aligned}\]
+
+<p>where $P \in \mathbb{S}^n_+$ , $G \in \mathbb{R}^{m\times n}$, and $A\in \mathbb{R}^{p\times n}$.</p>
+
+<h3 id="geometric-interpretation">Geometric Interpretation</h3>
+
+<center><img src="image-20210418185732163.png" alt="image-20210418185732163" style="zoom:50%;" /></center>
+
+<h3 id="lp-with-random-cost-is-qp">LP with Random Cost is QP</h3>
+
+<p>Let’s consider a problem, similar to LP.</p>
+
+\[\begin{aligned}
+\min &amp; \ \ \ c^Tx \\
+\text{s.t.} &amp; \ \ \ Gx \leq h \\
+&amp; \ \ \ Ax = b
+\end{aligned}\]
+
+<p>But the difference is that, the cost vector $c$ is stochastic:</p>
+
+\[\mathbb{E}(c) = \bar{c}\\
+\mathbb{E}[(c-\bar{c})(c-\bar{c})^T ] = \Sigma\]
+
+<p>Note that</p>
+
+\[\mathbb{E}[ c^T x] = \bar{c}^T x\\ 
+\text{var} [c^T x] = \mathbb{E} [ (c^T x - \bar{c}^T x)^2  ] = x^T \Sigma x\]
+
+<p>A way to take the variance (risk) into account is to minimize</p>
+
+\[\mathbb{E}[c^Tx] + \gamma \text{var} [ c^Tx]\]
+
+<p>instead of the stochastic $c^Tx$.</p>
+
+<p>Resulting problem is</p>
+
+\[\begin{aligned}
+\min &amp; \ \ \ \bar{c}^Tx + \gamma x^T \Sigma x \\
+\text{s.t.} &amp; \ \ \ Gx \leq h \\
+&amp; \ \ \ Ax = b
+\end{aligned}\]
+
+<p>which is a quadratic programming (QP).</p>
+
+<h2 id="quadratically-constrained-quadratic-program-qcqp">Quadratically constrained Quadratic Program (QCQP)</h2>
+
+\[\begin{aligned}
+\min &amp; \ \ \ \frac{1}{2}x^T P_0x + q_0^T x+ r_0\\
+\text{s.t.} &amp; \ \ \ \frac{1}{2}x^T P_ix + q_i^T x+ r_i \leq 0,\ \ i=1, \cdots, m \\
+&amp; \ \ \ Ax=b
+\end{aligned}\]
+
+<p>where $P_i \in \mathcal{S}^n _+$.</p>
+
+<h2 id="second-order-cone-programming-socp">Second-Order Cone Programming (SOCP)</h2>
+
+\[\begin{aligned}
+\min &amp; \ \ \ f^T x\\
+\text{s.t.} &amp; \ \ \ \|A_i x + b_i \|_2 \leq c_i ^T x+ d_i,\ \ i=1, \cdots, m \\
+&amp; \ \ \ Fx=g
+\end{aligned}\]
+
+<h3 id="robust-linear-programming">Robust Linear Programming</h3>
+
+\[\begin{aligned}
+\min &amp; \ \ \ c^T x\\
+\text{s.t.} &amp; \ \ \ a_i ^T x \leq b_i ,\ \ i=1, \cdots, m 
+\end{aligned}\]
+
+<ul>
+  <li>Suppose that the parameters $a_i$ are uncertain (lying in ellipsoid)</li>
+</ul>
+
+\[a_i \in \mathcal{E}_i := \{ \bar{a}_i + P_i u \ \vert \ \|u\|_2 \leq 1 \}\]
+
+<p>where $P_i \in \mathbb{R}^{n\times n}$.</p>
+
+<ul>
+  <li>Now, we have the following robust-linear program</li>
+</ul>
+
+\[\begin{aligned}
+  \min &amp; \ \ \ c^T x\\
+  \text{s.t.} &amp; \ \ \ a_i ^T x \leq b_i , \ \ \forall a_i \in \mathcal{E}_i , \ \ i=1, \cdots, m 
+  \end{aligned}\]
+
+<ul>
+  <li>Note that the inequality constraint $a_i ^T x \leq b_i , \ \ \forall a_i \in \mathcal{E}_i$ can be written as</li>
+</ul>
+
+\[\sup \{ a_i ^T x \ \vert \ a_i \in \mathcal{E}_i \} \leq b_i\]
+
+<p>and it can be re-written as</p>
+
+\[\sup \{ a_i ^T x \ \vert \ a_i \in \mathcal{E}_i \} = \bar{a}_i ^T x + \sup \{u^T P_i  x \ \vert \ \|u\|_2 \leq 1 \} = \bar{a}_i ^T x + \|P_i x \|_2 ^2\]
+
+<ul>
+  <li>This implies that the robust LP is equivalent to SOCP</li>
+</ul>
+
+\[\begin{aligned}
+  \min &amp; \ \ \ c^T x\\
+  \text{s.t.} &amp; \ \ \ \bar{a}_i ^T x + \|P_i x \|_2 ^2 \leq b_i , \ \ \ i=1, \cdots, m
+  \end{aligned}\]
+
+</div><section class="article__sharing d-print-none"></section><div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-04-18T00:00:00+09:00"><!-- start custom article footer snippet -->
+
+<!-- end custom article footer snippet -->
+<div class="article__subscribe"><div class="subscribe"><i class="fas fa-rss"></i> <a type="application/rss+xml" href="/feed.xml">Subscribe</a></div>
+</div><div class="article__license"><div class="license">
+    <p>This work is licensed under a <a itemprop="license" rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">Attribution-NonCommercial 4.0 International</a> license.
+      <a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">
+        <img alt="Attribution-NonCommercial 4.0 International" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" />
+      </a>
+    </p>
+  </div></div></footer>
+<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2021/04/18/opt-lecture-4-1.html">[Convex Optimization] 4 - Operations that preserve Convexity</a></div></div></div>
+
+</div>
+
+<script>(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    $(function() {
+      var $this ,$scroll;
+      var $articleContent = $('.js-article-content');
+      var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+      var scroll = hasSidebar ? '.js-page-main' : 'html, body';
+      $scroll = $(scroll);
+
+      $articleContent.find('.highlight').each(function() {
+        $this = $(this);
+        $this.attr('data-lang', $this.find('code').attr('data-lang'));
+      });
+      $articleContent.find('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]').each(function() {
+        $this = $(this);
+        $this.append($('<a class="anchor d-print-none" aria-hidden="true"></a>').html('<i class="fas fa-anchor"></i>'));
+      });
+      $articleContent.on('click', '.anchor', function() {
+        $scroll.scrollToAnchor('#' + $(this).parent().attr('id'), 400);
+      });
+    });
+  });
+})();
 </script>
-
-
-
 </div><section class="page__comments d-print-none"></section></article><!-- start custom main bottom snippet -->
 
 <!-- end custom main bottom snippet -->
@@ -964,6 +1379,68 @@ window.Lazyload.js([SOURCES.jquery, PAHTS.search_js], function() {
 /*(function () {
 
 })();*/
+</script><script>
+  /* toc must before affix, since affix need to konw toc' height. */(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  var TOC_SELECTOR = window.TEXT_VARIABLES.site.toc.selectors;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window);
+    var $articleContent = $('.js-article-content');
+    var $tocRoot = $('.js-toc-root'), $col2 = $('.js-col-aside');
+    var toc;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+    var hasToc = $articleContent.find(TOC_SELECTOR).length > 0;
+
+    function disabled() {
+      return $col2.css('display') === 'none' || !hasToc;
+    }
+
+    tocDisabled = disabled();
+
+    toc = $tocRoot.toc({
+      selectors: TOC_SELECTOR,
+      container: $articleContent,
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      tocDisabled = disabled();
+      toc && toc.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+  });
+})();
+(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window), $pageFooter = $('.js-page-footer');
+    var $pageAside = $('.js-page-aside');
+    var affix;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+
+    affix = $pageAside.affix({
+      offsetBottom: $pageFooter.outerHeight(),
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      scroll: hasSidebar ? $('.js-page-main').children() : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      affix && affix.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+    window.pageAsideAffix = affix;
+  });
+})();
 </script><script>
   window.Lazyload.js(['https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js', 'https://cdn.bootcss.com/Chart.js/2.7.2/Chart.bundle.min.js'], function() {
     var $canvas = null, $this = null, _ctx = null, _text = '';
