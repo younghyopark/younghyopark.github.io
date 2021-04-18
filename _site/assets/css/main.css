@@ -810,74 +810,66 @@ input:focus { outline: none; }
 
 .modal--overflow { overflow: auto; -webkit-overflow-scrolling: touch; }
 
-ul.toc { display: block; margin: 0; color: #222; list-style-type: none; }
-ul.toc > li { margin: 0.125rem 0; }
-ul.toc > li a { display: inline-block; margin: 0.0625rem 0; text-decoration: none !important; }
-ul.toc .toc-h1 a, ul.toc .toc-h2 a, ul.toc .toc-h3 a, ul.toc .toc-h4 a, ul.toc .toc-h5 a, ul.toc .toc-h6 a { -webkit-transition: all 0.2s ease-in-out; transition: all 0.2s ease-in-out; }
-ul.toc .toc-h1 a, ul.toc .toc-h1 a:link, ul.toc .toc-h1 a:visited, ul.toc .toc-h2 a, ul.toc .toc-h2 a:link, ul.toc .toc-h2 a:visited, ul.toc .toc-h3 a, ul.toc .toc-h3 a:link, ul.toc .toc-h3 a:visited, ul.toc .toc-h4 a, ul.toc .toc-h4 a:link, ul.toc .toc-h4 a:visited, ul.toc .toc-h5 a, ul.toc .toc-h5 a:link, ul.toc .toc-h5 a:visited, ul.toc .toc-h6 a, ul.toc .toc-h6 a:link, ul.toc .toc-h6 a:visited { text-decoration: none; }
-.root[data-is-touch="false"] ul.toc .toc-h1 a:hover, .root[data-is-touch="false"] ul.toc .toc-h2 a:hover, .root[data-is-touch="false"] ul.toc .toc-h3 a:hover, .root[data-is-touch="false"] ul.toc .toc-h4 a:hover, .root[data-is-touch="false"] ul.toc .toc-h5 a:hover, .root[data-is-touch="false"] ul.toc .toc-h6 a:hover { text-decoration: underline; }
-.root[data-is-touch] ul.toc .toc-h1 a.active, .root[data-is-touch] ul.toc .toc-h1 a:active, .root[data-is-touch] ul.toc .toc-h2 a.active, .root[data-is-touch] ul.toc .toc-h2 a:active, .root[data-is-touch] ul.toc .toc-h3 a.active, .root[data-is-touch] ul.toc .toc-h3 a:active, .root[data-is-touch] ul.toc .toc-h4 a.active, .root[data-is-touch] ul.toc .toc-h4 a:active, .root[data-is-touch] ul.toc .toc-h5 a.active, .root[data-is-touch] ul.toc .toc-h5 a:active, .root[data-is-touch] ul.toc .toc-h6 a.active, .root[data-is-touch] ul.toc .toc-h6 a:active { text-decoration: none; }
-ul.toc .toc-h1 a, ul.toc .toc-h1 a:link, ul.toc .toc-h1 a:visited, ul.toc .toc-h2 a, ul.toc .toc-h2 a:link, ul.toc .toc-h2 a:visited, ul.toc .toc-h3 a, ul.toc .toc-h3 a:link, ul.toc .toc-h3 a:visited, ul.toc .toc-h4 a, ul.toc .toc-h4 a:link, ul.toc .toc-h4 a:visited, ul.toc .toc-h5 a, ul.toc .toc-h5 a:link, ul.toc .toc-h5 a:visited, ul.toc .toc-h6 a, ul.toc .toc-h6 a:link, ul.toc .toc-h6 a:visited { color: #222; }
-.root[data-is-touch="false"] ul.toc .toc-h1 a:hover, .root[data-is-touch="false"] ul.toc .toc-h2 a:hover, .root[data-is-touch="false"] ul.toc .toc-h3 a:hover, .root[data-is-touch="false"] ul.toc .toc-h4 a:hover, .root[data-is-touch="false"] ul.toc .toc-h5 a:hover, .root[data-is-touch="false"] ul.toc .toc-h6 a:hover { color: #fc4d50; }
-.root[data-is-touch] ul.toc .toc-h1 a.active, .root[data-is-touch] ul.toc .toc-h1 a:active, .root[data-is-touch] ul.toc .toc-h2 a.active, .root[data-is-touch] ul.toc .toc-h2 a:active, .root[data-is-touch] ul.toc .toc-h3 a.active, .root[data-is-touch] ul.toc .toc-h3 a:active, .root[data-is-touch] ul.toc .toc-h4 a.active, .root[data-is-touch] ul.toc .toc-h4 a:active, .root[data-is-touch] ul.toc .toc-h5 a.active, .root[data-is-touch] ul.toc .toc-h5 a:active, .root[data-is-touch] ul.toc .toc-h6 a.active, .root[data-is-touch] ul.toc .toc-h6 a:active { color: #f80408; }
-ul.toc .toc-h1 a.disabled, ul.toc .toc-h1 a:disabled, ul.toc .toc-h2 a.disabled, ul.toc .toc-h2 a:disabled, ul.toc .toc-h3 a.disabled, ul.toc .toc-h3 a:disabled, ul.toc .toc-h4 a.disabled, ul.toc .toc-h4 a:disabled, ul.toc .toc-h5 a.disabled, ul.toc .toc-h5 a:disabled, ul.toc .toc-h6 a.disabled, ul.toc .toc-h6 a:disabled { color: rgba(34, 34, 34, 0.2) !important; }
-ul.toc .toc-h1.active a, ul.toc .toc-h2.active a, ul.toc .toc-h3.active a, ul.toc .toc-h4.active a, ul.toc .toc-h5.active a, ul.toc .toc-h6.active a { -webkit-transition: all 0.2s ease-in-out; transition: all 0.2s ease-in-out; }
-ul.toc .toc-h1.active a, ul.toc .toc-h1.active a:link, ul.toc .toc-h1.active a:visited, ul.toc .toc-h2.active a, ul.toc .toc-h2.active a:link, ul.toc .toc-h2.active a:visited, ul.toc .toc-h3.active a, ul.toc .toc-h3.active a:link, ul.toc .toc-h3.active a:visited, ul.toc .toc-h4.active a, ul.toc .toc-h4.active a:link, ul.toc .toc-h4.active a:visited, ul.toc .toc-h5.active a, ul.toc .toc-h5.active a:link, ul.toc .toc-h5.active a:visited, ul.toc .toc-h6.active a, ul.toc .toc-h6.active a:link, ul.toc .toc-h6.active a:visited { text-decoration: none; }
-.root[data-is-touch="false"] ul.toc .toc-h1.active a:hover, .root[data-is-touch="false"] ul.toc .toc-h2.active a:hover, .root[data-is-touch="false"] ul.toc .toc-h3.active a:hover, .root[data-is-touch="false"] ul.toc .toc-h4.active a:hover, .root[data-is-touch="false"] ul.toc .toc-h5.active a:hover, .root[data-is-touch="false"] ul.toc .toc-h6.active a:hover { text-decoration: underline; }
-.root[data-is-touch] ul.toc .toc-h1.active a.active, .root[data-is-touch] ul.toc .toc-h1.active a:active, .root[data-is-touch] ul.toc .toc-h2.active a.active, .root[data-is-touch] ul.toc .toc-h2.active a:active, .root[data-is-touch] ul.toc .toc-h3.active a.active, .root[data-is-touch] ul.toc .toc-h3.active a:active, .root[data-is-touch] ul.toc .toc-h4.active a.active, .root[data-is-touch] ul.toc .toc-h4.active a:active, .root[data-is-touch] ul.toc .toc-h5.active a.active, .root[data-is-touch] ul.toc .toc-h5.active a:active, .root[data-is-touch] ul.toc .toc-h6.active a.active, .root[data-is-touch] ul.toc .toc-h6.active a:active { text-decoration: none; }
-ul.toc .toc-h1.active a, ul.toc .toc-h1.active a:link, ul.toc .toc-h1.active a:visited, ul.toc .toc-h2.active a, ul.toc .toc-h2.active a:link, ul.toc .toc-h2.active a:visited, ul.toc .toc-h3.active a, ul.toc .toc-h3.active a:link, ul.toc .toc-h3.active a:visited, ul.toc .toc-h4.active a, ul.toc .toc-h4.active a:link, ul.toc .toc-h4.active a:visited, ul.toc .toc-h5.active a, ul.toc .toc-h5.active a:link, ul.toc .toc-h5.active a:visited, ul.toc .toc-h6.active a, ul.toc .toc-h6.active a:link, ul.toc .toc-h6.active a:visited { color: #fc4d50; }
-.root[data-is-touch="false"] ul.toc .toc-h1.active a:hover, .root[data-is-touch="false"] ul.toc .toc-h2.active a:hover, .root[data-is-touch="false"] ul.toc .toc-h3.active a:hover, .root[data-is-touch="false"] ul.toc .toc-h4.active a:hover, .root[data-is-touch="false"] ul.toc .toc-h5.active a:hover, .root[data-is-touch="false"] ul.toc .toc-h6.active a:hover { color: #fb070b; }
-.root[data-is-touch] ul.toc .toc-h1.active a.active, .root[data-is-touch] ul.toc .toc-h1.active a:active, .root[data-is-touch] ul.toc .toc-h2.active a.active, .root[data-is-touch] ul.toc .toc-h2.active a:active, .root[data-is-touch] ul.toc .toc-h3.active a.active, .root[data-is-touch] ul.toc .toc-h3.active a:active, .root[data-is-touch] ul.toc .toc-h4.active a.active, .root[data-is-touch] ul.toc .toc-h4.active a:active, .root[data-is-touch] ul.toc .toc-h5.active a.active, .root[data-is-touch] ul.toc .toc-h5.active a:active, .root[data-is-touch] ul.toc .toc-h6.active a.active, .root[data-is-touch] ul.toc .toc-h6.active a:active { color: #b20306; }
-ul.toc .toc-h1.active a.disabled, ul.toc .toc-h1.active a:disabled, ul.toc .toc-h2.active a.disabled, ul.toc .toc-h2.active a:disabled, ul.toc .toc-h3.active a.disabled, ul.toc .toc-h3.active a:disabled, ul.toc .toc-h4.active a.disabled, ul.toc .toc-h4.active a:disabled, ul.toc .toc-h5.active a.disabled, ul.toc .toc-h5.active a:disabled, ul.toc .toc-h6.active a.disabled, ul.toc .toc-h6.active a:disabled { color: rgba(252, 77, 80, 0.2) !important; }
-ul.toc .toc-h2, ul.toc .toc-h2 a, ul.toc .toc-h3, ul.toc .toc-h3 a, ul.toc .toc-h4, ul.toc .toc-h4 a, ul.toc .toc-h5, ul.toc .toc-h5 a, ul.toc .toc-h6, ul.toc .toc-h6 a { font-size: 0.7rem; font-weight: 400; line-height: 1.2; }
-ul.toc .toc-h1 { border: 0 solid #e6e6e6; border-bottom-width: 1px; padding: 0.5rem 0 0.25rem 0; margin-bottom: 0.5rem; color: #000; }
-ul.toc .toc-h1, ul.toc .toc-h1 a { font-size: 0.85rem; font-weight: 700; line-height: 1.4; }
+ul.toc { display: block; margin: 0; list-style-type: none; }
+ul.toc > li { margin: .2rem 0; }
+ul.toc > li.active a { color: #333; background-color: #f2f2f2; box-shadow: 0 0 0 2px rgba(242, 242, 242, 0.4); }
+ul.toc a { display: inline-block; padding: .2rem .8rem .2rem .8rem; text-decoration: none !important; border-radius: 0.4rem; -webkit-transition: all 0.2s ease-in-out; transition: all 0.2s ease-in-out; }
+ul.toc a svg path { -webkit-transition: all 0.2s ease-in-out; transition: all 0.2s ease-in-out; }
+ul.toc a, ul.toc a:link, ul.toc a:visited { color: #222; }
+ul.toc a svg path, ul.toc a:link svg path, ul.toc a:visited svg path { fill: #222; }
+.root[data-is-touch="false"] ul.toc a:hover { color: #333; background-color: #f2f2f2; }
+.root[data-is-touch="false"] ul.toc a:hover svg path { fill: #333; }
+.root[data-is-touch] ul.toc a.active, .root[data-is-touch] ul.toc a:active { color: #333; background-color: #cccccc; }
+.root[data-is-touch] ul.toc a.active svg path, .root[data-is-touch] ul.toc a:active svg path { fill: #333; }
+.root[data-is-touch] ul.toc a.focus { color: default; background-color: #f2f2f2; box-shadow: 0 0 0 2px rgba(242, 242, 242, 0.4); }
+.root[data-is-touch] ul.toc a.focus svg path { fill: default; }
+ul.toc a.disabled, ul.toc a:disabled { color: rgba(34, 34, 34, 0.2) !important; }
+ul.toc a.disabled svg path, ul.toc a:disabled svg path { fill: rgba(34, 34, 34, 0.2) !important; }
+ul.toc .toc-h1 { border: 0 solid #e6e6e6; border-bottom-width: 1px; padding: .8rem 0 .3rem 0; margin-bottom: .6rem; }
 ul.toc .toc-h1 a { -webkit-transition: all 0.2s ease-in-out; transition: all 0.2s ease-in-out; }
 ul.toc .toc-h1 a, ul.toc .toc-h1 a:link, ul.toc .toc-h1 a:visited { text-decoration: none; }
 .root[data-is-touch="false"] ul.toc .toc-h1 a:hover { text-decoration: underline; }
 .root[data-is-touch] ul.toc .toc-h1 a.active, .root[data-is-touch] ul.toc .toc-h1 a:active { text-decoration: none; }
 ul.toc .toc-h1 a, ul.toc .toc-h1 a:link, ul.toc .toc-h1 a:visited { color: #000; }
-.root[data-is-touch="false"] ul.toc .toc-h1 a:hover { color: #fc4d50; }
-.root[data-is-touch] ul.toc .toc-h1 a.active, .root[data-is-touch] ul.toc .toc-h1 a:active { color: #f80408; }
-ul.toc .toc-h1 a.disabled, ul.toc .toc-h1 a:disabled { color: rgba(0, 0, 0, 0.2) !important; }
-ul.toc .toc-h2, ul.toc .toc-h2 a { font-weight: 700; }
+.root[data-is-touch="false"] ul.toc .toc-h1 a:hover { color: #2e2e2e; }
+.root[data-is-touch] ul.toc .toc-h1 a.active, .root[data-is-touch] ul.toc .toc-h1 a:active { color: #575757; }
+ul.toc .toc-h1 a.disabled, ul.toc .toc-h1 a:disabled { color: rgba(0, 0, 0, 0.4) !important; }
+ul.toc .toc-h1, ul.toc .toc-h1 a, ul.toc .toc-h2, ul.toc .toc-h2 a { font-weight: 700; }
+ul.toc .toc-h3, ul.toc .toc-h3 a, ul.toc .toc-h4, ul.toc .toc-h4 a, ul.toc .toc-h5, ul.toc .toc-h5 a, ul.toc .toc-h6, ul.toc .toc-h6 a { font-weight: 400; }
+ul.toc .toc-h5 a, ul.toc .toc-h6 a { -webkit-transition: all 0.2s ease-in-out; transition: all 0.2s ease-in-out; }
+ul.toc .toc-h5 a, ul.toc .toc-h5 a:link, ul.toc .toc-h5 a:visited, ul.toc .toc-h6 a, ul.toc .toc-h6 a:link, ul.toc .toc-h6 a:visited { text-decoration: none; }
+.root[data-is-touch="false"] ul.toc .toc-h5 a:hover, .root[data-is-touch="false"] ul.toc .toc-h6 a:hover { text-decoration: underline; }
+.root[data-is-touch] ul.toc .toc-h5 a.active, .root[data-is-touch] ul.toc .toc-h5 a:active, .root[data-is-touch] ul.toc .toc-h6 a.active, .root[data-is-touch] ul.toc .toc-h6 a:active { text-decoration: none; }
+ul.toc .toc-h5 a, ul.toc .toc-h5 a:link, ul.toc .toc-h5 a:visited, ul.toc .toc-h6 a, ul.toc .toc-h6 a:link, ul.toc .toc-h6 a:visited { color: #888; }
+.root[data-is-touch="false"] ul.toc .toc-h5 a:hover, .root[data-is-touch="false"] ul.toc .toc-h6 a:hover { color: #646464; }
+.root[data-is-touch] ul.toc .toc-h5 a.active, .root[data-is-touch] ul.toc .toc-h5 a:active, .root[data-is-touch] ul.toc .toc-h6 a.active, .root[data-is-touch] ul.toc .toc-h6 a:active { color: #3e3e3e; }
+ul.toc .toc-h5 a.disabled, ul.toc .toc-h5 a:disabled, ul.toc .toc-h6 a.disabled, ul.toc .toc-h6 a:disabled { color: rgba(136, 136, 136, 0.2) !important; }
 ul.toc .toc-h3 { margin-left: 1rem; }
 ul.toc .toc-h4 { margin-left: 2rem; }
 ul.toc .toc-h5, ul.toc .toc-h6 { margin-left: 3rem; }
-ul.toc .toc-h6 { color: #888; }
-ul.toc .toc-h6 a { -webkit-transition: all 0.2s ease-in-out; transition: all 0.2s ease-in-out; }
-ul.toc .toc-h6 a, ul.toc .toc-h6 a:link, ul.toc .toc-h6 a:visited { text-decoration: none; }
-.root[data-is-touch="false"] ul.toc .toc-h6 a:hover { text-decoration: underline; }
-.root[data-is-touch] ul.toc .toc-h6 a.active, .root[data-is-touch] ul.toc .toc-h6 a:active { text-decoration: none; }
-ul.toc .toc-h6 a, ul.toc .toc-h6 a:link, ul.toc .toc-h6 a:visited { color: #888; }
-.root[data-is-touch="false"] ul.toc .toc-h6 a:hover { color: #fc4d50; }
-.root[data-is-touch] ul.toc .toc-h6 a.active, .root[data-is-touch] ul.toc .toc-h6 a:active { color: #f80408; }
-ul.toc .toc-h6 a.disabled, ul.toc .toc-h6 a:disabled { color: rgba(136, 136, 136, 0.2) !important; }
+ul.toc .toc-h1, ul.toc .toc-h1 a { font-size: 1rem; line-height: 1.6; }
+ul.toc .toc-h2, ul.toc .toc-h2 a { font-size: 0.85rem; line-height: 1.4; }
+ul.toc .toc-h3, ul.toc .toc-h3 a, ul.toc .toc-h4, ul.toc .toc-h4 a, ul.toc .toc-h5, ul.toc .toc-h5 a, ul.toc .toc-h6, ul.toc .toc-h6 a { font-size: 0.7rem; line-height: 1.2; }
 
-ul.toc--ellipsis > li { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-ul.toc--navigator > li a { padding-left: 0.5rem; margin: 0.25rem 0; }
-ul.toc--navigator > li.active a { margin-left: -4px; border: 0 solid #fc4d50; border-left-width: 4px; }
-ul.toc--navigator .toc-h2, ul.toc--navigator .toc-h3, ul.toc--navigator .toc-h4 { color: #888; }
-ul.toc--navigator .toc-h2 a, ul.toc--navigator .toc-h3 a, ul.toc--navigator .toc-h4 a { -webkit-transition: all 0.2s ease-in-out; transition: all 0.2s ease-in-out; }
-ul.toc--navigator .toc-h2 a, ul.toc--navigator .toc-h2 a:link, ul.toc--navigator .toc-h2 a:visited, ul.toc--navigator .toc-h3 a, ul.toc--navigator .toc-h3 a:link, ul.toc--navigator .toc-h3 a:visited, ul.toc--navigator .toc-h4 a, ul.toc--navigator .toc-h4 a:link, ul.toc--navigator .toc-h4 a:visited { text-decoration: none; }
-.root[data-is-touch="false"] ul.toc--navigator .toc-h2 a:hover, .root[data-is-touch="false"] ul.toc--navigator .toc-h3 a:hover, .root[data-is-touch="false"] ul.toc--navigator .toc-h4 a:hover { text-decoration: underline; }
-.root[data-is-touch] ul.toc--navigator .toc-h2 a.active, .root[data-is-touch] ul.toc--navigator .toc-h2 a:active, .root[data-is-touch] ul.toc--navigator .toc-h3 a.active, .root[data-is-touch] ul.toc--navigator .toc-h3 a:active, .root[data-is-touch] ul.toc--navigator .toc-h4 a.active, .root[data-is-touch] ul.toc--navigator .toc-h4 a:active { text-decoration: none; }
-ul.toc--navigator .toc-h2 a, ul.toc--navigator .toc-h2 a:link, ul.toc--navigator .toc-h2 a:visited, ul.toc--navigator .toc-h3 a, ul.toc--navigator .toc-h3 a:link, ul.toc--navigator .toc-h3 a:visited, ul.toc--navigator .toc-h4 a, ul.toc--navigator .toc-h4 a:link, ul.toc--navigator .toc-h4 a:visited { color: #888; }
-.root[data-is-touch="false"] ul.toc--navigator .toc-h2 a:hover, .root[data-is-touch="false"] ul.toc--navigator .toc-h3 a:hover, .root[data-is-touch="false"] ul.toc--navigator .toc-h4 a:hover { color: #646464; }
-.root[data-is-touch] ul.toc--navigator .toc-h2 a.active, .root[data-is-touch] ul.toc--navigator .toc-h2 a:active, .root[data-is-touch] ul.toc--navigator .toc-h3 a.active, .root[data-is-touch] ul.toc--navigator .toc-h3 a:active, .root[data-is-touch] ul.toc--navigator .toc-h4 a.active, .root[data-is-touch] ul.toc--navigator .toc-h4 a:active { color: #3e3e3e; }
-ul.toc--navigator .toc-h2 a.disabled, ul.toc--navigator .toc-h2 a:disabled, ul.toc--navigator .toc-h3 a.disabled, ul.toc--navigator .toc-h3 a:disabled, ul.toc--navigator .toc-h4 a.disabled, ul.toc--navigator .toc-h4 a:disabled { color: rgba(136, 136, 136, 0.2) !important; }
-ul.toc--navigator .toc-h1 { color: #222; }
-ul.toc--navigator .toc-h1, ul.toc--navigator .toc-h1 a { font-size: 1rem; line-height: 1.6; }
-ul.toc--navigator .toc-h1 a { -webkit-transition: all 0.2s ease-in-out; transition: all 0.2s ease-in-out; }
-ul.toc--navigator .toc-h1 a, ul.toc--navigator .toc-h1 a:link, ul.toc--navigator .toc-h1 a:visited { text-decoration: none; }
-.root[data-is-touch="false"] ul.toc--navigator .toc-h1 a:hover { text-decoration: underline; }
-.root[data-is-touch] ul.toc--navigator .toc-h1 a.active, .root[data-is-touch] ul.toc--navigator .toc-h1 a:active { text-decoration: none; }
-ul.toc--navigator .toc-h1 a, ul.toc--navigator .toc-h1 a:link, ul.toc--navigator .toc-h1 a:visited { color: #000; }
-.root[data-is-touch="false"] ul.toc--navigator .toc-h1 a:hover { color: #2e2e2e; }
-.root[data-is-touch] ul.toc--navigator .toc-h1 a.active, .root[data-is-touch] ul.toc--navigator .toc-h1 a:active { color: #575757; }
-ul.toc--navigator .toc-h1 a.disabled, ul.toc--navigator .toc-h1 a:disabled { color: rgba(0, 0, 0, 0.4) !important; }
-ul.toc--navigator .toc-h2, ul.toc--navigator .toc-h2 a { font-size: 0.85rem; font-weight: 700; line-height: 1.4; }
+.root[data-is-touch] ul.toc--navigator > li.active a, .root[data-is-touch] ul.toc--navigator > li:active a { background-color: transparent; }
+ul.toc--navigator > li.active a { margin-left: -4px; background-color: transparent; box-shadow: none; -webkit-transition: all 0.2s ease-in-out; transition: all 0.2s ease-in-out; border: 0 solid #fc4d50; border-left-width: 4px; }
+ul.toc--navigator > li.active a, ul.toc--navigator > li.active a:link, ul.toc--navigator > li.active a:visited { text-decoration: none; }
+.root[data-is-touch="false"] ul.toc--navigator > li.active a:hover { text-decoration: underline; }
+.root[data-is-touch] ul.toc--navigator > li.active a.active, .root[data-is-touch] ul.toc--navigator > li.active a:active { text-decoration: none; }
+ul.toc--navigator > li.active a, ul.toc--navigator > li.active a:link, ul.toc--navigator > li.active a:visited { color: #fc4d50; }
+.root[data-is-touch="false"] ul.toc--navigator > li.active a:hover { color: #fb070b; }
+.root[data-is-touch] ul.toc--navigator > li.active a.active, .root[data-is-touch] ul.toc--navigator > li.active a:active { color: #b20306; }
+ul.toc--navigator > li.active a.disabled, ul.toc--navigator > li.active a:disabled { color: rgba(252, 77, 80, 0.2) !important; }
+ul.toc--navigator .toc-h2, ul.toc--navigator .toc-h2 a, ul.toc--navigator .toc-h3, ul.toc--navigator .toc-h3 a, ul.toc--navigator .toc-h4, ul.toc--navigator .toc-h4 a { -webkit-transition: all 0.2s ease-in-out; transition: all 0.2s ease-in-out; }
+ul.toc--navigator .toc-h2, ul.toc--navigator .toc-h2:link, ul.toc--navigator .toc-h2:visited, ul.toc--navigator .toc-h2 a, ul.toc--navigator .toc-h2 a:link, ul.toc--navigator .toc-h2 a:visited, ul.toc--navigator .toc-h3, ul.toc--navigator .toc-h3:link, ul.toc--navigator .toc-h3:visited, ul.toc--navigator .toc-h3 a, ul.toc--navigator .toc-h3 a:link, ul.toc--navigator .toc-h3 a:visited, ul.toc--navigator .toc-h4, ul.toc--navigator .toc-h4:link, ul.toc--navigator .toc-h4:visited, ul.toc--navigator .toc-h4 a, ul.toc--navigator .toc-h4 a:link, ul.toc--navigator .toc-h4 a:visited { text-decoration: none; }
+.root[data-is-touch="false"] ul.toc--navigator .toc-h2:hover, .root[data-is-touch="false"] ul.toc--navigator .toc-h2 a:hover, .root[data-is-touch="false"] ul.toc--navigator .toc-h3:hover, .root[data-is-touch="false"] ul.toc--navigator .toc-h3 a:hover, .root[data-is-touch="false"] ul.toc--navigator .toc-h4:hover, .root[data-is-touch="false"] ul.toc--navigator .toc-h4 a:hover { text-decoration: underline; }
+.root[data-is-touch] ul.toc--navigator .toc-h2.active, .root[data-is-touch] ul.toc--navigator .toc-h2:active, .root[data-is-touch] ul.toc--navigator .toc-h2 a.active, .root[data-is-touch] ul.toc--navigator .toc-h2 a:active, .root[data-is-touch] ul.toc--navigator .toc-h3.active, .root[data-is-touch] ul.toc--navigator .toc-h3:active, .root[data-is-touch] ul.toc--navigator .toc-h3 a.active, .root[data-is-touch] ul.toc--navigator .toc-h3 a:active, .root[data-is-touch] ul.toc--navigator .toc-h4.active, .root[data-is-touch] ul.toc--navigator .toc-h4:active, .root[data-is-touch] ul.toc--navigator .toc-h4 a.active, .root[data-is-touch] ul.toc--navigator .toc-h4 a:active { text-decoration: none; }
+ul.toc--navigator .toc-h2, ul.toc--navigator .toc-h2:link, ul.toc--navigator .toc-h2:visited, ul.toc--navigator .toc-h2 a, ul.toc--navigator .toc-h2 a:link, ul.toc--navigator .toc-h2 a:visited, ul.toc--navigator .toc-h3, ul.toc--navigator .toc-h3:link, ul.toc--navigator .toc-h3:visited, ul.toc--navigator .toc-h3 a, ul.toc--navigator .toc-h3 a:link, ul.toc--navigator .toc-h3 a:visited, ul.toc--navigator .toc-h4, ul.toc--navigator .toc-h4:link, ul.toc--navigator .toc-h4:visited, ul.toc--navigator .toc-h4 a, ul.toc--navigator .toc-h4 a:link, ul.toc--navigator .toc-h4 a:visited { color: #888; }
+.root[data-is-touch="false"] ul.toc--navigator .toc-h2:hover, .root[data-is-touch="false"] ul.toc--navigator .toc-h2 a:hover, .root[data-is-touch="false"] ul.toc--navigator .toc-h3:hover, .root[data-is-touch="false"] ul.toc--navigator .toc-h3 a:hover, .root[data-is-touch="false"] ul.toc--navigator .toc-h4:hover, .root[data-is-touch="false"] ul.toc--navigator .toc-h4 a:hover { color: #646464; }
+.root[data-is-touch] ul.toc--navigator .toc-h2.active, .root[data-is-touch] ul.toc--navigator .toc-h2:active, .root[data-is-touch] ul.toc--navigator .toc-h2 a.active, .root[data-is-touch] ul.toc--navigator .toc-h2 a:active, .root[data-is-touch] ul.toc--navigator .toc-h3.active, .root[data-is-touch] ul.toc--navigator .toc-h3:active, .root[data-is-touch] ul.toc--navigator .toc-h3 a.active, .root[data-is-touch] ul.toc--navigator .toc-h3 a:active, .root[data-is-touch] ul.toc--navigator .toc-h4.active, .root[data-is-touch] ul.toc--navigator .toc-h4:active, .root[data-is-touch] ul.toc--navigator .toc-h4 a.active, .root[data-is-touch] ul.toc--navigator .toc-h4 a:active { color: #3e3e3e; }
+ul.toc--navigator .toc-h2.disabled, ul.toc--navigator .toc-h2:disabled, ul.toc--navigator .toc-h2 a.disabled, ul.toc--navigator .toc-h2 a:disabled, ul.toc--navigator .toc-h3.disabled, ul.toc--navigator .toc-h3:disabled, ul.toc--navigator .toc-h3 a.disabled, ul.toc--navigator .toc-h3 a:disabled, ul.toc--navigator .toc-h4.disabled, ul.toc--navigator .toc-h4:disabled, ul.toc--navigator .toc-h4 a.disabled, ul.toc--navigator .toc-h4 a:disabled { color: rgba(136, 136, 136, 0.2) !important; }
+ul.toc--navigator a { padding: 0 0 0 .5rem; margin: .2rem 0; border-radius: 0; }
+.root[data-is-touch="false"] ul.toc--navigator a:hover { background-color: transparent; }
 
 .item { display: -webkit-box; display: -webkit-flex; display: -moz-flex; display: -ms-flexbox; display: flex; }
 @media (max-width: 499px) { .item { -webkit-box-direction: normal; -webkit-box-orient: vertical; -webkit-flex-direction: column; -moz-flex-direction: column; -ms-flex-direction: column; flex-direction: column; } }
