@@ -1,10 +1,10 @@
 <!DOCTYPE html><html lang="en">
   <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[Literature Survey] Multi-Reward/Objective Reinforcement Learning - Younghyo Park</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[Convex Optimization] 4 - Operations that preserve Convexity - Younghyo Park</title>
 
-<meta name="description" content="Literature Survey SummaryBased on the survey done on multi-reward/objective reinforcement learning topic, I summarized what I’ve understood.">
-<link rel="canonical" href="http://localhost:4000/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
+<meta name="description" content="Operations that preserve convexity  nonnegative weighted sums  composition with an affine mapping  pointwise maximum and supremum  composition  minimization ...">
+<link rel="canonical" href="http://localhost:4000/2021/04/18/opt-lecture-4-1.html"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
 <!--<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
 
 <meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
@@ -335,162 +335,349 @@ fill="#000000" stroke="none">
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
 <!-- end custom main top snippet -->
-<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[Literature Survey] Multi-Reward/Objective Reinforcement Learning</h1></header><span class="split-space">&nbsp;</span>
+<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[Convex Optimization] 4 - Operations that preserve Convexity</h1></header><span class="split-space">&nbsp;</span>
           <a class="edit-on-github"
             title="Edit on Github"
-            href="https://github.com/younghyopark/younghyopark.github.io/tree/main/_posts/2021-04-16-literature-survey-multi-rl.md">
-            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[Literature Survey] Multi-Reward/Objective Reinforcement Learning"><div class="article__info clearfix"><ul class="left-col menu"><li>
+            href="https://github.com/younghyopark/younghyopark.github.io/tree/main/_posts/2021-04-18-opt-lecture-4-1.md">
+            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[Convex Optimization] 4 - Operations that preserve Convexity"><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
+                href="/archive.html?tag=Optimization">Optimization</a>
             </li><li>
               <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Multi-Reward%2FObjective">Multi-Reward/Objective</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Theory%2FSurvey">Theory/Survey</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 16, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-16T00:00:00+09:00">
-    <meta itemprop="keywords" content="Reinforcement-Learning,Multi-Reward/Objective,Theory/Survey"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
+                href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 18, 2021</span>
+            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-18T00:00:00+09:00">
+    <meta itemprop="keywords" content="Optimization,Lecture-Note"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
 
 <!-- end custom article top snippet -->
-<div class="article__content" itemprop="articleBody"><h2 id="literature-survey-summary">Literature Survey Summary</h2>
-<p>Based on the survey done on multi-reward/objective reinforcement learning topic, I summarized what I’ve understood.</p>
+<div class="article__content" itemprop="articleBody"><h2 id="operations-that-preserve-convexity">Operations that preserve convexity</h2>
+
+<ol>
+  <li>nonnegative weighted sums</li>
+  <li>composition with an affine mapping</li>
+  <li>pointwise maximum and supremum</li>
+  <li>composition</li>
+  <li>minimization</li>
+  <li>perpsective of a function</li>
+</ol>
+
+<h3 id="nonnegative-weighted-sums">Nonnegative weighted sums</h3>
+
+<ul>
+  <li>
+    <p>A nonnegative weighted sum of convex functions
+\begin{equation}
+f:=\sum_{i=1}^n w_i f_i
+\end{equation}
+is convex ($w_i \geq 0$).</p>
+  </li>
+  <li>
+    <p>If $f(x,y)$ is convex for each $y\in \mathcal{A}$  and $w(y)\geq 0$  for each $y\in \mathcal{A}$, 
+\begin{equation}
+g(x)= \int_ \mathcal{A} w(y)f(x,y)dy
+\end{equation}
+is convex in $x$.</p>
+  </li>
+  <li>
+    <p>Recall that a function is convex if and only if its epigraph is a convex set!</p>
+  </li>
+</ul>
+<details> <summary> Click to see the proof </summary>
+($\implies$) First assume that $f$ is convex. Then, consider $(x_1,t_1)$, $(x_2,t_2)\in \text{epi} f$. This means that $f(x_1)\leq t_1,  f(x_2)\leq t_2 $. Then, since $f$ is convex, 
+
+$$
+\begin{aligned}
+f(\theta x_1 + (1-\theta)x_2 ) &amp;\leq \theta f(x_1)  + (1-\theta)f(x_2 )\\ 
+&amp; \leq \theta t_1 + (1-\theta)t_2 \\
+\end{aligned}
+$$
+
+Thus, the point 
+
+$$
+(\theta x_1 + (1-\theta)x_2 , \theta t_1 + (1-\theta)t_2) \in \text{epi }f
+$$
+
+which implies that $\text{epi }f$ is a convex set. 
+($\impliedby$) Let $x_1,x_2\in \mathbb{R}^n$, since $(x_1,f(x_1))$ and $(x_2,f(x_2))$ lie in $\text{epi }f$. By the convexity of $f$, we can say that $(\theta x_1+ (1-\theta)x_2, \theta f(x_1) + (1-\theta)f(x_2)) \in \text{epi }f$. This means 
+
+$$
+\begin{aligned}
+\theta x_ 1+ (1-\theta)x_2 \leq \theta f(x_1)+ (1-\theta)f(x_2)
+\end{aligned}
+$$
+
+which implies that $f$ is a convex function. 
+</details>
+
+<ul>
+  <li>
+    <p>Using this property, we can prove that nonnegative weighted sum preserves convexity. For example, if $w\geq 0$ and $f$ is convex, we have</p>
+
+\[\text{epi }(wf) = \begin{bmatrix}I &amp;0\\0&amp;w \end{bmatrix}\text{epi }f\]
+
+    <p>which implies that $wf$ is also a convex set (convex set under linear maaping is convex)</p>
+  </li>
+</ul>
+
+<h3 id="composition-with-an-affine-mapping">Composition with an affine mapping</h3>
+
+<ul>
+  <li>
+    <p>Suppose that $f: \mathbb{R}^n \rightarrow \mathbb{R}$ is convex.</p>
+  </li>
+  <li>
+    <p>Then the function $g:\mathbb{R}^n \rightarrow \mathbb{R}$ defined as</p>
+
+\[g(x) = f(Ax+b)\]
+
+    <p>is convex. (both $A$ and $b$ appropriately defined)</p>
+  </li>
+</ul>
+
+<h3 id="pointwise-maximum-and-supremum">Pointwise maximum and supremum</h3>
+
+<ul>
+  <li>
+    <p>If $f_1$ and $f_2$ are convex functions, so is their pointwise maximum $f$ defined by
+\(f(x):= \max \{f_1(x), f_2 (x)\}\)</p>
+  </li>
+  <li>
+    <p>This can be easily proved: let $\theta \in [0,1]$ and $x,y\in \text{dom }f$.</p>
+
+\[\begin{aligned}
+	f(\theta(x)+(1-\theta)y) &amp; = \max\{ f_1 (\theta x + (1-\theta) y), f_2 (\theta x+ (1-\theta)y )\}\\
+	&amp; \leq \max \{ \theta f_1 (x) + (1-\theta) f_1 (y) , \theta f_2 (x)  + (1-\theta) f_2 (y)\}\\
+	&amp; \leq \max \{ \theta f_1 (x), \theta f_2 (x)\} + \max \{ (1-\theta) f_1 (y) + (1-\theta) f_2 (y) \}\\
+	&amp; = \theta f(x) + (1-\theta)f(y)
+  
+\end{aligned}\]
+  </li>
+  <li>
+    <p>This can also be generalized to $m$ functions</p>
+
+\[f(x):=\max \{ f_1(x), \cdots, f_m (x)\}\]
 
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0001.jpg" /></center>
+    <p>and even to a supremum</p>
+
+\[g(x):=\sup_{y\in \mathcal{A}} f(x,y)\]
+  </li>
+  <li>
+    <p>This can be also proved by epigraphs: $f$ and $g$ above can be considered as an intersection of multiple epigraphs.</p>
+
+\[\text{epi }g= \bigcap _{y\in \mathcal{A}} \text{epi }f(\cdot, y)\]
 
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0002.jpg" /></center>
+    <p>$\rightarrow$ since the intersection of a convex set is convex, $\text{epi }g$ is a convex set, thus $g$ is a convex function.</p>
+  </li>
+</ul>
+
+<h4 id="maximum-eigenvalue">Maximum Eigenvalue</h4>
+
+<ul>
+  <li>
+    <p>The function $f(X)= \lambda_{\text{max}}(X)$ with $\text{dom }f = \mathbb{S}^m$ is convex. To see this, we express $f$ as</p>
+
+\[f(X) = \sup \{y^T X y \ \vert \ \|y\|_2 =1 \}\]
+
+    <p>as the pointwise supremum of a family of lienar functions of $X$ indexed by $y \in \mathbb{R}^m$.</p>
+  </li>
+</ul>
 
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0003.jpg" /></center>
+<h3 id="composition">Composition</h3>
+
+<ul>
+  <li>
+    <p>Consider two functions $h: \mathbb{R}^k \rightarrow \mathbb{R}$ and $g: \mathbb{R}^n \rightarrow \mathbb{R}^k $. Their composition</p>
 
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0004.jpg" /></center>
+\[f(x) = h(g(x))\]
 
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0005.jpg" /></center>
+    <p>is…</p>
 
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0006.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0007.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0008.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0009.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0010.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0011.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0012.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0013.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0014.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0015.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0016.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0017.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0018.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0019.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0020.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0021.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0022.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0023.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0024.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0025.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0026.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0027.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0028.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0029.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0030.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0031.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0032.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0033.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0034.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0035.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0036.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0037.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0038.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0039.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0040.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0041.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0042.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0043.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0044.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0045.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0046.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0047.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0048.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0049.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0050.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0051.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0052.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0053.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0054.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0055.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0056.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0057.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0058.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0059.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0060.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0061.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0062.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0063.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0064.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0065.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0066.jpg" /></center>
-
-<center><img src="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0067.jpg" /></center>
-
-</div><section class="article__sharing d-print-none"></section><div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-04-16T00:00:00+09:00"><!-- start custom article footer snippet -->
+    <ol>
+      <li><strong>convex</strong> if $h$ is convex and nondecreasing, and $g_i$’s are convex</li>
+      <li><strong>convex</strong> if $h$ is convex and nonincreasing, and $g_i$’s are concave</li>
+      <li><strong>concave</strong> if $h$ is concave and nondecreasing, and $g_i$’s are concave</li>
+      <li><strong>concave</strong> if $h$ is concave and nonincreasing, and $g_i$’s are convex</li>
+    </ol>
+  </li>
+  <li>
+    <p>To observe this in an easier fashion, let’s first consider the case $k=1$. To discover the composition rules, we start by assuming that $h$ and $ g$ are twice differentiable, with $\text{dom }g = \text{dom }h = \mathbb{R}$. In this case, convexity of $f$ reduces to $f’’ \leq 0$ .</p>
+  </li>
+  <li>
+    <p>The second derivative for the composition function $f$ is given by</p>
+
+\[f''(x) = h''(g(x))g'(x)^2 + h'(g(x))g''(x)\]
+
+    <ul>
+      <li>Note that, to make $f’‘\leq 0$, either one of the 4 conditions above should satisfy.</li>
+      <li>The thing depends on the sign of $h’, h’’$, and $g’’$. In other words, the convexity of $h$ and $g$, and the first-order derivative of $h$.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Of course, above conditions can be proved without differentiability.</p>
+
+    <ul>
+      <li>For now, let’s observe the first case. $h$ is convex, nondecreasing, and $g$ is convex.</li>
+      <li>Assume that $x, y \in \text{dom }f$ and $\theta \in [0,1]$. Since $x,y \in \text{dom }f$, we have that $x,y \in \text{dom } g$ and $g(x), g(y) \in \text{dom }h$. Knowing that $g$ is convex, thus $\text{dom }g$ is convex, we conclude that</li>
+    </ul>
+
+\[\theta x + (1-\theta)y \in \text{dom } g\]
+
+    <p>​		and for conexity of $g$, we can say that
+\(g(\theta x + (1-\theta)y ) \leq \theta g(x) + (1-\theta)g(y)\)</p>
+    <ul>
+      <li>Now, since $g(x), g(y)\in \text{dom }h$ and $h$ is convex, we conclude that $\theta g(x)+(1-\theta)g(y) \in \text{dom }h$, which is actually the right-hand side of above equation.</li>
+      <li>
+        <p>Let’s extend the assumption of $h$’s nondecreasing property to $\tilde{h}$, which assigns the value $\infty$ to points not in $\text{dom }h$. By doing so, we can say that for any $x,y\in \mathbb{R}$, with $x&lt;y$, we have $\tilde{h}(x) \leq \tilde{h}(y)$ . This means that if $y \in \text{dom }h$, so is $x\in \text{dom }h$. <strong>The domain of $h$ extends infinitely in the negative direction.</strong></p>
+      </li>
+      <li>
+        <p>Thus, since the right-hand side of equation (14) is in $\text{dom }h$, so is the left-hand side. $g(\theta x + (1-\theta)y)$. Thus, $\theta x+ (1-\theta )y \in \text{dom }f$. At this point, we have shown that $\text{dom }f$ is convex.</p>
+      </li>
+      <li>
+        <p>Now, using the fact that $h$ is nondecreasing, we get</p>
+
+\[h(g(\theta x+(1-\theta)y))\leq h(\theta g(x)+ (1-\theta)g(y))\]
+
+        <p>From the convexity of $h$, we have</p>
+
+\[h(\theta g(x) + (1-\theta) g(y))\leq \theta h(g(x)) + (1-\theta)h(g(y))\]
+
+        <p>Combining (15) and (16), we have now proved that $f$ is convex.</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="minimization">Minimization</h3>
+
+<ul>
+  <li>
+    <p>If $f$ is convex in $(x,y)$ and $C$ is a nonempty convex set, then the function</p>
+
+\[g(x):=\inf_{y\in C}f(x,y)\]
+
+    <p>is convex in $x$, if $g&gt;-\infty$.</p>
+  </li>
+  <li>
+    <p>We prove this by using Jensen’s inequality: Let’s assume $x_1, x_2 \in \text{dom }g$. Now, let’s assume $\epsilon&gt;0$ . Then there exists $y_1, y_2 \in C$ such that</p>
+
+\[f(x_i, y_i )\leq g(x_i)+\epsilon\]
+  </li>
+  <li>
+    <p>Now, let $\theta \in [0,1]$ and start the ‘process’:</p>
+
+\[\begin{aligned}
+g(\theta x_1+ (1-\theta)x_2) &amp;= \inf_{y\in C} f(\theta x_1 + (1-\theta )x_2 , y)\\
+&amp; \leq f(\theta x_1 + (1-\theta )x_2, \theta y_1 + (1-\theta)y_2 )\\
+&amp; \leq \theta f(x_1, y_1)+ (1-\theta)f(x_2, y_2)\\
+&amp; \leq \theta g(x_1) + (1-\theta)g(x_2)+\epsilon
+\end{aligned}\]
+
+    <p>Since above inequality should hold for all $\epsilon&gt;0$, we can say that</p>
+
+\[g(\theta x_1 + (1-\theta )x_2)\leq \theta g(x_1) + (1-\theta)g(x_2)\]
+  </li>
+</ul>
+
+<h4 id="shcur-complement">Shcur Complement</h4>
+
+<ul>
+  <li>
+    <p>Suppose the quadratic function</p>
+
+\[f(x,y)= x^T Ax + 2x^T By + y^T Cy\]
+
+    <p>is convex in $(x,y)$, which means</p>
+
+\[\begin{bmatrix}
+A&amp;B\\B^T &amp; C
+\end{bmatrix} \succeq 0\]
+  </li>
+  <li>
+    <p>We can express $g(x) = \inf_y f(x,y)$ as</p>
+
+\[g(x)= x^T (A-BC^\dagger B^T )x\]
+  </li>
+  <li>
+    <p>We know that $g$ is convex (minimization rule), thus we conclude that</p>
+
+\[A-BC^\dagger B^T \succeq 0\]
+  </li>
+  <li>
+    <p>If $C$ is convertible, then the matrix $A-BC^{-1}B^T $ is called the <strong>Schur complement</strong> of C in the matrix</p>
+
+\[\begin{bmatrix}
+A&amp;B\\B^T &amp; C
+\end{bmatrix}\]
+  </li>
+</ul>
+
+<h3 id="perspective-of-a-function">Perspective of a function</h3>
+
+<ul>
+  <li>
+    <p>Given a function $f : \mathbb{R}^n \rightarrow \mathbb{R}$, the perspective $g:\mathbb{R}^{n+1} \rightarrow \mathbb{R}$ of $f$ is defined as</p>
+
+    <p>\(g(x,t) = tf(x/t)\)
+with $\text{dom }g= {(x,t)\in \text{dom }f, t&gt;0}$</p>
+  </li>
+  <li>
+    <p>If $f$ is a convex function, then so is its perspective function $g$.</p>
+  </li>
+  <li>
+    <p>We prove this by epigraph: For $t&gt;0$ , we have</p>
+
+\[\begin{aligned}
+(x,t,s)\in \text{epi }g &amp; \iff tf(x/t)\leq s\\
+&amp; \iff f(x/t) \leq s/t\\
+&amp; \iff (x/t, s/t)\in \text{epi }f
+\end{aligned}\]
+
+    <p>This implies that $\text{epi }g$ is the inverse image of $\text{epi }f$ under the perspective mapping that takes $(u,v,w)$ to $(u,w)/v$. It follows that $\text{epi }g$ is convex, so is the function $g$.</p>
+  </li>
+</ul>
+
+<h4 id="relative-entropy">Relative Entropy</h4>
+
+<ul>
+  <li>
+    <p>The function</p>
+
+\[g(x,t):= -t \log (x/t) = t\log t - t\log x\]
+
+    <p>is the persepctive functino of $f(x)=-\log (x)$.</p>
+  </li>
+  <li>
+    <p>Since $f$ is conve, $g$ is convex.</p>
+  </li>
+  <li>
+    <p>Relative entropy of two vectors $u, v \in \mathbb{R}^n_{++}$ is defined as</p>
+
+\[\sum_{i=1}^n u_i \log (u_i/v_i)\]
+
+    <p>which is also a convex function of $(u,v)$.</p>
+  </li>
+  <li>
+    <p>The KL-divergence between $u,v$ is defined as</p>
+
+\[D_{\text{KL}}(u,v):= \sum_{i=1}^n (u_i \log (u_i /v_ i)-u_i + v_i)\]
+
+    <p>is also a convex function.</p>
+  </li>
+</ul>
+
+<h2 id="references">References</h2>
+
+<ul>
+  <li>
+    <p>S. Boyd, L.Vandenberghe, Convex Opimization, Cambridge University Press, 2004. <a href="http://stanford.edu/~boyd/cvxbook/">http://stanford.edu/~boyd/cvxbook/</a></p>
+  </li>
+  <li>
+    <p>Optimization Theory and Applications, SNU EE 2021, Insoon Yang</p>
+  </li>
+</ul>
+
+</div><section class="article__sharing d-print-none"></section><div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-04-18T00:00:00+09:00"><!-- start custom article footer snippet -->
 
 <!-- end custom article footer snippet -->
 <div class="article__subscribe"><div class="subscribe"><i class="fas fa-rss"></i> <a type="application/rss+xml" href="/feed.xml">Subscribe</a></div>
@@ -501,7 +688,7 @@ fill="#000000" stroke="none">
       </a>
     </p>
   </div></div></footer>
-<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/notion_to_markdown/%5BICML%202015%5D%20Universal%20Value%20Function%20Approximators%207120334d6860455c801cd9284c92970b/">[ICML 2015] Universal Value Function Approximators</a></div><div class="next"><span>NEXT</span><a href="/2021/04/18/opt-lecture-4-1.html">[Convex Optimization] 4 - Operations that preserve Convexity</a></div></div></div>
+<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/">[Literature Survey] Multi-Reward/Objective Reinforcement Learning</a></div></div></div>
 
 </div>
 

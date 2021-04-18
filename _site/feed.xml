@@ -1,5 +1,330 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-04-18T14:54:02+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Younghyo Park</title><subtitle>Your Site Description
-</subtitle><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><entry><title type="html">[Literature Survey] Multi-Reward/Objective Reinforcement Learning</title><link href="http://localhost:4000/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/" rel="alternate" type="text/html" title="[Literature Survey] Multi-Reward/Objective Reinforcement Learning" /><published>2021-04-16T00:00:00+09:00</published><updated>2021-04-16T00:00:00+09:00</updated><id>http://localhost:4000/assets/images/literature-survey-multi-rl</id><content type="html" xml:base="http://localhost:4000/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/">&lt;h2 id=&quot;literature-survey-summary&quot;&gt;Literature Survey Summary&lt;/h2&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-04-18T17:03:30+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Younghyo Park</title><subtitle>Your Site Description
+</subtitle><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><entry><title type="html">[Convex Optimization] 4 - Operations that preserve Convexity</title><link href="http://localhost:4000/2021/04/18/opt-lecture-4-1.html" rel="alternate" type="text/html" title="[Convex Optimization] 4 - Operations that preserve Convexity" /><published>2021-04-18T00:00:00+09:00</published><updated>2021-04-18T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/18/opt-lecture-4-1</id><content type="html" xml:base="http://localhost:4000/2021/04/18/opt-lecture-4-1.html">&lt;h2 id=&quot;operations-that-preserve-convexity&quot;&gt;Operations that preserve convexity&lt;/h2&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;nonnegative weighted sums&lt;/li&gt;
+  &lt;li&gt;composition with an affine mapping&lt;/li&gt;
+  &lt;li&gt;pointwise maximum and supremum&lt;/li&gt;
+  &lt;li&gt;composition&lt;/li&gt;
+  &lt;li&gt;minimization&lt;/li&gt;
+  &lt;li&gt;perpsective of a function&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;nonnegative-weighted-sums&quot;&gt;Nonnegative weighted sums&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;A nonnegative weighted sum of convex functions
+\begin{equation}
+f:=\sum_{i=1}^n w_i f_i
+\end{equation}
+is convex ($w_i \geq 0$).&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;If $f(x,y)$ is convex for each $y\in \mathcal{A}$  and $w(y)\geq 0$  for each $y\in \mathcal{A}$, 
+\begin{equation}
+g(x)= \int_ \mathcal{A} w(y)f(x,y)dy
+\end{equation}
+is convex in $x$.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Recall that a function is convex if and only if its epigraph is a convex set!&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+&lt;details&gt; &lt;summary&gt; Click to see the proof &lt;/summary&gt;
+($\implies$) First assume that $f$ is convex. Then, consider $(x_1,t_1)$, $(x_2,t_2)\in \text{epi} f$. This means that $f(x_1)\leq t_1,  f(x_2)\leq t_2 $. Then, since $f$ is convex, 
+
+$$
+\begin{aligned}
+f(\theta x_1 + (1-\theta)x_2 ) &amp;amp;\leq \theta f(x_1)  + (1-\theta)f(x_2 )\\ 
+&amp;amp; \leq \theta t_1 + (1-\theta)t_2 \\
+\end{aligned}
+$$
+
+Thus, the point 
+
+$$
+(\theta x_1 + (1-\theta)x_2 , \theta t_1 + (1-\theta)t_2) \in \text{epi }f
+$$
+
+which implies that $\text{epi }f$ is a convex set. 
+($\impliedby$) Let $x_1,x_2\in \mathbb{R}^n$, since $(x_1,f(x_1))$ and $(x_2,f(x_2))$ lie in $\text{epi }f$. By the convexity of $f$, we can say that $(\theta x_1+ (1-\theta)x_2, \theta f(x_1) + (1-\theta)f(x_2)) \in \text{epi }f$. This means 
+
+$$
+\begin{aligned}
+\theta x_ 1+ (1-\theta)x_2 \leq \theta f(x_1)+ (1-\theta)f(x_2)
+\end{aligned}
+$$
+
+which implies that $f$ is a convex function. 
+&lt;/details&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Using this property, we can prove that nonnegative weighted sum preserves convexity. For example, if $w\geq 0$ and $f$ is convex, we have&lt;/p&gt;
+
+\[\text{epi }(wf) = \begin{bmatrix}I &amp;amp;0\\0&amp;amp;w \end{bmatrix}\text{epi }f\]
+
+    &lt;p&gt;which implies that $wf$ is also a convex set (convex set under linear maaping is convex)&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;composition-with-an-affine-mapping&quot;&gt;Composition with an affine mapping&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Suppose that $f: \mathbb{R}^n \rightarrow \mathbb{R}$ is convex.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Then the function $g:\mathbb{R}^n \rightarrow \mathbb{R}$ defined as&lt;/p&gt;
+
+\[g(x) = f(Ax+b)\]
+
+    &lt;p&gt;is convex. (both $A$ and $b$ appropriately defined)&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;pointwise-maximum-and-supremum&quot;&gt;Pointwise maximum and supremum&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;If $f_1$ and $f_2$ are convex functions, so is their pointwise maximum $f$ defined by
+\(f(x):= \max \{f_1(x), f_2 (x)\}\)&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;This can be easily proved: let $\theta \in [0,1]$ and $x,y\in \text{dom }f$.&lt;/p&gt;
+
+\[\begin{aligned}
+	f(\theta(x)+(1-\theta)y) &amp;amp; = \max\{ f_1 (\theta x + (1-\theta) y), f_2 (\theta x+ (1-\theta)y )\}\\
+	&amp;amp; \leq \max \{ \theta f_1 (x) + (1-\theta) f_1 (y) , \theta f_2 (x)  + (1-\theta) f_2 (y)\}\\
+	&amp;amp; \leq \max \{ \theta f_1 (x), \theta f_2 (x)\} + \max \{ (1-\theta) f_1 (y) + (1-\theta) f_2 (y) \}\\
+	&amp;amp; = \theta f(x) + (1-\theta)f(y)
+  
+\end{aligned}\]
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;This can also be generalized to $m$ functions&lt;/p&gt;
+
+\[f(x):=\max \{ f_1(x), \cdots, f_m (x)\}\]
+
+    &lt;p&gt;and even to a supremum&lt;/p&gt;
+
+\[g(x):=\sup_{y\in \mathcal{A}} f(x,y)\]
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;This can be also proved by epigraphs: $f$ and $g$ above can be considered as an intersection of multiple epigraphs.&lt;/p&gt;
+
+\[\text{epi }g= \bigcap _{y\in \mathcal{A}} \text{epi }f(\cdot, y)\]
+
+    &lt;p&gt;$\rightarrow$ since the intersection of a convex set is convex, $\text{epi }g$ is a convex set, thus $g$ is a convex function.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;maximum-eigenvalue&quot;&gt;Maximum Eigenvalue&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;The function $f(X)= \lambda_{\text{max}}(X)$ with $\text{dom }f = \mathbb{S}^m$ is convex. To see this, we express $f$ as&lt;/p&gt;
+
+\[f(X) = \sup \{y^T X y \ \vert \ \|y\|_2 =1 \}\]
+
+    &lt;p&gt;as the pointwise supremum of a family of lienar functions of $X$ indexed by $y \in \mathbb{R}^m$.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;composition&quot;&gt;Composition&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Consider two functions $h: \mathbb{R}^k \rightarrow \mathbb{R}$ and $g: \mathbb{R}^n \rightarrow \mathbb{R}^k $. Their composition&lt;/p&gt;
+
+\[f(x) = h(g(x))\]
+
+    &lt;p&gt;is…&lt;/p&gt;
+
+    &lt;ol&gt;
+      &lt;li&gt;&lt;strong&gt;convex&lt;/strong&gt; if $h$ is convex and nondecreasing, and $g_i$’s are convex&lt;/li&gt;
+      &lt;li&gt;&lt;strong&gt;convex&lt;/strong&gt; if $h$ is convex and nonincreasing, and $g_i$’s are concave&lt;/li&gt;
+      &lt;li&gt;&lt;strong&gt;concave&lt;/strong&gt; if $h$ is concave and nondecreasing, and $g_i$’s are concave&lt;/li&gt;
+      &lt;li&gt;&lt;strong&gt;concave&lt;/strong&gt; if $h$ is concave and nonincreasing, and $g_i$’s are convex&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;To observe this in an easier fashion, let’s first consider the case $k=1$. To discover the composition rules, we start by assuming that $h$ and $ g$ are twice differentiable, with $\text{dom }g = \text{dom }h = \mathbb{R}$. In this case, convexity of $f$ reduces to $f’’ \leq 0$ .&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;The second derivative for the composition function $f$ is given by&lt;/p&gt;
+
+\[f''(x) = h''(g(x))g'(x)^2 + h'(g(x))g''(x)\]
+
+    &lt;ul&gt;
+      &lt;li&gt;Note that, to make $f’‘\leq 0$, either one of the 4 conditions above should satisfy.&lt;/li&gt;
+      &lt;li&gt;The thing depends on the sign of $h’, h’’$, and $g’’$. In other words, the convexity of $h$ and $g$, and the first-order derivative of $h$.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Of course, above conditions can be proved without differentiability.&lt;/p&gt;
+
+    &lt;ul&gt;
+      &lt;li&gt;For now, let’s observe the first case. $h$ is convex, nondecreasing, and $g$ is convex.&lt;/li&gt;
+      &lt;li&gt;Assume that $x, y \in \text{dom }f$ and $\theta \in [0,1]$. Since $x,y \in \text{dom }f$, we have that $x,y \in \text{dom } g$ and $g(x), g(y) \in \text{dom }h$. Knowing that $g$ is convex, thus $\text{dom }g$ is convex, we conclude that&lt;/li&gt;
+    &lt;/ul&gt;
+
+\[\theta x + (1-\theta)y \in \text{dom } g\]
+
+    &lt;p&gt;​		and for conexity of $g$, we can say that
+\(g(\theta x + (1-\theta)y ) \leq \theta g(x) + (1-\theta)g(y)\)&lt;/p&gt;
+    &lt;ul&gt;
+      &lt;li&gt;Now, since $g(x), g(y)\in \text{dom }h$ and $h$ is convex, we conclude that $\theta g(x)+(1-\theta)g(y) \in \text{dom }h$, which is actually the right-hand side of above equation.&lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;Let’s extend the assumption of $h$’s nondecreasing property to $\tilde{h}$, which assigns the value $\infty$ to points not in $\text{dom }h$. By doing so, we can say that for any $x,y\in \mathbb{R}$, with $x&amp;lt;y$, we have $\tilde{h}(x) \leq \tilde{h}(y)$ . This means that if $y \in \text{dom }h$, so is $x\in \text{dom }h$. &lt;strong&gt;The domain of $h$ extends infinitely in the negative direction.&lt;/strong&gt;&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;Thus, since the right-hand side of equation (14) is in $\text{dom }h$, so is the left-hand side. $g(\theta x + (1-\theta)y)$. Thus, $\theta x+ (1-\theta )y \in \text{dom }f$. At this point, we have shown that $\text{dom }f$ is convex.&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;Now, using the fact that $h$ is nondecreasing, we get&lt;/p&gt;
+
+\[h(g(\theta x+(1-\theta)y))\leq h(\theta g(x)+ (1-\theta)g(y))\]
+
+        &lt;p&gt;From the convexity of $h$, we have&lt;/p&gt;
+
+\[h(\theta g(x) + (1-\theta) g(y))\leq \theta h(g(x)) + (1-\theta)h(g(y))\]
+
+        &lt;p&gt;Combining (15) and (16), we have now proved that $f$ is convex.&lt;/p&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;minimization&quot;&gt;Minimization&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;If $f$ is convex in $(x,y)$ and $C$ is a nonempty convex set, then the function&lt;/p&gt;
+
+\[g(x):=\inf_{y\in C}f(x,y)\]
+
+    &lt;p&gt;is convex in $x$, if $g&amp;gt;-\infty$.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;We prove this by using Jensen’s inequality: Let’s assume $x_1, x_2 \in \text{dom }g$. Now, let’s assume $\epsilon&amp;gt;0$ . Then there exists $y_1, y_2 \in C$ such that&lt;/p&gt;
+
+\[f(x_i, y_i )\leq g(x_i)+\epsilon\]
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Now, let $\theta \in [0,1]$ and start the ‘process’:&lt;/p&gt;
+
+\[\begin{aligned}
+g(\theta x_1+ (1-\theta)x_2) &amp;amp;= \inf_{y\in C} f(\theta x_1 + (1-\theta )x_2 , y)\\
+&amp;amp; \leq f(\theta x_1 + (1-\theta )x_2, \theta y_1 + (1-\theta)y_2 )\\
+&amp;amp; \leq \theta f(x_1, y_1)+ (1-\theta)f(x_2, y_2)\\
+&amp;amp; \leq \theta g(x_1) + (1-\theta)g(x_2)+\epsilon
+\end{aligned}\]
+
+    &lt;p&gt;Since above inequality should hold for all $\epsilon&amp;gt;0$, we can say that&lt;/p&gt;
+
+\[g(\theta x_1 + (1-\theta )x_2)\leq \theta g(x_1) + (1-\theta)g(x_2)\]
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;shcur-complement&quot;&gt;Shcur Complement&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Suppose the quadratic function&lt;/p&gt;
+
+\[f(x,y)= x^T Ax + 2x^T By + y^T Cy\]
+
+    &lt;p&gt;is convex in $(x,y)$, which means&lt;/p&gt;
+
+\[\begin{bmatrix}
+A&amp;amp;B\\B^T &amp;amp; C
+\end{bmatrix} \succeq 0\]
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;We can express $g(x) = \inf_y f(x,y)$ as&lt;/p&gt;
+
+\[g(x)= x^T (A-BC^\dagger B^T )x\]
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;We know that $g$ is convex (minimization rule), thus we conclude that&lt;/p&gt;
+
+\[A-BC^\dagger B^T \succeq 0\]
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;If $C$ is convertible, then the matrix $A-BC^{-1}B^T $ is called the &lt;strong&gt;Schur complement&lt;/strong&gt; of C in the matrix&lt;/p&gt;
+
+\[\begin{bmatrix}
+A&amp;amp;B\\B^T &amp;amp; C
+\end{bmatrix}\]
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;perspective-of-a-function&quot;&gt;Perspective of a function&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Given a function $f : \mathbb{R}^n \rightarrow \mathbb{R}$, the perspective $g:\mathbb{R}^{n+1} \rightarrow \mathbb{R}$ of $f$ is defined as&lt;/p&gt;
+
+    &lt;p&gt;\(g(x,t) = tf(x/t)\)
+with $\text{dom }g= {(x,t)\in \text{dom }f, t&amp;gt;0}$&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;If $f$ is a convex function, then so is its perspective function $g$.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;We prove this by epigraph: For $t&amp;gt;0$ , we have&lt;/p&gt;
+
+\[\begin{aligned}
+(x,t,s)\in \text{epi }g &amp;amp; \iff tf(x/t)\leq s\\
+&amp;amp; \iff f(x/t) \leq s/t\\
+&amp;amp; \iff (x/t, s/t)\in \text{epi }f
+\end{aligned}\]
+
+    &lt;p&gt;This implies that $\text{epi }g$ is the inverse image of $\text{epi }f$ under the perspective mapping that takes $(u,v,w)$ to $(u,w)/v$. It follows that $\text{epi }g$ is convex, so is the function $g$.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;relative-entropy&quot;&gt;Relative Entropy&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;The function&lt;/p&gt;
+
+\[g(x,t):= -t \log (x/t) = t\log t - t\log x\]
+
+    &lt;p&gt;is the persepctive functino of $f(x)=-\log (x)$.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Since $f$ is conve, $g$ is convex.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Relative entropy of two vectors $u, v \in \mathbb{R}^n_{++}$ is defined as&lt;/p&gt;
+
+\[\sum_{i=1}^n u_i \log (u_i/v_i)\]
+
+    &lt;p&gt;which is also a convex function of $(u,v)$.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;The KL-divergence between $u,v$ is defined as&lt;/p&gt;
+
+\[D_{\text{KL}}(u,v):= \sum_{i=1}^n (u_i \log (u_i /v_ i)-u_i + v_i)\]
+
+    &lt;p&gt;is also a convex function.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;references&quot;&gt;References&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;S. Boyd, L.Vandenberghe, Convex Opimization, Cambridge University Press, 2004. &lt;a href=&quot;http://stanford.edu/~boyd/cvxbook/&quot;&gt;http://stanford.edu/~boyd/cvxbook/&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Optimization Theory and Applications, SNU EE 2021, Insoon Yang&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Optimization" /><category term="Lecture-Note" /><summary type="html">Operations that preserve convexity nonnegative weighted sums composition with an affine mapping pointwise maximum and supremum composition minimization perpsective of a function Nonnegative weighted sums A nonnegative weighted sum of convex functions \begin{equation} f:=\sum_{i=1}^n w_i f_i \end{equation} is convex ($w_i \geq 0$). If $f(x,y)$ is convex for each $y\in \mathcal{A}$ and $w(y)\geq 0$ for each $y\in \mathcal{A}$, \begin{equation} g(x)= \int_ \mathcal{A} w(y)f(x,y)dy \end{equation} is convex in $x$. Recall that a function is convex if and only if its epigraph is a convex set! Click to see the proof ($\implies$) First assume that $f$ is convex. Then, consider $(x_1,t_1)$, $(x_2,t_2)\in \text{epi} f$. This means that $f(x_1)\leq t_1, f(x_2)\leq t_2 $. Then, since $f$ is convex, $$ \begin{aligned} f(\theta x_1 + (1-\theta)x_2 ) &amp;amp;\leq \theta f(x_1) + (1-\theta)f(x_2 )\\ &amp;amp; \leq \theta t_1 + (1-\theta)t_2 \\ \end{aligned} $$ Thus, the point $$ (\theta x_1 + (1-\theta)x_2 , \theta t_1 + (1-\theta)t_2) \in \text{epi }f $$ which implies that $\text{epi }f$ is a convex set. ($\impliedby$) Let $x_1,x_2\in \mathbb{R}^n$, since $(x_1,f(x_1))$ and $(x_2,f(x_2))$ lie in $\text{epi }f$. By the convexity of $f$, we can say that $(\theta x_1+ (1-\theta)x_2, \theta f(x_1) + (1-\theta)f(x_2)) \in \text{epi }f$. This means $$ \begin{aligned} \theta x_ 1+ (1-\theta)x_2 \leq \theta f(x_1)+ (1-\theta)f(x_2) \end{aligned} $$ which implies that $f$ is a convex function. Using this property, we can prove that nonnegative weighted sum preserves convexity. For example, if $w\geq 0$ and $f$ is convex, we have \[\text{epi }(wf) = \begin{bmatrix}I &amp;amp;0\\0&amp;amp;w \end{bmatrix}\text{epi }f\] which implies that $wf$ is also a convex set (convex set under linear maaping is convex) Composition with an affine mapping Suppose that $f: \mathbb{R}^n \rightarrow \mathbb{R}$ is convex. Then the function $g:\mathbb{R}^n \rightarrow \mathbb{R}$ defined as \[g(x) = f(Ax+b)\] is convex. (both $A$ and $b$ appropriately defined) Pointwise maximum and supremum If $f_1$ and $f_2$ are convex functions, so is their pointwise maximum $f$ defined by \(f(x):= \max \{f_1(x), f_2 (x)\}\) This can be easily proved: let $\theta \in [0,1]$ and $x,y\in \text{dom }f$. \[\begin{aligned} f(\theta(x)+(1-\theta)y) &amp;amp; = \max\{ f_1 (\theta x + (1-\theta) y), f_2 (\theta x+ (1-\theta)y )\}\\ &amp;amp; \leq \max \{ \theta f_1 (x) + (1-\theta) f_1 (y) , \theta f_2 (x) + (1-\theta) f_2 (y)\}\\ &amp;amp; \leq \max \{ \theta f_1 (x), \theta f_2 (x)\} + \max \{ (1-\theta) f_1 (y) + (1-\theta) f_2 (y) \}\\ &amp;amp; = \theta f(x) + (1-\theta)f(y) \end{aligned}\] This can also be generalized to $m$ functions \[f(x):=\max \{ f_1(x), \cdots, f_m (x)\}\] and even to a supremum \[g(x):=\sup_{y\in \mathcal{A}} f(x,y)\] This can be also proved by epigraphs: $f$ and $g$ above can be considered as an intersection of multiple epigraphs. \[\text{epi }g= \bigcap _{y\in \mathcal{A}} \text{epi }f(\cdot, y)\] $\rightarrow$ since the intersection of a convex set is convex, $\text{epi }g$ is a convex set, thus $g$ is a convex function. Maximum Eigenvalue The function $f(X)= \lambda_{\text{max}}(X)$ with $\text{dom }f = \mathbb{S}^m$ is convex. To see this, we express $f$ as \[f(X) = \sup \{y^T X y \ \vert \ \|y\|_2 =1 \}\] as the pointwise supremum of a family of lienar functions of $X$ indexed by $y \in \mathbb{R}^m$. Composition Consider two functions $h: \mathbb{R}^k \rightarrow \mathbb{R}$ and $g: \mathbb{R}^n \rightarrow \mathbb{R}^k $. Their composition \[f(x) = h(g(x))\] is… convex if $h$ is convex and nondecreasing, and $g_i$’s are convex convex if $h$ is convex and nonincreasing, and $g_i$’s are concave concave if $h$ is concave and nondecreasing, and $g_i$’s are concave concave if $h$ is concave and nonincreasing, and $g_i$’s are convex To observe this in an easier fashion, let’s first consider the case $k=1$. To discover the composition rules, we start by assuming that $h$ and $ g$ are twice differentiable, with $\text{dom }g = \text{dom }h = \mathbb{R}$. In this case, convexity of $f$ reduces to $f’’ \leq 0$ . The second derivative for the composition function $f$ is given by \[f''(x) = h''(g(x))g'(x)^2 + h'(g(x))g''(x)\] Note that, to make $f’‘\leq 0$, either one of the 4 conditions above should satisfy. The thing depends on the sign of $h’, h’’$, and $g’’$. In other words, the convexity of $h$ and $g$, and the first-order derivative of $h$. Of course, above conditions can be proved without differentiability. For now, let’s observe the first case. $h$ is convex, nondecreasing, and $g$ is convex. Assume that $x, y \in \text{dom }f$ and $\theta \in [0,1]$. Since $x,y \in \text{dom }f$, we have that $x,y \in \text{dom } g$ and $g(x), g(y) \in \text{dom }h$. Knowing that $g$ is convex, thus $\text{dom }g$ is convex, we conclude that \[\theta x + (1-\theta)y \in \text{dom } g\] ​ and for conexity of $g$, we can say that \(g(\theta x + (1-\theta)y ) \leq \theta g(x) + (1-\theta)g(y)\) Now, since $g(x), g(y)\in \text{dom }h$ and $h$ is convex, we conclude that $\theta g(x)+(1-\theta)g(y) \in \text{dom }h$, which is actually the right-hand side of above equation. Let’s extend the assumption of $h$’s nondecreasing property to $\tilde{h}$, which assigns the value $\infty$ to points not in $\text{dom }h$. By doing so, we can say that for any $x,y\in \mathbb{R}$, with $x&amp;lt;y$, we have $\tilde{h}(x) \leq \tilde{h}(y)$ . This means that if $y \in \text{dom }h$, so is $x\in \text{dom }h$. The domain of $h$ extends infinitely in the negative direction. Thus, since the right-hand side of equation (14) is in $\text{dom }h$, so is the left-hand side. $g(\theta x + (1-\theta)y)$. Thus, $\theta x+ (1-\theta )y \in \text{dom }f$. At this point, we have shown that $\text{dom }f$ is convex. Now, using the fact that $h$ is nondecreasing, we get \[h(g(\theta x+(1-\theta)y))\leq h(\theta g(x)+ (1-\theta)g(y))\] From the convexity of $h$, we have \[h(\theta g(x) + (1-\theta) g(y))\leq \theta h(g(x)) + (1-\theta)h(g(y))\] Combining (15) and (16), we have now proved that $f$ is convex. Minimization If $f$ is convex in $(x,y)$ and $C$ is a nonempty convex set, then the function \[g(x):=\inf_{y\in C}f(x,y)\] is convex in $x$, if $g&amp;gt;-\infty$. We prove this by using Jensen’s inequality: Let’s assume $x_1, x_2 \in \text{dom }g$. Now, let’s assume $\epsilon&amp;gt;0$ . Then there exists $y_1, y_2 \in C$ such that \[f(x_i, y_i )\leq g(x_i)+\epsilon\] Now, let $\theta \in [0,1]$ and start the ‘process’: \[\begin{aligned} g(\theta x_1+ (1-\theta)x_2) &amp;amp;= \inf_{y\in C} f(\theta x_1 + (1-\theta )x_2 , y)\\ &amp;amp; \leq f(\theta x_1 + (1-\theta )x_2, \theta y_1 + (1-\theta)y_2 )\\ &amp;amp; \leq \theta f(x_1, y_1)+ (1-\theta)f(x_2, y_2)\\ &amp;amp; \leq \theta g(x_1) + (1-\theta)g(x_2)+\epsilon \end{aligned}\] Since above inequality should hold for all $\epsilon&amp;gt;0$, we can say that \[g(\theta x_1 + (1-\theta )x_2)\leq \theta g(x_1) + (1-\theta)g(x_2)\] Shcur Complement Suppose the quadratic function \[f(x,y)= x^T Ax + 2x^T By + y^T Cy\] is convex in $(x,y)$, which means \[\begin{bmatrix} A&amp;amp;B\\B^T &amp;amp; C \end{bmatrix} \succeq 0\] We can express $g(x) = \inf_y f(x,y)$ as \[g(x)= x^T (A-BC^\dagger B^T )x\] We know that $g$ is convex (minimization rule), thus we conclude that \[A-BC^\dagger B^T \succeq 0\] If $C$ is convertible, then the matrix $A-BC^{-1}B^T $ is called the Schur complement of C in the matrix \[\begin{bmatrix} A&amp;amp;B\\B^T &amp;amp; C \end{bmatrix}\] Perspective of a function Given a function $f : \mathbb{R}^n \rightarrow \mathbb{R}$, the perspective $g:\mathbb{R}^{n+1} \rightarrow \mathbb{R}$ of $f$ is defined as \(g(x,t) = tf(x/t)\) with $\text{dom }g= {(x,t)\in \text{dom }f, t&amp;gt;0}$ If $f$ is a convex function, then so is its perspective function $g$. We prove this by epigraph: For $t&amp;gt;0$ , we have \[\begin{aligned} (x,t,s)\in \text{epi }g &amp;amp; \iff tf(x/t)\leq s\\ &amp;amp; \iff f(x/t) \leq s/t\\ &amp;amp; \iff (x/t, s/t)\in \text{epi }f \end{aligned}\] This implies that $\text{epi }g$ is the inverse image of $\text{epi }f$ under the perspective mapping that takes $(u,v,w)$ to $(u,w)/v$. It follows that $\text{epi }g$ is convex, so is the function $g$. Relative Entropy The function \[g(x,t):= -t \log (x/t) = t\log t - t\log x\] is the persepctive functino of $f(x)=-\log (x)$. Since $f$ is conve, $g$ is convex. Relative entropy of two vectors $u, v \in \mathbb{R}^n_{++}$ is defined as \[\sum_{i=1}^n u_i \log (u_i/v_i)\] which is also a convex function of $(u,v)$. The KL-divergence between $u,v$ is defined as \[D_{\text{KL}}(u,v):= \sum_{i=1}^n (u_i \log (u_i /v_ i)-u_i + v_i)\] is also a convex function. References S. Boyd, L.Vandenberghe, Convex Opimization, Cambridge University Press, 2004. http://stanford.edu/~boyd/cvxbook/ Optimization Theory and Applications, SNU EE 2021, Insoon Yang</summary></entry><entry><title type="html">[Literature Survey] Multi-Reward/Objective Reinforcement Learning</title><link href="http://localhost:4000/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/" rel="alternate" type="text/html" title="[Literature Survey] Multi-Reward/Objective Reinforcement Learning" /><published>2021-04-16T00:00:00+09:00</published><updated>2021-04-16T00:00:00+09:00</updated><id>http://localhost:4000/assets/images/literature-survey-multi-rl</id><content type="html" xml:base="http://localhost:4000/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/">&lt;h2 id=&quot;literature-survey-summary&quot;&gt;Literature Survey Summary&lt;/h2&gt;
 &lt;p&gt;Based on the survey done on multi-reward/objective reinforcement learning topic, I summarized what I’ve understood.&lt;/p&gt;
 
 &lt;center&gt;&lt;img src=&quot;/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0001.jpg&quot; /&gt;&lt;/center&gt;
@@ -134,141 +459,7 @@
 
 &lt;center&gt;&lt;img src=&quot;/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0066.jpg&quot; /&gt;&lt;/center&gt;
 
-&lt;center&gt;&lt;img src=&quot;/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0067.jpg&quot; /&gt;&lt;/center&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Multi-Reward/Objective" /><category term="Theory/Survey" /><summary type="html">Literature Survey Summary Based on the survey done on multi-reward/objective reinforcement learning topic, I summarized what I’ve understood.</summary></entry><entry><title type="html">[ICML 2015] Universal Value Function Approximators</title><link href="http://localhost:4000/notion_to_markdown/%5BICML%202015%5D%20Universal%20Value%20Function%20Approximators%207120334d6860455c801cd9284c92970b/" rel="alternate" type="text/html" title="[ICML 2015] Universal Value Function Approximators" /><published>2021-04-13T00:00:00+09:00</published><updated>2021-04-13T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/universal-value-function-approximator</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/%5BICML%202015%5D%20Universal%20Value%20Function%20Approximators%207120334d6860455c801cd9284c92970b/">&lt;h2 id=&quot;introduction&quot;&gt;Introduction&lt;/h2&gt;
-
-&lt;h3 id=&quot;extending-the-purpose-of-value-function&quot;&gt;Extending the purpose of value function&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;General value function $V_g(s)$ represent the utility of any state $s$ in &lt;strong&gt;achieving a given goal $g$&lt;/strong&gt;, represented by a pseudo-reward function.&lt;/li&gt;
-  &lt;li&gt;A collection of general value functions is powerful, and can be used in many ways.
-    &lt;ol&gt;
-      &lt;li&gt;Horde architecture → consist of discrete set of value functions, while all of it is learned simultaneously from a single stream of experience.&lt;/li&gt;
-      &lt;li&gt;Each value function may also be used to generate a policy or option that leas to a goal state&lt;/li&gt;
-      &lt;li&gt;collection of value functions can be used as a predictive representatino of state (predicted values themselves are used as a feature vector)&lt;/li&gt;
-    &lt;/ol&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;extending-the-idea-of-value-function-approximator&quot;&gt;Extending the idea of Value function approximator&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;authors extend the idea of value function approximation to both states $s$ and goal $g$&lt;/p&gt;
-
-\[V(s,g;\theta)\]
-  &lt;/li&gt;
-  &lt;li&gt;By universal, authors mean that the value function can generalise to any goal $g$ in a set $\mathcal{G}$ of possible goals&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Learning UVFA can be difficult! Why?&lt;/p&gt;
-
-    &lt;p&gt;agent will only see a small subset of possible combinations of states and goals $(s,g)$&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;background&quot;&gt;Background&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;define a pseudo-reward function $R_g (s,a,s’)$&lt;/li&gt;
-  &lt;li&gt;define a pseudo-discount function $\gamma_g(s)$ , $\gamma_g (s)=0$ iff $s$ is the goal.&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Define a general value function&lt;/p&gt;
-
-\[V_{g,\pi }(s) := \mathbb{E} \bigg [ \sum_{t=0}^\infty R_g (s_{t+1}, a_t, s_t ) \prod_{k=0}^t \gamma_g (s_k) \bigg | \ s_0  =s \bigg ]\]
-
-    &lt;p&gt;goal 에 다다르면 더 이상 reward function이 더해지지 않는 구조임&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Define a general action-value (q) function&lt;/p&gt;
-
-\[Q_{g, \pi} (s,a) := \mathbb{E}_{s'} [R_g (s,a,s') + \gamma_ g(s') V_{g,\pi} (s') ]\]
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;optimal policy for a given goal&lt;/p&gt;
-
-\[\pi_g^\star(s) := \argmax _a Q_{\pi, g} (s,a)\]
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;universal-value-function-approximators-uvfa&quot;&gt;Universal Value Function Approximators (UVFA)&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;Consider function approximators&lt;/p&gt;
-
-\[\begin{aligned}V(s,g;\theta) &amp;amp;\approx V_g ^\star (s)\\ Q(s,a,g;\theta)&amp;amp; \approx Q_g^\star(s,a) \end{aligned}\]
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;How should we design the function? There are two ways&lt;/p&gt;
-
-    &lt;center&gt;&lt;img src=&quot;Untitled%201.png&quot; width=&quot;400&quot; /&gt;&lt;/center&gt;
-
-    &lt;ol&gt;
-      &lt;li&gt;simply concatenate s and g&lt;/li&gt;
-      &lt;li&gt;two-stream architecture, mapping each state and goal to $\R^n$  → $h$ maps $\R^n \times \R^n \rightarrow \R$
-        &lt;ul&gt;
-          &lt;li&gt;knowing that goals and states often share the same structure, one might share features between $\phi$  and $\psi$. (maybe the first layers?)&lt;/li&gt;
-          &lt;li&gt;
-            &lt;p&gt;UVFA can be symmetric&lt;/p&gt;
-
-\[V_g^\star (s) = V_s ^\star (g)\]
-
-            &lt;p&gt;→ this can be achieved by sharing the same network $\phi = \psi$.&lt;/p&gt;
-          &lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ol&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;two-different-ways-to-train-uvfa&quot;&gt;Two different ways to train UVFA&lt;/h3&gt;
-
-&lt;p&gt;At this section, authors focus on “supervised training”, where the values $V_g ^\star(s)$ are all given as a table.&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;End-to-End Learning
-    &lt;ul&gt;
-      &lt;li&gt;
-        &lt;p&gt;using gradient descent, minimize&lt;/p&gt;
-
-\[\mathbb{E} \Big [ (V_g^\star (s) - V(s,g;\theta) )^2 \Big ]\]
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Two-stage training procedure&lt;/p&gt;
-
-    &lt;p&gt;&lt;strong&gt;This can be only applied to two-stream architecture!&lt;/strong&gt;&lt;/p&gt;
-
-    &lt;ul&gt;
-      &lt;li&gt;
-        &lt;p&gt;First, using matrix-factorization of $V_g (s)$, extract embedding vectors $\hat \phi(s)$ and $\hat \psi (g)$.&lt;/p&gt;
-
-        &lt;center&gt;&lt;img src=&quot;Untitled%202.png&quot; width=&quot;100&quot; /&gt;&lt;/center&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-        &lt;p&gt;Second, Learn the parameters of $\phi$ and $\psi$ seperately.&lt;/p&gt;
-
-        &lt;center&gt;&lt;img src=&quot;Untitled%203.png&quot; width=&quot;100&quot; /&gt;&lt;/center&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h3 id=&quot;it-turns-out&quot;&gt;It turns out…&lt;/h3&gt;
-
-&lt;p&gt;&lt;strong&gt;Two-stream architecture, with two-stage learning procedure, with relatively small embedding dimension&lt;/strong&gt; $n$  is better.&lt;/p&gt;
-
-&lt;h3 id=&quot;uvfa-training-in-rl-experiments&quot;&gt;UVFA training in RL Experiments&lt;/h3&gt;
-
-&lt;center&gt;&lt;img src=&quot;Untitled%204.png&quot; width=&quot;400&quot; /&gt;&lt;/center&gt;
-
-&lt;h2 id=&quot;results&quot;&gt;Results?&lt;/h2&gt;
-
-&lt;center&gt;&lt;img src=&quot;Untitled%205.png&quot; width=&quot;400&quot; /&gt;&lt;/center&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;perform just the same as Horde architecture&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Multi-Reward/Objective" /><summary type="html">Introduction Extending the purpose of value function General value function $V_g(s)$ represent the utility of any state $s$ in achieving a given goal $g$, represented by a pseudo-reward function. A collection of general value functions is powerful, and can be used in many ways. Horde architecture → consist of discrete set of value functions, while all of it is learned simultaneously from a single stream of experience. Each value function may also be used to generate a policy or option that leas to a goal state collection of value functions can be used as a predictive representatino of state (predicted values themselves are used as a feature vector) Extending the idea of Value function approximator authors extend the idea of value function approximation to both states $s$ and goal $g$ \[V(s,g;\theta)\] By universal, authors mean that the value function can generalise to any goal $g$ in a set $\mathcal{G}$ of possible goals Learning UVFA can be difficult! Why? agent will only see a small subset of possible combinations of states and goals $(s,g)$ Background define a pseudo-reward function $R_g (s,a,s’)$ define a pseudo-discount function $\gamma_g(s)$ , $\gamma_g (s)=0$ iff $s$ is the goal. Define a general value function \[V_{g,\pi }(s) := \mathbb{E} \bigg [ \sum_{t=0}^\infty R_g (s_{t+1}, a_t, s_t ) \prod_{k=0}^t \gamma_g (s_k) \bigg | \ s_0 =s \bigg ]\] goal 에 다다르면 더 이상 reward function이 더해지지 않는 구조임 Define a general action-value (q) function \[Q_{g, \pi} (s,a) := \mathbb{E}_{s'} [R_g (s,a,s') + \gamma_ g(s') V_{g,\pi} (s') ]\] optimal policy for a given goal \[\pi_g^\star(s) := \argmax _a Q_{\pi, g} (s,a)\] Universal Value Function Approximators (UVFA) Consider function approximators \[\begin{aligned}V(s,g;\theta) &amp;amp;\approx V_g ^\star (s)\\ Q(s,a,g;\theta)&amp;amp; \approx Q_g^\star(s,a) \end{aligned}\] How should we design the function? There are two ways simply concatenate s and g two-stream architecture, mapping each state and goal to $\R^n$ → $h$ maps $\R^n \times \R^n \rightarrow \R$ knowing that goals and states often share the same structure, one might share features between $\phi$ and $\psi$. (maybe the first layers?) UVFA can be symmetric \[V_g^\star (s) = V_s ^\star (g)\] → this can be achieved by sharing the same network $\phi = \psi$. Two different ways to train UVFA At this section, authors focus on “supervised training”, where the values $V_g ^\star(s)$ are all given as a table. End-to-End Learning using gradient descent, minimize \[\mathbb{E} \Big [ (V_g^\star (s) - V(s,g;\theta) )^2 \Big ]\] Two-stage training procedure This can be only applied to two-stream architecture! First, using matrix-factorization of $V_g (s)$, extract embedding vectors $\hat \phi(s)$ and $\hat \psi (g)$. Second, Learn the parameters of $\phi$ and $\psi$ seperately. It turns out… Two-stream architecture, with two-stage learning procedure, with relatively small embedding dimension $n$ is better. UVFA training in RL Experiments Results? perform just the same as Horde architecture</summary></entry><entry><title type="html">[NIPS 2017] Hybrid Reward Architecture for Reinforcement Learning</title><link href="http://localhost:4000/notion_to_markdown/%5BNIPS%202017%5D%20Hybrid%20Reward%20Architecture%20for%20Reinfor%20ec4b86df520441bab17567b05419da01/" rel="alternate" type="text/html" title="[NIPS 2017] Hybrid Reward Architecture for Reinforcement Learning" /><published>2021-04-13T00:00:00+09:00</published><updated>2021-04-13T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/hybrid-reward-architecture</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/%5BNIPS%202017%5D%20Hybrid%20Reward%20Architecture%20for%20Reinfor%20ec4b86df520441bab17567b05419da01/">&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;center&gt;&lt;img src=&quot;/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0067.jpg&quot; /&gt;&lt;/center&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Multi-Reward/Objective" /><category term="Theory/Survey" /><summary type="html">Literature Survey Summary Based on the survey done on multi-reward/objective reinforcement learning topic, I summarized what I’ve understood.</summary></entry><entry><title type="html">[NIPS 2017] Hybrid Reward Architecture for Reinforcement Learning</title><link href="http://localhost:4000/notion_to_markdown/%5BNIPS%202017%5D%20Hybrid%20Reward%20Architecture%20for%20Reinfor%20ec4b86df520441bab17567b05419da01/" rel="alternate" type="text/html" title="[NIPS 2017] Hybrid Reward Architecture for Reinforcement Learning" /><published>2021-04-13T00:00:00+09:00</published><updated>2021-04-13T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/hybrid-reward-architecture</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/%5BNIPS%202017%5D%20Hybrid%20Reward%20Architecture%20for%20Reinfor%20ec4b86df520441bab17567b05419da01/">&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;center&gt;
 &lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;https://www.youtube.com/embed/DYNy7Fvonro&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;&lt;/center&gt;
 
@@ -616,7 +807,141 @@
 &lt;center&gt;
 &lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;https://www.youtube.com/embed/Dz_HuzgMxzo&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;&lt;/center&gt;
 
-&lt;p&gt;&lt;img src=&quot;Untitled%201.png&quot; alt=&quot;Untitled%201.png&quot; /&gt;&lt;/p&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Multi-Reward/Objective" /><summary type="html">Introduction Designing a reward function is important, but not easy. common challenge of RL is to carefully enegineer the reward function → not only reflecting the task at hand, but also carefully shaped to guide the policy optimization. The necessity of cost engineering limits the applicability of RL in the real world, because it requires both RL expertise and domain-specific knowledge. Not applicable in situations where we do not know what admissible behaviour may look like. Therefore, we need to develop algorithms which can learn from unshaped reward signals (e.g. a binary signal indicating successful task completion) What can humans do? humans can learn almost as much from achieveing an undesired outcome as from the desired one. 인간은 실패로부터 배울 수 있다는데, 왜 RL은 못 하냐.. For example, 사람은 하키를 치는 방법을 배운다 쳤을 때, 반드시 골을 넣어야만 배우는 건 아니잖음? 네트의 오른쪽에 맞았을 때는 내가 좀 왼쪽으로 쳐야겠구나 뭐 이런 것을 배울 수 있으니.. 근데 RL은 네트에 골인하지 못하고 살짝 오른쪽으로 빗겨나갔을 때의 failed situation에서 배울 수 있는게 거의 없음. It is however possible to draw another conclusion: ⭐ this sequence of actions would be succesful if the net had been placed further to the right ⭐ RL은 네트에 골인을 해야만 무언가를 학습할 수 있다고 하면, 네트를 여러개 두면 안됨? 오른쪽으로 빗나간 케이스였으면, 살짝 오른쪽에 있는 네트에 대해서는 학습이 가능할 수도 있는거 아닌가? Authors propose “Hindsight Experience Replay” allows the algorithm to perform exactly this kind of reasoning and can be combined with any off-policy RL algorithm. multiple goals → always applicable. (e.g. achieving each state of the system may be treated as a separate goal) makes the training easier, even if the reward signal is sparse and binary Background Deep Q-Networks (DQN) model-free RL algorithm for discrete action spaces $\epsilon$-greedy policy w.r.t. Q is defined as: a) take the greedy action $\pi_Q (s) = \argmax _{a\in \mathcal{A}} Q(s,a)$ with probability $1-\epsilon$ b) take a random action sampled uniformly in $\mathcal{A}$ with probability $\epsilon$ taking an $\epsilon$-greedy policy, generate episodes transition tuples $\langle s_t, a_t, r_t, s_{t+1} \rangle$ is stored inside the replay buffer network is trained using mini-batch gradient descent on the loss $\mathcal{L}$ which encourages the approximated Q-function to satisfy the Bellman equation. \[\begin{aligned} y_t = r_t + \gamma \max_{a'\in \mathcal{A}} Q(s_{t+1}, a')\\ \mathcal{L} = \mathbb{E} (Q(s_t, a_t) - y_t)^2 \end{aligned}\] to make the optimization procedure more stable, targets $y_t$ are usually computed using a seperate target network, changes at a slower pace than the main network # update is done every n epochs/iterations, but way slower than the policy network target_network.load_state_dict(policy_network.state_dict()) Deep Determinisitc Policy Gradients (DDPG) DDPG is a model-free RL algoirithm for continuous action spaces. DDPG use two neural networks target poclicy (actor) $\pi : \mathcal{S} \rightarrow \mathcal{A}$ action-value function approximator (critic) : $Q: \mathcal{S} \times \mathcal{A} \rightarrow \mathbb{R}$ critic’s job is to approximate the actor’s action-value function $Q^\pi$ Episodes are generated using a behaviooral policy ($\pi_b$ ) - noisy version of target policy ($\pi$) \[\pi_b (s) = \pi(s) + \mathcal{N}(0,1)\] episodes stored inside the replay buffer $y_t = r_t + \gamma Q(s_{t+1}, \pi(s_{t+1}) )$ target is computed by the actor, not the max function of Q-function The actor is trained with mini-batch gradient descent on the loss \[\mathcal{L}_a = - \mathbb{E}_s Q(s,\pi(s))\] Universal Value Function Approximators (UVFA) [ICML 2015] Universal Value Function Approximators UVFA is extended version of DQN, where there is more than one goal we may try to achieve Let $\mathcal{G}$ be the space of possible goals. Every goal $g\in \mathcal{G}$ corresponds to some reward function \[r_g : \mathcal{S\times A} \rightarrow \mathbb{R}\] every episode starts with sampling a state-goal pair from some distribution $p(s_0, g)$, and the goal stays fixed for the entire episode. At every timestep, the agent gets as input not only the current state, but also the current goal. \[\pi : \mathcal{S\times G} \rightarrow \mathcal{A}\] and gets the reward \[r_t = r_g (s_t, a_t )\] Q-function now depends not only on state action pair, but also on goal. Thus, \[Q^\pi (s_t, a_t, g) = \mathbb{E}[R_t |s_t, a_t, g]\] we can similarly train an approximator Q-function using the Bellman equation, just like DQN. Hindsight Experience Replay A motivating example state space $\mathcal{S} = {0,1}^n$ action space $\mathcal{A} = {0,1,\cdots, n-1}$ → action $i$ flips the $i$-th bit of the state There’s a goal $g \in \mathcal{S}$ The agent receives a reward $r_g (s,a) =-[s\not = g]$. bit-flipping operation을 통해서 특정 n-bit binary code와 똑같이 만들지 못하는 이상 계속 -1 reward 밖에 못 받음. 당연히 $n$이 커지면 커질수록 reward는 점점 더 sparse 해질 것이고, 학습을 불안정하게 만들 것. As a matter of fact… Standard RL algorithms fail in this environment for $n&amp;gt;40$ One solution might be using a more informative reward function \[r_g (s,a) = -\|s-g\|^2\] however it might not be applicable to more complicated problems. How should we tackle this problem? consider an episode with state $s_1, \cdots, s_T$ and our goal is $g \not = s_1, \cdots, s_T$ → this means that the agent received a reward of -1 at every timestep. we now reexamine the same trajectory with a different goal! → this information can be harvested by using RL algorithm and experience replay where we replace $g$ in the replay buffer by $s_T$. 이왕 final state $s_T$ 까지 간거, 그 곳을 goal 이라고 생각하면 뭔가라도 얻을 수 있잖음? by implementing HER technique, DQN with HER easily solves the task for $n$ up to 50! Multi-goal RL follow the approach from UVFA, train policies and value functions which take as input not only a state $s\in \mathcal{S}$ but also a goal $g\in \mathcal{G}$. Authors also prove that “training an agent to perform multiple tasks can be easier than training it to perform only one task” → 자기네들 방법론이 다방면으로 사용될 수 있다는 것! They assume that every goal $g \in \mathcal{G}$ corresponds to some predicate \[f_g : \mathcal{S} \rightarrow \{0,1\}\] Agent’s goal is to acheve any state that satisfies \[f_g(s)=1\] One example of goal space is state space $\mathcal{S}$ 의 특정 state 하나를 goal 로 지정하는 경우 \[\begin{aligned} \mathcal{S}&amp;amp;=\mathcal{G} \\ f_g(s) &amp;amp;= [s=g]\end{aligned}\] Another example of goal space might be $\mathbb{R}^2$ state space 에서 특정 $x$ 좌표값을 goal 로 지정하고 싶은 경우 \[\begin{aligned} \mathcal{S}&amp;amp;=\mathbb{R}^2 \\ \mathcal{G} &amp;amp; = \mathbb{R} \\ f_g((x,y)) &amp;amp;= [x=g]\end{aligned}\] assume that, for a given state $s$, we can easily find a goal $g$ which is satisfied in this state. More formally, we assume that there is given a mapping \[m: \mathcal{S\rightarrow G}\ \ \text{s.t.} \ \ \forall s\in \mathcal{S}, \ f_{m(s)}(s) = 1\] 자신이 있는 state을 goal 이 되도록 해주는 mapping이라는 건데, 위 첫번째 예시에서는 $m(s) = s$, 두 번째 예시에서는 $m((x,y)) = x$. state space $\mathcal{S}$ 와 goal space $\mathcal{G}$ 가 항상 같지 않을 수 있으니 필요한 정의인 듯. Main Algorithm : Hindsight Experience Replay (HER) after experiencing some episode $s_0, s_1, \cdots, s_T$ we store in the replay buffer every trainsition $s_t \rightarrow s_{t+1}$ not only with the original goal used for this episode, but also with a subset of other goals. One choice which has to be made to use HER → set of additional goals used for replay. simplest version? we replay each trajectory with the goal $m(s_T)$ → goal which is achieved in the final state of the episode. Simple! Results</summary></entry><entry><title type="html">[JAIR 2013] A Survey of Multi-Objective Sequential Decision-Making</title><link href="http://localhost:4000/notion_to_markdown/%5BJAIR%202013%5D%20A%20Survey%20of%20Multi-Objective%20Sequential%202596a1a7dc934dbc9ed305d644b17155/" rel="alternate" type="text/html" title="[JAIR 2013] A Survey of Multi-Objective Sequential Decision-Making" /><published>2021-04-12T00:00:00+09:00</published><updated>2021-04-12T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/survey-of-multi-objective</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/%5BJAIR%202013%5D%20A%20Survey%20of%20Multi-Objective%20Sequential%202596a1a7dc934dbc9ed305d644b17155/">&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;Untitled%201.png&quot; alt=&quot;Untitled%201.png&quot; /&gt;&lt;/p&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Multi-Reward/Objective" /><summary type="html">Introduction Designing a reward function is important, but not easy. common challenge of RL is to carefully enegineer the reward function → not only reflecting the task at hand, but also carefully shaped to guide the policy optimization. The necessity of cost engineering limits the applicability of RL in the real world, because it requires both RL expertise and domain-specific knowledge. Not applicable in situations where we do not know what admissible behaviour may look like. Therefore, we need to develop algorithms which can learn from unshaped reward signals (e.g. a binary signal indicating successful task completion) What can humans do? humans can learn almost as much from achieveing an undesired outcome as from the desired one. 인간은 실패로부터 배울 수 있다는데, 왜 RL은 못 하냐.. For example, 사람은 하키를 치는 방법을 배운다 쳤을 때, 반드시 골을 넣어야만 배우는 건 아니잖음? 네트의 오른쪽에 맞았을 때는 내가 좀 왼쪽으로 쳐야겠구나 뭐 이런 것을 배울 수 있으니.. 근데 RL은 네트에 골인하지 못하고 살짝 오른쪽으로 빗겨나갔을 때의 failed situation에서 배울 수 있는게 거의 없음. It is however possible to draw another conclusion: ⭐ this sequence of actions would be succesful if the net had been placed further to the right ⭐ RL은 네트에 골인을 해야만 무언가를 학습할 수 있다고 하면, 네트를 여러개 두면 안됨? 오른쪽으로 빗나간 케이스였으면, 살짝 오른쪽에 있는 네트에 대해서는 학습이 가능할 수도 있는거 아닌가? Authors propose “Hindsight Experience Replay” allows the algorithm to perform exactly this kind of reasoning and can be combined with any off-policy RL algorithm. multiple goals → always applicable. (e.g. achieving each state of the system may be treated as a separate goal) makes the training easier, even if the reward signal is sparse and binary Background Deep Q-Networks (DQN) model-free RL algorithm for discrete action spaces $\epsilon$-greedy policy w.r.t. Q is defined as: a) take the greedy action $\pi_Q (s) = \argmax _{a\in \mathcal{A}} Q(s,a)$ with probability $1-\epsilon$ b) take a random action sampled uniformly in $\mathcal{A}$ with probability $\epsilon$ taking an $\epsilon$-greedy policy, generate episodes transition tuples $\langle s_t, a_t, r_t, s_{t+1} \rangle$ is stored inside the replay buffer network is trained using mini-batch gradient descent on the loss $\mathcal{L}$ which encourages the approximated Q-function to satisfy the Bellman equation. \[\begin{aligned} y_t = r_t + \gamma \max_{a'\in \mathcal{A}} Q(s_{t+1}, a')\\ \mathcal{L} = \mathbb{E} (Q(s_t, a_t) - y_t)^2 \end{aligned}\] to make the optimization procedure more stable, targets $y_t$ are usually computed using a seperate target network, changes at a slower pace than the main network # update is done every n epochs/iterations, but way slower than the policy network target_network.load_state_dict(policy_network.state_dict()) Deep Determinisitc Policy Gradients (DDPG) DDPG is a model-free RL algoirithm for continuous action spaces. DDPG use two neural networks target poclicy (actor) $\pi : \mathcal{S} \rightarrow \mathcal{A}$ action-value function approximator (critic) : $Q: \mathcal{S} \times \mathcal{A} \rightarrow \mathbb{R}$ critic’s job is to approximate the actor’s action-value function $Q^\pi$ Episodes are generated using a behaviooral policy ($\pi_b$ ) - noisy version of target policy ($\pi$) \[\pi_b (s) = \pi(s) + \mathcal{N}(0,1)\] episodes stored inside the replay buffer $y_t = r_t + \gamma Q(s_{t+1}, \pi(s_{t+1}) )$ target is computed by the actor, not the max function of Q-function The actor is trained with mini-batch gradient descent on the loss \[\mathcal{L}_a = - \mathbb{E}_s Q(s,\pi(s))\] Universal Value Function Approximators (UVFA) [ICML 2015] Universal Value Function Approximators UVFA is extended version of DQN, where there is more than one goal we may try to achieve Let $\mathcal{G}$ be the space of possible goals. Every goal $g\in \mathcal{G}$ corresponds to some reward function \[r_g : \mathcal{S\times A} \rightarrow \mathbb{R}\] every episode starts with sampling a state-goal pair from some distribution $p(s_0, g)$, and the goal stays fixed for the entire episode. At every timestep, the agent gets as input not only the current state, but also the current goal. \[\pi : \mathcal{S\times G} \rightarrow \mathcal{A}\] and gets the reward \[r_t = r_g (s_t, a_t )\] Q-function now depends not only on state action pair, but also on goal. Thus, \[Q^\pi (s_t, a_t, g) = \mathbb{E}[R_t |s_t, a_t, g]\] we can similarly train an approximator Q-function using the Bellman equation, just like DQN. Hindsight Experience Replay A motivating example state space $\mathcal{S} = {0,1}^n$ action space $\mathcal{A} = {0,1,\cdots, n-1}$ → action $i$ flips the $i$-th bit of the state There’s a goal $g \in \mathcal{S}$ The agent receives a reward $r_g (s,a) =-[s\not = g]$. bit-flipping operation을 통해서 특정 n-bit binary code와 똑같이 만들지 못하는 이상 계속 -1 reward 밖에 못 받음. 당연히 $n$이 커지면 커질수록 reward는 점점 더 sparse 해질 것이고, 학습을 불안정하게 만들 것. As a matter of fact… Standard RL algorithms fail in this environment for $n&amp;gt;40$ One solution might be using a more informative reward function \[r_g (s,a) = -\|s-g\|^2\] however it might not be applicable to more complicated problems. How should we tackle this problem? consider an episode with state $s_1, \cdots, s_T$ and our goal is $g \not = s_1, \cdots, s_T$ → this means that the agent received a reward of -1 at every timestep. we now reexamine the same trajectory with a different goal! → this information can be harvested by using RL algorithm and experience replay where we replace $g$ in the replay buffer by $s_T$. 이왕 final state $s_T$ 까지 간거, 그 곳을 goal 이라고 생각하면 뭔가라도 얻을 수 있잖음? by implementing HER technique, DQN with HER easily solves the task for $n$ up to 50! Multi-goal RL follow the approach from UVFA, train policies and value functions which take as input not only a state $s\in \mathcal{S}$ but also a goal $g\in \mathcal{G}$. Authors also prove that “training an agent to perform multiple tasks can be easier than training it to perform only one task” → 자기네들 방법론이 다방면으로 사용될 수 있다는 것! They assume that every goal $g \in \mathcal{G}$ corresponds to some predicate \[f_g : \mathcal{S} \rightarrow \{0,1\}\] Agent’s goal is to acheve any state that satisfies \[f_g(s)=1\] One example of goal space is state space $\mathcal{S}$ 의 특정 state 하나를 goal 로 지정하는 경우 \[\begin{aligned} \mathcal{S}&amp;amp;=\mathcal{G} \\ f_g(s) &amp;amp;= [s=g]\end{aligned}\] Another example of goal space might be $\mathbb{R}^2$ state space 에서 특정 $x$ 좌표값을 goal 로 지정하고 싶은 경우 \[\begin{aligned} \mathcal{S}&amp;amp;=\mathbb{R}^2 \\ \mathcal{G} &amp;amp; = \mathbb{R} \\ f_g((x,y)) &amp;amp;= [x=g]\end{aligned}\] assume that, for a given state $s$, we can easily find a goal $g$ which is satisfied in this state. More formally, we assume that there is given a mapping \[m: \mathcal{S\rightarrow G}\ \ \text{s.t.} \ \ \forall s\in \mathcal{S}, \ f_{m(s)}(s) = 1\] 자신이 있는 state을 goal 이 되도록 해주는 mapping이라는 건데, 위 첫번째 예시에서는 $m(s) = s$, 두 번째 예시에서는 $m((x,y)) = x$. state space $\mathcal{S}$ 와 goal space $\mathcal{G}$ 가 항상 같지 않을 수 있으니 필요한 정의인 듯. Main Algorithm : Hindsight Experience Replay (HER) after experiencing some episode $s_0, s_1, \cdots, s_T$ we store in the replay buffer every trainsition $s_t \rightarrow s_{t+1}$ not only with the original goal used for this episode, but also with a subset of other goals. One choice which has to be made to use HER → set of additional goals used for replay. simplest version? we replay each trajectory with the goal $m(s_T)$ → goal which is achieved in the final state of the episode. Simple! Results</summary></entry><entry><title type="html">[ICML 2015] Universal Value Function Approximators</title><link href="http://localhost:4000/notion_to_markdown/%5BICML%202015%5D%20Universal%20Value%20Function%20Approximators%207120334d6860455c801cd9284c92970b/" rel="alternate" type="text/html" title="[ICML 2015] Universal Value Function Approximators" /><published>2021-04-13T00:00:00+09:00</published><updated>2021-04-13T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/universal-value-function-approximator</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/%5BICML%202015%5D%20Universal%20Value%20Function%20Approximators%207120334d6860455c801cd9284c92970b/">&lt;h2 id=&quot;introduction&quot;&gt;Introduction&lt;/h2&gt;
+
+&lt;h3 id=&quot;extending-the-purpose-of-value-function&quot;&gt;Extending the purpose of value function&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;General value function $V_g(s)$ represent the utility of any state $s$ in &lt;strong&gt;achieving a given goal $g$&lt;/strong&gt;, represented by a pseudo-reward function.&lt;/li&gt;
+  &lt;li&gt;A collection of general value functions is powerful, and can be used in many ways.
+    &lt;ol&gt;
+      &lt;li&gt;Horde architecture → consist of discrete set of value functions, while all of it is learned simultaneously from a single stream of experience.&lt;/li&gt;
+      &lt;li&gt;Each value function may also be used to generate a policy or option that leas to a goal state&lt;/li&gt;
+      &lt;li&gt;collection of value functions can be used as a predictive representatino of state (predicted values themselves are used as a feature vector)&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;extending-the-idea-of-value-function-approximator&quot;&gt;Extending the idea of Value function approximator&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;authors extend the idea of value function approximation to both states $s$ and goal $g$&lt;/p&gt;
+
+\[V(s,g;\theta)\]
+  &lt;/li&gt;
+  &lt;li&gt;By universal, authors mean that the value function can generalise to any goal $g$ in a set $\mathcal{G}$ of possible goals&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Learning UVFA can be difficult! Why?&lt;/p&gt;
+
+    &lt;p&gt;agent will only see a small subset of possible combinations of states and goals $(s,g)$&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;background&quot;&gt;Background&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;define a pseudo-reward function $R_g (s,a,s’)$&lt;/li&gt;
+  &lt;li&gt;define a pseudo-discount function $\gamma_g(s)$ , $\gamma_g (s)=0$ iff $s$ is the goal.&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Define a general value function&lt;/p&gt;
+
+\[V_{g,\pi }(s) := \mathbb{E} \bigg [ \sum_{t=0}^\infty R_g (s_{t+1}, a_t, s_t ) \prod_{k=0}^t \gamma_g (s_k) \bigg | \ s_0  =s \bigg ]\]
+
+    &lt;p&gt;goal 에 다다르면 더 이상 reward function이 더해지지 않는 구조임&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Define a general action-value (q) function&lt;/p&gt;
+
+\[Q_{g, \pi} (s,a) := \mathbb{E}_{s'} [R_g (s,a,s') + \gamma_ g(s') V_{g,\pi} (s') ]\]
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;optimal policy for a given goal&lt;/p&gt;
+
+\[\pi_g^\star(s) := \argmax _a Q_{\pi, g} (s,a)\]
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;universal-value-function-approximators-uvfa&quot;&gt;Universal Value Function Approximators (UVFA)&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Consider function approximators&lt;/p&gt;
+
+\[\begin{aligned}V(s,g;\theta) &amp;amp;\approx V_g ^\star (s)\\ Q(s,a,g;\theta)&amp;amp; \approx Q_g^\star(s,a) \end{aligned}\]
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;How should we design the function? There are two ways&lt;/p&gt;
+
+    &lt;center&gt;&lt;img src=&quot;Untitled%201.png&quot; width=&quot;400&quot; /&gt;&lt;/center&gt;
+
+    &lt;ol&gt;
+      &lt;li&gt;simply concatenate s and g&lt;/li&gt;
+      &lt;li&gt;two-stream architecture, mapping each state and goal to $\R^n$  → $h$ maps $\R^n \times \R^n \rightarrow \R$
+        &lt;ul&gt;
+          &lt;li&gt;knowing that goals and states often share the same structure, one might share features between $\phi$  and $\psi$. (maybe the first layers?)&lt;/li&gt;
+          &lt;li&gt;
+            &lt;p&gt;UVFA can be symmetric&lt;/p&gt;
+
+\[V_g^\star (s) = V_s ^\star (g)\]
+
+            &lt;p&gt;→ this can be achieved by sharing the same network $\phi = \psi$.&lt;/p&gt;
+          &lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;two-different-ways-to-train-uvfa&quot;&gt;Two different ways to train UVFA&lt;/h3&gt;
+
+&lt;p&gt;At this section, authors focus on “supervised training”, where the values $V_g ^\star(s)$ are all given as a table.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;End-to-End Learning
+    &lt;ul&gt;
+      &lt;li&gt;
+        &lt;p&gt;using gradient descent, minimize&lt;/p&gt;
+
+\[\mathbb{E} \Big [ (V_g^\star (s) - V(s,g;\theta) )^2 \Big ]\]
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Two-stage training procedure&lt;/p&gt;
+
+    &lt;p&gt;&lt;strong&gt;This can be only applied to two-stream architecture!&lt;/strong&gt;&lt;/p&gt;
+
+    &lt;ul&gt;
+      &lt;li&gt;
+        &lt;p&gt;First, using matrix-factorization of $V_g (s)$, extract embedding vectors $\hat \phi(s)$ and $\hat \psi (g)$.&lt;/p&gt;
+
+        &lt;center&gt;&lt;img src=&quot;Untitled%202.png&quot; width=&quot;100&quot; /&gt;&lt;/center&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;Second, Learn the parameters of $\phi$ and $\psi$ seperately.&lt;/p&gt;
+
+        &lt;center&gt;&lt;img src=&quot;Untitled%203.png&quot; width=&quot;100&quot; /&gt;&lt;/center&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;it-turns-out&quot;&gt;It turns out…&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;Two-stream architecture, with two-stage learning procedure, with relatively small embedding dimension&lt;/strong&gt; $n$  is better.&lt;/p&gt;
+
+&lt;h3 id=&quot;uvfa-training-in-rl-experiments&quot;&gt;UVFA training in RL Experiments&lt;/h3&gt;
+
+&lt;center&gt;&lt;img src=&quot;Untitled%204.png&quot; width=&quot;400&quot; /&gt;&lt;/center&gt;
+
+&lt;h2 id=&quot;results&quot;&gt;Results?&lt;/h2&gt;
+
+&lt;center&gt;&lt;img src=&quot;Untitled%205.png&quot; width=&quot;400&quot; /&gt;&lt;/center&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;perform just the same as Horde architecture&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Multi-Reward/Objective" /><summary type="html">Introduction Extending the purpose of value function General value function $V_g(s)$ represent the utility of any state $s$ in achieving a given goal $g$, represented by a pseudo-reward function. A collection of general value functions is powerful, and can be used in many ways. Horde architecture → consist of discrete set of value functions, while all of it is learned simultaneously from a single stream of experience. Each value function may also be used to generate a policy or option that leas to a goal state collection of value functions can be used as a predictive representatino of state (predicted values themselves are used as a feature vector) Extending the idea of Value function approximator authors extend the idea of value function approximation to both states $s$ and goal $g$ \[V(s,g;\theta)\] By universal, authors mean that the value function can generalise to any goal $g$ in a set $\mathcal{G}$ of possible goals Learning UVFA can be difficult! Why? agent will only see a small subset of possible combinations of states and goals $(s,g)$ Background define a pseudo-reward function $R_g (s,a,s’)$ define a pseudo-discount function $\gamma_g(s)$ , $\gamma_g (s)=0$ iff $s$ is the goal. Define a general value function \[V_{g,\pi }(s) := \mathbb{E} \bigg [ \sum_{t=0}^\infty R_g (s_{t+1}, a_t, s_t ) \prod_{k=0}^t \gamma_g (s_k) \bigg | \ s_0 =s \bigg ]\] goal 에 다다르면 더 이상 reward function이 더해지지 않는 구조임 Define a general action-value (q) function \[Q_{g, \pi} (s,a) := \mathbb{E}_{s'} [R_g (s,a,s') + \gamma_ g(s') V_{g,\pi} (s') ]\] optimal policy for a given goal \[\pi_g^\star(s) := \argmax _a Q_{\pi, g} (s,a)\] Universal Value Function Approximators (UVFA) Consider function approximators \[\begin{aligned}V(s,g;\theta) &amp;amp;\approx V_g ^\star (s)\\ Q(s,a,g;\theta)&amp;amp; \approx Q_g^\star(s,a) \end{aligned}\] How should we design the function? There are two ways simply concatenate s and g two-stream architecture, mapping each state and goal to $\R^n$ → $h$ maps $\R^n \times \R^n \rightarrow \R$ knowing that goals and states often share the same structure, one might share features between $\phi$ and $\psi$. (maybe the first layers?) UVFA can be symmetric \[V_g^\star (s) = V_s ^\star (g)\] → this can be achieved by sharing the same network $\phi = \psi$. Two different ways to train UVFA At this section, authors focus on “supervised training”, where the values $V_g ^\star(s)$ are all given as a table. End-to-End Learning using gradient descent, minimize \[\mathbb{E} \Big [ (V_g^\star (s) - V(s,g;\theta) )^2 \Big ]\] Two-stage training procedure This can be only applied to two-stream architecture! First, using matrix-factorization of $V_g (s)$, extract embedding vectors $\hat \phi(s)$ and $\hat \psi (g)$. Second, Learn the parameters of $\phi$ and $\psi$ seperately. It turns out… Two-stream architecture, with two-stage learning procedure, with relatively small embedding dimension $n$ is better. UVFA training in RL Experiments Results? perform just the same as Horde architecture</summary></entry><entry><title type="html">[JAIR 2013] A Survey of Multi-Objective Sequential Decision-Making</title><link href="http://localhost:4000/notion_to_markdown/%5BJAIR%202013%5D%20A%20Survey%20of%20Multi-Objective%20Sequential%202596a1a7dc934dbc9ed305d644b17155/" rel="alternate" type="text/html" title="[JAIR 2013] A Survey of Multi-Objective Sequential Decision-Making" /><published>2021-04-12T00:00:00+09:00</published><updated>2021-04-12T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/survey-of-multi-objective</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/%5BJAIR%202013%5D%20A%20Survey%20of%20Multi-Objective%20Sequential%202596a1a7dc934dbc9ed305d644b17155/">&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;center&gt;&lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;https://www.youtube.com/embed/_zJ_cbg3TzY&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;&lt;/center&gt;
 
@@ -1536,91 +1861,4 @@ $s_2$ 는 $s_1$ 의 눈치를 보고 (지가 실제로 원하는 것은 $(0.5,0.
 
 &lt;h3 id=&quot;exact-algorithm&quot;&gt;Exact Algorithm&lt;/h3&gt;
 
-&lt;center&gt;&lt;img src=&quot;Untitled.png&quot; width=&quot;400&quot; /&gt;&lt;/center&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Shared-Autonomy" /><summary type="html">Introduction Imagine a situation of landing a quadrotor safely… Humans suffer mostly because… controlling many degrees of freedom is hard! → but knows what a “safe landing” is. Robots suffer mostly because… they don’t know the concept of good landing! ??? : By the way, can’t I just stop spinning the rotors? I can make this land anyway. → but they do not struggle with high degrees of freedom Shared autonomy can be the solution in this case… “by combining the user input with automated assistance” What’s different with the Hindsight-optimization paper? “We focus on an area of shared autoonomy in which information about the user’s intent is hidden from the robot….” 그럼 hindsight optimization 에서는 안 그랬나? “…in which prior work has proposed approaches that infer the user’s goal from their input and autonomously act to achieve it.” However, these approahces tend to assume that we know the dynamics model fo the world we know how to represent our goal we know the policy to achieve that goal However, above assumptions may be too much of a constraint considering that Fitting an accurate global dynamics model can be more difficult than learning to perform the task assuming a fixed representation of the user’s goal reduces the flexibility of the system to perform tasks in which the user’s desires are difficult to specify but easy to evaluate user input can exhibit systematic suboptimality that prevents standard goal inference algorithms from recovering user intent by inverting a geneartive model of behavior. From each perspective.. From the agent’s perspective → the user acts like a prior policy that can be fine-tuned + additional sensor generating observations from which the agent can implicitly decode the user’s private information From the user’s perspective → the agent behvaes like an adaptive interface that learns a personalized mapping from user commands to actions that maximizes task reward. To achieve their goal.. use human-in-loop deep Q-learning to learn an approximate state-action value function that computes the expected future return of an action given the current environmental observation Model-free shared autonomy Problem statement Authors relax the standard formulation of shared autonomy defined by POMDP in [Paper Review] Shared Autonomy via Hindsight Optimization In their problem formulation, the transition $T$, the user’s policy $\pi_h$, and the goal space $\mathcal{G}$ are no longer all necessarily known to the robot. 그치, hindsight optimization 페이퍼에서는 POMDP를 사용하기 위해서 이것들을 다 알아야 했었지. user’s policy $\pi_h$의 경우 MaxEnt IOC로 알아내려고 했었고. The reward function, which still depends on the user’s private information, is decomposed as: \[R(s,a,s') =R_{general}(s,a,s')+ R_{feedback}(s,a,s')\] 여기서 $R_{general}$이란 거는 reward that are known (e.g. such as the need to avoid collisions) $R_{feedback}$ is a user-generated feedback that depends on their private information. (do not know) In practice, the user might simply indicate once per trail whether the robot succeeded or not. Three types of setting known-user-policy : unknown dynamics, known goal space and user policy known-goal-space : unknown dynamics, user policy, and known goal space min assumptions : unknown dynamics, user policy, goal space ← most focused Method overview input = observations of the environment and the user’s controls or inferred goal output = high value action / control output that is as close as possible to the user’s control → how the agent combines user input with environmental observations? Incorporating user control incorporate information from the user as useful observations for the agent jointly embeds the agent’s observation of the environement $s_t$ with the information from the user $u_t$ by simply concatenating \[\tilde s_t = \begin{bmatrix} s_t \\ u_t\end{bmatrix}\] for min-assumption case… the policy directly takes in the user’s actions $a_t ^h$ and must learn to implicitly decode the user’s intent and perform the task (action → intent) to the agent, the user is part of the external environment → user’s control is yet another source of observations Agent can discover arbitrary relationships between user controls and observations of the physical environment, rather than explicitly assuming the existence of a goal. 음.. 훨씬 깔끔하군.. information $u_t$ 로서 raw $a_t ^h$를 사용한다는 거고, 나머지는 deep neural network 에 맡긴다는 거 같음. Q-learning with user control human-in-the-loop model-free RL 의 biggest challenge maintaining informative user input → user input이 suggested control 일 경우, user의 suggestion 을 계속 무시한 채 different action을 취하면 user input의 quality가 떨어지게 될 것 (user는 자신의 action으로부터 파생된 feedback을 바탕으로 control을 하니까) minimizing the number of interactions with the environment → model-free reinforcement learning은 주변 environment와 많은 interaction을 필요로 하는데 이게 impractical 하다. 이를 해결하기 위해 DQN 대신에 neural fitted Q-iteration (NFQI)를 사용. Control Sharing Select a feasible action closest to the user’s suggestion, where an action is feasible if it isn’t that much worse than the optimal action. \[\pi_\alpha (a|\tilde{s}, a^h) = \delta \Big (a= \argmax_{\{a:Q'(\tilde{s},a)\geq(1-\alpha)Q'(\tilde{s},a^*)\}} f(a,a^h) \Big )\] where $f$ is an action simliarty function and \[Q'(\tilde{s},a) = Q(\tilde{s},a) - \min_{a'\in \mathcal{A}} Q(\tilde{s},a')\] $\alpha$ determines the tolerance of the system to suboptimal human suggestions → amount of assistance! Exact Algorithm</summary></entry><entry><title type="html">[CVPR 2020] What’s Hidden in a Randomly Weighted Neural Network?</title><link href="http://localhost:4000/notion_to_markdown/%5BPaper%20Review%5D%20What%E2%80%99s%20Hidden%20in%20a%20Randomly%20Weighte%20a4b62c1371134df789f399dbc3f6e284/" rel="alternate" type="text/html" title="[CVPR 2020] What’s Hidden in a Randomly Weighted Neural Network?" /><published>2021-03-26T00:00:00+09:00</published><updated>2021-03-26T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/whats-hidden-in</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/%5BPaper%20Review%5D%20What%E2%80%99s%20Hidden%20in%20a%20Randomly%20Weighte%20a4b62c1371134df789f399dbc3f6e284/">&lt;h2 id=&quot;motivation&quot;&gt;Motivation&lt;/h2&gt;
-
-&lt;center&gt;&lt;img src=&quot;Untitled.png&quot; width=&quot;500&quot; /&gt;&lt;/center&gt;
-
-&lt;p&gt;Paper claims that, there is a subnetwork within a neural network that performs well on a given task, and authors propose an algorithm to find such subnetwork. Authors emphasize that they do not even consider tuning the weights values in the network: &lt;strong&gt;they are just trying to find the best network structure within a fixed, randomly weighted network.&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;Meanwhile, this main goal seems quite similar to the one we read in the “Deconstructing the Lottery Ticket” paper: learning a supermask! However, authors claim that (and just like I pointed out) the stochasticity underlying the mask generating function may limit the performance. Thus, they propose another algorithm to find such supermask (edge-popup algorithm), finding an effective subnetwork within randomly weighted neural networks.&lt;/p&gt;
-
-&lt;p&gt;To summarize, this paper is different from previous papers I read before&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Comparing with the original &lt;strong&gt;&lt;em&gt;Lottery Ticket&lt;/em&gt;&lt;/strong&gt; paper : they said that there is a subnetwork that can be effectively trained from scratch (when properly intialized!) → they actually tune the weight values.&lt;/li&gt;
-  &lt;li&gt;Comparing with previous &lt;strong&gt;&lt;em&gt;Deconstructing the Lottery Ticket&lt;/em&gt;&lt;/strong&gt; paper : they said that they can found a supermask (thus a subnetwork) which can perform quite effectively → &lt;strong&gt;but their supermask learning algorithm contains too much stochasticity (even though they learn the same masking pre-matrix, resulting mask cannot be reproduced!)&lt;/strong&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;related-works&quot;&gt;Related Works&lt;/h2&gt;
-
-&lt;h3 id=&quot;neural-architecture-search-nas&quot;&gt;Neural Architecture Search (NAS)&lt;/h3&gt;
-
-&lt;p&gt;아.. 이런 분야도 있었구만..! 흥미롭군… feature (hand-crafted) engineering → feature learning 하는 것으로 시대가 변하였는데 사실 &lt;strong&gt;feature 대신에 neural network architecture 에 대한 hand-crafted engineering&lt;/strong&gt; 을 하고 있는 것 아니냐는 지적.. NAS 는 그 부분을 태클하는 학문 분야인듯. 아래는 원문을 그대로 옮겨오겠음.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;The advent of modern neural networks has &lt;strong&gt;shifted the focus from feature engineering to feature learning&lt;/strong&gt;. However, researchers may now ﬁnd themselves &lt;strong&gt;manually engineering the architecture of the network&lt;/strong&gt;. Methods of Neural Architecture Search (NAS) instead provide a mechanism for learning the architecture of neural network jointly with the weights. Models powered by NAS have recently obtained state of the art classiﬁcation performance on ImageNet.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h3 id=&quot;discovering-nerual-wirings-dnw&quot;&gt;Discovering Nerual Wirings (DNW)&lt;/h3&gt;
-
-&lt;p&gt;→ weights and structure are jointly optimnized free from the typical constraints of NAS&lt;/p&gt;
-
-&lt;p&gt;→ however the subnetwork is chosen by taking the weights with the highest magnitude&lt;/p&gt;
-
-&lt;p&gt;→ there is no way to separate the weights and the structure&lt;/p&gt;
-
-&lt;h3 id=&quot;weight-agnostic-neural-networks-wann&quot;&gt;Weight Agnostic Neural Networks (WANN)&lt;/h3&gt;
-
-&lt;p&gt;Architecture alone can be the solution of a problem! WANN builds a neural network that achieve high performance while all of the weights have the same value, and surprisingly, the shared weight value doesn’t affect the performance &lt;strong&gt;(= which means, architecture itself is solving the problem by itself!)&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;Authors claim that they are inspired by WANN → &lt;strong&gt;instead having shared weights, they fix it to a random value!&lt;/strong&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;details&quot;&gt;Details&lt;/h2&gt;
-
-&lt;h3 id=&quot;why-are-authors-so-sure-about-the-existence-of-effective-subnetwork&quot;&gt;Why are authors so sure about the existence of effective subnetwork?&lt;/h3&gt;
-
-&lt;p&gt;They in fact provide a pseudo-proof of their intuition. As noted in Figure 1, let’s assume that $\tau$ is a network with same structure of $N$ that achieves good accuracy. Let $q$ be the probability that given subnetwork of $N$ has weights that are close enough to $\tau$, and thus obtain the same accuracy. This probability $q$ is extremely small, but it is still nonzero. Therefore, the probability that &lt;strong&gt;no subnetwork of N is close enough to $\tau$ is effectively $(1-q)^S$ where S is the number of possible networks.&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;그러니까 얘네가 하고자 하는 말은… 사이즈가 작은 네트워크 $\tau$ 도 잘 training 시키면 accuracy가 잘 나오는 모델이 있지 않냐. 그니까 저자들은 조금 더 큰 randomly weighted network 안에서 뽑아낼 수 있는 무수히 많은 subnetwork 중에서 저 $\tau$ 랑 비슷한 놈을 찾고야 말겠다 이건데,&lt;/p&gt;
-
-&lt;p&gt;그냥 임의의 subnetwork 하나를 딱 뽑아내서 $\tau$ 랑 비슷한 weight를 가지고 비슷한 accuracy를 가질 확률을 $q$ 라 하면, 물론.. $q$는 무척 작은 숫자일터인데.. 얘네가 하는 말은.. 그래도 0은 아니지 않냐 이 말임. 여기서 저자들의 논리는, bigger network에서 뽑아낼 수 있는 subnetwork 의 전체 개수를 S라 하면 (네트워크가 깊어지면 깊어질수록 무진장 많아지겟지)&lt;/p&gt;
-
-&lt;p&gt;그 무수히 많은 S개의 network 중에서 정말 그 어느것도 $\tau$ 랑 비슷한 놈이 없으려면&lt;/p&gt;
-
-\[(1-q)^S\]
-
-&lt;p&gt;의 확률이지 않겠냐 이거지. 근데 $q$가 아무리 작더라도 $q&amp;gt;0$ nonzero value이니까 S 가 무진장 커지면 저게 0에 가까워지지 않겠냐 이 논리를 펴는 거임.&lt;/p&gt;
-
-&lt;h3 id=&quot;so-how-do-they-find-out-the-subnetwork-edge-popup-algorithm&quot;&gt;So how do they find out the subnetwork? Edge-popup algorithm.&lt;/h3&gt;
-
-&lt;p&gt;일단 저자들은 node $u$ 와 $v$ 를 잇는 weight  $w_{uv}$ 에 score $s_{uv}$ 를 assign 하는데, 얘네들이 하는 거는 저 $s$ 값을 학습할 계획이고, forward pass 과정에서는 score $s$ 값을 기준으로 top -k % 만큼만 남기고 나머지는 pruning 을 하게 됨.&lt;/p&gt;
-
-&lt;p&gt;일반적인 pruning은 weight $w$를 기준으로 pruning을 한다면 여기서는 별도의 score 값 $s$를 기준으로 pruning을 시킨다는 것임. &lt;strong&gt;다르게 보면 [deconstructing LT] paper에서 weight의 중요도를 평가하기 위한 masking criterion을 hand-craft 하였는데 여기서는 이거를 learning으로 얻어내겠다고 생각할 수도 있을 것 같음.&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;만약 weight $w_{uv}$가 loss를 낮추는 데 critical한 역할을 한다면 이전 training iteration에서는 $s_{uv}$가 낮았다 하더라도 다음 iteration에서는 $s_{uv}$를 높이는 쪽으로 학습을 해야된다는 것. 그래서 초기에 낮은 값을 assign 받은 $s_{uv}$ 가 자기 직속 weight의 역할을 인정받아 차츰 score가 높아진다면 결국 특정 threshold 이상으로, 수면 위로 &lt;strong&gt;pop-up&lt;/strong&gt; 하게 된다는 얘기임.&lt;/p&gt;
-
-&lt;p&gt;구체적인 update equation은 아래와 같음. 이거 derive하는 과정에서 top-k% high score를 기준으로 masking을 하는 function이 gradient 계산이 불가능해서 backprop 과정에서는 그 과정을 고려하지 않고 계산하였음.&lt;/p&gt;
-
-\[\tilde{s}_{uv} = s_{uv}- \alpha \frac{\partial \mathcal{L}}{\partial \mathcal{I}_v}w_{uv}\mathcal{Z}_u\]
-
-&lt;p&gt;여기서 $\mathcal{I}_v$는 $v$번째 neuron으로 들어오는 input이고 $\mathcal{Z}_u$는 $u$번째 neuron의 output, 그러니까 $\mathcal{Z}_u = \texttt{nn.ReLU}(\mathcal{I}_u)$임.&lt;/p&gt;
-
-\[\mathcal{I}_v = \sum_{u \in \mathcal{V}^{(l-1)}} {w_{uv}\mathcal{Z}_u}\]
-
-&lt;h2 id=&quot;opinions&quot;&gt;Opinions&lt;/h2&gt;
-
-&lt;p&gt;뭐.. 그리 큰 감흥은 없는 듯. 이전의 supermask 페이퍼에서 stochasticity를 제거한 버전인 것 같기도 하고, 내가 직전 리뷰 페이지 마지막에 제안(?)했던&lt;/p&gt;
-
-&lt;p&gt;또한, supermask generating function을  $g(m) = \text{Bern}(\text{sigmoid}(m))$ 으로 결정하였는데 이것도 다른 방법이 있을 것이라고 생각함. 당장 생각나는 건 예를 들어&lt;/p&gt;
-
-\[g(m) = u{(\text{sigmoid}(m))}\]
-
-&lt;p&gt;where&lt;/p&gt;
-
-\[u(s;t \in (0,1))=\begin{cases}1 &amp;amp; \text{if } s&amp;gt;t \\ 0&amp;amp; \text{else}\end{cases}\]
-
-&lt;p&gt;이렇게 정의를 한다면 $t$를 조절하면서 간접적으로 pruning ratio를 조절할 수 있을 수도 있을 것 같고, supermask generating 과정이 stochastic하지 않기 때문에 조금 더 나을 수도 (물론 못할 수도) 있을 것 같고. 실험을 해봐야될 것 같음.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;위 방법에서 sigmoid 대신에 그냥 raw한 score 값을 쓰고 u function을 top-k% 만 남기는 function 으로 대체한 버전인 듯. 뭐가 좋을지는 모르겟구먼. pruning ratio를 명확하고 직접적으로 조절해야 될 필요가 있을 경우에는 이 페이퍼에서 제안한 방법이 더 좋을 것 같음.&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;근데 CVPR20 에 accept이 된걸 보면 내가 이해하지 못한 contribution이 뭔가가 더 있는듯..&lt;/p&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Model-Compression" /><category term="Network-Pruning" /><category term="Lottery-Ticket" /><summary type="html">Motivation Paper claims that, there is a subnetwork within a neural network that performs well on a given task, and authors propose an algorithm to find such subnetwork. Authors emphasize that they do not even consider tuning the weights values in the network: they are just trying to find the best network structure within a fixed, randomly weighted network. Meanwhile, this main goal seems quite similar to the one we read in the “Deconstructing the Lottery Ticket” paper: learning a supermask! However, authors claim that (and just like I pointed out) the stochasticity underlying the mask generating function may limit the performance. Thus, they propose another algorithm to find such supermask (edge-popup algorithm), finding an effective subnetwork within randomly weighted neural networks. To summarize, this paper is different from previous papers I read before Comparing with the original Lottery Ticket paper : they said that there is a subnetwork that can be effectively trained from scratch (when properly intialized!) → they actually tune the weight values. Comparing with previous Deconstructing the Lottery Ticket paper : they said that they can found a supermask (thus a subnetwork) which can perform quite effectively → but their supermask learning algorithm contains too much stochasticity (even though they learn the same masking pre-matrix, resulting mask cannot be reproduced!) Related Works Neural Architecture Search (NAS) 아.. 이런 분야도 있었구만..! 흥미롭군… feature (hand-crafted) engineering → feature learning 하는 것으로 시대가 변하였는데 사실 feature 대신에 neural network architecture 에 대한 hand-crafted engineering 을 하고 있는 것 아니냐는 지적.. NAS 는 그 부분을 태클하는 학문 분야인듯. 아래는 원문을 그대로 옮겨오겠음. The advent of modern neural networks has shifted the focus from feature engineering to feature learning. However, researchers may now ﬁnd themselves manually engineering the architecture of the network. Methods of Neural Architecture Search (NAS) instead provide a mechanism for learning the architecture of neural network jointly with the weights. Models powered by NAS have recently obtained state of the art classiﬁcation performance on ImageNet. Discovering Nerual Wirings (DNW) → weights and structure are jointly optimnized free from the typical constraints of NAS → however the subnetwork is chosen by taking the weights with the highest magnitude → there is no way to separate the weights and the structure Weight Agnostic Neural Networks (WANN) Architecture alone can be the solution of a problem! WANN builds a neural network that achieve high performance while all of the weights have the same value, and surprisingly, the shared weight value doesn’t affect the performance (= which means, architecture itself is solving the problem by itself!) Authors claim that they are inspired by WANN → instead having shared weights, they fix it to a random value! Details Why are authors so sure about the existence of effective subnetwork? They in fact provide a pseudo-proof of their intuition. As noted in Figure 1, let’s assume that $\tau$ is a network with same structure of $N$ that achieves good accuracy. Let $q$ be the probability that given subnetwork of $N$ has weights that are close enough to $\tau$, and thus obtain the same accuracy. This probability $q$ is extremely small, but it is still nonzero. Therefore, the probability that no subnetwork of N is close enough to $\tau$ is effectively $(1-q)^S$ where S is the number of possible networks. 그러니까 얘네가 하고자 하는 말은… 사이즈가 작은 네트워크 $\tau$ 도 잘 training 시키면 accuracy가 잘 나오는 모델이 있지 않냐. 그니까 저자들은 조금 더 큰 randomly weighted network 안에서 뽑아낼 수 있는 무수히 많은 subnetwork 중에서 저 $\tau$ 랑 비슷한 놈을 찾고야 말겠다 이건데, 그냥 임의의 subnetwork 하나를 딱 뽑아내서 $\tau$ 랑 비슷한 weight를 가지고 비슷한 accuracy를 가질 확률을 $q$ 라 하면, 물론.. $q$는 무척 작은 숫자일터인데.. 얘네가 하는 말은.. 그래도 0은 아니지 않냐 이 말임. 여기서 저자들의 논리는, bigger network에서 뽑아낼 수 있는 subnetwork 의 전체 개수를 S라 하면 (네트워크가 깊어지면 깊어질수록 무진장 많아지겟지) 그 무수히 많은 S개의 network 중에서 정말 그 어느것도 $\tau$ 랑 비슷한 놈이 없으려면 \[(1-q)^S\] 의 확률이지 않겠냐 이거지. 근데 $q$가 아무리 작더라도 $q&amp;gt;0$ nonzero value이니까 S 가 무진장 커지면 저게 0에 가까워지지 않겠냐 이 논리를 펴는 거임. So how do they find out the subnetwork? Edge-popup algorithm. 일단 저자들은 node $u$ 와 $v$ 를 잇는 weight $w_{uv}$ 에 score $s_{uv}$ 를 assign 하는데, 얘네들이 하는 거는 저 $s$ 값을 학습할 계획이고, forward pass 과정에서는 score $s$ 값을 기준으로 top -k % 만큼만 남기고 나머지는 pruning 을 하게 됨. 일반적인 pruning은 weight $w$를 기준으로 pruning을 한다면 여기서는 별도의 score 값 $s$를 기준으로 pruning을 시킨다는 것임. 다르게 보면 [deconstructing LT] paper에서 weight의 중요도를 평가하기 위한 masking criterion을 hand-craft 하였는데 여기서는 이거를 learning으로 얻어내겠다고 생각할 수도 있을 것 같음. 만약 weight $w_{uv}$가 loss를 낮추는 데 critical한 역할을 한다면 이전 training iteration에서는 $s_{uv}$가 낮았다 하더라도 다음 iteration에서는 $s_{uv}$를 높이는 쪽으로 학습을 해야된다는 것. 그래서 초기에 낮은 값을 assign 받은 $s_{uv}$ 가 자기 직속 weight의 역할을 인정받아 차츰 score가 높아진다면 결국 특정 threshold 이상으로, 수면 위로 pop-up 하게 된다는 얘기임. 구체적인 update equation은 아래와 같음. 이거 derive하는 과정에서 top-k% high score를 기준으로 masking을 하는 function이 gradient 계산이 불가능해서 backprop 과정에서는 그 과정을 고려하지 않고 계산하였음. \[\tilde{s}_{uv} = s_{uv}- \alpha \frac{\partial \mathcal{L}}{\partial \mathcal{I}_v}w_{uv}\mathcal{Z}_u\] 여기서 $\mathcal{I}_v$는 $v$번째 neuron으로 들어오는 input이고 $\mathcal{Z}_u$는 $u$번째 neuron의 output, 그러니까 $\mathcal{Z}_u = \texttt{nn.ReLU}(\mathcal{I}_u)$임. \[\mathcal{I}_v = \sum_{u \in \mathcal{V}^{(l-1)}} {w_{uv}\mathcal{Z}_u}\] Opinions 뭐.. 그리 큰 감흥은 없는 듯. 이전의 supermask 페이퍼에서 stochasticity를 제거한 버전인 것 같기도 하고, 내가 직전 리뷰 페이지 마지막에 제안(?)했던 또한, supermask generating function을 $g(m) = \text{Bern}(\text{sigmoid}(m))$ 으로 결정하였는데 이것도 다른 방법이 있을 것이라고 생각함. 당장 생각나는 건 예를 들어 \[g(m) = u{(\text{sigmoid}(m))}\] where \[u(s;t \in (0,1))=\begin{cases}1 &amp;amp; \text{if } s&amp;gt;t \\ 0&amp;amp; \text{else}\end{cases}\] 이렇게 정의를 한다면 $t$를 조절하면서 간접적으로 pruning ratio를 조절할 수 있을 수도 있을 것 같고, supermask generating 과정이 stochastic하지 않기 때문에 조금 더 나을 수도 (물론 못할 수도) 있을 것 같고. 실험을 해봐야될 것 같음. 위 방법에서 sigmoid 대신에 그냥 raw한 score 값을 쓰고 u function을 top-k% 만 남기는 function 으로 대체한 버전인 듯. 뭐가 좋을지는 모르겟구먼. pruning ratio를 명확하고 직접적으로 조절해야 될 필요가 있을 경우에는 이 페이퍼에서 제안한 방법이 더 좋을 것 같음. 근데 CVPR20 에 accept이 된걸 보면 내가 이해하지 못한 contribution이 뭔가가 더 있는듯..</summary></entry></feed>
+&lt;center&gt;&lt;img src=&quot;Untitled.png&quot; width=&quot;400&quot; /&gt;&lt;/center&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Shared-Autonomy" /><summary type="html">Introduction Imagine a situation of landing a quadrotor safely… Humans suffer mostly because… controlling many degrees of freedom is hard! → but knows what a “safe landing” is. Robots suffer mostly because… they don’t know the concept of good landing! ??? : By the way, can’t I just stop spinning the rotors? I can make this land anyway. → but they do not struggle with high degrees of freedom Shared autonomy can be the solution in this case… “by combining the user input with automated assistance” What’s different with the Hindsight-optimization paper? “We focus on an area of shared autoonomy in which information about the user’s intent is hidden from the robot….” 그럼 hindsight optimization 에서는 안 그랬나? “…in which prior work has proposed approaches that infer the user’s goal from their input and autonomously act to achieve it.” However, these approahces tend to assume that we know the dynamics model fo the world we know how to represent our goal we know the policy to achieve that goal However, above assumptions may be too much of a constraint considering that Fitting an accurate global dynamics model can be more difficult than learning to perform the task assuming a fixed representation of the user’s goal reduces the flexibility of the system to perform tasks in which the user’s desires are difficult to specify but easy to evaluate user input can exhibit systematic suboptimality that prevents standard goal inference algorithms from recovering user intent by inverting a geneartive model of behavior. From each perspective.. From the agent’s perspective → the user acts like a prior policy that can be fine-tuned + additional sensor generating observations from which the agent can implicitly decode the user’s private information From the user’s perspective → the agent behvaes like an adaptive interface that learns a personalized mapping from user commands to actions that maximizes task reward. To achieve their goal.. use human-in-loop deep Q-learning to learn an approximate state-action value function that computes the expected future return of an action given the current environmental observation Model-free shared autonomy Problem statement Authors relax the standard formulation of shared autonomy defined by POMDP in [Paper Review] Shared Autonomy via Hindsight Optimization In their problem formulation, the transition $T$, the user’s policy $\pi_h$, and the goal space $\mathcal{G}$ are no longer all necessarily known to the robot. 그치, hindsight optimization 페이퍼에서는 POMDP를 사용하기 위해서 이것들을 다 알아야 했었지. user’s policy $\pi_h$의 경우 MaxEnt IOC로 알아내려고 했었고. The reward function, which still depends on the user’s private information, is decomposed as: \[R(s,a,s') =R_{general}(s,a,s')+ R_{feedback}(s,a,s')\] 여기서 $R_{general}$이란 거는 reward that are known (e.g. such as the need to avoid collisions) $R_{feedback}$ is a user-generated feedback that depends on their private information. (do not know) In practice, the user might simply indicate once per trail whether the robot succeeded or not. Three types of setting known-user-policy : unknown dynamics, known goal space and user policy known-goal-space : unknown dynamics, user policy, and known goal space min assumptions : unknown dynamics, user policy, goal space ← most focused Method overview input = observations of the environment and the user’s controls or inferred goal output = high value action / control output that is as close as possible to the user’s control → how the agent combines user input with environmental observations? Incorporating user control incorporate information from the user as useful observations for the agent jointly embeds the agent’s observation of the environement $s_t$ with the information from the user $u_t$ by simply concatenating \[\tilde s_t = \begin{bmatrix} s_t \\ u_t\end{bmatrix}\] for min-assumption case… the policy directly takes in the user’s actions $a_t ^h$ and must learn to implicitly decode the user’s intent and perform the task (action → intent) to the agent, the user is part of the external environment → user’s control is yet another source of observations Agent can discover arbitrary relationships between user controls and observations of the physical environment, rather than explicitly assuming the existence of a goal. 음.. 훨씬 깔끔하군.. information $u_t$ 로서 raw $a_t ^h$를 사용한다는 거고, 나머지는 deep neural network 에 맡긴다는 거 같음. Q-learning with user control human-in-the-loop model-free RL 의 biggest challenge maintaining informative user input → user input이 suggested control 일 경우, user의 suggestion 을 계속 무시한 채 different action을 취하면 user input의 quality가 떨어지게 될 것 (user는 자신의 action으로부터 파생된 feedback을 바탕으로 control을 하니까) minimizing the number of interactions with the environment → model-free reinforcement learning은 주변 environment와 많은 interaction을 필요로 하는데 이게 impractical 하다. 이를 해결하기 위해 DQN 대신에 neural fitted Q-iteration (NFQI)를 사용. Control Sharing Select a feasible action closest to the user’s suggestion, where an action is feasible if it isn’t that much worse than the optimal action. \[\pi_\alpha (a|\tilde{s}, a^h) = \delta \Big (a= \argmax_{\{a:Q'(\tilde{s},a)\geq(1-\alpha)Q'(\tilde{s},a^*)\}} f(a,a^h) \Big )\] where $f$ is an action simliarty function and \[Q'(\tilde{s},a) = Q(\tilde{s},a) - \min_{a'\in \mathcal{A}} Q(\tilde{s},a')\] $\alpha$ determines the tolerance of the system to suboptimal human suggestions → amount of assistance! Exact Algorithm</summary></entry></feed>
