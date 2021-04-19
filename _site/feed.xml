@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-04-19T10:15:10+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Younghyo Park</title><subtitle>Your Site Description
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-04-19T12:30:01+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Younghyo Park</title><subtitle>Your Site Description
 </subtitle><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><entry><title type="html">[Optimization] 7 - KKT Optimality Condition</title><link href="http://localhost:4000/notion_to_markdown/opt-lecture-7/" rel="alternate" type="text/html" title="[Optimization] 7 - KKT Optimality Condition" /><published>2021-04-19T00:00:00+09:00</published><updated>2021-04-19T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/opt-lecture-7</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/opt-lecture-7/">&lt;h2 id=&quot;characterizing-the-optimality&quot;&gt;Characterizing the Optimality&lt;/h2&gt;
 
 &lt;h3 id=&quot;how-should-we-characterize-the-conditions-for-optimality&quot;&gt;How should we characterize the conditions for optimality?&lt;/h3&gt;
@@ -110,7 +110,688 @@ g(\tilde{\lambda}, \tilde{\nu}) &amp;amp; = L(\tilde{x}, \tilde{\lambda}, \tilde
 &lt;ol&gt;
   &lt;li&gt;solution of $\min_x L(x,\lambda^\star, \nu^\star)$ is the primal optimal point.&lt;/li&gt;
   &lt;li&gt;If it’s not primal feasible, then no primal point can exist.&lt;/li&gt;
-&lt;/ol&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Optimization" /><category term="Lecture-Note" /><summary type="html">Characterizing the Optimality How should we characterize the conditions for optimality? What are the necessary and sufficient conditions for \[x: \text{primal feasible point}\\ (\lambda, \nu) : \text{dual feasible point}\] to be optimal? Complementary slackness Suppose that strong duality holds, and (somehow) the primal and dual optimal values are attained. \[x^\star : \text{primal optimal point}\\ (\lambda^\star, \nu^\star) : \text{dual optimal point}\] We then have \[\begin{aligned} p^\star = f_0(x^\star) &amp;amp; = g(\lambda^\star , \nu^\star) = d^\star \ \ \ \because \text{strong duality}\\ &amp;amp; = \inf_x \ \bigg ( f_0 (x) + \sum_{i=1}^m \lambda^\star _i f_i (x) + \sum_{i=1}^p \nu_i^\star h_i (x) \bigg ) \ \ \ (=L(x,\lambda^\star, \nu^\star) )\\ &amp;amp; \leq f_0 (x^\star) + \sum_{i=1}^n \lambda_i ^\star f_i (x^\star) + \sum_{i=1}^p \nu_i^\star h_i (x^\star) \ \ \ (=L(x^\star, \lambda^\star, \nu^\star ))\\ &amp;amp; \leq f_0 (x^\star) \ \ \ (\because x^\star \text{ is feasible}) \end{aligned}\] which implies that the inequality above should hold with equality. Thus, we can say that \[\sum_{i=1}^n \lambda_i ^\star f_i (x^\star) =0\] and considering that $\lambda_i ^\star f_i (x^\star) \leq 0$ for all $i$, we can finally deduce the complementary slackness condition. \[\lambda_i ^\star f_i (x^\star ) =0 \ \ \ i = 1, \cdots, m\] This complementary slackness can be expressed as two cases: \[\lambda_i ^\star &amp;gt;0 \ \ \ \implies \ \ \ f_i (x^\star) =0\] or, equivalently, \[f_i (x^\star) &amp;lt;0 \ \ \ \implies \ \ \ \lambda_i ^\star =0\] Unless the $i$th constraint is active at the optimum, the $i$th optimal Lagrange multiplier is zero. If dual optimal point is given If dual optimal point is given, you can easily get the primal optimal point by \[x^\star = \arg \min _x L(x,\lambda^\star, \nu^\star)\] KKT Optimality Conditions Before beginning Assume that $f_0, \cdots, f_m, h_1, \cdots, h_p$ are differentiable. (open domains) No assumptions about the convexity (yet) KKT Conditions for Nonconvex Problems First, assume that $x^\star, (\lambda^\star, \nu^\star)$ is the primal and dual optimal points with zero duality gap. Then we know that $x^\star$ minimizes the Lagrangian $L(x,\lambda^\star, \nu^\star)$ with respect to $x$. Thus, the gradient must vanish at $x^\star$ . \[\nabla f_0 (x^\star) + \sum_{i=1}^m \lambda_i ^\star \nabla f_i (x^\star) + \sum_{i=1}^p \nu_i ^\star \nabla h_i (x^\star) =0\] **Note that this is a necessary condition (not sufficient) for optimality, since the functions are not convex in this case. ** Thus, we have the following necessary conditions for optimality, called “Karush-Kuhn-Tucker (KKT)” conditions. Also, this condition requires a “strong duality” condition. KKT Conditions for Convex Problems When the primal problem is convex, we cany say something more. KKT conditions are also a sufficient condition for the points to be primal and dual optimal. Note that, KKT condition also implies zero duality gap. As long as the KKT conditions are satisfied for convex problems, we can gaurantee that those points are each primal and dual optimal points, with strong duality. Proving the KKT Condition First two conditions say that $\tilde{x}$ is feasible. Let’s then consider a mapping (convex mapping) \[x \rightarrow L(x,\tilde{\lambda}, \tilde{\nu}) = f_0 (x) + \sum_{i=1}^m \tilde{\lambda}_i f_i (x) + \sum_{i=1}^p \tilde{\nu}_i h_i (x)\] Since we know that above Lagrangian is convex, and first-order derivative condition holds (by the KKT) for $\tilde{x}$, we can conclude that \[\tilde{x} \in \arg \min _x L(x, \tilde{\lambda}, \tilde{\nu})\] Meanwhile, the dual optimal point \[\begin{aligned} g(\tilde{\lambda}, \tilde{\nu}) &amp;amp; = L(\tilde{x}, \tilde{\lambda}, \tilde{\nu})\\ &amp;amp; = f_0 (\tilde{x}) + \sum_i \tilde{\lambda}_i f_i (\tilde{x}) + \sum_i \tilde{\nu}_i h_i (\tilde{x}) \\ &amp;amp; = f_0 (\tilde{x}) \ \ \ (\because \text{ complementary slackness and feasibility}) \end{aligned}\] shows that there is no duality gap. Thus, $\tilde{x}, (\tilde{\lambda}, \tilde{\nu})$ are primal and dual optimal points. Solving the Primal problem via the Dual Suppose that strong duality holds, and an optimal dual is known. We assume that the minimizer of $L(x,\lambda^\star, \nu^\star)$ is unique. Then, we can say solution of $\min_x L(x,\lambda^\star, \nu^\star)$ is the primal optimal point. If it’s not primal feasible, then no primal point can exist.</summary></entry><entry><title type="html">[Optimization] 5 - Typical Convex Optimization Problems</title><link href="http://localhost:4000/notion_to_markdown/opt-lecture-5/" rel="alternate" type="text/html" title="[Optimization] 5 - Typical Convex Optimization Problems" /><published>2021-04-18T00:00:00+09:00</published><updated>2021-04-18T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/opt-lecture-5</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/opt-lecture-5/">&lt;h2 id=&quot;standard-form-of-convex-optimization-problems&quot;&gt;Standard Form of Convex Optimization Problems&lt;/h2&gt;
+&lt;/ol&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Optimization" /><category term="Lecture-Note" /><summary type="html">Characterizing the Optimality How should we characterize the conditions for optimality? What are the necessary and sufficient conditions for \[x: \text{primal feasible point}\\ (\lambda, \nu) : \text{dual feasible point}\] to be optimal? Complementary slackness Suppose that strong duality holds, and (somehow) the primal and dual optimal values are attained. \[x^\star : \text{primal optimal point}\\ (\lambda^\star, \nu^\star) : \text{dual optimal point}\] We then have \[\begin{aligned} p^\star = f_0(x^\star) &amp;amp; = g(\lambda^\star , \nu^\star) = d^\star \ \ \ \because \text{strong duality}\\ &amp;amp; = \inf_x \ \bigg ( f_0 (x) + \sum_{i=1}^m \lambda^\star _i f_i (x) + \sum_{i=1}^p \nu_i^\star h_i (x) \bigg ) \ \ \ (=L(x,\lambda^\star, \nu^\star) )\\ &amp;amp; \leq f_0 (x^\star) + \sum_{i=1}^n \lambda_i ^\star f_i (x^\star) + \sum_{i=1}^p \nu_i^\star h_i (x^\star) \ \ \ (=L(x^\star, \lambda^\star, \nu^\star ))\\ &amp;amp; \leq f_0 (x^\star) \ \ \ (\because x^\star \text{ is feasible}) \end{aligned}\] which implies that the inequality above should hold with equality. Thus, we can say that \[\sum_{i=1}^n \lambda_i ^\star f_i (x^\star) =0\] and considering that $\lambda_i ^\star f_i (x^\star) \leq 0$ for all $i$, we can finally deduce the complementary slackness condition. \[\lambda_i ^\star f_i (x^\star ) =0 \ \ \ i = 1, \cdots, m\] This complementary slackness can be expressed as two cases: \[\lambda_i ^\star &amp;gt;0 \ \ \ \implies \ \ \ f_i (x^\star) =0\] or, equivalently, \[f_i (x^\star) &amp;lt;0 \ \ \ \implies \ \ \ \lambda_i ^\star =0\] Unless the $i$th constraint is active at the optimum, the $i$th optimal Lagrange multiplier is zero. If dual optimal point is given If dual optimal point is given, you can easily get the primal optimal point by \[x^\star = \arg \min _x L(x,\lambda^\star, \nu^\star)\] KKT Optimality Conditions Before beginning Assume that $f_0, \cdots, f_m, h_1, \cdots, h_p$ are differentiable. (open domains) No assumptions about the convexity (yet) KKT Conditions for Nonconvex Problems First, assume that $x^\star, (\lambda^\star, \nu^\star)$ is the primal and dual optimal points with zero duality gap. Then we know that $x^\star$ minimizes the Lagrangian $L(x,\lambda^\star, \nu^\star)$ with respect to $x$. Thus, the gradient must vanish at $x^\star$ . \[\nabla f_0 (x^\star) + \sum_{i=1}^m \lambda_i ^\star \nabla f_i (x^\star) + \sum_{i=1}^p \nu_i ^\star \nabla h_i (x^\star) =0\] **Note that this is a necessary condition (not sufficient) for optimality, since the functions are not convex in this case. ** Thus, we have the following necessary conditions for optimality, called “Karush-Kuhn-Tucker (KKT)” conditions. Also, this condition requires a “strong duality” condition. KKT Conditions for Convex Problems When the primal problem is convex, we cany say something more. KKT conditions are also a sufficient condition for the points to be primal and dual optimal. Note that, KKT condition also implies zero duality gap. As long as the KKT conditions are satisfied for convex problems, we can gaurantee that those points are each primal and dual optimal points, with strong duality. Proving the KKT Condition First two conditions say that $\tilde{x}$ is feasible. Let’s then consider a mapping (convex mapping) \[x \rightarrow L(x,\tilde{\lambda}, \tilde{\nu}) = f_0 (x) + \sum_{i=1}^m \tilde{\lambda}_i f_i (x) + \sum_{i=1}^p \tilde{\nu}_i h_i (x)\] Since we know that above Lagrangian is convex, and first-order derivative condition holds (by the KKT) for $\tilde{x}$, we can conclude that \[\tilde{x} \in \arg \min _x L(x, \tilde{\lambda}, \tilde{\nu})\] Meanwhile, the dual optimal point \[\begin{aligned} g(\tilde{\lambda}, \tilde{\nu}) &amp;amp; = L(\tilde{x}, \tilde{\lambda}, \tilde{\nu})\\ &amp;amp; = f_0 (\tilde{x}) + \sum_i \tilde{\lambda}_i f_i (\tilde{x}) + \sum_i \tilde{\nu}_i h_i (\tilde{x}) \\ &amp;amp; = f_0 (\tilde{x}) \ \ \ (\because \text{ complementary slackness and feasibility}) \end{aligned}\] shows that there is no duality gap. Thus, $\tilde{x}, (\tilde{\lambda}, \tilde{\nu})$ are primal and dual optimal points. Solving the Primal problem via the Dual Suppose that strong duality holds, and an optimal dual is known. We assume that the minimizer of $L(x,\lambda^\star, \nu^\star)$ is unique. Then, we can say solution of $\min_x L(x,\lambda^\star, \nu^\star)$ is the primal optimal point. If it’s not primal feasible, then no primal point can exist.</summary></entry><entry><title type="html">[macOS Tips] App Specific New Tab/Window Preference</title><link href="http://localhost:4000/2021/04/19/mac-tips-1.html" rel="alternate" type="text/html" title="[macOS Tips] App Specific New Tab/Window Preference" /><published>2021-04-19T00:00:00+09:00</published><updated>2021-04-19T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/19/mac-tips-1</id><content type="html" xml:base="http://localhost:4000/2021/04/19/mac-tips-1.html">&lt;h2 id=&quot;problem&quot;&gt;Problem&lt;/h2&gt;
+
+&lt;p&gt;macOS allows you to change the &lt;strong&gt;prefer tabs&lt;/strong&gt; behavior in the settings &amp;gt; general panel.&lt;/p&gt;
+
+&lt;center&gt;&lt;img src=&quot;https://tva1.sinaimg.cn/large/008eGmZEgy1gpovmflpcsj30u00uuaos.jpg&quot; alt=&quot;image-20210419104545111&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/center&gt;
+
+&lt;p&gt;However, the option they give is quite black and white.&lt;/p&gt;
+
+&lt;center&gt;&lt;img src=&quot;https://tva1.sinaimg.cn/large/008eGmZEgy1gpovmuwpbyj30l404u0tr.jpg&quot; alt=&quot;image-20210419105216074&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/center&gt;
+
+&lt;p&gt;If you prefer &lt;strong&gt;new tabs&lt;/strong&gt; on &lt;em&gt;Preview&lt;/em&gt; , but prefer &lt;strong&gt;new windows&lt;/strong&gt; on &lt;em&gt;Finder&lt;/em&gt; or &lt;em&gt;Safari&lt;/em&gt;, there’s nothing you can do on the settings panel.&lt;/p&gt;
+
+&lt;h2 id=&quot;solution&quot;&gt;Solution&lt;/h2&gt;
+
+&lt;p&gt;In that case,&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;revert the prefer tabs setting to “never”&lt;/li&gt;
+  &lt;li&gt;execute the following code on Terminal, replacing the “Preview” app to whatever app you like to &lt;strong&gt;prefer tabs&lt;/strong&gt;.
+    &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; defaults write com.apple.Preview AppleWindowTabbingMode &lt;span class=&quot;nt&quot;&gt;-string&lt;/span&gt; always
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;If you want to revert the setting, execute:&lt;/p&gt;
+
+    &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;defaults delete com.apple.Preview AppleWindowTabbingMode
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="macOS-Tips" /><summary type="html">Problem macOS allows you to change the prefer tabs behavior in the settings &amp;gt; general panel. However, the option they give is quite black and white. If you prefer new tabs on Preview , but prefer new windows on Finder or Safari, there’s nothing you can do on the settings panel. Solution In that case, revert the prefer tabs setting to “never” execute the following code on Terminal, replacing the “Preview” app to whatever app you like to prefer tabs. defaults write com.apple.Preview AppleWindowTabbingMode -string always If you want to revert the setting, execute: defaults delete com.apple.Preview AppleWindowTabbingMode</summary></entry><entry><title type="html">[Optimization] 6 - Lagrange Duality, Slater’s Condition</title><link href="http://localhost:4000/notion_to_markdown/opt-lecture-6/" rel="alternate" type="text/html" title="[Optimization] 6 - Lagrange Duality, Slater’s Condition" /><published>2021-04-18T00:00:00+09:00</published><updated>2021-04-18T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/opt-lecture-6</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/opt-lecture-6/">&lt;h2 id=&quot;lagrangian&quot;&gt;Lagrangian&lt;/h2&gt;
+
+&lt;p&gt;Consider an optimization problem&lt;/p&gt;
+
+\[\begin{aligned} \min &amp;amp; \ \ \ f_0 (x) \\ \text{s.t} &amp;amp; \ \ \ f_i (x) \leq 0, \ \ \  i= 1, \cdots, m \\ &amp;amp; \ \ \ h_i (x) =0, \ \ \ i=1, \cdots, p \end{aligned}\]
+
+&lt;p&gt;Now, take the constraint into account by &lt;strong&gt;augmenting the objective function with a weighted sum of the constraint functions&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;Lagrangian $L: \mathbb{R}^n \times \mathbb{R}^m \times \mathbb{R}^p \rightarrow \mathbb{R}$ defined by&lt;/p&gt;
+
+\[L(x,\lambda, \nu) := f_0 (x) + \sum_{i=1}^n \lambda_i f_i (x) + \sum_{i=1}^p \nu_i h_i (x)\]
+
+&lt;p&gt;where $\lambda_i$ is the Lagrange multiplier associated with the inequality constraints, and $\nu_i$ is the Lagrange multipler associated with equality constraints. We call $\lambda, \nu$ as &lt;strong&gt;dual variables&lt;/strong&gt; or Lagrange multiplier vectors.&lt;/p&gt;
+
+&lt;h2 id=&quot;lagrange-dual&quot;&gt;Lagrange Dual&lt;/h2&gt;
+
+&lt;p&gt;Define Lagrange dual function $g: \mathbb{R}^m \times \mathbb{R}^n \rightarrow \mathbb{R}$&lt;/p&gt;
+
+\[g(\lambda, \nu) := \inf_{x\in \mathbb{R}^n } L(x,\lambda, \nu) = \inf_{x\in \mathbb{R}^n } \bigg [ f_0 (x) + \sum_{i=1}^n \lambda_i f_i (x) + \sum_{i=1}^p \nu_i h_i (x) \bigg ]\]
+
+&lt;p&gt;Note that this dual function is &lt;strong&gt;concave&lt;/strong&gt; in $(\lambda, \nu)$, even when the original problem is non-convex.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;[proof]&lt;/strong&gt; Lagrangian is affine in $(\lambda, \nu)$. Thus, $g(\lambda, \nu)$ can be construed as a pointwise infimum of affine function.&lt;/p&gt;
+
+&lt;h3 id=&quot;lagrange-dual-lower-bounds-the-optimal-value&quot;&gt;Lagrange Dual Lower bounds the Optimal Value&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;[Proposition]&lt;/strong&gt; For any $\lambda \geq 0$ and any $\nu$,&lt;/p&gt;
+
+\[g(\lambda, \nu) \leq p^\star\]
+
+&lt;p&gt;&lt;strong&gt;[proof]&lt;/strong&gt; Fix an arbitrary feasible $\tilde{x}$. Then,&lt;/p&gt;
+
+\[f_i (\tilde{x}) \leq 0 \\
+h_i (\tilde{x}) =0\]
+
+&lt;p&gt;Now, fix an arbitrary $\lambda \geq 0 $ and $\nu$. We have&lt;/p&gt;
+
+\[\sum \lambda_i f_i (\tilde{x})  + \sum \nu_i h_i (\tilde{x}) \leq 0\]
+
+&lt;p&gt;Thus,&lt;/p&gt;
+
+&lt;p&gt;\(L(\tilde{x}, \lambda, \nu) = f_o (\tilde{x}) +\sum \lambda_i f_i (\tilde{x})  + \sum \nu_i h_i (\tilde{x}) \leq f_o(\tilde{x}) \leq p^\star\)
+for all feasibe $\tilde{x}$.&lt;/p&gt;
+
+&lt;h3 id=&quot;lagrange-dual-problem&quot;&gt;Lagrange Dual Problem&lt;/h3&gt;
+
+\[\begin{aligned}
+\max &amp;amp; \ \ \ g(\lambda,\nu)\\
+\text{s.t.} &amp;amp; \ \ \ \lambda \geq 0 
+\end{aligned}\]
+
+&lt;p&gt;We have to maximize the Lagrange Dual (to at least get closer to the original optimal value $p^\star$).&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;A pair $(\lambda, \nu)$ is called &lt;strong&gt;dual-feasible&lt;/strong&gt; if&lt;/p&gt;
+
+\[\lambda \geq 0 , \ \ \ g(\lambda, \nu) &amp;gt;-\infty\]
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;This dual problem is always a convex optimization problem, even when the original problem is non-convex. (Recall that $g(\lambda, \nu)$ was concave function)&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;ex-dual-of-standard-form-lp&quot;&gt;[Ex] Dual of standard form LP&lt;/h3&gt;
+
+\[\begin{aligned}
+\min &amp;amp; \ \ \ c^Tx \\
+\text{s.t.} &amp;amp; \ \ \ Ax=b \\
+&amp;amp; \ \ \ x\geq 0
+\end{aligned}\]
+
+&lt;p&gt;&lt;strong&gt;[solution]&lt;/strong&gt; First get the Lagrangian&lt;/p&gt;
+
+\[\begin{aligned}
+L(x,\lambda, \nu) &amp;amp;= c^T x+ \nu^T (Ax-b) + \lambda ^T (-x)\\
+&amp;amp; = (c+A^T \nu -\lambda)^T x -\nu^T b
+\end{aligned}\]
+
+&lt;p&gt;Now, minimize the Lagrangian with respect to $x$.&lt;/p&gt;
+
+\[g(\lambda, \nu) = \inf_x L(x,\lambda, \nu) = 
+\begin{cases} 
+-\nu^Tb &amp;amp; \ \ \ \text{if } c+A^T \nu - \lambda =0\\
+-\infty &amp;amp; \ \ \ \text{otherwise}
+\end{cases}\]
+
+&lt;p&gt;Thus, the dual problem is&lt;/p&gt;
+
+\[\begin{aligned}
+\max &amp;amp; \ \ \ -\nu^T b \\
+\text{s.t.} &amp;amp; \ \ \ c+ A^T \nu - \lambda =0 \\
+&amp;amp; \ \ \ \lambda \geq 0
+\end{aligned}\]
+
+&lt;h3 id=&quot;ex-dual-of-inequality-form-lp&quot;&gt;[Ex] Dual of inequality form LP&lt;/h3&gt;
+
+&lt;p&gt;Same procedure, we get&lt;/p&gt;
+
+\[\begin{aligned}
+\max &amp;amp; \ \ \ -b^T \lambda \\
+\text{s.t.} &amp;amp; \ \ \ c+ A^T \lambda  =0 \\
+&amp;amp; \ \ \ \lambda \geq 0
+\end{aligned}\]
+
+&lt;h2 id=&quot;interpreting-the-lagrangian-dual&quot;&gt;Interpreting the Lagrangian Dual&lt;/h2&gt;
+
+&lt;h3 id=&quot;linear-approximation&quot;&gt;Linear Approximation&lt;/h3&gt;
+
+&lt;p&gt;We can rewrite the original problem (1) as&lt;/p&gt;
+
+\[\min \ \ f_0 (x) + \sum_{i=1}^n I_- (f_i (x))  + \sum_{i=1}^p  I_0 (h_i (x))\]
+
+&lt;p&gt;where $I_- : \mathbb{R} \rightarrow \mathbb{R}$ is a penalty function for positive reals (blue line in below figure)&lt;/p&gt;
+
+\[I_- (u) := \begin{cases}
+0 &amp;amp; \ \ \ \text{if } u \leq 0 \\
++\infty &amp;amp; \ \ \ \text {if } u&amp;gt;0
+\end{cases}\]
+
+&lt;p&gt;Similarly, $I_0 : \mathbb{R} \rightarrow \mathbb{R}$ is a penalty function for nonzero values.&lt;/p&gt;
+
+\[I_0 (u) := \begin{cases}
+0 &amp;amp; \ \ \ \text{if } u = 0 \\
++\infty &amp;amp; \ \ \ \text {if } u\not =0
+\end{cases}\]
+
+&lt;p&gt;Now, let’s relax the function a bit.&lt;/p&gt;
+
+&lt;center&gt;&lt;img src=&quot;image-20210418201908558.png&quot; alt=&quot;image-20210418201908558&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/center&gt;
+
+&lt;center&gt;&lt;img src=&quot;image-20210418202115363.png&quot; alt=&quot;image-20210418202115363&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/center&gt;
+
+&lt;p&gt;Replace $I_-(u)$ with the linear function $\lambda_i u$ where $\lambda_i \geq 0$, and function $I_0 (u)$ with $\nu_i u$. We then have a Lagrangian.&lt;/p&gt;
+
+&lt;p&gt;Thus, the linear penalty function introduced here is the &lt;strong&gt;underestimator&lt;/strong&gt; of the original penalty function. Thus, it seems quite obvious that dual function has to yield a lower bound on the optimal value of the primal problem.&lt;/p&gt;
+
+&lt;h3 id=&quot;geometric-interpretation&quot;&gt;Geometric Interpretation&lt;/h3&gt;
+
+&lt;p&gt;Consider the following set of values&lt;/p&gt;
+
+\[\mathcal{G}:= \{ (f_1(x), \cdots, f_m(x), h_1(x), \cdots, h_p(x), f_0 (x)) \}\in \mathbb{R}^m \times \mathbb{R}^p \times \mathbb{R}\]
+
+&lt;p&gt;Now, the optimal value of the primal problem can be expressed as&lt;/p&gt;
+
+\[p^\star = \inf \{ p \ \vert \ (u,v,t) \in \mathcal{G}, \ u\leq 0 , v=0\}\]
+
+&lt;p&gt;Meanwhile, the dual function can be expressed as&lt;/p&gt;
+
+\[g(\lambda, \nu) = \inf \{ (\lambda, \nu, 1)^T (u,v,t) \ \vert \ (u,v,t) \in \mathcal{G}\}\]
+
+&lt;p&gt;Suppose $\lambda \geq 0$. Then, if $u\leq 0$ and $v=0$,&lt;/p&gt;
+
+\[t \geq (\lambda , \nu, 1)^T (u,v,t)\]
+
+&lt;p&gt;Therfore,&lt;/p&gt;
+
+\[\begin{aligned}
+p^\star &amp;amp;= \inf \ \{ t \ \vert \ (u,v,t) \in \mathcal{G}, u\leq 0, v=0\}\\
+&amp;amp; \geq \inf \ \{ (\lambda , \nu, 1)^T (u,v,t) \ \vert \ (u,v,t) \in \mathcal{G}, u\leq 0, v=0\}\\
+&amp;amp; \geq \inf \ \{ (\lambda , \nu, 1)^T (u,v,t) \ \vert \ (u,v,t) \in \mathcal{G}\} = g(\lambda, \nu) \\
+\end{aligned}\]
+
+&lt;center&gt;&lt;img src=&quot;image-20210418203400472.png&quot; alt=&quot;image-20210418203400472&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/center&gt;
+
+&lt;center&gt;&lt;img src=&quot;image-20210418203616032.png&quot; alt=&quot;image-20210418203616032&quot; style=&quot;zoom:35%;&quot; /&gt;&lt;/center&gt;
+
+&lt;h2 id=&quot;strong-duality&quot;&gt;Strong Duality&lt;/h2&gt;
+
+&lt;h3 id=&quot;weak-duality&quot;&gt;Weak Duality&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;$p^\star$ = optimal value of the primal problem&lt;/li&gt;
+  &lt;li&gt;$d^\star$ = optimal value of the dual problem&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Then, “weak duality” holds, regardless of the convexity of the primal problem.&lt;/p&gt;
+
+\[d^\star \leq p^\star\]
+
+&lt;p&gt;and $p^\star - d^\star$ is called the &lt;strong&gt;duality gap&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;strong-duality-1&quot;&gt;Strong Duality&lt;/h3&gt;
+
+&lt;p&gt;We say strong duality holds if&lt;/p&gt;
+
+\[p^\star = d^\star\]
+
+&lt;p&gt;&lt;strong&gt;Note that strong duality generally does not hold&lt;/strong&gt;. However, under certain condition, strong duality holds.&lt;/p&gt;
+
+&lt;h3 id=&quot;slaters-condition&quot;&gt;Slater’s condition&lt;/h3&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;strong&gt;[Theorem]&lt;/strong&gt; Strong duality holds for a convex optimization problem if Slater’s condition holds. Slater’s condition means that, there exists $x$ such that 
+\(f_i (x) &amp;lt;0 , \ \ \ i=1, \cdots, m, \ \ \ Ax= b\)
+(In other words, slater’s condition states that the point should satisfy the inequality condition &lt;strong&gt;strictly&lt;/strong&gt;.)&lt;/p&gt;
+
+&lt;p&gt;However, if some of its inequality constraint is &lt;strong&gt;affine&lt;/strong&gt;, such inequality constraints does not have to hold strictly. If $f_1, \cdots, f_k$ are affine, then strong duality holds if there exists $x$ such that&lt;/p&gt;
+
+\[f_i (x) \leq 0, \ \ \ i=1, \cdots, k, \ \ f_i (x) &amp;lt;0 , \ \ i= k+1, \cdots, m, \ \ Ax=b\]
+
+&lt;hr /&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;We can see that, for LP, &lt;strong&gt;slater’s condition&lt;/strong&gt; is achieved when $x$ is feasible.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;proving-the-slaters-theorem&quot;&gt;Proving the Slater’s Theorem&lt;/h2&gt;
+
+&lt;h3 id=&quot;lets-prove&quot;&gt;Let’s Prove…&lt;/h3&gt;
+
+&lt;p&gt;Consider the convex optimization problem&lt;/p&gt;
+
+\[\begin{aligned} \min &amp;amp; \ \ \ f_0 (x) \\ \text{s.t} &amp;amp; \ \ \ f_i (x) \leq 0, \ \ \  i= 1, \cdots, m \\ &amp;amp; \ \ \ Ax=b \end{aligned}\]
+
+&lt;p&gt;where $\tilde{x}$ satisfies the Slater’s condition. In other words,&lt;/p&gt;
+
+\[f_i (\tilde{x}) &amp;lt;0, \ \ i=1,\cdots, m, \ \text{and } A\tilde{x}=b\]
+
+&lt;p&gt;To simplify the proof, assume the primal optimal value $p^\star$ is finite, and $\text{rank }A = p$.&lt;/p&gt;
+
+&lt;p&gt;Let’s first define two sets $\mathcal{A, B}$.&lt;/p&gt;
+
+\[\mathcal{A}:= \{(u,v,t) \ \vert \ \exists x \in \mathcal{D} \text{ s.t.} f_i (x)\leq u_i, h_i (x) =v_i , f_0 (x)\leq t\}\\
+\mathcal{B} := \{(0,0,s) \in \mathbb{R}^m \times \mathbb{R}^p \times \mathbb{R} \ \vert \ s&amp;lt;p^\star \}\]
+
+&lt;h3 id=&quot;separating-hyperplane-theorem&quot;&gt;Separating Hyperplane Theorem&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;[Theorem]&lt;/strong&gt; Suppose $C$ and $D$ are nonempty disjoint convex sets. Then there exist $a\not =0$ and $b$ such that
+\(a^Tx \leq b \ \ \ \forall x \in C\\
+a^Tx \geq b \ \ \ \forall x \in D\)&lt;/p&gt;
+
+&lt;center&gt;&lt;img src=&quot;image-20210418205855515.png&quot; alt=&quot;image-20210418205855515&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/center&gt;
+
+&lt;p&gt;We call that a &lt;strong&gt;separating hyperplane&lt;/strong&gt; for $C$ and $D$.&lt;/p&gt;
+
+&lt;h3 id=&quot;step1--claim-mathcalacap-mathcalb-varnothing&quot;&gt;Step1 : Claim $\mathcal{A}\cap \mathcal{B} =\varnothing$&lt;/h3&gt;
+
+&lt;p&gt;Suppose $\exists (u,v,t) \in \mathcal{A \cap B}$ . Since $(u,v,t)\in \mathcal{B}$, we have&lt;/p&gt;
+
+\[u=0, \ \ v=0,\ \ t&amp;lt;p^\star\]
+
+&lt;p&gt;Meanwhile, since $(u,v,t) \in \mathcal{A}$, there exists $x$ such that&lt;/p&gt;
+
+\[f_i (x) \leq u =0, \ \ h_i (x)=v=0 , \ \ \ f_0 (x) \leq t &amp;lt;p^\star\]
+
+&lt;p&gt;This is contradictory, since we assumed that $p^\star$ is the optimal value of the primal problem.&lt;/p&gt;
+
+&lt;h3 id=&quot;step-2--use-the-separting-hyperplane-theorem&quot;&gt;Step 2 : Use the Separting Hyperplane Theorem&lt;/h3&gt;
+
+&lt;p&gt;By the separating hyperplane theorem, there exists $(\tilde{\lambda}, \tilde{\nu}, \mu)\not =0$ and $\alpha$ such that&lt;/p&gt;
+
+\[\tilde{\lambda}^T u + \tilde{\nu}v + \mu t \geq \alpha  \ \ \ \forall (u,v,t) \in \mathcal{A}\\
+\tilde{\lambda}^T u + \tilde{\nu}v + \mu t \leq \alpha  \ \ \ \forall (u,v,t) \in \mathcal{B}\\\]
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Note that, for $(u,v,t)\in \mathcal{A}$,  $u$ and $t$ is unbounded upwards. Thus, to make the first condition feasible, we can deduce that $\tilde{\lambda} \geq 0$ and $\mu \geq 0$. (otherwise, $\tilde{\lambda}^T u + \mu t$ will be unbounded below)&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Also, the second condition implies that&lt;/p&gt;
+
+\[\mu t \leq \alpha \ \ \ \forall t &amp;lt;p^\star\]
+
+    &lt;p&gt;which also implies&lt;/p&gt;
+
+\[\mu p^\star \leq \alpha\]
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Combining with the first condition for $u_i = f_i (x), v_i = h_i (x) = Ax-b, t= f_0 (x)$&lt;/p&gt;
+
+\[\sum_{i=1}^n \tilde{\lambda}_i f_i (x) + \tilde{\nu}^T(Ax-b)+ \mu f_0 (x) \geq \alpha \geq \mu p^\star \label{28}\]
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;step-3--suppose-that-mu0&quot;&gt;Step 3 : Suppose that $\mu&amp;gt;0$&lt;/h3&gt;
+
+&lt;p&gt;Divide equation ($\ref{28}$) with $\mu$. Then, we obtain&lt;/p&gt;
+
+\[L(x,\tilde{\lambda}/\mu, \tilde{\nu}/\mu) \geq p^\star\]
+
+&lt;p&gt;Minimizing the Lagrangian over $x$, we have&lt;/p&gt;
+
+\[g(\lambda, \nu)\geq p^\star\]
+
+&lt;p&gt;Meanwhile, the weak-duality still holds.&lt;/p&gt;
+
+\[g(\lambda, \nu) \leq p^\star\]
+
+&lt;p&gt;Thus,&lt;/p&gt;
+
+\[g(\lambda, \nu) = p^\star\]
+
+&lt;p&gt;the strong duality holds.&lt;/p&gt;
+
+&lt;h3 id=&quot;step-4--what-if-mu0&quot;&gt;Step 4 : What if $\mu=0$?&lt;/h3&gt;
+
+&lt;p&gt;Now, assume $\mu =0$. We then have&lt;/p&gt;
+
+\[\sum_{i=1}^n \tilde{\lambda}_i f_i (x) + \tilde{\nu}^T(Ax-b) \geq \alpha \geq \mu p^\star =0\]
+
+&lt;p&gt;Applying this to $\tilde{x}$ that satisfies the Slater’s condition, ($A\tilde{x}-b =0$ and $f_i (\tilde{x}) &amp;lt; 0$)&lt;/p&gt;
+
+\[\sum_{i=1}^n \tilde{\lambda}_i f_i (\tilde{x}) \geq 0\]
+
+&lt;p&gt;Since $f_i (\tilde{x}) &amp;lt;0$ and $\tilde{\lambda}_i \geq 0$, above inequality can only hold when&lt;/p&gt;
+
+\[\tilde{\lambda}=0\]
+
+&lt;p&gt;Since the separating hyperplane requires $(\tilde{\lambda}, \tilde{\nu},\mu)$ to be nonzero, the remaining nonzero item $\tilde{\nu}\not=0$.&lt;/p&gt;
+
+&lt;p&gt;Then, equation (29) can be rewritten as&lt;/p&gt;
+
+\[\tilde{\nu}^T(Ax-b)\geq 0 \ \ \ \forall x\]
+
+&lt;p&gt;while for $\tilde{x}$,&lt;/p&gt;
+
+\[\tilde{\nu}^T (A\tilde{x}-b)=0\]
+
+&lt;p&gt;However, since $A^T \tilde{\nu} \not =0$, there is always an $x$ that satisfies&lt;/p&gt;
+
+\[\tilde{\nu}^T (Ax-b) &amp;lt;0\]
+
+&lt;p&gt;This is a contradiction! Thus, $\mu &amp;gt;0$.&lt;/p&gt;
+
+&lt;h3 id=&quot;geometric-idea-behind-the-proof&quot;&gt;Geometric Idea behind the Proof&lt;/h3&gt;
+
+&lt;center&gt;&lt;img src=&quot;image-20210418213553709.png&quot; alt=&quot;image-20210418213553709&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/center&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Optimization" /><category term="Lecture-Note" /><summary type="html">Lagrangian Consider an optimization problem \[\begin{aligned} \min &amp;amp; \ \ \ f_0 (x) \\ \text{s.t} &amp;amp; \ \ \ f_i (x) \leq 0, \ \ \ i= 1, \cdots, m \\ &amp;amp; \ \ \ h_i (x) =0, \ \ \ i=1, \cdots, p \end{aligned}\] Now, take the constraint into account by augmenting the objective function with a weighted sum of the constraint functions. Lagrangian $L: \mathbb{R}^n \times \mathbb{R}^m \times \mathbb{R}^p \rightarrow \mathbb{R}$ defined by \[L(x,\lambda, \nu) := f_0 (x) + \sum_{i=1}^n \lambda_i f_i (x) + \sum_{i=1}^p \nu_i h_i (x)\] where $\lambda_i$ is the Lagrange multiplier associated with the inequality constraints, and $\nu_i$ is the Lagrange multipler associated with equality constraints. We call $\lambda, \nu$ as dual variables or Lagrange multiplier vectors. Lagrange Dual Define Lagrange dual function $g: \mathbb{R}^m \times \mathbb{R}^n \rightarrow \mathbb{R}$ \[g(\lambda, \nu) := \inf_{x\in \mathbb{R}^n } L(x,\lambda, \nu) = \inf_{x\in \mathbb{R}^n } \bigg [ f_0 (x) + \sum_{i=1}^n \lambda_i f_i (x) + \sum_{i=1}^p \nu_i h_i (x) \bigg ]\] Note that this dual function is concave in $(\lambda, \nu)$, even when the original problem is non-convex. [proof] Lagrangian is affine in $(\lambda, \nu)$. Thus, $g(\lambda, \nu)$ can be construed as a pointwise infimum of affine function. Lagrange Dual Lower bounds the Optimal Value [Proposition] For any $\lambda \geq 0$ and any $\nu$, \[g(\lambda, \nu) \leq p^\star\] [proof] Fix an arbitrary feasible $\tilde{x}$. Then, \[f_i (\tilde{x}) \leq 0 \\ h_i (\tilde{x}) =0\] Now, fix an arbitrary $\lambda \geq 0 $ and $\nu$. We have \[\sum \lambda_i f_i (\tilde{x}) + \sum \nu_i h_i (\tilde{x}) \leq 0\] Thus, \(L(\tilde{x}, \lambda, \nu) = f_o (\tilde{x}) +\sum \lambda_i f_i (\tilde{x}) + \sum \nu_i h_i (\tilde{x}) \leq f_o(\tilde{x}) \leq p^\star\) for all feasibe $\tilde{x}$. Lagrange Dual Problem \[\begin{aligned} \max &amp;amp; \ \ \ g(\lambda,\nu)\\ \text{s.t.} &amp;amp; \ \ \ \lambda \geq 0 \end{aligned}\] We have to maximize the Lagrange Dual (to at least get closer to the original optimal value $p^\star$). A pair $(\lambda, \nu)$ is called dual-feasible if \[\lambda \geq 0 , \ \ \ g(\lambda, \nu) &amp;gt;-\infty\] This dual problem is always a convex optimization problem, even when the original problem is non-convex. (Recall that $g(\lambda, \nu)$ was concave function) [Ex] Dual of standard form LP \[\begin{aligned} \min &amp;amp; \ \ \ c^Tx \\ \text{s.t.} &amp;amp; \ \ \ Ax=b \\ &amp;amp; \ \ \ x\geq 0 \end{aligned}\] [solution] First get the Lagrangian \[\begin{aligned} L(x,\lambda, \nu) &amp;amp;= c^T x+ \nu^T (Ax-b) + \lambda ^T (-x)\\ &amp;amp; = (c+A^T \nu -\lambda)^T x -\nu^T b \end{aligned}\] Now, minimize the Lagrangian with respect to $x$. \[g(\lambda, \nu) = \inf_x L(x,\lambda, \nu) = \begin{cases} -\nu^Tb &amp;amp; \ \ \ \text{if } c+A^T \nu - \lambda =0\\ -\infty &amp;amp; \ \ \ \text{otherwise} \end{cases}\] Thus, the dual problem is \[\begin{aligned} \max &amp;amp; \ \ \ -\nu^T b \\ \text{s.t.} &amp;amp; \ \ \ c+ A^T \nu - \lambda =0 \\ &amp;amp; \ \ \ \lambda \geq 0 \end{aligned}\] [Ex] Dual of inequality form LP Same procedure, we get \[\begin{aligned} \max &amp;amp; \ \ \ -b^T \lambda \\ \text{s.t.} &amp;amp; \ \ \ c+ A^T \lambda =0 \\ &amp;amp; \ \ \ \lambda \geq 0 \end{aligned}\] Interpreting the Lagrangian Dual Linear Approximation We can rewrite the original problem (1) as \[\min \ \ f_0 (x) + \sum_{i=1}^n I_- (f_i (x)) + \sum_{i=1}^p I_0 (h_i (x))\] where $I_- : \mathbb{R} \rightarrow \mathbb{R}$ is a penalty function for positive reals (blue line in below figure) \[I_- (u) := \begin{cases} 0 &amp;amp; \ \ \ \text{if } u \leq 0 \\ +\infty &amp;amp; \ \ \ \text {if } u&amp;gt;0 \end{cases}\] Similarly, $I_0 : \mathbb{R} \rightarrow \mathbb{R}$ is a penalty function for nonzero values. \[I_0 (u) := \begin{cases} 0 &amp;amp; \ \ \ \text{if } u = 0 \\ +\infty &amp;amp; \ \ \ \text {if } u\not =0 \end{cases}\] Now, let’s relax the function a bit. Replace $I_-(u)$ with the linear function $\lambda_i u$ where $\lambda_i \geq 0$, and function $I_0 (u)$ with $\nu_i u$. We then have a Lagrangian. Thus, the linear penalty function introduced here is the underestimator of the original penalty function. Thus, it seems quite obvious that dual function has to yield a lower bound on the optimal value of the primal problem. Geometric Interpretation Consider the following set of values \[\mathcal{G}:= \{ (f_1(x), \cdots, f_m(x), h_1(x), \cdots, h_p(x), f_0 (x)) \}\in \mathbb{R}^m \times \mathbb{R}^p \times \mathbb{R}\] Now, the optimal value of the primal problem can be expressed as \[p^\star = \inf \{ p \ \vert \ (u,v,t) \in \mathcal{G}, \ u\leq 0 , v=0\}\] Meanwhile, the dual function can be expressed as \[g(\lambda, \nu) = \inf \{ (\lambda, \nu, 1)^T (u,v,t) \ \vert \ (u,v,t) \in \mathcal{G}\}\] Suppose $\lambda \geq 0$. Then, if $u\leq 0$ and $v=0$, \[t \geq (\lambda , \nu, 1)^T (u,v,t)\] Therfore, \[\begin{aligned} p^\star &amp;amp;= \inf \ \{ t \ \vert \ (u,v,t) \in \mathcal{G}, u\leq 0, v=0\}\\ &amp;amp; \geq \inf \ \{ (\lambda , \nu, 1)^T (u,v,t) \ \vert \ (u,v,t) \in \mathcal{G}, u\leq 0, v=0\}\\ &amp;amp; \geq \inf \ \{ (\lambda , \nu, 1)^T (u,v,t) \ \vert \ (u,v,t) \in \mathcal{G}\} = g(\lambda, \nu) \\ \end{aligned}\] Strong Duality Weak Duality $p^\star$ = optimal value of the primal problem $d^\star$ = optimal value of the dual problem Then, “weak duality” holds, regardless of the convexity of the primal problem. \[d^\star \leq p^\star\] and $p^\star - d^\star$ is called the duality gap. Strong Duality We say strong duality holds if \[p^\star = d^\star\] Note that strong duality generally does not hold. However, under certain condition, strong duality holds. Slater’s condition [Theorem] Strong duality holds for a convex optimization problem if Slater’s condition holds. Slater’s condition means that, there exists $x$ such that \(f_i (x) &amp;lt;0 , \ \ \ i=1, \cdots, m, \ \ \ Ax= b\) (In other words, slater’s condition states that the point should satisfy the inequality condition strictly.) However, if some of its inequality constraint is affine, such inequality constraints does not have to hold strictly. If $f_1, \cdots, f_k$ are affine, then strong duality holds if there exists $x$ such that \[f_i (x) \leq 0, \ \ \ i=1, \cdots, k, \ \ f_i (x) &amp;lt;0 , \ \ i= k+1, \cdots, m, \ \ Ax=b\] We can see that, for LP, slater’s condition is achieved when $x$ is feasible. Proving the Slater’s Theorem Let’s Prove… Consider the convex optimization problem \[\begin{aligned} \min &amp;amp; \ \ \ f_0 (x) \\ \text{s.t} &amp;amp; \ \ \ f_i (x) \leq 0, \ \ \ i= 1, \cdots, m \\ &amp;amp; \ \ \ Ax=b \end{aligned}\] where $\tilde{x}$ satisfies the Slater’s condition. In other words, \[f_i (\tilde{x}) &amp;lt;0, \ \ i=1,\cdots, m, \ \text{and } A\tilde{x}=b\] To simplify the proof, assume the primal optimal value $p^\star$ is finite, and $\text{rank }A = p$. Let’s first define two sets $\mathcal{A, B}$. \[\mathcal{A}:= \{(u,v,t) \ \vert \ \exists x \in \mathcal{D} \text{ s.t.} f_i (x)\leq u_i, h_i (x) =v_i , f_0 (x)\leq t\}\\ \mathcal{B} := \{(0,0,s) \in \mathbb{R}^m \times \mathbb{R}^p \times \mathbb{R} \ \vert \ s&amp;lt;p^\star \}\] Separating Hyperplane Theorem [Theorem] Suppose $C$ and $D$ are nonempty disjoint convex sets. Then there exist $a\not =0$ and $b$ such that \(a^Tx \leq b \ \ \ \forall x \in C\\ a^Tx \geq b \ \ \ \forall x \in D\) We call that a separating hyperplane for $C$ and $D$. Step1 : Claim $\mathcal{A}\cap \mathcal{B} =\varnothing$ Suppose $\exists (u,v,t) \in \mathcal{A \cap B}$ . Since $(u,v,t)\in \mathcal{B}$, we have \[u=0, \ \ v=0,\ \ t&amp;lt;p^\star\] Meanwhile, since $(u,v,t) \in \mathcal{A}$, there exists $x$ such that \[f_i (x) \leq u =0, \ \ h_i (x)=v=0 , \ \ \ f_0 (x) \leq t &amp;lt;p^\star\] This is contradictory, since we assumed that $p^\star$ is the optimal value of the primal problem. Step 2 : Use the Separting Hyperplane Theorem By the separating hyperplane theorem, there exists $(\tilde{\lambda}, \tilde{\nu}, \mu)\not =0$ and $\alpha$ such that \[\tilde{\lambda}^T u + \tilde{\nu}v + \mu t \geq \alpha \ \ \ \forall (u,v,t) \in \mathcal{A}\\ \tilde{\lambda}^T u + \tilde{\nu}v + \mu t \leq \alpha \ \ \ \forall (u,v,t) \in \mathcal{B}\\\] Note that, for $(u,v,t)\in \mathcal{A}$, $u$ and $t$ is unbounded upwards. Thus, to make the first condition feasible, we can deduce that $\tilde{\lambda} \geq 0$ and $\mu \geq 0$. (otherwise, $\tilde{\lambda}^T u + \mu t$ will be unbounded below) Also, the second condition implies that \[\mu t \leq \alpha \ \ \ \forall t &amp;lt;p^\star\] which also implies \[\mu p^\star \leq \alpha\] Combining with the first condition for $u_i = f_i (x), v_i = h_i (x) = Ax-b, t= f_0 (x)$ \[\sum_{i=1}^n \tilde{\lambda}_i f_i (x) + \tilde{\nu}^T(Ax-b)+ \mu f_0 (x) \geq \alpha \geq \mu p^\star \label{28}\] Step 3 : Suppose that $\mu&amp;gt;0$ Divide equation ($\ref{28}$) with $\mu$. Then, we obtain \[L(x,\tilde{\lambda}/\mu, \tilde{\nu}/\mu) \geq p^\star\] Minimizing the Lagrangian over $x$, we have \[g(\lambda, \nu)\geq p^\star\] Meanwhile, the weak-duality still holds. \[g(\lambda, \nu) \leq p^\star\] Thus, \[g(\lambda, \nu) = p^\star\] the strong duality holds. Step 4 : What if $\mu=0$? Now, assume $\mu =0$. We then have \[\sum_{i=1}^n \tilde{\lambda}_i f_i (x) + \tilde{\nu}^T(Ax-b) \geq \alpha \geq \mu p^\star =0\] Applying this to $\tilde{x}$ that satisfies the Slater’s condition, ($A\tilde{x}-b =0$ and $f_i (\tilde{x}) &amp;lt; 0$) \[\sum_{i=1}^n \tilde{\lambda}_i f_i (\tilde{x}) \geq 0\] Since $f_i (\tilde{x}) &amp;lt;0$ and $\tilde{\lambda}_i \geq 0$, above inequality can only hold when \[\tilde{\lambda}=0\] Since the separating hyperplane requires $(\tilde{\lambda}, \tilde{\nu},\mu)$ to be nonzero, the remaining nonzero item $\tilde{\nu}\not=0$. Then, equation (29) can be rewritten as \[\tilde{\nu}^T(Ax-b)\geq 0 \ \ \ \forall x\] while for $\tilde{x}$, \[\tilde{\nu}^T (A\tilde{x}-b)=0\] However, since $A^T \tilde{\nu} \not =0$, there is always an $x$ that satisfies \[\tilde{\nu}^T (Ax-b) &amp;lt;0\] This is a contradiction! Thus, $\mu &amp;gt;0$. Geometric Idea behind the Proof</summary></entry><entry><title type="html">[Optimization] 4 - Operations that preserve Convexity</title><link href="http://localhost:4000/2021/04/18/opt-lecture-4-1.html" rel="alternate" type="text/html" title="[Optimization] 4 - Operations that preserve Convexity" /><published>2021-04-18T00:00:00+09:00</published><updated>2021-04-18T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/18/opt-lecture-4-1</id><content type="html" xml:base="http://localhost:4000/2021/04/18/opt-lecture-4-1.html">&lt;h2 id=&quot;operations-that-preserve-convexity&quot;&gt;Operations that preserve convexity&lt;/h2&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;nonnegative weighted sums&lt;/li&gt;
+  &lt;li&gt;composition with an affine mapping&lt;/li&gt;
+  &lt;li&gt;pointwise maximum and supremum&lt;/li&gt;
+  &lt;li&gt;composition&lt;/li&gt;
+  &lt;li&gt;minimization&lt;/li&gt;
+  &lt;li&gt;perpsective of a function&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;nonnegative-weighted-sums&quot;&gt;Nonnegative weighted sums&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;A nonnegative weighted sum of convex functions
+\begin{equation}
+f:=\sum_{i=1}^n w_i f_i
+\end{equation}
+is convex ($w_i \geq 0$).&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;If $f(x,y)$ is convex for each $y\in \mathcal{A}$  and $w(y)\geq 0$  for each $y\in \mathcal{A}$, 
+\begin{equation}
+g(x)= \int_ \mathcal{A} w(y)f(x,y)dy
+\end{equation}
+is convex in $x$.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Recall that a function is convex if and only if its epigraph is a convex set!&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+&lt;details&gt; &lt;summary&gt; Click to see the proof &lt;/summary&gt;
+($\implies$) First assume that $f$ is convex. Then, consider $(x_1,t_1)$, $(x_2,t_2)\in \text{epi} f$. This means that $f(x_1)\leq t_1,  f(x_2)\leq t_2 $. Then, since $f$ is convex, 
+
+$$
+\begin{aligned}
+f(\theta x_1 + (1-\theta)x_2 ) &amp;amp;\leq \theta f(x_1)  + (1-\theta)f(x_2 )\\ 
+&amp;amp; \leq \theta t_1 + (1-\theta)t_2 \\
+\end{aligned}
+$$
+
+Thus, the point 
+
+$$
+(\theta x_1 + (1-\theta)x_2 , \theta t_1 + (1-\theta)t_2) \in \text{epi }f
+$$
+
+which implies that $\text{epi }f$ is a convex set. 
+($\impliedby$) Let $x_1,x_2\in \mathbb{R}^n$, since $(x_1,f(x_1))$ and $(x_2,f(x_2))$ lie in $\text{epi }f$. By the convexity of $f$, we can say that $(\theta x_1+ (1-\theta)x_2, \theta f(x_1) + (1-\theta)f(x_2)) \in \text{epi }f$. This means 
+
+$$
+\begin{aligned}
+\theta x_ 1+ (1-\theta)x_2 \leq \theta f(x_1)+ (1-\theta)f(x_2)
+\end{aligned}
+$$
+
+which implies that $f$ is a convex function. 
+&lt;/details&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Using this property, we can prove that nonnegative weighted sum preserves convexity. For example, if $w\geq 0$ and $f$ is convex, we have&lt;/p&gt;
+
+\[\text{epi }(wf) = \begin{bmatrix}I &amp;amp;0\\0&amp;amp;w \end{bmatrix}\text{epi }f\]
+
+    &lt;p&gt;which implies that $wf$ is also a convex set (convex set under linear maaping is convex)&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;composition-with-an-affine-mapping&quot;&gt;Composition with an affine mapping&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Suppose that $f: \mathbb{R}^n \rightarrow \mathbb{R}$ is convex.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Then the function $g:\mathbb{R}^n \rightarrow \mathbb{R}$ defined as&lt;/p&gt;
+
+\[g(x) = f(Ax+b)\]
+
+    &lt;p&gt;is convex. (both $A$ and $b$ appropriately defined)&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;pointwise-maximum-and-supremum&quot;&gt;Pointwise maximum and supremum&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;If $f_1$ and $f_2$ are convex functions, so is their pointwise maximum $f$ defined by
+\(f(x):= \max \{f_1(x), f_2 (x)\}\)&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;This can be easily proved: let $\theta \in [0,1]$ and $x,y\in \text{dom }f$.&lt;/p&gt;
+
+\[\begin{aligned}
+	f(\theta(x)+(1-\theta)y) &amp;amp; = \max\{ f_1 (\theta x + (1-\theta) y), f_2 (\theta x+ (1-\theta)y )\}\\
+	&amp;amp; \leq \max \{ \theta f_1 (x) + (1-\theta) f_1 (y) , \theta f_2 (x)  + (1-\theta) f_2 (y)\}\\
+	&amp;amp; \leq \max \{ \theta f_1 (x), \theta f_2 (x)\} + \max \{ (1-\theta) f_1 (y) + (1-\theta) f_2 (y) \}\\
+	&amp;amp; = \theta f(x) + (1-\theta)f(y)
+  
+\end{aligned}\]
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;This can also be generalized to $m$ functions&lt;/p&gt;
+
+\[f(x):=\max \{ f_1(x), \cdots, f_m (x)\}\]
+
+    &lt;p&gt;and even to a supremum&lt;/p&gt;
+
+\[g(x):=\sup_{y\in \mathcal{A}} f(x,y)\]
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;This can be also proved by epigraphs: $f$ and $g$ above can be considered as an intersection of multiple epigraphs.&lt;/p&gt;
+
+\[\text{epi }g= \bigcap _{y\in \mathcal{A}} \text{epi }f(\cdot, y)\]
+
+    &lt;p&gt;$\rightarrow$ since the intersection of a convex set is convex, $\text{epi }g$ is a convex set, thus $g$ is a convex function.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;maximum-eigenvalue&quot;&gt;Maximum Eigenvalue&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;The function $f(X)= \lambda_{\text{max}}(X)$ with $\text{dom }f = \mathbb{S}^m$ is convex. To see this, we express $f$ as&lt;/p&gt;
+
+\[f(X) = \sup \{y^T X y \ \vert \ \|y\|_2 =1 \}\]
+
+    &lt;p&gt;as the pointwise supremum of a family of lienar functions of $X$ indexed by $y \in \mathbb{R}^m$.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;composition&quot;&gt;Composition&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Consider two functions $h: \mathbb{R}^k \rightarrow \mathbb{R}$ and $g: \mathbb{R}^n \rightarrow \mathbb{R}^k $. Their composition&lt;/p&gt;
+
+\[f(x) = h(g(x))\]
+
+    &lt;p&gt;is…&lt;/p&gt;
+
+    &lt;ol&gt;
+      &lt;li&gt;&lt;strong&gt;convex&lt;/strong&gt; if $h$ is convex and nondecreasing, and $g_i$’s are convex&lt;/li&gt;
+      &lt;li&gt;&lt;strong&gt;convex&lt;/strong&gt; if $h$ is convex and nonincreasing, and $g_i$’s are concave&lt;/li&gt;
+      &lt;li&gt;&lt;strong&gt;concave&lt;/strong&gt; if $h$ is concave and nondecreasing, and $g_i$’s are concave&lt;/li&gt;
+      &lt;li&gt;&lt;strong&gt;concave&lt;/strong&gt; if $h$ is concave and nonincreasing, and $g_i$’s are convex&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;To observe this in an easier fashion, let’s first consider the case $k=1$. To discover the composition rules, we start by assuming that $h$ and $ g$ are twice differentiable, with $\text{dom }g = \text{dom }h = \mathbb{R}$. In this case, convexity of $f$ reduces to $f’’ \leq 0$ .&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;The second derivative for the composition function $f$ is given by&lt;/p&gt;
+
+\[f''(x) = h''(g(x))g'(x)^2 + h'(g(x))g''(x)\]
+
+    &lt;ul&gt;
+      &lt;li&gt;Note that, to make $f’‘\leq 0$, either one of the 4 conditions above should satisfy.&lt;/li&gt;
+      &lt;li&gt;The thing depends on the sign of $h’, h’’$, and $g’’$. In other words, the convexity of $h$ and $g$, and the first-order derivative of $h$.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Of course, above conditions can be proved without differentiability.&lt;/p&gt;
+
+    &lt;ul&gt;
+      &lt;li&gt;For now, let’s observe the first case. $h$ is convex, nondecreasing, and $g$ is convex.&lt;/li&gt;
+      &lt;li&gt;Assume that $x, y \in \text{dom }f$ and $\theta \in [0,1]$. Since $x,y \in \text{dom }f$, we have that $x,y \in \text{dom } g$ and $g(x), g(y) \in \text{dom }h$. Knowing that $g$ is convex, thus $\text{dom }g$ is convex, we conclude that&lt;/li&gt;
+    &lt;/ul&gt;
+
+\[\theta x + (1-\theta)y \in \text{dom } g\]
+
+    &lt;p&gt;​		and for conexity of $g$, we can say that
+\(g(\theta x + (1-\theta)y ) \leq \theta g(x) + (1-\theta)g(y)\)&lt;/p&gt;
+    &lt;ul&gt;
+      &lt;li&gt;Now, since $g(x), g(y)\in \text{dom }h$ and $h$ is convex, we conclude that $\theta g(x)+(1-\theta)g(y) \in \text{dom }h$, which is actually the right-hand side of above equation.&lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;Let’s extend the assumption of $h$’s nondecreasing property to $\tilde{h}$, which assigns the value $\infty$ to points not in $\text{dom }h$. By doing so, we can say that for any $x,y\in \mathbb{R}$, with $x&amp;lt;y$, we have $\tilde{h}(x) \leq \tilde{h}(y)$ . This means that if $y \in \text{dom }h$, so is $x\in \text{dom }h$. &lt;strong&gt;The domain of $h$ extends infinitely in the negative direction.&lt;/strong&gt;&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;Thus, since the right-hand side of equation (14) is in $\text{dom }h$, so is the left-hand side. $g(\theta x + (1-\theta)y)$. Thus, $\theta x+ (1-\theta )y \in \text{dom }f$. At this point, we have shown that $\text{dom }f$ is convex.&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;Now, using the fact that $h$ is nondecreasing, we get&lt;/p&gt;
+
+\[h(g(\theta x+(1-\theta)y))\leq h(\theta g(x)+ (1-\theta)g(y))\]
+
+        &lt;p&gt;From the convexity of $h$, we have&lt;/p&gt;
+
+\[h(\theta g(x) + (1-\theta) g(y))\leq \theta h(g(x)) + (1-\theta)h(g(y))\]
+
+        &lt;p&gt;Combining (15) and (16), we have now proved that $f$ is convex.&lt;/p&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;minimization&quot;&gt;Minimization&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;If $f$ is convex in $(x,y)$ and $C$ is a nonempty convex set, then the function&lt;/p&gt;
+
+\[g(x):=\inf_{y\in C}f(x,y)\]
+
+    &lt;p&gt;is convex in $x$, if $g&amp;gt;-\infty$.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;We prove this by using Jensen’s inequality: Let’s assume $x_1, x_2 \in \text{dom }g$. Now, let’s assume $\epsilon&amp;gt;0$ . Then there exists $y_1, y_2 \in C$ such that&lt;/p&gt;
+
+\[f(x_i, y_i )\leq g(x_i)+\epsilon\]
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Now, let $\theta \in [0,1]$ and start the ‘process’:&lt;/p&gt;
+
+\[\begin{aligned}
+g(\theta x_1+ (1-\theta)x_2) &amp;amp;= \inf_{y\in C} f(\theta x_1 + (1-\theta )x_2 , y)\\
+&amp;amp; \leq f(\theta x_1 + (1-\theta )x_2, \theta y_1 + (1-\theta)y_2 )\\
+&amp;amp; \leq \theta f(x_1, y_1)+ (1-\theta)f(x_2, y_2)\\
+&amp;amp; \leq \theta g(x_1) + (1-\theta)g(x_2)+\epsilon
+\end{aligned}\]
+
+    &lt;p&gt;Since above inequality should hold for all $\epsilon&amp;gt;0$, we can say that&lt;/p&gt;
+
+\[g(\theta x_1 + (1-\theta )x_2)\leq \theta g(x_1) + (1-\theta)g(x_2)\]
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;shcur-complement&quot;&gt;Shcur Complement&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Suppose the quadratic function&lt;/p&gt;
+
+\[f(x,y)= x^T Ax + 2x^T By + y^T Cy\]
+
+    &lt;p&gt;is convex in $(x,y)$, which means&lt;/p&gt;
+
+\[\begin{bmatrix}
+A&amp;amp;B\\B^T &amp;amp; C
+\end{bmatrix} \succeq 0\]
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;We can express $g(x) = \inf_y f(x,y)$ as&lt;/p&gt;
+
+\[g(x)= x^T (A-BC^\dagger B^T )x\]
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;We know that $g$ is convex (minimization rule), thus we conclude that&lt;/p&gt;
+
+\[A-BC^\dagger B^T \succeq 0\]
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;If $C$ is convertible, then the matrix $A-BC^{-1}B^T $ is called the &lt;strong&gt;Schur complement&lt;/strong&gt; of C in the matrix&lt;/p&gt;
+
+\[\begin{bmatrix}
+A&amp;amp;B\\B^T &amp;amp; C
+\end{bmatrix}\]
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;perspective-of-a-function&quot;&gt;Perspective of a function&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Given a function $f : \mathbb{R}^n \rightarrow \mathbb{R}$, the perspective $g:\mathbb{R}^{n+1} \rightarrow \mathbb{R}$ of $f$ is defined as&lt;/p&gt;
+
+    &lt;p&gt;\(g(x,t) = tf(x/t)\)
+with $\text{dom }g= {(x,t)\in \text{dom }f, t&amp;gt;0}$&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;If $f$ is a convex function, then so is its perspective function $g$.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;We prove this by epigraph: For $t&amp;gt;0$ , we have&lt;/p&gt;
+
+\[\begin{aligned}
+(x,t,s)\in \text{epi }g &amp;amp; \iff tf(x/t)\leq s\\
+&amp;amp; \iff f(x/t) \leq s/t\\
+&amp;amp; \iff (x/t, s/t)\in \text{epi }f
+\end{aligned}\]
+
+    &lt;p&gt;This implies that $\text{epi }g$ is the inverse image of $\text{epi }f$ under the perspective mapping that takes $(u,v,w)$ to $(u,w)/v$. It follows that $\text{epi }g$ is convex, so is the function $g$.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;relative-entropy&quot;&gt;Relative Entropy&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;The function&lt;/p&gt;
+
+\[g(x,t):= -t \log (x/t) = t\log t - t\log x\]
+
+    &lt;p&gt;is the persepctive functino of $f(x)=-\log (x)$.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Since $f$ is conve, $g$ is convex.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Relative entropy of two vectors $u, v \in \mathbb{R}^n_{++}$ is defined as&lt;/p&gt;
+
+\[\sum_{i=1}^n u_i \log (u_i/v_i)\]
+
+    &lt;p&gt;which is also a convex function of $(u,v)$.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;The KL-divergence between $u,v$ is defined as&lt;/p&gt;
+
+\[D_{\text{KL}}(u,v):= \sum_{i=1}^n (u_i \log (u_i /v_ i)-u_i + v_i)\]
+
+    &lt;p&gt;is also a convex function.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;references&quot;&gt;References&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;S. Boyd, L.Vandenberghe, Convex Opimization, Cambridge University Press, 2004. &lt;a href=&quot;http://stanford.edu/~boyd/cvxbook/&quot;&gt;http://stanford.edu/~boyd/cvxbook/&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Optimization Theory and Applications, SNU EE 2021, Insoon Yang&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Optimization" /><category term="Lecture-Note" /><summary type="html">Operations that preserve convexity nonnegative weighted sums composition with an affine mapping pointwise maximum and supremum composition minimization perpsective of a function Nonnegative weighted sums A nonnegative weighted sum of convex functions \begin{equation} f:=\sum_{i=1}^n w_i f_i \end{equation} is convex ($w_i \geq 0$). If $f(x,y)$ is convex for each $y\in \mathcal{A}$ and $w(y)\geq 0$ for each $y\in \mathcal{A}$, \begin{equation} g(x)= \int_ \mathcal{A} w(y)f(x,y)dy \end{equation} is convex in $x$. Recall that a function is convex if and only if its epigraph is a convex set! Click to see the proof ($\implies$) First assume that $f$ is convex. Then, consider $(x_1,t_1)$, $(x_2,t_2)\in \text{epi} f$. This means that $f(x_1)\leq t_1, f(x_2)\leq t_2 $. Then, since $f$ is convex, $$ \begin{aligned} f(\theta x_1 + (1-\theta)x_2 ) &amp;amp;\leq \theta f(x_1) + (1-\theta)f(x_2 )\\ &amp;amp; \leq \theta t_1 + (1-\theta)t_2 \\ \end{aligned} $$ Thus, the point $$ (\theta x_1 + (1-\theta)x_2 , \theta t_1 + (1-\theta)t_2) \in \text{epi }f $$ which implies that $\text{epi }f$ is a convex set. ($\impliedby$) Let $x_1,x_2\in \mathbb{R}^n$, since $(x_1,f(x_1))$ and $(x_2,f(x_2))$ lie in $\text{epi }f$. By the convexity of $f$, we can say that $(\theta x_1+ (1-\theta)x_2, \theta f(x_1) + (1-\theta)f(x_2)) \in \text{epi }f$. This means $$ \begin{aligned} \theta x_ 1+ (1-\theta)x_2 \leq \theta f(x_1)+ (1-\theta)f(x_2) \end{aligned} $$ which implies that $f$ is a convex function. Using this property, we can prove that nonnegative weighted sum preserves convexity. For example, if $w\geq 0$ and $f$ is convex, we have \[\text{epi }(wf) = \begin{bmatrix}I &amp;amp;0\\0&amp;amp;w \end{bmatrix}\text{epi }f\] which implies that $wf$ is also a convex set (convex set under linear maaping is convex) Composition with an affine mapping Suppose that $f: \mathbb{R}^n \rightarrow \mathbb{R}$ is convex. Then the function $g:\mathbb{R}^n \rightarrow \mathbb{R}$ defined as \[g(x) = f(Ax+b)\] is convex. (both $A$ and $b$ appropriately defined) Pointwise maximum and supremum If $f_1$ and $f_2$ are convex functions, so is their pointwise maximum $f$ defined by \(f(x):= \max \{f_1(x), f_2 (x)\}\) This can be easily proved: let $\theta \in [0,1]$ and $x,y\in \text{dom }f$. \[\begin{aligned} f(\theta(x)+(1-\theta)y) &amp;amp; = \max\{ f_1 (\theta x + (1-\theta) y), f_2 (\theta x+ (1-\theta)y )\}\\ &amp;amp; \leq \max \{ \theta f_1 (x) + (1-\theta) f_1 (y) , \theta f_2 (x) + (1-\theta) f_2 (y)\}\\ &amp;amp; \leq \max \{ \theta f_1 (x), \theta f_2 (x)\} + \max \{ (1-\theta) f_1 (y) + (1-\theta) f_2 (y) \}\\ &amp;amp; = \theta f(x) + (1-\theta)f(y) \end{aligned}\] This can also be generalized to $m$ functions \[f(x):=\max \{ f_1(x), \cdots, f_m (x)\}\] and even to a supremum \[g(x):=\sup_{y\in \mathcal{A}} f(x,y)\] This can be also proved by epigraphs: $f$ and $g$ above can be considered as an intersection of multiple epigraphs. \[\text{epi }g= \bigcap _{y\in \mathcal{A}} \text{epi }f(\cdot, y)\] $\rightarrow$ since the intersection of a convex set is convex, $\text{epi }g$ is a convex set, thus $g$ is a convex function. Maximum Eigenvalue The function $f(X)= \lambda_{\text{max}}(X)$ with $\text{dom }f = \mathbb{S}^m$ is convex. To see this, we express $f$ as \[f(X) = \sup \{y^T X y \ \vert \ \|y\|_2 =1 \}\] as the pointwise supremum of a family of lienar functions of $X$ indexed by $y \in \mathbb{R}^m$. Composition Consider two functions $h: \mathbb{R}^k \rightarrow \mathbb{R}$ and $g: \mathbb{R}^n \rightarrow \mathbb{R}^k $. Their composition \[f(x) = h(g(x))\] is… convex if $h$ is convex and nondecreasing, and $g_i$’s are convex convex if $h$ is convex and nonincreasing, and $g_i$’s are concave concave if $h$ is concave and nondecreasing, and $g_i$’s are concave concave if $h$ is concave and nonincreasing, and $g_i$’s are convex To observe this in an easier fashion, let’s first consider the case $k=1$. To discover the composition rules, we start by assuming that $h$ and $ g$ are twice differentiable, with $\text{dom }g = \text{dom }h = \mathbb{R}$. In this case, convexity of $f$ reduces to $f’’ \leq 0$ . The second derivative for the composition function $f$ is given by \[f''(x) = h''(g(x))g'(x)^2 + h'(g(x))g''(x)\] Note that, to make $f’‘\leq 0$, either one of the 4 conditions above should satisfy. The thing depends on the sign of $h’, h’’$, and $g’’$. In other words, the convexity of $h$ and $g$, and the first-order derivative of $h$. Of course, above conditions can be proved without differentiability. For now, let’s observe the first case. $h$ is convex, nondecreasing, and $g$ is convex. Assume that $x, y \in \text{dom }f$ and $\theta \in [0,1]$. Since $x,y \in \text{dom }f$, we have that $x,y \in \text{dom } g$ and $g(x), g(y) \in \text{dom }h$. Knowing that $g$ is convex, thus $\text{dom }g$ is convex, we conclude that \[\theta x + (1-\theta)y \in \text{dom } g\] ​ and for conexity of $g$, we can say that \(g(\theta x + (1-\theta)y ) \leq \theta g(x) + (1-\theta)g(y)\) Now, since $g(x), g(y)\in \text{dom }h$ and $h$ is convex, we conclude that $\theta g(x)+(1-\theta)g(y) \in \text{dom }h$, which is actually the right-hand side of above equation. Let’s extend the assumption of $h$’s nondecreasing property to $\tilde{h}$, which assigns the value $\infty$ to points not in $\text{dom }h$. By doing so, we can say that for any $x,y\in \mathbb{R}$, with $x&amp;lt;y$, we have $\tilde{h}(x) \leq \tilde{h}(y)$ . This means that if $y \in \text{dom }h$, so is $x\in \text{dom }h$. The domain of $h$ extends infinitely in the negative direction. Thus, since the right-hand side of equation (14) is in $\text{dom }h$, so is the left-hand side. $g(\theta x + (1-\theta)y)$. Thus, $\theta x+ (1-\theta )y \in \text{dom }f$. At this point, we have shown that $\text{dom }f$ is convex. Now, using the fact that $h$ is nondecreasing, we get \[h(g(\theta x+(1-\theta)y))\leq h(\theta g(x)+ (1-\theta)g(y))\] From the convexity of $h$, we have \[h(\theta g(x) + (1-\theta) g(y))\leq \theta h(g(x)) + (1-\theta)h(g(y))\] Combining (15) and (16), we have now proved that $f$ is convex. Minimization If $f$ is convex in $(x,y)$ and $C$ is a nonempty convex set, then the function \[g(x):=\inf_{y\in C}f(x,y)\] is convex in $x$, if $g&amp;gt;-\infty$. We prove this by using Jensen’s inequality: Let’s assume $x_1, x_2 \in \text{dom }g$. Now, let’s assume $\epsilon&amp;gt;0$ . Then there exists $y_1, y_2 \in C$ such that \[f(x_i, y_i )\leq g(x_i)+\epsilon\] Now, let $\theta \in [0,1]$ and start the ‘process’: \[\begin{aligned} g(\theta x_1+ (1-\theta)x_2) &amp;amp;= \inf_{y\in C} f(\theta x_1 + (1-\theta )x_2 , y)\\ &amp;amp; \leq f(\theta x_1 + (1-\theta )x_2, \theta y_1 + (1-\theta)y_2 )\\ &amp;amp; \leq \theta f(x_1, y_1)+ (1-\theta)f(x_2, y_2)\\ &amp;amp; \leq \theta g(x_1) + (1-\theta)g(x_2)+\epsilon \end{aligned}\] Since above inequality should hold for all $\epsilon&amp;gt;0$, we can say that \[g(\theta x_1 + (1-\theta )x_2)\leq \theta g(x_1) + (1-\theta)g(x_2)\] Shcur Complement Suppose the quadratic function \[f(x,y)= x^T Ax + 2x^T By + y^T Cy\] is convex in $(x,y)$, which means \[\begin{bmatrix} A&amp;amp;B\\B^T &amp;amp; C \end{bmatrix} \succeq 0\] We can express $g(x) = \inf_y f(x,y)$ as \[g(x)= x^T (A-BC^\dagger B^T )x\] We know that $g$ is convex (minimization rule), thus we conclude that \[A-BC^\dagger B^T \succeq 0\] If $C$ is convertible, then the matrix $A-BC^{-1}B^T $ is called the Schur complement of C in the matrix \[\begin{bmatrix} A&amp;amp;B\\B^T &amp;amp; C \end{bmatrix}\] Perspective of a function Given a function $f : \mathbb{R}^n \rightarrow \mathbb{R}$, the perspective $g:\mathbb{R}^{n+1} \rightarrow \mathbb{R}$ of $f$ is defined as \(g(x,t) = tf(x/t)\) with $\text{dom }g= {(x,t)\in \text{dom }f, t&amp;gt;0}$ If $f$ is a convex function, then so is its perspective function $g$. We prove this by epigraph: For $t&amp;gt;0$ , we have \[\begin{aligned} (x,t,s)\in \text{epi }g &amp;amp; \iff tf(x/t)\leq s\\ &amp;amp; \iff f(x/t) \leq s/t\\ &amp;amp; \iff (x/t, s/t)\in \text{epi }f \end{aligned}\] This implies that $\text{epi }g$ is the inverse image of $\text{epi }f$ under the perspective mapping that takes $(u,v,w)$ to $(u,w)/v$. It follows that $\text{epi }g$ is convex, so is the function $g$. Relative Entropy The function \[g(x,t):= -t \log (x/t) = t\log t - t\log x\] is the persepctive functino of $f(x)=-\log (x)$. Since $f$ is conve, $g$ is convex. Relative entropy of two vectors $u, v \in \mathbb{R}^n_{++}$ is defined as \[\sum_{i=1}^n u_i \log (u_i/v_i)\] which is also a convex function of $(u,v)$. The KL-divergence between $u,v$ is defined as \[D_{\text{KL}}(u,v):= \sum_{i=1}^n (u_i \log (u_i /v_ i)-u_i + v_i)\] is also a convex function. References S. Boyd, L.Vandenberghe, Convex Opimization, Cambridge University Press, 2004. http://stanford.edu/~boyd/cvxbook/ Optimization Theory and Applications, SNU EE 2021, Insoon Yang</summary></entry><entry><title type="html">[Optimization] 5 - Typical Convex Optimization Problems</title><link href="http://localhost:4000/notion_to_markdown/opt-lecture-5/" rel="alternate" type="text/html" title="[Optimization] 5 - Typical Convex Optimization Problems" /><published>2021-04-18T00:00:00+09:00</published><updated>2021-04-18T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/opt-lecture-5</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/opt-lecture-5/">&lt;h2 id=&quot;standard-form-of-convex-optimization-problems&quot;&gt;Standard Form of Convex Optimization Problems&lt;/h2&gt;
 
 \[\begin{aligned}
 \min &amp;amp;\ \ f_0 (x) \\
@@ -550,660 +1231,7 @@ g(\tilde{\lambda}, \tilde{\nu}) &amp;amp; = L(\tilde{x}, \tilde{\lambda}, \tilde
 \[\begin{aligned}
   \min &amp;amp; \ \ \ c^T x\\
   \text{s.t.} &amp;amp; \ \ \ \bar{a}_i ^T x + \|P_i x \|_2 ^2 \leq b_i , \ \ \ i=1, \cdots, m
-  \end{aligned}\]</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Optimization" /><category term="Lecture-Note" /><summary type="html">Standard Form of Convex Optimization Problems \[\begin{aligned} \min &amp;amp;\ \ f_0 (x) \\ \text{s.t.} &amp;amp; \ \ f_i (x) \leq 0, i=1,\cdots, m\\ &amp;amp; \ \ a_i ^T x = b_i , i=1,\cdots, p \end{aligned}\] the objective function must be convex inequality constraint functions must be convex the equality constraint functions should be affine more generally, this problem is said to be convex if the cost function is convex and its feasible set is convex. Optimality in convex optimization In convex optimization problems, any locally optimal point is globally optimal. [proof] We say a feasible point is locally optimal if there is an $R&amp;gt;0$ such that \[f_0 (x) = \inf \{ f_o (z) \ \vert \ z\in \text{feasible set}, \ \|z-x\|_2 \leq R\}\] Now, suppose that $x$ is not globally optimal. Thus, therer exists a feasible $y$ such that \[f_0 (y) &amp;lt;f_0 (x)\] Evidently, $|y-x|_2 &amp;gt;R$. Consider a point $z$ given by \[z = (1-\theta ) x + \theta y , \ \ \ \theta = \frac{R}{2\|y-x\|_2 }\] We set $\theta$ like above, to make \[\|z-x\|_2 = \|\theta (y-x)\|_2 = \frac{R}{2}\] By convexity of the feasible set, $z$ is also feasible. Now, by the convexity of $f_0$, we have \[f_0 (z) \leq (1-\theta ) f_0 (x) + \theta f_0 (y) &amp;lt;f_0 (x)\] Finally, a contradiction. $z$ is inside the boundary $R$, but $f_0 (z)$ is smaller than $f_0 (x)$. Thus, $x$ has to be globally optimal. Optimality condition for convex optimization For differentiable $f_0 $ Suppose now that the objective function $f_0 $ is differentiable. Let $X$ denote the feasible set. Then, $x$ is optimal if and only if $x \in X$ and \[\nabla f_0 (x)^ T (y-x) \geq 0 \ \ \ \forall y \in X\] ($\implies$) Assume that $x\in X$ satisfies the optimality condition. \[\nabla f_0 (x)^T (y-x) \geq 0 \ \ \ \forall y \in X\] Since $f_0 $ is a convex function, \[f_0 (y) \geq f_0 (x) + \nabla f_0 (x)^T (y-x) \geq f_0 (x)\] Since above inequality holds for entire all $y\in X$, $x$ is optimal. ($\impliedby$) Now Assume $x$ is optimal, and assume that the optimality condition doesn’t hold. \[\nabla f_0 (x)^T (y-x) &amp;lt;0 \ \ \ \exists y \in X\] For $t\in [0,1]$, let \[z(t) = ty+ (1-t)x \in X\] Now, differentiate $f_0 (z) = f_0 (ty + (1-t)x)$ with $t$. \[\frac{d}{dt}f_0 (z(t)) \bigg \vert_{t=0}= f_0 ^\prime (z(t)) \frac{dz}{dt} = \nabla f(z(0))^T ( y-x) = \nabla f(x)^T (y-x)&amp;lt;0\] Thus, for sufficiently small $\epsilon &amp;gt;0$, \[f_0 (z(\epsilon)) &amp;lt; f_0 (z(0)) = f_0 (x)\] which is a contradiction. ($x$ is no longer a optimal point) For unconstrained problems For unconstrained problems, the optimality condition reduces to \[\nabla f_0 (x)=0\] Why? Suppose $x$ is optimal, which means $x \in \text{dom }f = X$ By the general optimality condition, we have \[\nabla f_0 (x)^T (y-x) \geq 0\] for all feasible $y\in X$. Since $f_0$ is differentiable, the domain is open by definition. Thus, there exists a small positive $t$ such that \[y:= x- t \nabla f_0 (x) \in X\] Since $y$ is feasible, \[\nabla f_0 (x)^T (-t \nabla f_0 (x)) = -t \| \nabla f_0 (x)\|_2 ^2 \geq 0\] Thus, we can conclude that \[\nabla f_0 (x) =0\] For example, consider the problem of minimizing \[f_0 (x) = \frac{1}{2} x^T Px + q^T x+ r\] where $P \in \mathbb{S}^n_+$ . The optimality condition for $x$ is \[\nabla f_0 (x) = Px+q =0\] For the case with equality constraints \[\begin{aligned} \text{min} &amp;amp; \ \ \ f_0 (x) \\ \text{s.t.} &amp;amp; \ \ \ Ax = b \end{aligned}\] general optimality condition for a feasible $x$ \[\nabla f_0 (x)^T (y-x) \geq 0 , \ \ \ \forall y \ \ \text{s.t.} \ \ Ay = b\] Since $x$ is feasible and the feasible set is affine, every feasible $y$ can be written as \[y= x+v\] for some $v\in \mathcal{N}(A)$. Thus, the optimality condition can be rewritten as \[\nabla f_0 (x)^T v \geq 0 , \ \ \forall v \in \mathcal{N}(A)\] If a linear function is nonnegative on a subspace, then it must be zero on the subspace. Thus, \[\nabla f_0 (x)^T v =0 \ \ \ \forall v \in \mathcal{N}(A)\] which can be also interpreted as \[\nabla f_0 (x) \perp v \ \ \ \forall v \in \mathcal{N} (A)\] Since the perp of null space is the range space of tranposed matrix, \[\mathcal{N}(A)^{\perp} = \mathcal{R}(A^T)\] the optimality condition can be rewritten as \[\nabla f_0 (x) \in \mathcal{R}(A^T)\] Thus, there exists a $v \in \mathbb{R}^p$ such that \[\nabla f_0 (x) + A^T v =0.\] which is the optimality constraint with equality constraint. Minimization over the nonnegative orthant \[\begin{aligned} \min &amp;amp; \ \ \ f_0 (x) \\ \text{s.t.} &amp;amp; \ \ \ x\geq 0 \end{aligned}\] The general optimality condition is \[\nabla f_0 (x)^T (y-x) \geq 0 \ \ \ \forall y \geq 0\] Note that $\nabla f_0 (x)^T y $ is unbounded below on $y\geq 0$, unless $\nabla f_0 (x) \geq 0$. $\rightarrow$ think about it for a bit! Thus, $\nabla f_0 (x) \geq 0$. Now, consider $y=0$ for the optimality condition above. \[x\geq 0 , \ \ \ -\nabla f_0 (x) ^T x \geq 0\] We know that $\nabla f_0 (x) \geq 0$, and $x\geq 0$. Thus, above inequality can only hold when \[\nabla f_0 (x)^T x =0\] especially when \[(\nabla f_0 (x))_i x_i =0 \ \ \ \forall i\] Linear Programming (LP) Definition Objective and constraint functions are all affine. \[\begin{aligned} \min &amp;amp; \ \ \ c^Tx +d \\ \text{s.t.} &amp;amp; \ \ \ Gx \leq h \\ &amp;amp; \ \ \ Ax = b \end{aligned}\] Geometric interpretation of LP Two forms of LP Standard form of LP : replace the inequality constraint with $x\geq 0$. \[\begin{aligned} \min &amp;amp; \ \ \ c^Tx +d \\ \text{s.t.} &amp;amp; \ \ \ Ax=b \\ &amp;amp; \ \ \ x\geq 0 \end{aligned}\] Inequality form of LP : there’s no equality constraints. \[\begin{aligned} \min &amp;amp; \ \ \ c^Tx +d \\ \text{s.t.} &amp;amp; \ \ \ Ax \leq b \end{aligned}\] Converting LPs to Standard form Recall: our general form LP was \[\begin{aligned} \min &amp;amp; \ \ \ c^Tx +d \\ \text{s.t.} &amp;amp; \ \ \ Gx \leq h \\ &amp;amp; \ \ \ Ax = b \end{aligned}\] Introduce slack variables $s_i$ for the inequalities \[Gx+s = h\\s \geq 0\] Express the variable $x$ as \[x = x^+ - x^-\] where $x^+, x^- \geq 0 $ Now, we have a standrad form LP \[\begin{aligned} \min &amp;amp; \ \ \ c^T x^+ - c^T x^- +d \\ \text{s.t.} &amp;amp; \ \ \ Gx^+ + Gx^- +s =h \\ &amp;amp; \ \ \ Ax^+ - Ax^- = b\\ &amp;amp; \ \ \ s\geq 0 , \ x^+ \geq 0 , \ x^ - \geq 0 \end{aligned}\] Minimizing convex piecewise-linear functions Consider the problem of minimizing a piecewise-linear convex function \[f(x): = \max_{i = 1, \cdots, m} (a_i ^T x+ b_i )\] We can create this as an LP by transforming into a epigraphical form \[\begin{aligned} \min &amp;amp; \ \ \ t \\ \text{s.t.} &amp;amp; \ \ \ a_i ^T x+ b_i \leq t \ \ \ i=1,\cdots, m\\ \end{aligned}\] Quadratic Programming (QP) Definition When the objective function is convex quadratic, and the constraints are affine. \[\begin{aligned} \min &amp;amp; \ \ \ \frac{1}{2}x^T Px + q^T x+ r\\ \text{s.t.} &amp;amp; \ \ \ Gx \leq h \\ &amp;amp; \ \ \ Ax=b \end{aligned}\] where $P \in \mathbb{S}^n_+$ , $G \in \mathbb{R}^{m\times n}$, and $A\in \mathbb{R}^{p\times n}$. Geometric Interpretation LP with Random Cost is QP Let’s consider a problem, similar to LP. \[\begin{aligned} \min &amp;amp; \ \ \ c^Tx \\ \text{s.t.} &amp;amp; \ \ \ Gx \leq h \\ &amp;amp; \ \ \ Ax = b \end{aligned}\] But the difference is that, the cost vector $c$ is stochastic: \[\mathbb{E}(c) = \bar{c}\\ \mathbb{E}[(c-\bar{c})(c-\bar{c})^T ] = \Sigma\] Note that \[\mathbb{E}[ c^T x] = \bar{c}^T x\\ \text{var} [c^T x] = \mathbb{E} [ (c^T x - \bar{c}^T x)^2 ] = x^T \Sigma x\] A way to take the variance (risk) into account is to minimize \[\mathbb{E}[c^Tx] + \gamma \text{var} [ c^Tx]\] instead of the stochastic $c^Tx$. Resulting problem is \[\begin{aligned} \min &amp;amp; \ \ \ \bar{c}^Tx + \gamma x^T \Sigma x \\ \text{s.t.} &amp;amp; \ \ \ Gx \leq h \\ &amp;amp; \ \ \ Ax = b \end{aligned}\] which is a quadratic programming (QP). Quadratically constrained Quadratic Program (QCQP) \[\begin{aligned} \min &amp;amp; \ \ \ \frac{1}{2}x^T P_0x + q_0^T x+ r_0\\ \text{s.t.} &amp;amp; \ \ \ \frac{1}{2}x^T P_ix + q_i^T x+ r_i \leq 0,\ \ i=1, \cdots, m \\ &amp;amp; \ \ \ Ax=b \end{aligned}\] where $P_i \in \mathcal{S}^n _+$. Second-Order Cone Programming (SOCP) \[\begin{aligned} \min &amp;amp; \ \ \ f^T x\\ \text{s.t.} &amp;amp; \ \ \ \|A_i x + b_i \|_2 \leq c_i ^T x+ d_i,\ \ i=1, \cdots, m \\ &amp;amp; \ \ \ Fx=g \end{aligned}\] Robust Linear Programming \[\begin{aligned} \min &amp;amp; \ \ \ c^T x\\ \text{s.t.} &amp;amp; \ \ \ a_i ^T x \leq b_i ,\ \ i=1, \cdots, m \end{aligned}\] Suppose that the parameters $a_i$ are uncertain (lying in ellipsoid) \[a_i \in \mathcal{E}_i := \{ \bar{a}_i + P_i u \ \vert \ \|u\|_2 \leq 1 \}\] where $P_i \in \mathbb{R}^{n\times n}$. Now, we have the following robust-linear program \[\begin{aligned} \min &amp;amp; \ \ \ c^T x\\ \text{s.t.} &amp;amp; \ \ \ a_i ^T x \leq b_i , \ \ \forall a_i \in \mathcal{E}_i , \ \ i=1, \cdots, m \end{aligned}\] Note that the inequality constraint $a_i ^T x \leq b_i , \ \ \forall a_i \in \mathcal{E}_i$ can be written as \[\sup \{ a_i ^T x \ \vert \ a_i \in \mathcal{E}_i \} \leq b_i\] and it can be re-written as \[\sup \{ a_i ^T x \ \vert \ a_i \in \mathcal{E}_i \} = \bar{a}_i ^T x + \sup \{u^T P_i x \ \vert \ \|u\|_2 \leq 1 \} = \bar{a}_i ^T x + \|P_i x \|_2 ^2\] This implies that the robust LP is equivalent to SOCP \[\begin{aligned} \min &amp;amp; \ \ \ c^T x\\ \text{s.t.} &amp;amp; \ \ \ \bar{a}_i ^T x + \|P_i x \|_2 ^2 \leq b_i , \ \ \ i=1, \cdots, m \end{aligned}\]</summary></entry><entry><title type="html">[Optimization] 4 - Operations that preserve Convexity</title><link href="http://localhost:4000/2021/04/18/opt-lecture-4-1.html" rel="alternate" type="text/html" title="[Optimization] 4 - Operations that preserve Convexity" /><published>2021-04-18T00:00:00+09:00</published><updated>2021-04-18T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/18/opt-lecture-4-1</id><content type="html" xml:base="http://localhost:4000/2021/04/18/opt-lecture-4-1.html">&lt;h2 id=&quot;operations-that-preserve-convexity&quot;&gt;Operations that preserve convexity&lt;/h2&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;nonnegative weighted sums&lt;/li&gt;
-  &lt;li&gt;composition with an affine mapping&lt;/li&gt;
-  &lt;li&gt;pointwise maximum and supremum&lt;/li&gt;
-  &lt;li&gt;composition&lt;/li&gt;
-  &lt;li&gt;minimization&lt;/li&gt;
-  &lt;li&gt;perpsective of a function&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h3 id=&quot;nonnegative-weighted-sums&quot;&gt;Nonnegative weighted sums&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;A nonnegative weighted sum of convex functions
-\begin{equation}
-f:=\sum_{i=1}^n w_i f_i
-\end{equation}
-is convex ($w_i \geq 0$).&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;If $f(x,y)$ is convex for each $y\in \mathcal{A}$  and $w(y)\geq 0$  for each $y\in \mathcal{A}$, 
-\begin{equation}
-g(x)= \int_ \mathcal{A} w(y)f(x,y)dy
-\end{equation}
-is convex in $x$.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Recall that a function is convex if and only if its epigraph is a convex set!&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-&lt;details&gt; &lt;summary&gt; Click to see the proof &lt;/summary&gt;
-($\implies$) First assume that $f$ is convex. Then, consider $(x_1,t_1)$, $(x_2,t_2)\in \text{epi} f$. This means that $f(x_1)\leq t_1,  f(x_2)\leq t_2 $. Then, since $f$ is convex, 
-
-$$
-\begin{aligned}
-f(\theta x_1 + (1-\theta)x_2 ) &amp;amp;\leq \theta f(x_1)  + (1-\theta)f(x_2 )\\ 
-&amp;amp; \leq \theta t_1 + (1-\theta)t_2 \\
-\end{aligned}
-$$
-
-Thus, the point 
-
-$$
-(\theta x_1 + (1-\theta)x_2 , \theta t_1 + (1-\theta)t_2) \in \text{epi }f
-$$
-
-which implies that $\text{epi }f$ is a convex set. 
-($\impliedby$) Let $x_1,x_2\in \mathbb{R}^n$, since $(x_1,f(x_1))$ and $(x_2,f(x_2))$ lie in $\text{epi }f$. By the convexity of $f$, we can say that $(\theta x_1+ (1-\theta)x_2, \theta f(x_1) + (1-\theta)f(x_2)) \in \text{epi }f$. This means 
-
-$$
-\begin{aligned}
-\theta x_ 1+ (1-\theta)x_2 \leq \theta f(x_1)+ (1-\theta)f(x_2)
-\end{aligned}
-$$
-
-which implies that $f$ is a convex function. 
-&lt;/details&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;Using this property, we can prove that nonnegative weighted sum preserves convexity. For example, if $w\geq 0$ and $f$ is convex, we have&lt;/p&gt;
-
-\[\text{epi }(wf) = \begin{bmatrix}I &amp;amp;0\\0&amp;amp;w \end{bmatrix}\text{epi }f\]
-
-    &lt;p&gt;which implies that $wf$ is also a convex set (convex set under linear maaping is convex)&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;composition-with-an-affine-mapping&quot;&gt;Composition with an affine mapping&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;Suppose that $f: \mathbb{R}^n \rightarrow \mathbb{R}$ is convex.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Then the function $g:\mathbb{R}^n \rightarrow \mathbb{R}$ defined as&lt;/p&gt;
-
-\[g(x) = f(Ax+b)\]
-
-    &lt;p&gt;is convex. (both $A$ and $b$ appropriately defined)&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;pointwise-maximum-and-supremum&quot;&gt;Pointwise maximum and supremum&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;If $f_1$ and $f_2$ are convex functions, so is their pointwise maximum $f$ defined by
-\(f(x):= \max \{f_1(x), f_2 (x)\}\)&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;This can be easily proved: let $\theta \in [0,1]$ and $x,y\in \text{dom }f$.&lt;/p&gt;
-
-\[\begin{aligned}
-	f(\theta(x)+(1-\theta)y) &amp;amp; = \max\{ f_1 (\theta x + (1-\theta) y), f_2 (\theta x+ (1-\theta)y )\}\\
-	&amp;amp; \leq \max \{ \theta f_1 (x) + (1-\theta) f_1 (y) , \theta f_2 (x)  + (1-\theta) f_2 (y)\}\\
-	&amp;amp; \leq \max \{ \theta f_1 (x), \theta f_2 (x)\} + \max \{ (1-\theta) f_1 (y) + (1-\theta) f_2 (y) \}\\
-	&amp;amp; = \theta f(x) + (1-\theta)f(y)
-  
-\end{aligned}\]
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;This can also be generalized to $m$ functions&lt;/p&gt;
-
-\[f(x):=\max \{ f_1(x), \cdots, f_m (x)\}\]
-
-    &lt;p&gt;and even to a supremum&lt;/p&gt;
-
-\[g(x):=\sup_{y\in \mathcal{A}} f(x,y)\]
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;This can be also proved by epigraphs: $f$ and $g$ above can be considered as an intersection of multiple epigraphs.&lt;/p&gt;
-
-\[\text{epi }g= \bigcap _{y\in \mathcal{A}} \text{epi }f(\cdot, y)\]
-
-    &lt;p&gt;$\rightarrow$ since the intersection of a convex set is convex, $\text{epi }g$ is a convex set, thus $g$ is a convex function.&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;maximum-eigenvalue&quot;&gt;Maximum Eigenvalue&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;The function $f(X)= \lambda_{\text{max}}(X)$ with $\text{dom }f = \mathbb{S}^m$ is convex. To see this, we express $f$ as&lt;/p&gt;
-
-\[f(X) = \sup \{y^T X y \ \vert \ \|y\|_2 =1 \}\]
-
-    &lt;p&gt;as the pointwise supremum of a family of lienar functions of $X$ indexed by $y \in \mathbb{R}^m$.&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;composition&quot;&gt;Composition&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;Consider two functions $h: \mathbb{R}^k \rightarrow \mathbb{R}$ and $g: \mathbb{R}^n \rightarrow \mathbb{R}^k $. Their composition&lt;/p&gt;
-
-\[f(x) = h(g(x))\]
-
-    &lt;p&gt;is…&lt;/p&gt;
-
-    &lt;ol&gt;
-      &lt;li&gt;&lt;strong&gt;convex&lt;/strong&gt; if $h$ is convex and nondecreasing, and $g_i$’s are convex&lt;/li&gt;
-      &lt;li&gt;&lt;strong&gt;convex&lt;/strong&gt; if $h$ is convex and nonincreasing, and $g_i$’s are concave&lt;/li&gt;
-      &lt;li&gt;&lt;strong&gt;concave&lt;/strong&gt; if $h$ is concave and nondecreasing, and $g_i$’s are concave&lt;/li&gt;
-      &lt;li&gt;&lt;strong&gt;concave&lt;/strong&gt; if $h$ is concave and nonincreasing, and $g_i$’s are convex&lt;/li&gt;
-    &lt;/ol&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;To observe this in an easier fashion, let’s first consider the case $k=1$. To discover the composition rules, we start by assuming that $h$ and $ g$ are twice differentiable, with $\text{dom }g = \text{dom }h = \mathbb{R}$. In this case, convexity of $f$ reduces to $f’’ \leq 0$ .&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;The second derivative for the composition function $f$ is given by&lt;/p&gt;
-
-\[f''(x) = h''(g(x))g'(x)^2 + h'(g(x))g''(x)\]
-
-    &lt;ul&gt;
-      &lt;li&gt;Note that, to make $f’‘\leq 0$, either one of the 4 conditions above should satisfy.&lt;/li&gt;
-      &lt;li&gt;The thing depends on the sign of $h’, h’’$, and $g’’$. In other words, the convexity of $h$ and $g$, and the first-order derivative of $h$.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Of course, above conditions can be proved without differentiability.&lt;/p&gt;
-
-    &lt;ul&gt;
-      &lt;li&gt;For now, let’s observe the first case. $h$ is convex, nondecreasing, and $g$ is convex.&lt;/li&gt;
-      &lt;li&gt;Assume that $x, y \in \text{dom }f$ and $\theta \in [0,1]$. Since $x,y \in \text{dom }f$, we have that $x,y \in \text{dom } g$ and $g(x), g(y) \in \text{dom }h$. Knowing that $g$ is convex, thus $\text{dom }g$ is convex, we conclude that&lt;/li&gt;
-    &lt;/ul&gt;
-
-\[\theta x + (1-\theta)y \in \text{dom } g\]
-
-    &lt;p&gt;​		and for conexity of $g$, we can say that
-\(g(\theta x + (1-\theta)y ) \leq \theta g(x) + (1-\theta)g(y)\)&lt;/p&gt;
-    &lt;ul&gt;
-      &lt;li&gt;Now, since $g(x), g(y)\in \text{dom }h$ and $h$ is convex, we conclude that $\theta g(x)+(1-\theta)g(y) \in \text{dom }h$, which is actually the right-hand side of above equation.&lt;/li&gt;
-      &lt;li&gt;
-        &lt;p&gt;Let’s extend the assumption of $h$’s nondecreasing property to $\tilde{h}$, which assigns the value $\infty$ to points not in $\text{dom }h$. By doing so, we can say that for any $x,y\in \mathbb{R}$, with $x&amp;lt;y$, we have $\tilde{h}(x) \leq \tilde{h}(y)$ . This means that if $y \in \text{dom }h$, so is $x\in \text{dom }h$. &lt;strong&gt;The domain of $h$ extends infinitely in the negative direction.&lt;/strong&gt;&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-        &lt;p&gt;Thus, since the right-hand side of equation (14) is in $\text{dom }h$, so is the left-hand side. $g(\theta x + (1-\theta)y)$. Thus, $\theta x+ (1-\theta )y \in \text{dom }f$. At this point, we have shown that $\text{dom }f$ is convex.&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-        &lt;p&gt;Now, using the fact that $h$ is nondecreasing, we get&lt;/p&gt;
-
-\[h(g(\theta x+(1-\theta)y))\leq h(\theta g(x)+ (1-\theta)g(y))\]
-
-        &lt;p&gt;From the convexity of $h$, we have&lt;/p&gt;
-
-\[h(\theta g(x) + (1-\theta) g(y))\leq \theta h(g(x)) + (1-\theta)h(g(y))\]
-
-        &lt;p&gt;Combining (15) and (16), we have now proved that $f$ is convex.&lt;/p&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;minimization&quot;&gt;Minimization&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;If $f$ is convex in $(x,y)$ and $C$ is a nonempty convex set, then the function&lt;/p&gt;
-
-\[g(x):=\inf_{y\in C}f(x,y)\]
-
-    &lt;p&gt;is convex in $x$, if $g&amp;gt;-\infty$.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;We prove this by using Jensen’s inequality: Let’s assume $x_1, x_2 \in \text{dom }g$. Now, let’s assume $\epsilon&amp;gt;0$ . Then there exists $y_1, y_2 \in C$ such that&lt;/p&gt;
-
-\[f(x_i, y_i )\leq g(x_i)+\epsilon\]
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Now, let $\theta \in [0,1]$ and start the ‘process’:&lt;/p&gt;
-
-\[\begin{aligned}
-g(\theta x_1+ (1-\theta)x_2) &amp;amp;= \inf_{y\in C} f(\theta x_1 + (1-\theta )x_2 , y)\\
-&amp;amp; \leq f(\theta x_1 + (1-\theta )x_2, \theta y_1 + (1-\theta)y_2 )\\
-&amp;amp; \leq \theta f(x_1, y_1)+ (1-\theta)f(x_2, y_2)\\
-&amp;amp; \leq \theta g(x_1) + (1-\theta)g(x_2)+\epsilon
-\end{aligned}\]
-
-    &lt;p&gt;Since above inequality should hold for all $\epsilon&amp;gt;0$, we can say that&lt;/p&gt;
-
-\[g(\theta x_1 + (1-\theta )x_2)\leq \theta g(x_1) + (1-\theta)g(x_2)\]
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;shcur-complement&quot;&gt;Shcur Complement&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;Suppose the quadratic function&lt;/p&gt;
-
-\[f(x,y)= x^T Ax + 2x^T By + y^T Cy\]
-
-    &lt;p&gt;is convex in $(x,y)$, which means&lt;/p&gt;
-
-\[\begin{bmatrix}
-A&amp;amp;B\\B^T &amp;amp; C
-\end{bmatrix} \succeq 0\]
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;We can express $g(x) = \inf_y f(x,y)$ as&lt;/p&gt;
-
-\[g(x)= x^T (A-BC^\dagger B^T )x\]
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;We know that $g$ is convex (minimization rule), thus we conclude that&lt;/p&gt;
-
-\[A-BC^\dagger B^T \succeq 0\]
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;If $C$ is convertible, then the matrix $A-BC^{-1}B^T $ is called the &lt;strong&gt;Schur complement&lt;/strong&gt; of C in the matrix&lt;/p&gt;
-
-\[\begin{bmatrix}
-A&amp;amp;B\\B^T &amp;amp; C
-\end{bmatrix}\]
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;perspective-of-a-function&quot;&gt;Perspective of a function&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;Given a function $f : \mathbb{R}^n \rightarrow \mathbb{R}$, the perspective $g:\mathbb{R}^{n+1} \rightarrow \mathbb{R}$ of $f$ is defined as&lt;/p&gt;
-
-    &lt;p&gt;\(g(x,t) = tf(x/t)\)
-with $\text{dom }g= {(x,t)\in \text{dom }f, t&amp;gt;0}$&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;If $f$ is a convex function, then so is its perspective function $g$.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;We prove this by epigraph: For $t&amp;gt;0$ , we have&lt;/p&gt;
-
-\[\begin{aligned}
-(x,t,s)\in \text{epi }g &amp;amp; \iff tf(x/t)\leq s\\
-&amp;amp; \iff f(x/t) \leq s/t\\
-&amp;amp; \iff (x/t, s/t)\in \text{epi }f
-\end{aligned}\]
-
-    &lt;p&gt;This implies that $\text{epi }g$ is the inverse image of $\text{epi }f$ under the perspective mapping that takes $(u,v,w)$ to $(u,w)/v$. It follows that $\text{epi }g$ is convex, so is the function $g$.&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;relative-entropy&quot;&gt;Relative Entropy&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;The function&lt;/p&gt;
-
-\[g(x,t):= -t \log (x/t) = t\log t - t\log x\]
-
-    &lt;p&gt;is the persepctive functino of $f(x)=-\log (x)$.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Since $f$ is conve, $g$ is convex.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Relative entropy of two vectors $u, v \in \mathbb{R}^n_{++}$ is defined as&lt;/p&gt;
-
-\[\sum_{i=1}^n u_i \log (u_i/v_i)\]
-
-    &lt;p&gt;which is also a convex function of $(u,v)$.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;The KL-divergence between $u,v$ is defined as&lt;/p&gt;
-
-\[D_{\text{KL}}(u,v):= \sum_{i=1}^n (u_i \log (u_i /v_ i)-u_i + v_i)\]
-
-    &lt;p&gt;is also a convex function.&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;references&quot;&gt;References&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;S. Boyd, L.Vandenberghe, Convex Opimization, Cambridge University Press, 2004. &lt;a href=&quot;http://stanford.edu/~boyd/cvxbook/&quot;&gt;http://stanford.edu/~boyd/cvxbook/&lt;/a&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Optimization Theory and Applications, SNU EE 2021, Insoon Yang&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Optimization" /><category term="Lecture-Note" /><summary type="html">Operations that preserve convexity nonnegative weighted sums composition with an affine mapping pointwise maximum and supremum composition minimization perpsective of a function Nonnegative weighted sums A nonnegative weighted sum of convex functions \begin{equation} f:=\sum_{i=1}^n w_i f_i \end{equation} is convex ($w_i \geq 0$). If $f(x,y)$ is convex for each $y\in \mathcal{A}$ and $w(y)\geq 0$ for each $y\in \mathcal{A}$, \begin{equation} g(x)= \int_ \mathcal{A} w(y)f(x,y)dy \end{equation} is convex in $x$. Recall that a function is convex if and only if its epigraph is a convex set! Click to see the proof ($\implies$) First assume that $f$ is convex. Then, consider $(x_1,t_1)$, $(x_2,t_2)\in \text{epi} f$. This means that $f(x_1)\leq t_1, f(x_2)\leq t_2 $. Then, since $f$ is convex, $$ \begin{aligned} f(\theta x_1 + (1-\theta)x_2 ) &amp;amp;\leq \theta f(x_1) + (1-\theta)f(x_2 )\\ &amp;amp; \leq \theta t_1 + (1-\theta)t_2 \\ \end{aligned} $$ Thus, the point $$ (\theta x_1 + (1-\theta)x_2 , \theta t_1 + (1-\theta)t_2) \in \text{epi }f $$ which implies that $\text{epi }f$ is a convex set. ($\impliedby$) Let $x_1,x_2\in \mathbb{R}^n$, since $(x_1,f(x_1))$ and $(x_2,f(x_2))$ lie in $\text{epi }f$. By the convexity of $f$, we can say that $(\theta x_1+ (1-\theta)x_2, \theta f(x_1) + (1-\theta)f(x_2)) \in \text{epi }f$. This means $$ \begin{aligned} \theta x_ 1+ (1-\theta)x_2 \leq \theta f(x_1)+ (1-\theta)f(x_2) \end{aligned} $$ which implies that $f$ is a convex function. Using this property, we can prove that nonnegative weighted sum preserves convexity. For example, if $w\geq 0$ and $f$ is convex, we have \[\text{epi }(wf) = \begin{bmatrix}I &amp;amp;0\\0&amp;amp;w \end{bmatrix}\text{epi }f\] which implies that $wf$ is also a convex set (convex set under linear maaping is convex) Composition with an affine mapping Suppose that $f: \mathbb{R}^n \rightarrow \mathbb{R}$ is convex. Then the function $g:\mathbb{R}^n \rightarrow \mathbb{R}$ defined as \[g(x) = f(Ax+b)\] is convex. (both $A$ and $b$ appropriately defined) Pointwise maximum and supremum If $f_1$ and $f_2$ are convex functions, so is their pointwise maximum $f$ defined by \(f(x):= \max \{f_1(x), f_2 (x)\}\) This can be easily proved: let $\theta \in [0,1]$ and $x,y\in \text{dom }f$. \[\begin{aligned} f(\theta(x)+(1-\theta)y) &amp;amp; = \max\{ f_1 (\theta x + (1-\theta) y), f_2 (\theta x+ (1-\theta)y )\}\\ &amp;amp; \leq \max \{ \theta f_1 (x) + (1-\theta) f_1 (y) , \theta f_2 (x) + (1-\theta) f_2 (y)\}\\ &amp;amp; \leq \max \{ \theta f_1 (x), \theta f_2 (x)\} + \max \{ (1-\theta) f_1 (y) + (1-\theta) f_2 (y) \}\\ &amp;amp; = \theta f(x) + (1-\theta)f(y) \end{aligned}\] This can also be generalized to $m$ functions \[f(x):=\max \{ f_1(x), \cdots, f_m (x)\}\] and even to a supremum \[g(x):=\sup_{y\in \mathcal{A}} f(x,y)\] This can be also proved by epigraphs: $f$ and $g$ above can be considered as an intersection of multiple epigraphs. \[\text{epi }g= \bigcap _{y\in \mathcal{A}} \text{epi }f(\cdot, y)\] $\rightarrow$ since the intersection of a convex set is convex, $\text{epi }g$ is a convex set, thus $g$ is a convex function. Maximum Eigenvalue The function $f(X)= \lambda_{\text{max}}(X)$ with $\text{dom }f = \mathbb{S}^m$ is convex. To see this, we express $f$ as \[f(X) = \sup \{y^T X y \ \vert \ \|y\|_2 =1 \}\] as the pointwise supremum of a family of lienar functions of $X$ indexed by $y \in \mathbb{R}^m$. Composition Consider two functions $h: \mathbb{R}^k \rightarrow \mathbb{R}$ and $g: \mathbb{R}^n \rightarrow \mathbb{R}^k $. Their composition \[f(x) = h(g(x))\] is… convex if $h$ is convex and nondecreasing, and $g_i$’s are convex convex if $h$ is convex and nonincreasing, and $g_i$’s are concave concave if $h$ is concave and nondecreasing, and $g_i$’s are concave concave if $h$ is concave and nonincreasing, and $g_i$’s are convex To observe this in an easier fashion, let’s first consider the case $k=1$. To discover the composition rules, we start by assuming that $h$ and $ g$ are twice differentiable, with $\text{dom }g = \text{dom }h = \mathbb{R}$. In this case, convexity of $f$ reduces to $f’’ \leq 0$ . The second derivative for the composition function $f$ is given by \[f''(x) = h''(g(x))g'(x)^2 + h'(g(x))g''(x)\] Note that, to make $f’‘\leq 0$, either one of the 4 conditions above should satisfy. The thing depends on the sign of $h’, h’’$, and $g’’$. In other words, the convexity of $h$ and $g$, and the first-order derivative of $h$. Of course, above conditions can be proved without differentiability. For now, let’s observe the first case. $h$ is convex, nondecreasing, and $g$ is convex. Assume that $x, y \in \text{dom }f$ and $\theta \in [0,1]$. Since $x,y \in \text{dom }f$, we have that $x,y \in \text{dom } g$ and $g(x), g(y) \in \text{dom }h$. Knowing that $g$ is convex, thus $\text{dom }g$ is convex, we conclude that \[\theta x + (1-\theta)y \in \text{dom } g\] ​ and for conexity of $g$, we can say that \(g(\theta x + (1-\theta)y ) \leq \theta g(x) + (1-\theta)g(y)\) Now, since $g(x), g(y)\in \text{dom }h$ and $h$ is convex, we conclude that $\theta g(x)+(1-\theta)g(y) \in \text{dom }h$, which is actually the right-hand side of above equation. Let’s extend the assumption of $h$’s nondecreasing property to $\tilde{h}$, which assigns the value $\infty$ to points not in $\text{dom }h$. By doing so, we can say that for any $x,y\in \mathbb{R}$, with $x&amp;lt;y$, we have $\tilde{h}(x) \leq \tilde{h}(y)$ . This means that if $y \in \text{dom }h$, so is $x\in \text{dom }h$. The domain of $h$ extends infinitely in the negative direction. Thus, since the right-hand side of equation (14) is in $\text{dom }h$, so is the left-hand side. $g(\theta x + (1-\theta)y)$. Thus, $\theta x+ (1-\theta )y \in \text{dom }f$. At this point, we have shown that $\text{dom }f$ is convex. Now, using the fact that $h$ is nondecreasing, we get \[h(g(\theta x+(1-\theta)y))\leq h(\theta g(x)+ (1-\theta)g(y))\] From the convexity of $h$, we have \[h(\theta g(x) + (1-\theta) g(y))\leq \theta h(g(x)) + (1-\theta)h(g(y))\] Combining (15) and (16), we have now proved that $f$ is convex. Minimization If $f$ is convex in $(x,y)$ and $C$ is a nonempty convex set, then the function \[g(x):=\inf_{y\in C}f(x,y)\] is convex in $x$, if $g&amp;gt;-\infty$. We prove this by using Jensen’s inequality: Let’s assume $x_1, x_2 \in \text{dom }g$. Now, let’s assume $\epsilon&amp;gt;0$ . Then there exists $y_1, y_2 \in C$ such that \[f(x_i, y_i )\leq g(x_i)+\epsilon\] Now, let $\theta \in [0,1]$ and start the ‘process’: \[\begin{aligned} g(\theta x_1+ (1-\theta)x_2) &amp;amp;= \inf_{y\in C} f(\theta x_1 + (1-\theta )x_2 , y)\\ &amp;amp; \leq f(\theta x_1 + (1-\theta )x_2, \theta y_1 + (1-\theta)y_2 )\\ &amp;amp; \leq \theta f(x_1, y_1)+ (1-\theta)f(x_2, y_2)\\ &amp;amp; \leq \theta g(x_1) + (1-\theta)g(x_2)+\epsilon \end{aligned}\] Since above inequality should hold for all $\epsilon&amp;gt;0$, we can say that \[g(\theta x_1 + (1-\theta )x_2)\leq \theta g(x_1) + (1-\theta)g(x_2)\] Shcur Complement Suppose the quadratic function \[f(x,y)= x^T Ax + 2x^T By + y^T Cy\] is convex in $(x,y)$, which means \[\begin{bmatrix} A&amp;amp;B\\B^T &amp;amp; C \end{bmatrix} \succeq 0\] We can express $g(x) = \inf_y f(x,y)$ as \[g(x)= x^T (A-BC^\dagger B^T )x\] We know that $g$ is convex (minimization rule), thus we conclude that \[A-BC^\dagger B^T \succeq 0\] If $C$ is convertible, then the matrix $A-BC^{-1}B^T $ is called the Schur complement of C in the matrix \[\begin{bmatrix} A&amp;amp;B\\B^T &amp;amp; C \end{bmatrix}\] Perspective of a function Given a function $f : \mathbb{R}^n \rightarrow \mathbb{R}$, the perspective $g:\mathbb{R}^{n+1} \rightarrow \mathbb{R}$ of $f$ is defined as \(g(x,t) = tf(x/t)\) with $\text{dom }g= {(x,t)\in \text{dom }f, t&amp;gt;0}$ If $f$ is a convex function, then so is its perspective function $g$. We prove this by epigraph: For $t&amp;gt;0$ , we have \[\begin{aligned} (x,t,s)\in \text{epi }g &amp;amp; \iff tf(x/t)\leq s\\ &amp;amp; \iff f(x/t) \leq s/t\\ &amp;amp; \iff (x/t, s/t)\in \text{epi }f \end{aligned}\] This implies that $\text{epi }g$ is the inverse image of $\text{epi }f$ under the perspective mapping that takes $(u,v,w)$ to $(u,w)/v$. It follows that $\text{epi }g$ is convex, so is the function $g$. Relative Entropy The function \[g(x,t):= -t \log (x/t) = t\log t - t\log x\] is the persepctive functino of $f(x)=-\log (x)$. Since $f$ is conve, $g$ is convex. Relative entropy of two vectors $u, v \in \mathbb{R}^n_{++}$ is defined as \[\sum_{i=1}^n u_i \log (u_i/v_i)\] which is also a convex function of $(u,v)$. The KL-divergence between $u,v$ is defined as \[D_{\text{KL}}(u,v):= \sum_{i=1}^n (u_i \log (u_i /v_ i)-u_i + v_i)\] is also a convex function. References S. Boyd, L.Vandenberghe, Convex Opimization, Cambridge University Press, 2004. http://stanford.edu/~boyd/cvxbook/ Optimization Theory and Applications, SNU EE 2021, Insoon Yang</summary></entry><entry><title type="html">[Optimization] 6 - Lagrange Duality, Slater’s Condition</title><link href="http://localhost:4000/notion_to_markdown/opt-lecture-6/" rel="alternate" type="text/html" title="[Optimization] 6 - Lagrange Duality, Slater’s Condition" /><published>2021-04-18T00:00:00+09:00</published><updated>2021-04-18T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/opt-lecture-6</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/opt-lecture-6/">&lt;h2 id=&quot;lagrangian&quot;&gt;Lagrangian&lt;/h2&gt;
-
-&lt;p&gt;Consider an optimization problem&lt;/p&gt;
-
-\[\begin{aligned} \min &amp;amp; \ \ \ f_0 (x) \\ \text{s.t} &amp;amp; \ \ \ f_i (x) \leq 0, \ \ \  i= 1, \cdots, m \\ &amp;amp; \ \ \ h_i (x) =0, \ \ \ i=1, \cdots, p \end{aligned}\]
-
-&lt;p&gt;Now, take the constraint into account by &lt;strong&gt;augmenting the objective function with a weighted sum of the constraint functions&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;p&gt;Lagrangian $L: \mathbb{R}^n \times \mathbb{R}^m \times \mathbb{R}^p \rightarrow \mathbb{R}$ defined by&lt;/p&gt;
-
-\[L(x,\lambda, \nu) := f_0 (x) + \sum_{i=1}^n \lambda_i f_i (x) + \sum_{i=1}^p \nu_i h_i (x)\]
-
-&lt;p&gt;where $\lambda_i$ is the Lagrange multiplier associated with the inequality constraints, and $\nu_i$ is the Lagrange multipler associated with equality constraints. We call $\lambda, \nu$ as &lt;strong&gt;dual variables&lt;/strong&gt; or Lagrange multiplier vectors.&lt;/p&gt;
-
-&lt;h2 id=&quot;lagrange-dual&quot;&gt;Lagrange Dual&lt;/h2&gt;
-
-&lt;p&gt;Define Lagrange dual function $g: \mathbb{R}^m \times \mathbb{R}^n \rightarrow \mathbb{R}$&lt;/p&gt;
-
-\[g(\lambda, \nu) := \inf_{x\in \mathbb{R}^n } L(x,\lambda, \nu) = \inf_{x\in \mathbb{R}^n } \bigg [ f_0 (x) + \sum_{i=1}^n \lambda_i f_i (x) + \sum_{i=1}^p \nu_i h_i (x) \bigg ]\]
-
-&lt;p&gt;Note that this dual function is &lt;strong&gt;concave&lt;/strong&gt; in $(\lambda, \nu)$, even when the original problem is non-convex.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;[proof]&lt;/strong&gt; Lagrangian is affine in $(\lambda, \nu)$. Thus, $g(\lambda, \nu)$ can be construed as a pointwise infimum of affine function.&lt;/p&gt;
-
-&lt;h3 id=&quot;lagrange-dual-lower-bounds-the-optimal-value&quot;&gt;Lagrange Dual Lower bounds the Optimal Value&lt;/h3&gt;
-
-&lt;p&gt;&lt;strong&gt;[Proposition]&lt;/strong&gt; For any $\lambda \geq 0$ and any $\nu$,&lt;/p&gt;
-
-\[g(\lambda, \nu) \leq p^\star\]
-
-&lt;p&gt;&lt;strong&gt;[proof]&lt;/strong&gt; Fix an arbitrary feasible $\tilde{x}$. Then,&lt;/p&gt;
-
-\[f_i (\tilde{x}) \leq 0 \\
-h_i (\tilde{x}) =0\]
-
-&lt;p&gt;Now, fix an arbitrary $\lambda \geq 0 $ and $\nu$. We have&lt;/p&gt;
-
-\[\sum \lambda_i f_i (\tilde{x})  + \sum \nu_i h_i (\tilde{x}) \leq 0\]
-
-&lt;p&gt;Thus,&lt;/p&gt;
-
-&lt;p&gt;\(L(\tilde{x}, \lambda, \nu) = f_o (\tilde{x}) +\sum \lambda_i f_i (\tilde{x})  + \sum \nu_i h_i (\tilde{x}) \leq f_o(\tilde{x}) \leq p^\star\)
-for all feasibe $\tilde{x}$.&lt;/p&gt;
-
-&lt;h3 id=&quot;lagrange-dual-problem&quot;&gt;Lagrange Dual Problem&lt;/h3&gt;
-
-\[\begin{aligned}
-\max &amp;amp; \ \ \ g(\lambda,\nu)\\
-\text{s.t.} &amp;amp; \ \ \ \lambda \geq 0 
-\end{aligned}\]
-
-&lt;p&gt;We have to maximize the Lagrange Dual (to at least get closer to the original optimal value $p^\star$).&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;A pair $(\lambda, \nu)$ is called &lt;strong&gt;dual-feasible&lt;/strong&gt; if&lt;/p&gt;
-
-\[\lambda \geq 0 , \ \ \ g(\lambda, \nu) &amp;gt;-\infty\]
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;This dual problem is always a convex optimization problem, even when the original problem is non-convex. (Recall that $g(\lambda, \nu)$ was concave function)&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;ex-dual-of-standard-form-lp&quot;&gt;[Ex] Dual of standard form LP&lt;/h3&gt;
-
-\[\begin{aligned}
-\min &amp;amp; \ \ \ c^Tx \\
-\text{s.t.} &amp;amp; \ \ \ Ax=b \\
-&amp;amp; \ \ \ x\geq 0
-\end{aligned}\]
-
-&lt;p&gt;&lt;strong&gt;[solution]&lt;/strong&gt; First get the Lagrangian&lt;/p&gt;
-
-\[\begin{aligned}
-L(x,\lambda, \nu) &amp;amp;= c^T x+ \nu^T (Ax-b) + \lambda ^T (-x)\\
-&amp;amp; = (c+A^T \nu -\lambda)^T x -\nu^T b
-\end{aligned}\]
-
-&lt;p&gt;Now, minimize the Lagrangian with respect to $x$.&lt;/p&gt;
-
-\[g(\lambda, \nu) = \inf_x L(x,\lambda, \nu) = 
-\begin{cases} 
--\nu^Tb &amp;amp; \ \ \ \text{if } c+A^T \nu - \lambda =0\\
--\infty &amp;amp; \ \ \ \text{otherwise}
-\end{cases}\]
-
-&lt;p&gt;Thus, the dual problem is&lt;/p&gt;
-
-\[\begin{aligned}
-\max &amp;amp; \ \ \ -\nu^T b \\
-\text{s.t.} &amp;amp; \ \ \ c+ A^T \nu - \lambda =0 \\
-&amp;amp; \ \ \ \lambda \geq 0
-\end{aligned}\]
-
-&lt;h3 id=&quot;ex-dual-of-inequality-form-lp&quot;&gt;[Ex] Dual of inequality form LP&lt;/h3&gt;
-
-&lt;p&gt;Same procedure, we get&lt;/p&gt;
-
-\[\begin{aligned}
-\max &amp;amp; \ \ \ -b^T \lambda \\
-\text{s.t.} &amp;amp; \ \ \ c+ A^T \lambda  =0 \\
-&amp;amp; \ \ \ \lambda \geq 0
-\end{aligned}\]
-
-&lt;h2 id=&quot;interpreting-the-lagrangian-dual&quot;&gt;Interpreting the Lagrangian Dual&lt;/h2&gt;
-
-&lt;h3 id=&quot;linear-approximation&quot;&gt;Linear Approximation&lt;/h3&gt;
-
-&lt;p&gt;We can rewrite the original problem (1) as&lt;/p&gt;
-
-\[\min \ \ f_0 (x) + \sum_{i=1}^n I_- (f_i (x))  + \sum_{i=1}^p  I_0 (h_i (x))\]
-
-&lt;p&gt;where $I_- : \mathbb{R} \rightarrow \mathbb{R}$ is a penalty function for positive reals (blue line in below figure)&lt;/p&gt;
-
-\[I_- (u) := \begin{cases}
-0 &amp;amp; \ \ \ \text{if } u \leq 0 \\
-+\infty &amp;amp; \ \ \ \text {if } u&amp;gt;0
-\end{cases}\]
-
-&lt;p&gt;Similarly, $I_0 : \mathbb{R} \rightarrow \mathbb{R}$ is a penalty function for nonzero values.&lt;/p&gt;
-
-\[I_0 (u) := \begin{cases}
-0 &amp;amp; \ \ \ \text{if } u = 0 \\
-+\infty &amp;amp; \ \ \ \text {if } u\not =0
-\end{cases}\]
-
-&lt;p&gt;Now, let’s relax the function a bit.&lt;/p&gt;
-
-&lt;center&gt;&lt;img src=&quot;image-20210418201908558.png&quot; alt=&quot;image-20210418201908558&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/center&gt;
-
-&lt;center&gt;&lt;img src=&quot;image-20210418202115363.png&quot; alt=&quot;image-20210418202115363&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/center&gt;
-
-&lt;p&gt;Replace $I_-(u)$ with the linear function $\lambda_i u$ where $\lambda_i \geq 0$, and function $I_0 (u)$ with $\nu_i u$. We then have a Lagrangian.&lt;/p&gt;
-
-&lt;p&gt;Thus, the linear penalty function introduced here is the &lt;strong&gt;underestimator&lt;/strong&gt; of the original penalty function. Thus, it seems quite obvious that dual function has to yield a lower bound on the optimal value of the primal problem.&lt;/p&gt;
-
-&lt;h3 id=&quot;geometric-interpretation&quot;&gt;Geometric Interpretation&lt;/h3&gt;
-
-&lt;p&gt;Consider the following set of values&lt;/p&gt;
-
-\[\mathcal{G}:= \{ (f_1(x), \cdots, f_m(x), h_1(x), \cdots, h_p(x), f_0 (x)) \}\in \mathbb{R}^m \times \mathbb{R}^p \times \mathbb{R}\]
-
-&lt;p&gt;Now, the optimal value of the primal problem can be expressed as&lt;/p&gt;
-
-\[p^\star = \inf \{ p \ \vert \ (u,v,t) \in \mathcal{G}, \ u\leq 0 , v=0\}\]
-
-&lt;p&gt;Meanwhile, the dual function can be expressed as&lt;/p&gt;
-
-\[g(\lambda, \nu) = \inf \{ (\lambda, \nu, 1)^T (u,v,t) \ \vert \ (u,v,t) \in \mathcal{G}\}\]
-
-&lt;p&gt;Suppose $\lambda \geq 0$. Then, if $u\leq 0$ and $v=0$,&lt;/p&gt;
-
-\[t \geq (\lambda , \nu, 1)^T (u,v,t)\]
-
-&lt;p&gt;Therfore,&lt;/p&gt;
-
-\[\begin{aligned}
-p^\star &amp;amp;= \inf \ \{ t \ \vert \ (u,v,t) \in \mathcal{G}, u\leq 0, v=0\}\\
-&amp;amp; \geq \inf \ \{ (\lambda , \nu, 1)^T (u,v,t) \ \vert \ (u,v,t) \in \mathcal{G}, u\leq 0, v=0\}\\
-&amp;amp; \geq \inf \ \{ (\lambda , \nu, 1)^T (u,v,t) \ \vert \ (u,v,t) \in \mathcal{G}\} = g(\lambda, \nu) \\
-\end{aligned}\]
-
-&lt;center&gt;&lt;img src=&quot;image-20210418203400472.png&quot; alt=&quot;image-20210418203400472&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/center&gt;
-
-&lt;center&gt;&lt;img src=&quot;image-20210418203616032.png&quot; alt=&quot;image-20210418203616032&quot; style=&quot;zoom:35%;&quot; /&gt;&lt;/center&gt;
-
-&lt;h2 id=&quot;strong-duality&quot;&gt;Strong Duality&lt;/h2&gt;
-
-&lt;h3 id=&quot;weak-duality&quot;&gt;Weak Duality&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;$p^\star$ = optimal value of the primal problem&lt;/li&gt;
-  &lt;li&gt;$d^\star$ = optimal value of the dual problem&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Then, “weak duality” holds, regardless of the convexity of the primal problem.&lt;/p&gt;
-
-\[d^\star \leq p^\star\]
-
-&lt;p&gt;and $p^\star - d^\star$ is called the &lt;strong&gt;duality gap&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;h3 id=&quot;strong-duality-1&quot;&gt;Strong Duality&lt;/h3&gt;
-
-&lt;p&gt;We say strong duality holds if&lt;/p&gt;
-
-\[p^\star = d^\star\]
-
-&lt;p&gt;&lt;strong&gt;Note that strong duality generally does not hold&lt;/strong&gt;. However, under certain condition, strong duality holds.&lt;/p&gt;
-
-&lt;h3 id=&quot;slaters-condition&quot;&gt;Slater’s condition&lt;/h3&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;&lt;strong&gt;[Theorem]&lt;/strong&gt; Strong duality holds for a convex optimization problem if Slater’s condition holds. Slater’s condition means that, there exists $x$ such that 
-\(f_i (x) &amp;lt;0 , \ \ \ i=1, \cdots, m, \ \ \ Ax= b\)
-(In other words, slater’s condition states that the point should satisfy the inequality condition &lt;strong&gt;strictly&lt;/strong&gt;.)&lt;/p&gt;
-
-&lt;p&gt;However, if some of its inequality constraint is &lt;strong&gt;affine&lt;/strong&gt;, such inequality constraints does not have to hold strictly. If $f_1, \cdots, f_k$ are affine, then strong duality holds if there exists $x$ such that&lt;/p&gt;
-
-\[f_i (x) \leq 0, \ \ \ i=1, \cdots, k, \ \ f_i (x) &amp;lt;0 , \ \ i= k+1, \cdots, m, \ \ Ax=b\]
-
-&lt;hr /&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;We can see that, for LP, &lt;strong&gt;slater’s condition&lt;/strong&gt; is achieved when $x$ is feasible.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;proving-the-slaters-theorem&quot;&gt;Proving the Slater’s Theorem&lt;/h2&gt;
-
-&lt;h3 id=&quot;lets-prove&quot;&gt;Let’s Prove…&lt;/h3&gt;
-
-&lt;p&gt;Consider the convex optimization problem&lt;/p&gt;
-
-\[\begin{aligned} \min &amp;amp; \ \ \ f_0 (x) \\ \text{s.t} &amp;amp; \ \ \ f_i (x) \leq 0, \ \ \  i= 1, \cdots, m \\ &amp;amp; \ \ \ Ax=b \end{aligned}\]
-
-&lt;p&gt;where $\tilde{x}$ satisfies the Slater’s condition. In other words,&lt;/p&gt;
-
-\[f_i (\tilde{x}) &amp;lt;0, \ \ i=1,\cdots, m, \ \text{and } A\tilde{x}=b\]
-
-&lt;p&gt;To simplify the proof, assume the primal optimal value $p^\star$ is finite, and $\text{rank }A = p$.&lt;/p&gt;
-
-&lt;p&gt;Let’s first define two sets $\mathcal{A, B}$.&lt;/p&gt;
-
-\[\mathcal{A}:= \{(u,v,t) \ \vert \ \exists x \in \mathcal{D} \text{ s.t.} f_i (x)\leq u_i, h_i (x) =v_i , f_0 (x)\leq t\}\\
-\mathcal{B} := \{(0,0,s) \in \mathbb{R}^m \times \mathbb{R}^p \times \mathbb{R} \ \vert \ s&amp;lt;p^\star \}\]
-
-&lt;h3 id=&quot;separating-hyperplane-theorem&quot;&gt;Separating Hyperplane Theorem&lt;/h3&gt;
-
-&lt;p&gt;&lt;strong&gt;[Theorem]&lt;/strong&gt; Suppose $C$ and $D$ are nonempty disjoint convex sets. Then there exist $a\not =0$ and $b$ such that
-\(a^Tx \leq b \ \ \ \forall x \in C\\
-a^Tx \geq b \ \ \ \forall x \in D\)&lt;/p&gt;
-
-&lt;center&gt;&lt;img src=&quot;image-20210418205855515.png&quot; alt=&quot;image-20210418205855515&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/center&gt;
-
-&lt;p&gt;We call that a &lt;strong&gt;separating hyperplane&lt;/strong&gt; for $C$ and $D$.&lt;/p&gt;
-
-&lt;h3 id=&quot;step1--claim-mathcalacap-mathcalb-varnothing&quot;&gt;Step1 : Claim $\mathcal{A}\cap \mathcal{B} =\varnothing$&lt;/h3&gt;
-
-&lt;p&gt;Suppose $\exists (u,v,t) \in \mathcal{A \cap B}$ . Since $(u,v,t)\in \mathcal{B}$, we have&lt;/p&gt;
-
-\[u=0, \ \ v=0,\ \ t&amp;lt;p^\star\]
-
-&lt;p&gt;Meanwhile, since $(u,v,t) \in \mathcal{A}$, there exists $x$ such that&lt;/p&gt;
-
-\[f_i (x) \leq u =0, \ \ h_i (x)=v=0 , \ \ \ f_0 (x) \leq t &amp;lt;p^\star\]
-
-&lt;p&gt;This is contradictory, since we assumed that $p^\star$ is the optimal value of the primal problem.&lt;/p&gt;
-
-&lt;h3 id=&quot;step-2--use-the-separting-hyperplane-theorem&quot;&gt;Step 2 : Use the Separting Hyperplane Theorem&lt;/h3&gt;
-
-&lt;p&gt;By the separating hyperplane theorem, there exists $(\tilde{\lambda}, \tilde{\nu}, \mu)\not =0$ and $\alpha$ such that&lt;/p&gt;
-
-\[\tilde{\lambda}^T u + \tilde{\nu}v + \mu t \geq \alpha  \ \ \ \forall (u,v,t) \in \mathcal{A}\\
-\tilde{\lambda}^T u + \tilde{\nu}v + \mu t \leq \alpha  \ \ \ \forall (u,v,t) \in \mathcal{B}\\\]
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;Note that, for $(u,v,t)\in \mathcal{A}$,  $u$ and $t$ is unbounded upwards. Thus, to make the first condition feasible, we can deduce that $\tilde{\lambda} \geq 0$ and $\mu \geq 0$. (otherwise, $\tilde{\lambda}^T u + \mu t$ will be unbounded below)&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Also, the second condition implies that&lt;/p&gt;
-
-\[\mu t \leq \alpha \ \ \ \forall t &amp;lt;p^\star\]
-
-    &lt;p&gt;which also implies&lt;/p&gt;
-
-\[\mu p^\star \leq \alpha\]
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Combining with the first condition for $u_i = f_i (x), v_i = h_i (x) = Ax-b, t= f_0 (x)$&lt;/p&gt;
-
-\[\sum_{i=1}^n \tilde{\lambda}_i f_i (x) + \tilde{\nu}^T(Ax-b)+ \mu f_0 (x) \geq \alpha \geq \mu p^\star \label{28}\]
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;step-3--suppose-that-mu0&quot;&gt;Step 3 : Suppose that $\mu&amp;gt;0$&lt;/h3&gt;
-
-&lt;p&gt;Divide equation ($\ref{28}$) with $\mu$. Then, we obtain&lt;/p&gt;
-
-\[L(x,\tilde{\lambda}/\mu, \tilde{\nu}/\mu) \geq p^\star\]
-
-&lt;p&gt;Minimizing the Lagrangian over $x$, we have&lt;/p&gt;
-
-\[g(\lambda, \nu)\geq p^\star\]
-
-&lt;p&gt;Meanwhile, the weak-duality still holds.&lt;/p&gt;
-
-\[g(\lambda, \nu) \leq p^\star\]
-
-&lt;p&gt;Thus,&lt;/p&gt;
-
-\[g(\lambda, \nu) = p^\star\]
-
-&lt;p&gt;the strong duality holds.&lt;/p&gt;
-
-&lt;h3 id=&quot;step-4--what-if-mu0&quot;&gt;Step 4 : What if $\mu=0$?&lt;/h3&gt;
-
-&lt;p&gt;Now, assume $\mu =0$. We then have&lt;/p&gt;
-
-\[\sum_{i=1}^n \tilde{\lambda}_i f_i (x) + \tilde{\nu}^T(Ax-b) \geq \alpha \geq \mu p^\star =0\]
-
-&lt;p&gt;Applying this to $\tilde{x}$ that satisfies the Slater’s condition, ($A\tilde{x}-b =0$ and $f_i (\tilde{x}) &amp;lt; 0$)&lt;/p&gt;
-
-\[\sum_{i=1}^n \tilde{\lambda}_i f_i (\tilde{x}) \geq 0\]
-
-&lt;p&gt;Since $f_i (\tilde{x}) &amp;lt;0$ and $\tilde{\lambda}_i \geq 0$, above inequality can only hold when&lt;/p&gt;
-
-\[\tilde{\lambda}=0\]
-
-&lt;p&gt;Since the separating hyperplane requires $(\tilde{\lambda}, \tilde{\nu},\mu)$ to be nonzero, the remaining nonzero item $\tilde{\nu}\not=0$.&lt;/p&gt;
-
-&lt;p&gt;Then, equation (29) can be rewritten as&lt;/p&gt;
-
-\[\tilde{\nu}^T(Ax-b)\geq 0 \ \ \ \forall x\]
-
-&lt;p&gt;while for $\tilde{x}$,&lt;/p&gt;
-
-\[\tilde{\nu}^T (A\tilde{x}-b)=0\]
-
-&lt;p&gt;However, since $A^T \tilde{\nu} \not =0$, there is always an $x$ that satisfies&lt;/p&gt;
-
-\[\tilde{\nu}^T (Ax-b) &amp;lt;0\]
-
-&lt;p&gt;This is a contradiction! Thus, $\mu &amp;gt;0$.&lt;/p&gt;
-
-&lt;h3 id=&quot;geometric-idea-behind-the-proof&quot;&gt;Geometric Idea behind the Proof&lt;/h3&gt;
-
-&lt;center&gt;&lt;img src=&quot;image-20210418213553709.png&quot; alt=&quot;image-20210418213553709&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/center&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Optimization" /><category term="Lecture-Note" /><summary type="html">Lagrangian Consider an optimization problem \[\begin{aligned} \min &amp;amp; \ \ \ f_0 (x) \\ \text{s.t} &amp;amp; \ \ \ f_i (x) \leq 0, \ \ \ i= 1, \cdots, m \\ &amp;amp; \ \ \ h_i (x) =0, \ \ \ i=1, \cdots, p \end{aligned}\] Now, take the constraint into account by augmenting the objective function with a weighted sum of the constraint functions. Lagrangian $L: \mathbb{R}^n \times \mathbb{R}^m \times \mathbb{R}^p \rightarrow \mathbb{R}$ defined by \[L(x,\lambda, \nu) := f_0 (x) + \sum_{i=1}^n \lambda_i f_i (x) + \sum_{i=1}^p \nu_i h_i (x)\] where $\lambda_i$ is the Lagrange multiplier associated with the inequality constraints, and $\nu_i$ is the Lagrange multipler associated with equality constraints. We call $\lambda, \nu$ as dual variables or Lagrange multiplier vectors. Lagrange Dual Define Lagrange dual function $g: \mathbb{R}^m \times \mathbb{R}^n \rightarrow \mathbb{R}$ \[g(\lambda, \nu) := \inf_{x\in \mathbb{R}^n } L(x,\lambda, \nu) = \inf_{x\in \mathbb{R}^n } \bigg [ f_0 (x) + \sum_{i=1}^n \lambda_i f_i (x) + \sum_{i=1}^p \nu_i h_i (x) \bigg ]\] Note that this dual function is concave in $(\lambda, \nu)$, even when the original problem is non-convex. [proof] Lagrangian is affine in $(\lambda, \nu)$. Thus, $g(\lambda, \nu)$ can be construed as a pointwise infimum of affine function. Lagrange Dual Lower bounds the Optimal Value [Proposition] For any $\lambda \geq 0$ and any $\nu$, \[g(\lambda, \nu) \leq p^\star\] [proof] Fix an arbitrary feasible $\tilde{x}$. Then, \[f_i (\tilde{x}) \leq 0 \\ h_i (\tilde{x}) =0\] Now, fix an arbitrary $\lambda \geq 0 $ and $\nu$. We have \[\sum \lambda_i f_i (\tilde{x}) + \sum \nu_i h_i (\tilde{x}) \leq 0\] Thus, \(L(\tilde{x}, \lambda, \nu) = f_o (\tilde{x}) +\sum \lambda_i f_i (\tilde{x}) + \sum \nu_i h_i (\tilde{x}) \leq f_o(\tilde{x}) \leq p^\star\) for all feasibe $\tilde{x}$. Lagrange Dual Problem \[\begin{aligned} \max &amp;amp; \ \ \ g(\lambda,\nu)\\ \text{s.t.} &amp;amp; \ \ \ \lambda \geq 0 \end{aligned}\] We have to maximize the Lagrange Dual (to at least get closer to the original optimal value $p^\star$). A pair $(\lambda, \nu)$ is called dual-feasible if \[\lambda \geq 0 , \ \ \ g(\lambda, \nu) &amp;gt;-\infty\] This dual problem is always a convex optimization problem, even when the original problem is non-convex. (Recall that $g(\lambda, \nu)$ was concave function) [Ex] Dual of standard form LP \[\begin{aligned} \min &amp;amp; \ \ \ c^Tx \\ \text{s.t.} &amp;amp; \ \ \ Ax=b \\ &amp;amp; \ \ \ x\geq 0 \end{aligned}\] [solution] First get the Lagrangian \[\begin{aligned} L(x,\lambda, \nu) &amp;amp;= c^T x+ \nu^T (Ax-b) + \lambda ^T (-x)\\ &amp;amp; = (c+A^T \nu -\lambda)^T x -\nu^T b \end{aligned}\] Now, minimize the Lagrangian with respect to $x$. \[g(\lambda, \nu) = \inf_x L(x,\lambda, \nu) = \begin{cases} -\nu^Tb &amp;amp; \ \ \ \text{if } c+A^T \nu - \lambda =0\\ -\infty &amp;amp; \ \ \ \text{otherwise} \end{cases}\] Thus, the dual problem is \[\begin{aligned} \max &amp;amp; \ \ \ -\nu^T b \\ \text{s.t.} &amp;amp; \ \ \ c+ A^T \nu - \lambda =0 \\ &amp;amp; \ \ \ \lambda \geq 0 \end{aligned}\] [Ex] Dual of inequality form LP Same procedure, we get \[\begin{aligned} \max &amp;amp; \ \ \ -b^T \lambda \\ \text{s.t.} &amp;amp; \ \ \ c+ A^T \lambda =0 \\ &amp;amp; \ \ \ \lambda \geq 0 \end{aligned}\] Interpreting the Lagrangian Dual Linear Approximation We can rewrite the original problem (1) as \[\min \ \ f_0 (x) + \sum_{i=1}^n I_- (f_i (x)) + \sum_{i=1}^p I_0 (h_i (x))\] where $I_- : \mathbb{R} \rightarrow \mathbb{R}$ is a penalty function for positive reals (blue line in below figure) \[I_- (u) := \begin{cases} 0 &amp;amp; \ \ \ \text{if } u \leq 0 \\ +\infty &amp;amp; \ \ \ \text {if } u&amp;gt;0 \end{cases}\] Similarly, $I_0 : \mathbb{R} \rightarrow \mathbb{R}$ is a penalty function for nonzero values. \[I_0 (u) := \begin{cases} 0 &amp;amp; \ \ \ \text{if } u = 0 \\ +\infty &amp;amp; \ \ \ \text {if } u\not =0 \end{cases}\] Now, let’s relax the function a bit. Replace $I_-(u)$ with the linear function $\lambda_i u$ where $\lambda_i \geq 0$, and function $I_0 (u)$ with $\nu_i u$. We then have a Lagrangian. Thus, the linear penalty function introduced here is the underestimator of the original penalty function. Thus, it seems quite obvious that dual function has to yield a lower bound on the optimal value of the primal problem. Geometric Interpretation Consider the following set of values \[\mathcal{G}:= \{ (f_1(x), \cdots, f_m(x), h_1(x), \cdots, h_p(x), f_0 (x)) \}\in \mathbb{R}^m \times \mathbb{R}^p \times \mathbb{R}\] Now, the optimal value of the primal problem can be expressed as \[p^\star = \inf \{ p \ \vert \ (u,v,t) \in \mathcal{G}, \ u\leq 0 , v=0\}\] Meanwhile, the dual function can be expressed as \[g(\lambda, \nu) = \inf \{ (\lambda, \nu, 1)^T (u,v,t) \ \vert \ (u,v,t) \in \mathcal{G}\}\] Suppose $\lambda \geq 0$. Then, if $u\leq 0$ and $v=0$, \[t \geq (\lambda , \nu, 1)^T (u,v,t)\] Therfore, \[\begin{aligned} p^\star &amp;amp;= \inf \ \{ t \ \vert \ (u,v,t) \in \mathcal{G}, u\leq 0, v=0\}\\ &amp;amp; \geq \inf \ \{ (\lambda , \nu, 1)^T (u,v,t) \ \vert \ (u,v,t) \in \mathcal{G}, u\leq 0, v=0\}\\ &amp;amp; \geq \inf \ \{ (\lambda , \nu, 1)^T (u,v,t) \ \vert \ (u,v,t) \in \mathcal{G}\} = g(\lambda, \nu) \\ \end{aligned}\] Strong Duality Weak Duality $p^\star$ = optimal value of the primal problem $d^\star$ = optimal value of the dual problem Then, “weak duality” holds, regardless of the convexity of the primal problem. \[d^\star \leq p^\star\] and $p^\star - d^\star$ is called the duality gap. Strong Duality We say strong duality holds if \[p^\star = d^\star\] Note that strong duality generally does not hold. However, under certain condition, strong duality holds. Slater’s condition [Theorem] Strong duality holds for a convex optimization problem if Slater’s condition holds. Slater’s condition means that, there exists $x$ such that \(f_i (x) &amp;lt;0 , \ \ \ i=1, \cdots, m, \ \ \ Ax= b\) (In other words, slater’s condition states that the point should satisfy the inequality condition strictly.) However, if some of its inequality constraint is affine, such inequality constraints does not have to hold strictly. If $f_1, \cdots, f_k$ are affine, then strong duality holds if there exists $x$ such that \[f_i (x) \leq 0, \ \ \ i=1, \cdots, k, \ \ f_i (x) &amp;lt;0 , \ \ i= k+1, \cdots, m, \ \ Ax=b\] We can see that, for LP, slater’s condition is achieved when $x$ is feasible. Proving the Slater’s Theorem Let’s Prove… Consider the convex optimization problem \[\begin{aligned} \min &amp;amp; \ \ \ f_0 (x) \\ \text{s.t} &amp;amp; \ \ \ f_i (x) \leq 0, \ \ \ i= 1, \cdots, m \\ &amp;amp; \ \ \ Ax=b \end{aligned}\] where $\tilde{x}$ satisfies the Slater’s condition. In other words, \[f_i (\tilde{x}) &amp;lt;0, \ \ i=1,\cdots, m, \ \text{and } A\tilde{x}=b\] To simplify the proof, assume the primal optimal value $p^\star$ is finite, and $\text{rank }A = p$. Let’s first define two sets $\mathcal{A, B}$. \[\mathcal{A}:= \{(u,v,t) \ \vert \ \exists x \in \mathcal{D} \text{ s.t.} f_i (x)\leq u_i, h_i (x) =v_i , f_0 (x)\leq t\}\\ \mathcal{B} := \{(0,0,s) \in \mathbb{R}^m \times \mathbb{R}^p \times \mathbb{R} \ \vert \ s&amp;lt;p^\star \}\] Separating Hyperplane Theorem [Theorem] Suppose $C$ and $D$ are nonempty disjoint convex sets. Then there exist $a\not =0$ and $b$ such that \(a^Tx \leq b \ \ \ \forall x \in C\\ a^Tx \geq b \ \ \ \forall x \in D\) We call that a separating hyperplane for $C$ and $D$. Step1 : Claim $\mathcal{A}\cap \mathcal{B} =\varnothing$ Suppose $\exists (u,v,t) \in \mathcal{A \cap B}$ . Since $(u,v,t)\in \mathcal{B}$, we have \[u=0, \ \ v=0,\ \ t&amp;lt;p^\star\] Meanwhile, since $(u,v,t) \in \mathcal{A}$, there exists $x$ such that \[f_i (x) \leq u =0, \ \ h_i (x)=v=0 , \ \ \ f_0 (x) \leq t &amp;lt;p^\star\] This is contradictory, since we assumed that $p^\star$ is the optimal value of the primal problem. Step 2 : Use the Separting Hyperplane Theorem By the separating hyperplane theorem, there exists $(\tilde{\lambda}, \tilde{\nu}, \mu)\not =0$ and $\alpha$ such that \[\tilde{\lambda}^T u + \tilde{\nu}v + \mu t \geq \alpha \ \ \ \forall (u,v,t) \in \mathcal{A}\\ \tilde{\lambda}^T u + \tilde{\nu}v + \mu t \leq \alpha \ \ \ \forall (u,v,t) \in \mathcal{B}\\\] Note that, for $(u,v,t)\in \mathcal{A}$, $u$ and $t$ is unbounded upwards. Thus, to make the first condition feasible, we can deduce that $\tilde{\lambda} \geq 0$ and $\mu \geq 0$. (otherwise, $\tilde{\lambda}^T u + \mu t$ will be unbounded below) Also, the second condition implies that \[\mu t \leq \alpha \ \ \ \forall t &amp;lt;p^\star\] which also implies \[\mu p^\star \leq \alpha\] Combining with the first condition for $u_i = f_i (x), v_i = h_i (x) = Ax-b, t= f_0 (x)$ \[\sum_{i=1}^n \tilde{\lambda}_i f_i (x) + \tilde{\nu}^T(Ax-b)+ \mu f_0 (x) \geq \alpha \geq \mu p^\star \label{28}\] Step 3 : Suppose that $\mu&amp;gt;0$ Divide equation ($\ref{28}$) with $\mu$. Then, we obtain \[L(x,\tilde{\lambda}/\mu, \tilde{\nu}/\mu) \geq p^\star\] Minimizing the Lagrangian over $x$, we have \[g(\lambda, \nu)\geq p^\star\] Meanwhile, the weak-duality still holds. \[g(\lambda, \nu) \leq p^\star\] Thus, \[g(\lambda, \nu) = p^\star\] the strong duality holds. Step 4 : What if $\mu=0$? Now, assume $\mu =0$. We then have \[\sum_{i=1}^n \tilde{\lambda}_i f_i (x) + \tilde{\nu}^T(Ax-b) \geq \alpha \geq \mu p^\star =0\] Applying this to $\tilde{x}$ that satisfies the Slater’s condition, ($A\tilde{x}-b =0$ and $f_i (\tilde{x}) &amp;lt; 0$) \[\sum_{i=1}^n \tilde{\lambda}_i f_i (\tilde{x}) \geq 0\] Since $f_i (\tilde{x}) &amp;lt;0$ and $\tilde{\lambda}_i \geq 0$, above inequality can only hold when \[\tilde{\lambda}=0\] Since the separating hyperplane requires $(\tilde{\lambda}, \tilde{\nu},\mu)$ to be nonzero, the remaining nonzero item $\tilde{\nu}\not=0$. Then, equation (29) can be rewritten as \[\tilde{\nu}^T(Ax-b)\geq 0 \ \ \ \forall x\] while for $\tilde{x}$, \[\tilde{\nu}^T (A\tilde{x}-b)=0\] However, since $A^T \tilde{\nu} \not =0$, there is always an $x$ that satisfies \[\tilde{\nu}^T (Ax-b) &amp;lt;0\] This is a contradiction! Thus, $\mu &amp;gt;0$. Geometric Idea behind the Proof</summary></entry><entry><title type="html">[Literature Survey] Multi-Reward/Objective Reinforcement Learning</title><link href="http://localhost:4000/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/" rel="alternate" type="text/html" title="[Literature Survey] Multi-Reward/Objective Reinforcement Learning" /><published>2021-04-16T00:00:00+09:00</published><updated>2021-04-16T00:00:00+09:00</updated><id>http://localhost:4000/assets/images/literature-survey-multi-rl</id><content type="html" xml:base="http://localhost:4000/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/">&lt;h2 id=&quot;literature-survey-summary&quot;&gt;Literature Survey Summary&lt;/h2&gt;
+  \end{aligned}\]</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Optimization" /><category term="Lecture-Note" /><summary type="html">Standard Form of Convex Optimization Problems \[\begin{aligned} \min &amp;amp;\ \ f_0 (x) \\ \text{s.t.} &amp;amp; \ \ f_i (x) \leq 0, i=1,\cdots, m\\ &amp;amp; \ \ a_i ^T x = b_i , i=1,\cdots, p \end{aligned}\] the objective function must be convex inequality constraint functions must be convex the equality constraint functions should be affine more generally, this problem is said to be convex if the cost function is convex and its feasible set is convex. Optimality in convex optimization In convex optimization problems, any locally optimal point is globally optimal. [proof] We say a feasible point is locally optimal if there is an $R&amp;gt;0$ such that \[f_0 (x) = \inf \{ f_o (z) \ \vert \ z\in \text{feasible set}, \ \|z-x\|_2 \leq R\}\] Now, suppose that $x$ is not globally optimal. Thus, therer exists a feasible $y$ such that \[f_0 (y) &amp;lt;f_0 (x)\] Evidently, $|y-x|_2 &amp;gt;R$. Consider a point $z$ given by \[z = (1-\theta ) x + \theta y , \ \ \ \theta = \frac{R}{2\|y-x\|_2 }\] We set $\theta$ like above, to make \[\|z-x\|_2 = \|\theta (y-x)\|_2 = \frac{R}{2}\] By convexity of the feasible set, $z$ is also feasible. Now, by the convexity of $f_0$, we have \[f_0 (z) \leq (1-\theta ) f_0 (x) + \theta f_0 (y) &amp;lt;f_0 (x)\] Finally, a contradiction. $z$ is inside the boundary $R$, but $f_0 (z)$ is smaller than $f_0 (x)$. Thus, $x$ has to be globally optimal. Optimality condition for convex optimization For differentiable $f_0 $ Suppose now that the objective function $f_0 $ is differentiable. Let $X$ denote the feasible set. Then, $x$ is optimal if and only if $x \in X$ and \[\nabla f_0 (x)^ T (y-x) \geq 0 \ \ \ \forall y \in X\] ($\implies$) Assume that $x\in X$ satisfies the optimality condition. \[\nabla f_0 (x)^T (y-x) \geq 0 \ \ \ \forall y \in X\] Since $f_0 $ is a convex function, \[f_0 (y) \geq f_0 (x) + \nabla f_0 (x)^T (y-x) \geq f_0 (x)\] Since above inequality holds for entire all $y\in X$, $x$ is optimal. ($\impliedby$) Now Assume $x$ is optimal, and assume that the optimality condition doesn’t hold. \[\nabla f_0 (x)^T (y-x) &amp;lt;0 \ \ \ \exists y \in X\] For $t\in [0,1]$, let \[z(t) = ty+ (1-t)x \in X\] Now, differentiate $f_0 (z) = f_0 (ty + (1-t)x)$ with $t$. \[\frac{d}{dt}f_0 (z(t)) \bigg \vert_{t=0}= f_0 ^\prime (z(t)) \frac{dz}{dt} = \nabla f(z(0))^T ( y-x) = \nabla f(x)^T (y-x)&amp;lt;0\] Thus, for sufficiently small $\epsilon &amp;gt;0$, \[f_0 (z(\epsilon)) &amp;lt; f_0 (z(0)) = f_0 (x)\] which is a contradiction. ($x$ is no longer a optimal point) For unconstrained problems For unconstrained problems, the optimality condition reduces to \[\nabla f_0 (x)=0\] Why? Suppose $x$ is optimal, which means $x \in \text{dom }f = X$ By the general optimality condition, we have \[\nabla f_0 (x)^T (y-x) \geq 0\] for all feasible $y\in X$. Since $f_0$ is differentiable, the domain is open by definition. Thus, there exists a small positive $t$ such that \[y:= x- t \nabla f_0 (x) \in X\] Since $y$ is feasible, \[\nabla f_0 (x)^T (-t \nabla f_0 (x)) = -t \| \nabla f_0 (x)\|_2 ^2 \geq 0\] Thus, we can conclude that \[\nabla f_0 (x) =0\] For example, consider the problem of minimizing \[f_0 (x) = \frac{1}{2} x^T Px + q^T x+ r\] where $P \in \mathbb{S}^n_+$ . The optimality condition for $x$ is \[\nabla f_0 (x) = Px+q =0\] For the case with equality constraints \[\begin{aligned} \text{min} &amp;amp; \ \ \ f_0 (x) \\ \text{s.t.} &amp;amp; \ \ \ Ax = b \end{aligned}\] general optimality condition for a feasible $x$ \[\nabla f_0 (x)^T (y-x) \geq 0 , \ \ \ \forall y \ \ \text{s.t.} \ \ Ay = b\] Since $x$ is feasible and the feasible set is affine, every feasible $y$ can be written as \[y= x+v\] for some $v\in \mathcal{N}(A)$. Thus, the optimality condition can be rewritten as \[\nabla f_0 (x)^T v \geq 0 , \ \ \forall v \in \mathcal{N}(A)\] If a linear function is nonnegative on a subspace, then it must be zero on the subspace. Thus, \[\nabla f_0 (x)^T v =0 \ \ \ \forall v \in \mathcal{N}(A)\] which can be also interpreted as \[\nabla f_0 (x) \perp v \ \ \ \forall v \in \mathcal{N} (A)\] Since the perp of null space is the range space of tranposed matrix, \[\mathcal{N}(A)^{\perp} = \mathcal{R}(A^T)\] the optimality condition can be rewritten as \[\nabla f_0 (x) \in \mathcal{R}(A^T)\] Thus, there exists a $v \in \mathbb{R}^p$ such that \[\nabla f_0 (x) + A^T v =0.\] which is the optimality constraint with equality constraint. Minimization over the nonnegative orthant \[\begin{aligned} \min &amp;amp; \ \ \ f_0 (x) \\ \text{s.t.} &amp;amp; \ \ \ x\geq 0 \end{aligned}\] The general optimality condition is \[\nabla f_0 (x)^T (y-x) \geq 0 \ \ \ \forall y \geq 0\] Note that $\nabla f_0 (x)^T y $ is unbounded below on $y\geq 0$, unless $\nabla f_0 (x) \geq 0$. $\rightarrow$ think about it for a bit! Thus, $\nabla f_0 (x) \geq 0$. Now, consider $y=0$ for the optimality condition above. \[x\geq 0 , \ \ \ -\nabla f_0 (x) ^T x \geq 0\] We know that $\nabla f_0 (x) \geq 0$, and $x\geq 0$. Thus, above inequality can only hold when \[\nabla f_0 (x)^T x =0\] especially when \[(\nabla f_0 (x))_i x_i =0 \ \ \ \forall i\] Linear Programming (LP) Definition Objective and constraint functions are all affine. \[\begin{aligned} \min &amp;amp; \ \ \ c^Tx +d \\ \text{s.t.} &amp;amp; \ \ \ Gx \leq h \\ &amp;amp; \ \ \ Ax = b \end{aligned}\] Geometric interpretation of LP Two forms of LP Standard form of LP : replace the inequality constraint with $x\geq 0$. \[\begin{aligned} \min &amp;amp; \ \ \ c^Tx +d \\ \text{s.t.} &amp;amp; \ \ \ Ax=b \\ &amp;amp; \ \ \ x\geq 0 \end{aligned}\] Inequality form of LP : there’s no equality constraints. \[\begin{aligned} \min &amp;amp; \ \ \ c^Tx +d \\ \text{s.t.} &amp;amp; \ \ \ Ax \leq b \end{aligned}\] Converting LPs to Standard form Recall: our general form LP was \[\begin{aligned} \min &amp;amp; \ \ \ c^Tx +d \\ \text{s.t.} &amp;amp; \ \ \ Gx \leq h \\ &amp;amp; \ \ \ Ax = b \end{aligned}\] Introduce slack variables $s_i$ for the inequalities \[Gx+s = h\\s \geq 0\] Express the variable $x$ as \[x = x^+ - x^-\] where $x^+, x^- \geq 0 $ Now, we have a standrad form LP \[\begin{aligned} \min &amp;amp; \ \ \ c^T x^+ - c^T x^- +d \\ \text{s.t.} &amp;amp; \ \ \ Gx^+ + Gx^- +s =h \\ &amp;amp; \ \ \ Ax^+ - Ax^- = b\\ &amp;amp; \ \ \ s\geq 0 , \ x^+ \geq 0 , \ x^ - \geq 0 \end{aligned}\] Minimizing convex piecewise-linear functions Consider the problem of minimizing a piecewise-linear convex function \[f(x): = \max_{i = 1, \cdots, m} (a_i ^T x+ b_i )\] We can create this as an LP by transforming into a epigraphical form \[\begin{aligned} \min &amp;amp; \ \ \ t \\ \text{s.t.} &amp;amp; \ \ \ a_i ^T x+ b_i \leq t \ \ \ i=1,\cdots, m\\ \end{aligned}\] Quadratic Programming (QP) Definition When the objective function is convex quadratic, and the constraints are affine. \[\begin{aligned} \min &amp;amp; \ \ \ \frac{1}{2}x^T Px + q^T x+ r\\ \text{s.t.} &amp;amp; \ \ \ Gx \leq h \\ &amp;amp; \ \ \ Ax=b \end{aligned}\] where $P \in \mathbb{S}^n_+$ , $G \in \mathbb{R}^{m\times n}$, and $A\in \mathbb{R}^{p\times n}$. Geometric Interpretation LP with Random Cost is QP Let’s consider a problem, similar to LP. \[\begin{aligned} \min &amp;amp; \ \ \ c^Tx \\ \text{s.t.} &amp;amp; \ \ \ Gx \leq h \\ &amp;amp; \ \ \ Ax = b \end{aligned}\] But the difference is that, the cost vector $c$ is stochastic: \[\mathbb{E}(c) = \bar{c}\\ \mathbb{E}[(c-\bar{c})(c-\bar{c})^T ] = \Sigma\] Note that \[\mathbb{E}[ c^T x] = \bar{c}^T x\\ \text{var} [c^T x] = \mathbb{E} [ (c^T x - \bar{c}^T x)^2 ] = x^T \Sigma x\] A way to take the variance (risk) into account is to minimize \[\mathbb{E}[c^Tx] + \gamma \text{var} [ c^Tx]\] instead of the stochastic $c^Tx$. Resulting problem is \[\begin{aligned} \min &amp;amp; \ \ \ \bar{c}^Tx + \gamma x^T \Sigma x \\ \text{s.t.} &amp;amp; \ \ \ Gx \leq h \\ &amp;amp; \ \ \ Ax = b \end{aligned}\] which is a quadratic programming (QP). Quadratically constrained Quadratic Program (QCQP) \[\begin{aligned} \min &amp;amp; \ \ \ \frac{1}{2}x^T P_0x + q_0^T x+ r_0\\ \text{s.t.} &amp;amp; \ \ \ \frac{1}{2}x^T P_ix + q_i^T x+ r_i \leq 0,\ \ i=1, \cdots, m \\ &amp;amp; \ \ \ Ax=b \end{aligned}\] where $P_i \in \mathcal{S}^n _+$. Second-Order Cone Programming (SOCP) \[\begin{aligned} \min &amp;amp; \ \ \ f^T x\\ \text{s.t.} &amp;amp; \ \ \ \|A_i x + b_i \|_2 \leq c_i ^T x+ d_i,\ \ i=1, \cdots, m \\ &amp;amp; \ \ \ Fx=g \end{aligned}\] Robust Linear Programming \[\begin{aligned} \min &amp;amp; \ \ \ c^T x\\ \text{s.t.} &amp;amp; \ \ \ a_i ^T x \leq b_i ,\ \ i=1, \cdots, m \end{aligned}\] Suppose that the parameters $a_i$ are uncertain (lying in ellipsoid) \[a_i \in \mathcal{E}_i := \{ \bar{a}_i + P_i u \ \vert \ \|u\|_2 \leq 1 \}\] where $P_i \in \mathbb{R}^{n\times n}$. Now, we have the following robust-linear program \[\begin{aligned} \min &amp;amp; \ \ \ c^T x\\ \text{s.t.} &amp;amp; \ \ \ a_i ^T x \leq b_i , \ \ \forall a_i \in \mathcal{E}_i , \ \ i=1, \cdots, m \end{aligned}\] Note that the inequality constraint $a_i ^T x \leq b_i , \ \ \forall a_i \in \mathcal{E}_i$ can be written as \[\sup \{ a_i ^T x \ \vert \ a_i \in \mathcal{E}_i \} \leq b_i\] and it can be re-written as \[\sup \{ a_i ^T x \ \vert \ a_i \in \mathcal{E}_i \} = \bar{a}_i ^T x + \sup \{u^T P_i x \ \vert \ \|u\|_2 \leq 1 \} = \bar{a}_i ^T x + \|P_i x \|_2 ^2\] This implies that the robust LP is equivalent to SOCP \[\begin{aligned} \min &amp;amp; \ \ \ c^T x\\ \text{s.t.} &amp;amp; \ \ \ \bar{a}_i ^T x + \|P_i x \|_2 ^2 \leq b_i , \ \ \ i=1, \cdots, m \end{aligned}\]</summary></entry><entry><title type="html">[Literature Survey] Multi-Reward/Objective Reinforcement Learning</title><link href="http://localhost:4000/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/" rel="alternate" type="text/html" title="[Literature Survey] Multi-Reward/Objective Reinforcement Learning" /><published>2021-04-16T00:00:00+09:00</published><updated>2021-04-16T00:00:00+09:00</updated><id>http://localhost:4000/assets/images/literature-survey-multi-rl</id><content type="html" xml:base="http://localhost:4000/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/">&lt;h2 id=&quot;literature-survey-summary&quot;&gt;Literature Survey Summary&lt;/h2&gt;
 &lt;p&gt;Based on the survey done on multi-reward/objective reinforcement learning topic, I summarized what I’ve understood.&lt;/p&gt;
 
 &lt;center&gt;&lt;img src=&quot;/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/0001.jpg&quot; /&gt;&lt;/center&gt;
@@ -1981,218 +2009,4 @@ a^Tx \geq b \ \ \ \forall x \in D\)&lt;/p&gt;
 
 \[\mathbf{V} = [\mathbf{V}_0 , \mathbf{V}_1 ]\]
 
-\[V_{\mathbf{w}} = \mathbf{w}_0 \mathbf{V}_0 + \mathbf{w}_1 \mathbf{V}_1, \ \ \ \ \mathbf{w}_0 + \mathbf{w}_1 = 1\]</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Multi-Reward/Objective" /><summary type="html">Introduction of MOMDP MOMDP is an MDP wichih the reward function \[\mathbf{R} : \mathcal{S\times A \times S} \rightarrow \mathbb{R}^n\] is a vector of $n$ rewards, one for each objective, instead of a scalar. Value function $\mathbf{V}^\pi$ is also a vector where \[\mathbf{V}^\pi (s) = \mathbb{E}^\pi \bigg [ \sum_{k=0}^\infty \gamma^k \mathbf{r}_{t+k+1} \ | \ s_t = s \bigg ]\] Unlike in an MDP, we can no longer determine which values are optimal without additional information about how to prioritize the objectives! ordering of the value function is complete for SOMDP \[V^\pi (s) &amp;gt; V^{\pi'} (s)\] only a partial ordering is possible for MOMDP \[\mathbf{V}_i ^\pi (s) &amp;gt; \mathbf{V}_i ^{\pi'}(s) \ \ \ \text{but} \ \ \ \mathbf{V}_j ^\pi (s) &amp;lt; \mathbf{V}_j ^{\pi'}(s)\] Fortuantely, MOMDP can always be converted to SOMDP Such a conversion is done by, specifying a scalarization function. \[V_\mathbf{w}^\pi (s) = f(\mathbf{V}^\pi (s), \mathbf{w})\] For example, $f$ may be a linear function → $\mathbf{w}$ quantifies the relative importance of the corresponding objective. \[V_\mathbf{w}^\pi = \mathbf{w} \cdot \mathbf{V}^\pi\] 만약 이게 가능하다면, why specifically target the MOMDP problem? Unfortuantely, the conversion is not always possible / desirable. 대중교통 시스템을 RL 로 결정한다고 해보자. 두 개의 objective 가 있음. 하나는 “Latency”이고, 다른 하나는 “Pollution costs”임. Unknown weights scenario the weights $\mathbf{w}$ is unknown at the time of learning, or even at inference (planning). it also includes the case where $\mathbf{w}$ fluctuates quite often, making the computation of new plan everytime the $\mathbf{w}$ changes burdensome. 예를 들어 위 문제에서, pollution cost가 시시각각 변한다고 해보자. (실제로 온실가스 배출권거래제.. 때문에 pollution cost는 open market에 의해 시시각각 변한다고 함) → 그러면 weight $\mathbf{w}$는 그 값에 의해서 시시각각 변해야 할 것이고, SOMDP 로 문제를 풀려면 그 때마다 retraining을 해줘야 함. Decision support scenario scalarization is in fact infeasible! one might say that : “Latency” cannot be converted to a scalar accurately → “economists cannot accurately compute the cost of lost productivity due to commuting” → there’s a scaling issue as well → thus, specifying $\mathbf{w}$ is feckless. Humans’ arbitrary decision should be made. Known weights scenario weight도 알고 있는데 뭐가 문제냐고? If $f$ is nonlinear, then the resulting single-obejctive MDP may noat have additive returns, or even become stochastic. ⇒ The resulting SOMDP can be difficult to solve. Important definitions and terminologies In the planning or learning phase where $\mathbf{w}$ is unavailable, the planning or learning algorithm must return a set of policies, not a single policy. → These policies should be an optimal policy for each $\mathbf{w}$. To that end, we define Undominated policies for MOMDP $m$ \[U(\Pi^m ) = \{\pi : \pi \in \Pi ^m \ | \ V_\mathbf{w}^\pi \geq V_\mathbf{w}^{\pi'}, \ \ \forall \pi ' \in \Pi ^m,\ \exists \mathbf{w} \}\] However, this undominated policies contain redundant policies (some of those are not the only optimal policy for $\mathbf{w}$) → such policies can be removed! 적어도 하나의 $\mathbf{w}$ 에 대해서는 optimal policy 가 되는 policy들을 모두 모아놓은 집합. → 그런데 given $\mathbf{w}$ 에 대해서 $U(\Pi^m )$ 안에 오직 하나의 optimal policy가 있지는 않을 것임. → 어떤 $\mathbf{w}$가 들어왔을 때, 그에 해당하는 optimal policy 하나를 딱 뽑아낼 수 있는 set이 필요! Coverage Set (CS) for MOMDP $m$ ← set we are interested in! \[\begin{aligned} CS(\Pi^m ) &amp;amp; \subseteq U(\Pi^m )\\ \pi \in CS(\Pi^m ) &amp;amp; \ \ \forall \mathbf{w}, \exists \pi \text{ s.t.} V_\mathbf{w}^\pi \geq V_{\mathbf{w}}^{\pi'} \end{aligned}\] undominated policies의 subset임과 동시에, 모든 $\mathbf{w}$에 대한 optimal policy가 모두 담겨 있는 set 임. Shimon Whiteson calls the process of going to U → CS (the fundamental of MOMDP), a pruning process : “even if we don’t know the weights a-priori, we are already eliminating the policies that we know that we aren’t going to use” Checkout the example if you’re unclear about the difference between U vs CS Convex Hull (CH) for MOMDP $m$ → undominated policy for linear scalarization function \[CH(\Pi^m ) = \{\pi : \pi \in \Pi^m \ | \ \mathbf{w} \cdot \mathbf{V}^\pi \geq \mathbf{w} \cdot \mathbf{V}^{\pi'}, \ \ \forall \pi' \in \Pi^m , \ \ \exists \mathbf{w} \}\] Convex Coverage Set (CCS) for MOMDP $m$ → coverage set for linear scalarization function \[\begin{aligned} CCS(\Pi^m ) &amp;amp; \subseteq CH(\Pi^m )\\ \pi \in CCS(\Pi^m ) &amp;amp; \ \ \forall \mathbf{w}, \exists \pi \text{ s.t.} \ \mathbf{w}\cdot \mathbf{V}^\pi \geq {\mathbf{w}}\cdot \mathbf{V}^{\pi'} \end{aligned}\] Important Visualizations we have two objectives $V_0$ and $V_1$ left side graph tells exactly where our multi objective vector is, in this case, in $\mathbb{R}^2$ right side graph, shows the ‘scalarized version’ → for this case, it’s a linear function each line in “Weight space” corresponds to the point in “Objective space” → So what’s the coverage set? Upper surface in the weight space! for $0 \leq w_1 \leq 0.4$ → policy corresponding to point 1 is the optimal policy for $0.4 \leq w_1 \leq 0.8$ → policy correspondnig to point 2 is the optimal policy for $0.8 \leq w_1 \leq 1$ → policy corresponding to point 3 is the optimal policy 여기서 파란색 line/point는 undominated policy set (convex hull) 에는 들어있지만 coverage set (convex coverage set) 안에는 들어있지 않음. 왜냐? upper surface를 define하는데 파란색 line은 필요가 없거든. \[\mathbf{V} = [\mathbf{V}_0 , \mathbf{V}_1 ]\] \[V_{\mathbf{w}} = \mathbf{w}_0 \mathbf{V}_0 + \mathbf{w}_1 \mathbf{V}_1, \ \ \ \ \mathbf{w}_0 + \mathbf{w}_1 = 1\]</summary></entry><entry><title type="html">[NIPS 2000] Balancing Multiple Sources of Reward in Reinforcement Learning</title><link href="http://localhost:4000/notion_to_markdown/%5BNIPS%202000%5D%20Balancing%20Multiple%20Sources%20of%20Reward%20i%20d60cc762d6104f86a42d227fabdf7e6f/" rel="alternate" type="text/html" title="[NIPS 2000] Balancing Multiple Sources of Reward in Reinforcement Learning" /><published>2021-04-12T00:00:00+09:00</published><updated>2021-04-12T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/balancing-multiple-reward-sources</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/%5BNIPS%202000%5D%20Balancing%20Multiple%20Sources%20of%20Reward%20i%20d60cc762d6104f86a42d227fabdf7e6f/">&lt;p&gt;For many problems, the reward signal is not a single scalar, but has multiple scalar components. &lt;strong&gt;Creating a single reward value by combining the multiple components can throw anway vial information&lt;/strong&gt; and can lead to incorrect solutions!&lt;/p&gt;
-
-&lt;p&gt;This paper &lt;strong&gt;discuss a multiple reward source&lt;/strong&gt; problem, and the problems of applying traditional RL algorithm.&lt;/p&gt;
-
-&lt;h2 id=&quot;introduction&quot;&gt;Introduction&lt;/h2&gt;
-
-&lt;h3 id=&quot;traditional-rl-framework-vs-real-world-scenario&quot;&gt;Traditional RL framework vs Real-world scenario&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;traditional RL receive scalar value reward every step&lt;/li&gt;
-  &lt;li&gt;However, this single value can be problematic.&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;First, consider this situation:&lt;/p&gt;
-
-    &lt;p&gt;Home entertainment system that automatically selects a television program to suit their tastes!&lt;/p&gt;
-
-    &lt;ul&gt;
-      &lt;li&gt;
-        &lt;p&gt;a typical / traditional reward function might be :&lt;/p&gt;
-
-\[r_{\text{trad}} = \text{Total number of people paying attention to the system}\]
-      &lt;/li&gt;
-      &lt;li&gt;However, there’s a problem. Why?&lt;/li&gt;
-      &lt;li&gt;A single information of $r_{\text{trad}}=2$ does not contain the information of  “&lt;strong&gt;WHO EXACTLY&lt;/strong&gt; are those two people?”&lt;/li&gt;
-      &lt;li&gt;in this case, multiple rewards come from &lt;strong&gt;“different users”&lt;/strong&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;In other cases, multiple rewards come from “different goals”.&lt;/p&gt;
-
-    &lt;p&gt;Elevator Scheduling have multiple goals
-  1) maximize people serviced per minute 
-  2) minimize average waiting time&lt;/p&gt;
-
-    &lt;ul&gt;
-      &lt;li&gt;for these cases, &lt;strong&gt;we might want to update the ‘ratio / importance’ between different goals,&lt;/strong&gt; without completely retraining the solution from scratch.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;problem-setup&quot;&gt;Problem Setup&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;working on POMDP problem, discrete actions, discrete observations&lt;/li&gt;
-  &lt;li&gt;$x(t), a(t) \leftarrow$ observation and action&lt;/li&gt;
-  &lt;li&gt;$\pi(x,a)$  ← probabiolity the agent will take action $a$ when observing $x$.&lt;/li&gt;
-  &lt;li&gt;$R_s^\pi$  is the expected return from source $s$ for following policy $\pi$&lt;/li&gt;
-  &lt;li&gt;assume that the algorithm &lt;strong&gt;knows the set of sources&lt;/strong&gt; present at each time step&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Goal is to produce an algorithm that will produce a policy, based on &lt;strong&gt;previous experience and sources present&lt;/strong&gt;. Reward is now a triplet!&lt;/p&gt;
-
-&lt;h2 id=&quot;balancing-multiple-rewards&quot;&gt;Balancing Multiple Rewards&lt;/h2&gt;
-
-&lt;h3 id=&quot;1-policy-votes&quot;&gt;1. Policy Votes&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;authors introduce the concept of vote!&lt;/p&gt;
-
-\[\text{given state }x, \ \text{reward source }s\rightarrow \text{vote for action }a = v_s (x,a)\]
-
-    &lt;ul&gt;
-      &lt;li&gt;
-        &lt;p&gt;of course, their vote for actions will sum to 1&lt;/p&gt;
-
-\[\sum_a v_s (x,a) = 1\]
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Using this multiple reward’s vote, they create a policy&lt;/p&gt;
-
-\[\pi(x,a)  = \frac{\sum_s \alpha_s (x)v_s(x,a)}{\sum_s \alpha_s (x)}\]
-
-    &lt;p&gt;it is basically counting the &lt;strong&gt;“continuous” votes&lt;/strong&gt; to create a single policy.&lt;/p&gt;
-
-    &lt;ul&gt;
-      &lt;li&gt;
-        &lt;p&gt;$\alpha_s (x)$  → how much effort source $s$ is putting into affecting the policy for observation $x$&lt;/p&gt;
-
-        &lt;p&gt;observation $x$ 에 따라, source $s$ 에 따라 각자에게 주어진 투표권의 비중이 다른데, 
-  하나의 source $s$ 는 자신의 투표권을 여러 observation $x$ 에 조금씩 나눠서 행사할 수 있음. 다시 말해, source 간의 scaling 문제를 해결하기 위해, 각 source별로 &lt;strong&gt;“동등한 크기의 투표권”&lt;/strong&gt;을 배정했다고 이해하면 좋을 것 같음.&lt;/p&gt;
-
-\[\sum_ x\alpha_s (x)=1\]
-      &lt;/li&gt;
-      &lt;li&gt;
-        &lt;p&gt;실제로 선거에서 유권자가 자신의 목소리를 내기 위해 투표를 하는 것처럼, 각 reward source는 자신의 vote $v_s (x,a)$ 를 학습하면서 자신의 reward를 maximize하기 위해 노력할 것.&lt;/p&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;However, this is still problematic: vote $v_s(x,a)$ is affected by the existence of other sources $s$.&lt;/p&gt;
-
-    &lt;blockquote&gt;
-      &lt;p&gt;각 유권자(source)가 다른 유권자들의 눈치를 보면서 투표를 한다는 건데 (&lt;strong&gt;자신의 true reward function에 대해서 거짓말을 하는 것&lt;/strong&gt;) → 이것의 문제는, 다른 유권자들이 투표 후에 (training 후에) 이민을 가버리거나 할 수 있다는 것. 그러면 눈치를 본 이유가 없어지잖음..&lt;/p&gt;
-
-      &lt;p&gt;예를 들어서, action space $\mathcal{A} = {a_1, a_2 }$, rewared source ${s_1, s_2 }$ 인 상황이라고 해보자.&lt;/p&gt;
-
-      &lt;p&gt;이 때 reward source $s_1$ 은 어느 state $x$ 에서건 $a_1$ 을 선호한다 치고, 
-reward source $s_2$ 는 어느 state $x$ 에서건 $a_1$ 과 $a_2$ 를 같은 선호도로 동등하게 선호한다 해보자.&lt;/p&gt;
-
-      &lt;p&gt;그럼 각 source가 vote를 결정(training 할 때,) 
-$s_1$은 무조건 $(v_s (x,a_1), v_s (x,a_2)) = (1,0)$ 이라는 표를 던질테니,
-$s_2$ 는 $s_1$ 의 눈치를 보고 (지가 실제로 원하는 것은 $(0.5,0.5)$  이므로) $(0,1)$ 을 던진다는 것.&lt;/p&gt;
-
-      &lt;p&gt;문제는 $s_1$ 이 만약에 없어졌을 경우임. (해당 reward function을 고려하지 않기로 했을 때)
-그럼 남는 $s_2$는 (training을 다시 하지 않는 한) $a_2$ 만 선택하고 살아야 하는 처지에 놓이는 것..&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;따라서, 이 policy vote scheme은&lt;/p&gt;
-
-    &lt;p&gt;&lt;strong&gt;“does not provide a description of the source’s preferences which would allow for the removal or addition of sources.”&lt;/strong&gt;&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;2-returns-as-preferences&quot;&gt;2. Returns as Preferences&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;reward source $s$ 끼리의 직접적인 비교가 어렵다하지만, (scaling issue 때문)
-하나의 reward source 안에서는 policy 비교가 여전히 가능함&lt;/p&gt;
-
-\[R_s ^{\pi_1} &amp;gt; R_s ^{\pi_2}\]
-
-    &lt;p&gt;이면 $s$는 $\pi_1$ 을 $\pi_2$ 보다 선호하는 것.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;하지만 여전히 이러한 각 reward source별 ‘preference’를 source별로 얼마나, 어떻게 weighting 할지는 또 다른 문제임.&lt;/li&gt;
-  &lt;li&gt;“But we can limit (using the voting scheme) how much one source’s preference can override another source’s preference!&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;근데 이건 game theory 에서 nash equilibrium 을 찾는 문제와 동일. 다른 source(player)의 선택(voting / playing) 이 자신의 reward (gain) 을 결정하는데, 모든 source가 만족하는 최적의 조합을 찾으려면 → &lt;strong&gt;no single player can change its playing (voting) and achieve a gain (increase in their reward)&lt;/strong&gt; → &lt;strong&gt;nash equilibrium!&lt;/strong&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;multiple-reward-source-algorithm&quot;&gt;Multiple Reward Source Algorithm&lt;/h2&gt;
-
-&lt;h3 id=&quot;return-parametrization&quot;&gt;Return Parametrization&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;First, authors parameterize the estimated return of $\hat {R}_s ^\pi$ using parameters $a_s, b_s, \beta_s (x) ,p_s (x,a)$ → This is a KL-divergence form&lt;/p&gt;
-
-\[\hat{R}_s ^\pi = a_s \sum_x \beta_s (x) \sum_a p_s(x,a) \log \frac{p_s(x,a)}{\pi(x,a)} + b_s\]
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;잘 뜯어보면 얘네는 cumulative return function을 linear로 근사했는데&lt;/p&gt;
-
-\[\hat R_s ^\pi = a_s m + b_s\]
-
-    &lt;p&gt;while&lt;/p&gt;
-
-\[m = \sum_x \beta_s (x) \sum_a p_s(x,a) \log \frac{p_s(x,a)}{\pi(x,a)}\]
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;$m$ 을 잘 뜯어보면 target vote와 $\pi$ 사이의 KL divergence 임. $\sum \beta_s (x) = 1$ 일테고.&lt;/p&gt;
-
-    &lt;p&gt;이건 나중에  neural network 로 대체될 가능성 아주 농후..&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;그니까 말하자면, 각 source의 reward를 다음과 같이 design/approximate 한다는 것.&lt;/p&gt;
-
-    &lt;p&gt;최종적으로 선택된 policy $\pi(x,a)$  가 내가 진정 원하는 action’s probability distribution $p_s(x,a)$ 와 비슷하면 높은 reward, 아니면 낮은 reward.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;여기서 헷갈리면 안되는 것이, $p_s (x,a)$랑 $v_s (x,a)$의 차이.&lt;/p&gt;
-
-    &lt;blockquote&gt;
-      &lt;p&gt;“while $v_s(x,a)$ is the policy vote for observation $x$ for source $s$, $p_s(x,a)$ is the preferred policy for observation $x$ for source $s$.”&lt;/p&gt;
-    &lt;/blockquote&gt;
-
-    &lt;p&gt;이라고 적혀있는데, 이를 다시 풀어서 쓰면&lt;/p&gt;
-
-    &lt;p&gt;$p_s(x,a)$ : 유권자의 진짜 욕망
-  $v_s (x,a)$ : 유권자의 진짜 욕망을 실현하기 위한 전략적 선택이 담긴 voting&lt;/p&gt;
-
-    &lt;p&gt;$p_s (x,a)$  는 source $s$ 별로 fix 되어 있는 것이고,
-  $v_s (x,a)$는 조절 가능한 것인데, 이것을 조절함으로써 전체 policy $\pi(x,a)$ 가 결정이 되는 것.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;How do we estimate the real $p_s(x,a) ?$ → &lt;strong&gt;linear least-squares method based on the experiences of different policies and empirical returns&lt;/strong&gt;&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;best-responce-algorithm&quot;&gt;Best responce Algorithm&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;일단 nash equilibrium을 찾기 전에 각 source에게 최적화된 $v_s(x,a)$ 부터 먼저 찾아야 됨.&lt;/li&gt;
-  &lt;li&gt;각 source가 원하는 것은 위에서 parameterize된 reward를 maximize 하는 것. 뭐를 조절함으로써? 자신의 vote를 조절함으로써.&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;“We need to find the set of $\alpha_s(x)$ and $v_s(x,a)$ to maximize $R_s^\pi$ , which is the same as minimizing&lt;/p&gt;
-
-\[\sum_x \beta_s (x) \sum_a p_s (x,a) \log \frac{\sum_{s'}\alpha_{s'}(x)v_{s'}(x)}{\sum_{s'}\alpha_{s'}(x)}\]
-  &lt;/li&gt;
-  &lt;li&gt;minimization problem  은 gradient descent 를 하던, 직접 미분을 하던.. 알아서…&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;nash-equilibrium-algorithm&quot;&gt;Nash Equilibrium Algorithm&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;nash equilibrium을 찾는 전형적인 iterative algorithm을 적용 → iterate to an equiilibrium by repeatedly finding the best response for each source and simulataneously replacing the old solution with the new best responses.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Easily adjust the nash equilibrium when a player (reward source) is added or removed. 
-(In contrast to the conventional RL training algorithm that has to be trained from scratch)&lt;/p&gt;
-
-&lt;h2 id=&quot;results&quot;&gt;Results&lt;/h2&gt;
-
-&lt;p&gt;&lt;img src=&quot;Untitled.png&quot; alt=&quot;Untitled.png&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;Untitled%201.png&quot; alt=&quot;Untitled%201.png&quot; /&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Constructing a reward signal that is the sum of the source’s rewards does not lead to a good solution.&lt;/li&gt;
-  &lt;li&gt;if we remove one source, the agent automatically adapts to the ideal policy for the reamining source (just a few nash equilibrium finding iteration)&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Multi-Reward/Objective" /><summary type="html">For many problems, the reward signal is not a single scalar, but has multiple scalar components. Creating a single reward value by combining the multiple components can throw anway vial information and can lead to incorrect solutions! This paper discuss a multiple reward source problem, and the problems of applying traditional RL algorithm. Introduction Traditional RL framework vs Real-world scenario traditional RL receive scalar value reward every step However, this single value can be problematic. First, consider this situation: Home entertainment system that automatically selects a television program to suit their tastes! a typical / traditional reward function might be : \[r_{\text{trad}} = \text{Total number of people paying attention to the system}\] However, there’s a problem. Why? A single information of $r_{\text{trad}}=2$ does not contain the information of “WHO EXACTLY are those two people?” in this case, multiple rewards come from “different users” In other cases, multiple rewards come from “different goals”. Elevator Scheduling have multiple goals 1) maximize people serviced per minute 2) minimize average waiting time for these cases, we might want to update the ‘ratio / importance’ between different goals, without completely retraining the solution from scratch. Problem Setup working on POMDP problem, discrete actions, discrete observations $x(t), a(t) \leftarrow$ observation and action $\pi(x,a)$ ← probabiolity the agent will take action $a$ when observing $x$. $R_s^\pi$ is the expected return from source $s$ for following policy $\pi$ assume that the algorithm knows the set of sources present at each time step Goal is to produce an algorithm that will produce a policy, based on previous experience and sources present. Reward is now a triplet! Balancing Multiple Rewards 1. Policy Votes authors introduce the concept of vote! \[\text{given state }x, \ \text{reward source }s\rightarrow \text{vote for action }a = v_s (x,a)\] of course, their vote for actions will sum to 1 \[\sum_a v_s (x,a) = 1\] Using this multiple reward’s vote, they create a policy \[\pi(x,a) = \frac{\sum_s \alpha_s (x)v_s(x,a)}{\sum_s \alpha_s (x)}\] it is basically counting the “continuous” votes to create a single policy. $\alpha_s (x)$ → how much effort source $s$ is putting into affecting the policy for observation $x$ observation $x$ 에 따라, source $s$ 에 따라 각자에게 주어진 투표권의 비중이 다른데, 하나의 source $s$ 는 자신의 투표권을 여러 observation $x$ 에 조금씩 나눠서 행사할 수 있음. 다시 말해, source 간의 scaling 문제를 해결하기 위해, 각 source별로 “동등한 크기의 투표권”을 배정했다고 이해하면 좋을 것 같음. \[\sum_ x\alpha_s (x)=1\] 실제로 선거에서 유권자가 자신의 목소리를 내기 위해 투표를 하는 것처럼, 각 reward source는 자신의 vote $v_s (x,a)$ 를 학습하면서 자신의 reward를 maximize하기 위해 노력할 것. However, this is still problematic: vote $v_s(x,a)$ is affected by the existence of other sources $s$. 각 유권자(source)가 다른 유권자들의 눈치를 보면서 투표를 한다는 건데 (자신의 true reward function에 대해서 거짓말을 하는 것) → 이것의 문제는, 다른 유권자들이 투표 후에 (training 후에) 이민을 가버리거나 할 수 있다는 것. 그러면 눈치를 본 이유가 없어지잖음.. 예를 들어서, action space $\mathcal{A} = {a_1, a_2 }$, rewared source ${s_1, s_2 }$ 인 상황이라고 해보자. 이 때 reward source $s_1$ 은 어느 state $x$ 에서건 $a_1$ 을 선호한다 치고, reward source $s_2$ 는 어느 state $x$ 에서건 $a_1$ 과 $a_2$ 를 같은 선호도로 동등하게 선호한다 해보자. 그럼 각 source가 vote를 결정(training 할 때,) $s_1$은 무조건 $(v_s (x,a_1), v_s (x,a_2)) = (1,0)$ 이라는 표를 던질테니, $s_2$ 는 $s_1$ 의 눈치를 보고 (지가 실제로 원하는 것은 $(0.5,0.5)$ 이므로) $(0,1)$ 을 던진다는 것. 문제는 $s_1$ 이 만약에 없어졌을 경우임. (해당 reward function을 고려하지 않기로 했을 때) 그럼 남는 $s_2$는 (training을 다시 하지 않는 한) $a_2$ 만 선택하고 살아야 하는 처지에 놓이는 것.. 따라서, 이 policy vote scheme은 “does not provide a description of the source’s preferences which would allow for the removal or addition of sources.” 2. Returns as Preferences reward source $s$ 끼리의 직접적인 비교가 어렵다하지만, (scaling issue 때문) 하나의 reward source 안에서는 policy 비교가 여전히 가능함 \[R_s ^{\pi_1} &amp;gt; R_s ^{\pi_2}\] 이면 $s$는 $\pi_1$ 을 $\pi_2$ 보다 선호하는 것. 하지만 여전히 이러한 각 reward source별 ‘preference’를 source별로 얼마나, 어떻게 weighting 할지는 또 다른 문제임. “But we can limit (using the voting scheme) how much one source’s preference can override another source’s preference! 근데 이건 game theory 에서 nash equilibrium 을 찾는 문제와 동일. 다른 source(player)의 선택(voting / playing) 이 자신의 reward (gain) 을 결정하는데, 모든 source가 만족하는 최적의 조합을 찾으려면 → no single player can change its playing (voting) and achieve a gain (increase in their reward) → nash equilibrium! Multiple Reward Source Algorithm Return Parametrization First, authors parameterize the estimated return of $\hat {R}_s ^\pi$ using parameters $a_s, b_s, \beta_s (x) ,p_s (x,a)$ → This is a KL-divergence form \[\hat{R}_s ^\pi = a_s \sum_x \beta_s (x) \sum_a p_s(x,a) \log \frac{p_s(x,a)}{\pi(x,a)} + b_s\] 잘 뜯어보면 얘네는 cumulative return function을 linear로 근사했는데 \[\hat R_s ^\pi = a_s m + b_s\] while \[m = \sum_x \beta_s (x) \sum_a p_s(x,a) \log \frac{p_s(x,a)}{\pi(x,a)}\] $m$ 을 잘 뜯어보면 target vote와 $\pi$ 사이의 KL divergence 임. $\sum \beta_s (x) = 1$ 일테고. 이건 나중에 neural network 로 대체될 가능성 아주 농후.. 그니까 말하자면, 각 source의 reward를 다음과 같이 design/approximate 한다는 것. 최종적으로 선택된 policy $\pi(x,a)$ 가 내가 진정 원하는 action’s probability distribution $p_s(x,a)$ 와 비슷하면 높은 reward, 아니면 낮은 reward. 여기서 헷갈리면 안되는 것이, $p_s (x,a)$랑 $v_s (x,a)$의 차이. “while $v_s(x,a)$ is the policy vote for observation $x$ for source $s$, $p_s(x,a)$ is the preferred policy for observation $x$ for source $s$.” 이라고 적혀있는데, 이를 다시 풀어서 쓰면 $p_s(x,a)$ : 유권자의 진짜 욕망 $v_s (x,a)$ : 유권자의 진짜 욕망을 실현하기 위한 전략적 선택이 담긴 voting $p_s (x,a)$ 는 source $s$ 별로 fix 되어 있는 것이고, $v_s (x,a)$는 조절 가능한 것인데, 이것을 조절함으로써 전체 policy $\pi(x,a)$ 가 결정이 되는 것. How do we estimate the real $p_s(x,a) ?$ → linear least-squares method based on the experiences of different policies and empirical returns Best responce Algorithm 일단 nash equilibrium을 찾기 전에 각 source에게 최적화된 $v_s(x,a)$ 부터 먼저 찾아야 됨. 각 source가 원하는 것은 위에서 parameterize된 reward를 maximize 하는 것. 뭐를 조절함으로써? 자신의 vote를 조절함으로써. “We need to find the set of $\alpha_s(x)$ and $v_s(x,a)$ to maximize $R_s^\pi$ , which is the same as minimizing \[\sum_x \beta_s (x) \sum_a p_s (x,a) \log \frac{\sum_{s'}\alpha_{s'}(x)v_{s'}(x)}{\sum_{s'}\alpha_{s'}(x)}\] minimization problem 은 gradient descent 를 하던, 직접 미분을 하던.. 알아서… Nash Equilibrium Algorithm nash equilibrium을 찾는 전형적인 iterative algorithm을 적용 → iterate to an equiilibrium by repeatedly finding the best response for each source and simulataneously replacing the old solution with the new best responses. Easily adjust the nash equilibrium when a player (reward source) is added or removed. (In contrast to the conventional RL training algorithm that has to be trained from scratch) Results Constructing a reward signal that is the sum of the source’s rewards does not lead to a good solution. if we remove one source, the agent automatically adapts to the ideal policy for the reamining source (just a few nash equilibrium finding iteration)</summary></entry></feed>
+\[V_{\mathbf{w}} = \mathbf{w}_0 \mathbf{V}_0 + \mathbf{w}_1 \mathbf{V}_1, \ \ \ \ \mathbf{w}_0 + \mathbf{w}_1 = 1\]</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Multi-Reward/Objective" /><summary type="html">Introduction of MOMDP MOMDP is an MDP wichih the reward function \[\mathbf{R} : \mathcal{S\times A \times S} \rightarrow \mathbb{R}^n\] is a vector of $n$ rewards, one for each objective, instead of a scalar. Value function $\mathbf{V}^\pi$ is also a vector where \[\mathbf{V}^\pi (s) = \mathbb{E}^\pi \bigg [ \sum_{k=0}^\infty \gamma^k \mathbf{r}_{t+k+1} \ | \ s_t = s \bigg ]\] Unlike in an MDP, we can no longer determine which values are optimal without additional information about how to prioritize the objectives! ordering of the value function is complete for SOMDP \[V^\pi (s) &amp;gt; V^{\pi'} (s)\] only a partial ordering is possible for MOMDP \[\mathbf{V}_i ^\pi (s) &amp;gt; \mathbf{V}_i ^{\pi'}(s) \ \ \ \text{but} \ \ \ \mathbf{V}_j ^\pi (s) &amp;lt; \mathbf{V}_j ^{\pi'}(s)\] Fortuantely, MOMDP can always be converted to SOMDP Such a conversion is done by, specifying a scalarization function. \[V_\mathbf{w}^\pi (s) = f(\mathbf{V}^\pi (s), \mathbf{w})\] For example, $f$ may be a linear function → $\mathbf{w}$ quantifies the relative importance of the corresponding objective. \[V_\mathbf{w}^\pi = \mathbf{w} \cdot \mathbf{V}^\pi\] 만약 이게 가능하다면, why specifically target the MOMDP problem? Unfortuantely, the conversion is not always possible / desirable. 대중교통 시스템을 RL 로 결정한다고 해보자. 두 개의 objective 가 있음. 하나는 “Latency”이고, 다른 하나는 “Pollution costs”임. Unknown weights scenario the weights $\mathbf{w}$ is unknown at the time of learning, or even at inference (planning). it also includes the case where $\mathbf{w}$ fluctuates quite often, making the computation of new plan everytime the $\mathbf{w}$ changes burdensome. 예를 들어 위 문제에서, pollution cost가 시시각각 변한다고 해보자. (실제로 온실가스 배출권거래제.. 때문에 pollution cost는 open market에 의해 시시각각 변한다고 함) → 그러면 weight $\mathbf{w}$는 그 값에 의해서 시시각각 변해야 할 것이고, SOMDP 로 문제를 풀려면 그 때마다 retraining을 해줘야 함. Decision support scenario scalarization is in fact infeasible! one might say that : “Latency” cannot be converted to a scalar accurately → “economists cannot accurately compute the cost of lost productivity due to commuting” → there’s a scaling issue as well → thus, specifying $\mathbf{w}$ is feckless. Humans’ arbitrary decision should be made. Known weights scenario weight도 알고 있는데 뭐가 문제냐고? If $f$ is nonlinear, then the resulting single-obejctive MDP may noat have additive returns, or even become stochastic. ⇒ The resulting SOMDP can be difficult to solve. Important definitions and terminologies In the planning or learning phase where $\mathbf{w}$ is unavailable, the planning or learning algorithm must return a set of policies, not a single policy. → These policies should be an optimal policy for each $\mathbf{w}$. To that end, we define Undominated policies for MOMDP $m$ \[U(\Pi^m ) = \{\pi : \pi \in \Pi ^m \ | \ V_\mathbf{w}^\pi \geq V_\mathbf{w}^{\pi'}, \ \ \forall \pi ' \in \Pi ^m,\ \exists \mathbf{w} \}\] However, this undominated policies contain redundant policies (some of those are not the only optimal policy for $\mathbf{w}$) → such policies can be removed! 적어도 하나의 $\mathbf{w}$ 에 대해서는 optimal policy 가 되는 policy들을 모두 모아놓은 집합. → 그런데 given $\mathbf{w}$ 에 대해서 $U(\Pi^m )$ 안에 오직 하나의 optimal policy가 있지는 않을 것임. → 어떤 $\mathbf{w}$가 들어왔을 때, 그에 해당하는 optimal policy 하나를 딱 뽑아낼 수 있는 set이 필요! Coverage Set (CS) for MOMDP $m$ ← set we are interested in! \[\begin{aligned} CS(\Pi^m ) &amp;amp; \subseteq U(\Pi^m )\\ \pi \in CS(\Pi^m ) &amp;amp; \ \ \forall \mathbf{w}, \exists \pi \text{ s.t.} V_\mathbf{w}^\pi \geq V_{\mathbf{w}}^{\pi'} \end{aligned}\] undominated policies의 subset임과 동시에, 모든 $\mathbf{w}$에 대한 optimal policy가 모두 담겨 있는 set 임. Shimon Whiteson calls the process of going to U → CS (the fundamental of MOMDP), a pruning process : “even if we don’t know the weights a-priori, we are already eliminating the policies that we know that we aren’t going to use” Checkout the example if you’re unclear about the difference between U vs CS Convex Hull (CH) for MOMDP $m$ → undominated policy for linear scalarization function \[CH(\Pi^m ) = \{\pi : \pi \in \Pi^m \ | \ \mathbf{w} \cdot \mathbf{V}^\pi \geq \mathbf{w} \cdot \mathbf{V}^{\pi'}, \ \ \forall \pi' \in \Pi^m , \ \ \exists \mathbf{w} \}\] Convex Coverage Set (CCS) for MOMDP $m$ → coverage set for linear scalarization function \[\begin{aligned} CCS(\Pi^m ) &amp;amp; \subseteq CH(\Pi^m )\\ \pi \in CCS(\Pi^m ) &amp;amp; \ \ \forall \mathbf{w}, \exists \pi \text{ s.t.} \ \mathbf{w}\cdot \mathbf{V}^\pi \geq {\mathbf{w}}\cdot \mathbf{V}^{\pi'} \end{aligned}\] Important Visualizations we have two objectives $V_0$ and $V_1$ left side graph tells exactly where our multi objective vector is, in this case, in $\mathbb{R}^2$ right side graph, shows the ‘scalarized version’ → for this case, it’s a linear function each line in “Weight space” corresponds to the point in “Objective space” → So what’s the coverage set? Upper surface in the weight space! for $0 \leq w_1 \leq 0.4$ → policy corresponding to point 1 is the optimal policy for $0.4 \leq w_1 \leq 0.8$ → policy correspondnig to point 2 is the optimal policy for $0.8 \leq w_1 \leq 1$ → policy corresponding to point 3 is the optimal policy 여기서 파란색 line/point는 undominated policy set (convex hull) 에는 들어있지만 coverage set (convex coverage set) 안에는 들어있지 않음. 왜냐? upper surface를 define하는데 파란색 line은 필요가 없거든. \[\mathbf{V} = [\mathbf{V}_0 , \mathbf{V}_1 ]\] \[V_{\mathbf{w}} = \mathbf{w}_0 \mathbf{V}_0 + \mathbf{w}_1 \mathbf{V}_1, \ \ \ \ \mathbf{w}_0 + \mathbf{w}_1 = 1\]</summary></entry></feed>
