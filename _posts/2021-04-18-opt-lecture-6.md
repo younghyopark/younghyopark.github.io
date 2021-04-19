@@ -447,3 +447,8 @@ This is a contradiction! Thus, $\mu >0$.
 
 <center><img src="image-20210418213553709.png" alt="image-20210418213553709" style="zoom:50%;" /></center>
 
+## References
+
+- S. Boyd, L.Vandenberghe, Convex Opimization, Cambridge University Press, 2004. <http://stanford.edu/~boyd/cvxbook/>
+
+- Optimization Theory and Applications, SNU EE 2021, Insoon Yang

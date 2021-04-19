@@ -1,10 +1,10 @@
 <!DOCTYPE html><html lang="en">
   <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[Optimization] 5 - Typical Convex Optimization Problems - Younghyo Park</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[RL Theory] 4 - Finite Horizon MDP (2) - Younghyo Park</title>
 
-<meta name="description" content="Standard Form of Convex Optimization Problems\[\begin{aligned}\min &amp;\ \ f_0 (x) \\\text{s.t.} &amp; \ \ f_i (x)  \leq 0, i=1,\cdots, m\\&amp; \ \ a_i ^T ...">
-<link rel="canonical" href="http://localhost:4000/notion_to_markdown/opt-lecture-5/"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
+<meta name="description" content="Optimal Policy of Finite-Horizon MDPDeterministic Markov PolicyDefine a deterministic Markov policy $\pi^\star$ by\[\pi_t^\star (s) \in \arg\max_{a\in A} \bi...">
+<link rel="canonical" href="http://localhost:4000/2021/04/19/scrl-4.html"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
 <!--<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
 
 <meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
@@ -336,475 +336,100 @@ fill="#000000" stroke="none">
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
 <!-- end custom main top snippet -->
-<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[Optimization] 5 - Typical Convex Optimization Problems</h1></header><span class="split-space">&nbsp;</span>
+<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[RL Theory] 4 - Finite Horizon MDP (2)</h1></header><span class="split-space">&nbsp;</span>
           <a class="edit-on-github"
             title="Edit on Github"
-            href="https://github.com/younghyopark/younghyopark.github.io/tree/main/_posts/2021-04-18-opt-lecture-5.md">
-            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[Optimization] 5 - Typical Convex Optimization Problems"><div class="article__info clearfix"><ul class="left-col menu"><li>
+            href="https://github.com/younghyopark/younghyopark.github.io/tree/main/_posts/2021-04-19-scrl-4.md">
+            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[RL Theory] 4 - Finite Horizon MDP (2)"><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Optimization">Optimization</a>
+                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
             </li><li>
               <a class="button button--secondary button--pill button--sm"
                 href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 18, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-18T00:00:00+09:00">
-    <meta itemprop="keywords" content="Optimization,Lecture-Note"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
+            </li><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Theory%2FSurvey">Theory/Survey</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 19, 2021</span>
+            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-19T00:00:00+09:00">
+    <meta itemprop="keywords" content="Reinforcement-Learning,Lecture-Note,Theory/Survey"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
 
 <!-- end custom article top snippet -->
-<div class="article__content" itemprop="articleBody"><h2 id="standard-form-of-convex-optimization-problems">Standard Form of Convex Optimization Problems</h2>
+<div class="article__content" itemprop="articleBody"><h2 id="optimal-policy-of-finite-horizon-mdp">Optimal Policy of Finite-Horizon MDP</h2>
 
-\[\begin{aligned}
-\min &amp;\ \ f_0 (x) \\
-\text{s.t.} &amp; \ \ f_i (x)  \leq 0, i=1,\cdots, m\\
-&amp; \ \ a_i ^T x = b_i , i=1,\cdots, p
+<h3 id="deterministic-markov-policy">Deterministic Markov Policy</h3>
 
-\end{aligned}\]
+<p>Define a deterministic Markov policy $\pi^\star$ by</p>
 
-<ul>
-  <li>the objective function must be convex</li>
-  <li>inequality constraint functions must be convex</li>
-  <li>the equality constraint functions should be affine</li>
-  <li>more generally, this problem is said to be convex if the cost function is convex and its feasible set is convex.</li>
-</ul>
+\[\pi_t^\star (s) \in \arg\max_{a\in A} \bigg (r_t (s,a) + \sum_{s'\in S} p(s' \vert s,a)v_{t+1}^\star (s') \bigg )\]
 
-<h2 id="optimality-in-convex-optimization">Optimality in convex optimization</h2>
+<h3 id="optimality-of-deterministic-markov-policy">Optimality of Deterministic Markov Policy</h3>
 
-<p>In convex optimization problems, any <strong>locally optimal point</strong> is <strong>globally optimal</strong>.</p>
+<p>Assume that $S, A$ are finite sets. Then, the deterministic Markov policy defined above is an optimal policy.</p>
 
-<p><strong>[proof]</strong> We say a feasible point is locally optimal if there is an $R&gt;0$ such that</p>
+\[v_t^{\pi^\star} = v_t^\star\]
 
-\[f_0 (x)  =  \inf \{ f_o (z) \ \vert \ z\in \text{feasible set},  \ 
-   \|z-x\|_2 \leq R\}\]
+<p>This means that, for finite MDPs, it suffice to <strong>consider only the deterministic Markov policies</strong>.</p>
 
-<p>Now, suppose that $x$ is not globally optimal. Thus, therer exists a feasible $y$ such that</p>
-
-\[f_0 (y) &lt;f_0 (x)\]
-
-<p>Evidently, $|y-x|_2 &gt;R$. Consider a point $z$ given by</p>
-
-\[z = (1-\theta ) x + \theta y , \ \ \ \theta = \frac{R}{2\|y-x\|_2 }\]
-
-<p>We set $\theta$ like above, to make</p>
-
-\[\|z-x\|_2 = \|\theta (y-x)\|_2  = \frac{R}{2}\]
-
-<p>By convexity of the feasible set, $z$ is also feasible.</p>
-
-<p>Now, by the convexity of $f_0$, we have</p>
-
-\[f_0 (z) \leq (1-\theta ) f_0 (x) + \theta f_0 (y) &lt;f_0 (x)\]
-
-<p>Finally, a contradiction. $z$ is inside the boundary $R$, but $f_0 (z)$ is smaller than $f_0 (x)$. Thus, $x$ has to be globally optimal.</p>
-
-<h2 id="optimality-condition-for-convex-optimization">Optimality condition for convex optimization</h2>
-
-<h3 id="for-differentiable-f_0-">For differentiable $f_0 $</h3>
-
-<ul>
-  <li>
-    <p>Suppose now that the objective function $f_0 $ is differentiable. Let $X$ denote the feasible set.</p>
-  </li>
-  <li>
-    <p>Then, $x$ is optimal if and only if $x \in X$ and</p>
-  </li>
-</ul>
-
-\[\nabla f_0 (x)^ T (y-x) \geq 0 \ \ \ \forall y \in X\]
-
-<center><img src="image-20210418180403172.png" alt="image-20210418180403172" style="zoom:50%;" /></center>
-
-<p>($\implies$)  Assume that $x\in X$ satisfies the optimality condition.</p>
-
-\[\nabla f_0 (x)^T (y-x) \geq 0 \ \ \ \forall y \in X\]
-
-<p>Since $f_0 $ is a convex function,</p>
-
-\[f_0 (y) \geq f_0 (x) + \nabla f_0 (x)^T (y-x) \geq f_0 (x)\]
-
-<p>Since above inequality holds for entire all $y\in X$, $x$ is optimal.</p>
-
-<p>($\impliedby$) Now Assume $x$ is optimal, and assume that the optimality condition doesn’t hold.</p>
-
-\[\nabla f_0 (x)^T (y-x) &lt;0 \ \ \ \exists y \in X\]
-
-<p>For $t\in [0,1]$, let</p>
-
-\[z(t) = ty+ (1-t)x \in X\]
-
-<p>Now, differentiate $f_0 (z) = f_0 (ty + (1-t)x)$ with $t$.</p>
-
-\[\frac{d}{dt}f_0 (z(t)) \bigg \vert_{t=0}= f_0 ^\prime (z(t)) \frac{dz}{dt} = \nabla f(z(0))^T ( y-x) = \nabla f(x)^T (y-x)&lt;0\]
-
-<p>Thus, for sufficiently small $\epsilon &gt;0$,</p>
-
-\[f_0 (z(\epsilon)) &lt; f_0 (z(0)) = f_0 (x)\]
-
-<p>which is a contradiction. ($x$ is no longer a optimal point)</p>
-
-<h3 id="for-unconstrained-problems">For unconstrained problems</h3>
-
-<ul>
-  <li>For unconstrained problems, the optimality condition reduces to</li>
-</ul>
-
-\[\nabla f_0 (x)=0\]
-
-<ul>
-  <li>
-    <p>Why?</p>
-
-    <ul>
-      <li>
-        <p>Suppose $x$ is optimal, which means $x \in \text{dom }f = X$</p>
-      </li>
-      <li>
-        <p>By the general optimality condition, we have</p>
-
-\[\nabla f_0 (x)^T (y-x) \geq 0\]
-
-        <p>for all feasible $y\in X$.</p>
-      </li>
-      <li>
-        <p>Since $f_0$ is differentiable, the domain is open by definition.</p>
-      </li>
-      <li>
-        <p>Thus, there exists a small positive $t$ such that</p>
-
-\[y:= x- t \nabla f_0 (x) \in X\]
-      </li>
-      <li>
-        <p>Since $y$ is feasible,</p>
-
-\[\nabla f_0 (x)^T (-t \nabla f_0 (x)) = -t \| \nabla f_0 (x)\|_2 ^2 \geq 0\]
-      </li>
-    </ul>
-  </li>
-  <li>
-    <p>Thus, we can conclude that</p>
-
-\[\nabla f_0 (x) =0\]
-  </li>
-  <li>
-    <p>For example, consider the problem of minimizing</p>
-
-\[f_0 (x) = \frac{1}{2} x^T Px + q^T x+ r\]
-
-    <p>where $P \in \mathbb{S}^n_+$ . The optimality condition for $x$ is</p>
-
-\[\nabla f_0 (x) = Px+q =0\]
-  </li>
-</ul>
-
-<h3 id="for-the-case-with-equality-constraints">For the case with equality constraints</h3>
-
-\[\begin{aligned}
-\text{min} &amp; \ \ \ f_0 (x) \\
-\text{s.t.} &amp; \ \ \ Ax = b
-
-\end{aligned}\]
-
-<ul>
-  <li>
-    <p>general optimality condition for a feasible $x$</p>
-
-\[\nabla f_0 (x)^T (y-x) \geq 0 , \ \ \ \forall y \ \ \text{s.t.} \ \ Ay = b\]
-  </li>
-  <li>
-    <p>Since $x$ is feasible and the feasible set is affine, every feasible $y$ can be written as</p>
-
-\[y= x+v\]
-
-    <p>for some $v\in \mathcal{N}(A)$.</p>
-  </li>
-  <li>
-    <p>Thus, the optimality condition can be rewritten as</p>
-  </li>
-</ul>
-
-\[\nabla f_0 (x)^T v \geq 0 , \ \ \forall v \in \mathcal{N}(A)\]
-
-<ul>
-  <li>
-    <p>If a linear function is nonnegative on a subspace, then it must be zero on the subspace.</p>
-  </li>
-  <li>
-    <p>Thus,</p>
-
-\[\nabla f_0 (x)^T v =0 \ \ \ \forall v \in \mathcal{N}(A)\]
-
-    <p>which can be also interpreted as</p>
-
-\[\nabla f_0 (x) \perp v \ \ \ \forall v \in \mathcal{N} (A)\]
-  </li>
-  <li>
-    <p>Since the perp of null space is the range space of tranposed matrix,</p>
-  </li>
-</ul>
-
-\[\mathcal{N}(A)^{\perp} = \mathcal{R}(A^T)\]
-
-<p>the optimality condition can be rewritten as</p>
-
-\[\nabla f_0 (x) \in \mathcal{R}(A^T)\]
-
-<ul>
-  <li>Thus, there exists a $v \in \mathbb{R}^p$ such that</li>
-</ul>
-
-\[\nabla f_0 (x) + A^T v =0.\]
-
-<p>which is the optimality constraint with equality constraint.</p>
-
-<h3 id="minimization-over-the-nonnegative-orthant">Minimization over the nonnegative orthant</h3>
-
-\[\begin{aligned}
-\min &amp; \ \ \ f_0 (x) \\
-\text{s.t.} &amp; \ \ \ x\geq 0 
-\end{aligned}\]
-
-<ul>
-  <li>The general optimality condition is</li>
-</ul>
-
-\[\nabla f_0 (x)^T (y-x) \geq 0 \ \ \ \forall y \geq 0\]
-
-<ul>
-  <li>
-    <p>Note that $\nabla f_0 (x)^T y $ is unbounded below on $y\geq 0$, unless $\nabla f_0 (x) \geq 0$.  $\rightarrow$ <strong>think about it for a bit!</strong></p>
-  </li>
-  <li>
-    <p>Thus, $\nabla f_0 (x) \geq 0$.</p>
-  </li>
-  <li>
-    <p>Now, consider $y=0$ for the optimality condition above.</p>
-  </li>
-</ul>
-
-\[x\geq 0 , \ \ \ -\nabla f_0 (x) ^T x \geq 0\]
-
-<ul>
-  <li></li>
-  <li>We know that $\nabla f_0 (x) \geq 0$, and $x\geq 0$. Thus, above inequality can only hold when</li>
-</ul>
-
-\[\nabla f_0 (x)^T x =0\]
-
-<p>especially when</p>
-
-\[(\nabla f_0 (x))_i x_i =0 \ \ \ \forall i\]
-
-<h2 id="linear-programming-lp">Linear Programming (LP)</h2>
-
-<h3 id="definition">Definition</h3>
-
-<p>Objective and constraint functions are all <strong>affine</strong>.</p>
-
-\[\begin{aligned}
-\min &amp; \ \ \ c^Tx +d \\
-\text{s.t.} &amp; \ \ \ Gx \leq h \\
-&amp; \ \ \ Ax = b
-\end{aligned}\]
-
-<h3 id="geometric-interpretation-of-lp">Geometric interpretation of LP</h3>
-
-<center><img src="image-20210418184241659.png" alt="image-20210418184241659" style="zoom:50%;" /></center>
-
-<h3 id="two-forms-of-lp">Two forms of LP</h3>
-
-<ul>
-  <li><strong>Standard form of LP</strong> : replace the inequality constraint with $x\geq 0$.</li>
-</ul>
-
-\[\begin{aligned}
-\min &amp; \ \ \ c^Tx +d \\
-\text{s.t.} &amp; \ \ \ Ax=b \\
-&amp; \ \ \ x\geq 0
-\end{aligned}\]
-
-<ul>
-  <li>Inequality form of LP : there’s no equality constraints.</li>
-</ul>
-
-\[\begin{aligned}
-\min &amp; \ \ \ c^Tx +d \\
-\text{s.t.} &amp; \ \ \ Ax \leq b
-\end{aligned}\]
-
-<h3 id="converting-lps-to-standard-form">Converting LPs to Standard form</h3>
-
-<p>Recall: our general form LP was</p>
-
-\[\begin{aligned}
-\min &amp; \ \ \ c^Tx +d \\
-\text{s.t.} &amp; \ \ \ Gx \leq h \\
-&amp; \ \ \ Ax = b
-\end{aligned}\]
+<h3 id="proving-the-optimality">Proving the optimality</h3>
 
 <ol>
-  <li>Introduce slack variables $s_i$ for the inequalities</li>
-</ol>
-
-\[Gx+s = h\\s \geq 0\]
-
-<ol>
-  <li>Express the variable $x$ as</li>
-</ol>
-
-\[x = x^+ - x^-\]
-
-<p>where $x^+, x^- \geq 0 $</p>
-
-<ol>
-  <li>Now, we have a standrad form LP</li>
-</ol>
-
-\[\begin{aligned}
-   \min &amp; \ \ \ c^T x^+ - c^T x^-  +d \\
-   \text{s.t.} &amp; \ \ \ Gx^+ + Gx^- +s  =h \\
-   &amp; \ \ \ Ax^+ - Ax^- = b\\
-   &amp; \ \ \ s\geq 0 , \ x^+ \geq 0 , \ x^ - \geq 0 
-   \end{aligned}\]
-
-<h3 id="minimizing-convex-piecewise-linear-functions">Minimizing convex piecewise-linear functions</h3>
-
-<p>Consider the problem of minimizing a piecewise-linear convex function</p>
-
-\[f(x): = \max_{i = 1, \cdots, m} (a_i ^T x+ b_i )\]
-
-<p>We can create this as an LP by transforming into a epigraphical form</p>
-
-\[\begin{aligned}
-\min &amp; \ \ \ t \\
-\text{s.t.} &amp; \ \ \ a_i ^T x+ b_i \leq t \ \ \ i=1,\cdots, m\\
-\end{aligned}\]
-
-<h2 id="quadratic-programming-qp">Quadratic Programming (QP)</h2>
-
-<h3 id="definition-1">Definition</h3>
-
-<p>When the objective function is convex quadratic, and the constraints are affine.</p>
-
-\[\begin{aligned}
-\min &amp; \ \ \ \frac{1}{2}x^T Px + q^T x+ r\\
-\text{s.t.} &amp; \ \ \ Gx \leq h \\
-&amp; \ \ \ Ax=b
-\end{aligned}\]
-
-<p>where $P \in \mathbb{S}^n_+$ , $G \in \mathbb{R}^{m\times n}$, and $A\in \mathbb{R}^{p\times n}$.</p>
-
-<h3 id="geometric-interpretation">Geometric Interpretation</h3>
-
-<center><img src="image-20210418185732163.png" alt="image-20210418185732163" style="zoom:50%;" /></center>
-
-<h3 id="lp-with-random-cost-is-qp">LP with Random Cost is QP</h3>
-
-<p>Let’s consider a problem, similar to LP.</p>
-
-\[\begin{aligned}
-\min &amp; \ \ \ c^Tx \\
-\text{s.t.} &amp; \ \ \ Gx \leq h \\
-&amp; \ \ \ Ax = b
-\end{aligned}\]
-
-<p>But the difference is that, the cost vector $c$ is stochastic:</p>
-
-\[\mathbb{E}(c) = \bar{c}\\
-\mathbb{E}[(c-\bar{c})(c-\bar{c})^T ] = \Sigma\]
-
-<p>Note that</p>
-
-\[\mathbb{E}[ c^T x] = \bar{c}^T x\\ 
-\text{var} [c^T x] = \mathbb{E} [ (c^T x - \bar{c}^T x)^2  ] = x^T \Sigma x\]
-
-<p>A way to take the variance (risk) into account is to minimize</p>
-
-\[\mathbb{E}[c^Tx] + \gamma \text{var} [ c^Tx]\]
-
-<p>instead of the stochastic $c^Tx$.</p>
-
-<p>Resulting problem is</p>
-
-\[\begin{aligned}
-\min &amp; \ \ \ \bar{c}^Tx + \gamma x^T \Sigma x \\
-\text{s.t.} &amp; \ \ \ Gx \leq h \\
-&amp; \ \ \ Ax = b
-\end{aligned}\]
-
-<p>which is a quadratic programming (QP).</p>
-
-<h2 id="quadratically-constrained-quadratic-program-qcqp">Quadratically constrained Quadratic Program (QCQP)</h2>
-
-\[\begin{aligned}
-\min &amp; \ \ \ \frac{1}{2}x^T P_0x + q_0^T x+ r_0\\
-\text{s.t.} &amp; \ \ \ \frac{1}{2}x^T P_ix + q_i^T x+ r_i \leq 0,\ \ i=1, \cdots, m \\
-&amp; \ \ \ Ax=b
-\end{aligned}\]
-
-<p>where $P_i \in \mathcal{S}^n _+$.</p>
-
-<h2 id="second-order-cone-programming-socp">Second-Order Cone Programming (SOCP)</h2>
-
-\[\begin{aligned}
-\min &amp; \ \ \ f^T x\\
-\text{s.t.} &amp; \ \ \ \|A_i x + b_i \|_2 \leq c_i ^T x+ d_i,\ \ i=1, \cdots, m \\
-&amp; \ \ \ Fx=g
-\end{aligned}\]
-
-<h3 id="robust-linear-programming">Robust Linear Programming</h3>
-
-\[\begin{aligned}
-\min &amp; \ \ \ c^T x\\
-\text{s.t.} &amp; \ \ \ a_i ^T x \leq b_i ,\ \ i=1, \cdots, m 
-\end{aligned}\]
-
-<ul>
-  <li>Suppose that the parameters $a_i$ are uncertain (lying in ellipsoid)</li>
-</ul>
-
-\[a_i \in \mathcal{E}_i := \{ \bar{a}_i + P_i u \ \vert \ \|u\|_2 \leq 1 \}\]
-
-<p>where $P_i \in \mathbb{R}^{n\times n}$.</p>
-
-<ul>
-  <li>Now, we have the following robust-linear program</li>
-</ul>
-
-\[\begin{aligned}
-  \min &amp; \ \ \ c^T x\\
-  \text{s.t.} &amp; \ \ \ a_i ^T x \leq b_i , \ \ \forall a_i \in \mathcal{E}_i , \ \ i=1, \cdots, m 
-  \end{aligned}\]
-
-<ul>
-  <li>Note that the inequality constraint $a_i ^T x \leq b_i , \ \ \forall a_i \in \mathcal{E}_i$ can be written as</li>
-</ul>
-
-\[\sup \{ a_i ^T x \ \vert \ a_i \in \mathcal{E}_i \} \leq b_i\]
-
-<p>and it can be re-written as</p>
-
-\[\sup \{ a_i ^T x \ \vert \ a_i \in \mathcal{E}_i \} = \bar{a}_i ^T x + \sup \{u^T P_i  x \ \vert \ \|u\|_2 \leq 1 \} = \bar{a}_i ^T x + \|P_i x \|_2 ^2\]
-
-<ul>
-  <li>This implies that the robust LP is equivalent to SOCP</li>
-</ul>
-
-\[\begin{aligned}
-  \min &amp; \ \ \ c^T x\\
-  \text{s.t.} &amp; \ \ \ \bar{a}_i ^T x + \|P_i x \|_2 ^2 \leq b_i , \ \ \ i=1, \cdots, m
-  \end{aligned}\]
-
-<h2 id="references">References</h2>
-
-<ul>
   <li>
-    <p>S. Boyd, L.Vandenberghe, Convex Opimization, Cambridge University Press, 2004. <a href="http://stanford.edu/~boyd/cvxbook/">http://stanford.edu/~boyd/cvxbook/</a></p>
+    <p>By definition, we have $v_t^{\pi^\star} \leq v_t^\star$ for each $t$.</p>
   </li>
   <li>
-    <p>Optimization Theory and Applications, SNU EE 2021, Insoon Yang</p>
+    <p>We will use mathematical induction to show the opposite : $v_t^{\pi^\star} \geq v_t^\star$  for each $t$.</p>
   </li>
-</ul>
+  <li>
+    <p>First, for $t=T$, $v_T^{\pi^\star} = r_T = v_T^\star$</p>
+  </li>
+  <li>
+    <p>Then, assume that $v_{t+1}^{\pi^\star} \geq v_{t+1}^\star$ . Then we have</p>
 
-</div><section class="article__sharing d-print-none"></section><div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-04-18T00:00:00+09:00"><!-- start custom article footer snippet -->
+\[\sum_{s'\in S} p(s' \vert s, \pi_t^\star (s) ) v_{t+1}^{\pi^\star} (s') \geq \sum_{s'\in S} p(s' \vert s, \pi_t^\star (s) ) v_{t+1}^{\star} (s')\]
+  </li>
+  <li>
+    <p>Then, by the definitionof $\pi_t^\star$, we have</p>
+
+\[r_t (s, \pi_t^\star(s)) + \sum_{s'\in S} p(s' \vert s, \pi_t^\star(s))v_{t+1}^\star (s') \geq r_t (s, a) + \sum_{s'\in S} p(s' \vert s, a)v_{t+1}^\star (s')\]
+
+    <p>for all $a\in A$.</p>
+  </li>
+  <li>
+    <p>Combining the two equalities, we have</p>
+
+\[r(s,\pi_t^\star(s)) + \sum_{s'\in S} p(s' \vert s, \pi_t^\star(s))v_{t+1}^\star (s') \geq r_t (s, a) + \sum_{s'\in S} p(s' \vert s, a)v_{t+1}^\star (s')\]
+  </li>
+  <li>
+    <p>Taking the maximum for both sides with respect to $a$, we have</p>
+
+\[v_t^{\pi^\star} (s) \geq v_t^\star (s)\]
+  </li>
+  <li>
+    <p>Therefore, $v_t^{\pi^\star} = v_t^\star$ .</p>
+  </li>
+</ol>
+
+<h2 id="dynamic-programming-backward-induction-algorithm">Dynamic Programming (Backward Induction) Algorithm</h2>
+
+<h3 id="algorithm">Algorithm</h3>
+
+<ol>
+  <li>
+    <p>Initialize $v_T^\star(s) = r_T (s)$</p>
+  </li>
+  <li>
+    <p>For $t=T-1 : -1 : 0$ , set</p>
+
+\[v_t^\star (s) = \max _{a\in A} \bigg ( r_t (s,a) + \sum_{s'\in S} p(s' \vert s,a) v_{t+1}^\star (s') \bigg ) \\
+\pi_t^\star (s) = \arg \max_ {a\in A}\bigg ( r_t (s,a) + \sum_{s'\in S} p(s' \vert s,a) v_{t+1}^\star (s') \bigg )\]
+  </li>
+</ol>
+
+<h2 id="extensions-to-continuous-control">Extensions to Continuous Control</h2>
+
+<h3 id="problem-definition">Problem Definition</h3>
+
+</div><section class="article__sharing d-print-none"></section><div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-04-19T00:00:00+09:00"><!-- start custom article footer snippet -->
 
 <!-- end custom article footer snippet -->
 <div class="article__license"><div class="license">
@@ -814,7 +439,7 @@ fill="#000000" stroke="none">
       </a>
     </p>
   </div></div></footer>
-<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2021/04/18/opt-lecture-4-1.html">[Optimization] 4 - Operations that preserve Convexity</a></div><div class="next"><span>NEXT</span><a href="/notion_to_markdown/opt-lecture-6/">[Optimization] 6 - Lagrange Duality, Slater's Condition</a></div></div></div>
+<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2021/04/19/scrl-3.html">[RL Theory] 3 - Finite Horizon MDP (1)</a></div></div></div>
 
 </div>
 

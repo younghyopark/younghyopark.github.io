@@ -145,7 +145,11 @@ Suppose that strong duality holds, and an optimal dual is known. We assume that 
 1. solution of $\min_x L(x,\lambda^\star, \nu^\star)$ is the primal optimal point. 
 2. If it's not primal feasible, then no primal point can exist. 
 
+## References
 
+- S. Boyd, L.Vandenberghe, Convex Opimization, Cambridge University Press, 2004. <http://stanford.edu/~boyd/cvxbook/>
+
+- Optimization Theory and Applications, SNU EE 2021, Insoon Yang
 
 
 

@@ -167,13 +167,12 @@ $$
  \nabla f_0 (x)^T (-t \nabla f_0 (x)) = -t \| \nabla f_0 (x)\|_2 ^2 \geq 0 
      
     $$
-    
+  
 - Thus, we can conclude that
-    
+  
     $$
    \nabla f_0 (x) =0
-   
-    $$
+   $$
 
 
 
@@ -588,7 +587,11 @@ $$
 
 
 
+## References
 
+- S. Boyd, L.Vandenberghe, Convex Opimization, Cambridge University Press, 2004. <http://stanford.edu/~boyd/cvxbook/>
+
+- Optimization Theory and Applications, SNU EE 2021, Insoon Yang
 
 
 
