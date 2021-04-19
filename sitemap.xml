@@ -1,252 +1,29 @@
+---
+layout: null
+---
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset
-      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
+<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  {% for post in site.posts %}
+    <url>
+      <loc>{{ site.url }}{{ post.url }}</loc>
+      {% if post.lastmod == null %}
+        <lastmod>{{ post.date | date_to_xmlschema }}</lastmod>
+      {% else %}
+        <lastmod>{{ post.lastmod | date_to_xmlschema }}</lastmod>
+      {% endif %}
 
+      {% if post.sitemap.changefreq == null %}
+        <changefreq>weekly</changefreq>
+      {% else %}
+        <changefreq>{{ post.sitemap.changefreq }}</changefreq>
+      {% endif %}
 
-<url>
-  <loc>https://younghyopark.github.io/</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>1.00</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/about.html</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/archive.html</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/2021/04/19/scrl-3.html</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/archive.html?tag=Reinforcement-Learning</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/archive.html?tag=Lecture-Note</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/archive.html?tag=Theory%2FSurvey</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/notion_to_markdown/opt-lecture-7/</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/archive.html?tag=Optimization</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/2021/04/19/mac-tips-1.html</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/archive.html?tag=macOS-Tips</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/notion_to_markdown/opt-lecture-6/</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/notion_to_markdown/opt-lecture-5/</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/2021/04/18/opt-lecture-4-1.html</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/archive.html?tag=Multi-Reward%2FObjective</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/notion_to_markdown/%5BICML%202015%5D%20Universal%20Value%20Function%20Approximators%207120334d6860455c801cd9284c92970b/</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/page2/</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/page3/</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/courseworks</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/notion_to_markdown/%5BNIPS%202017%5D%20Hindsight%20Experience%20Replay%206daf8b2ade014cf58ea2d223723e0390/</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/notion_to_markdown/%5BNIPS%202017%5D%20Hybrid%20Reward%20Architecture%20for%20Reinfor%20ec4b86df520441bab17567b05419da01/</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/notion_to_markdown/%5BNIPS%202000%5D%20Balancing%20Multiple%20Sources%20of%20Reward%20i%20d60cc762d6104f86a42d227fabdf7e6f/</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/notion_to_markdown/%5BJAIR%202013%5D%20A%20Survey%20of%20Multi-Objective%20Sequential%202596a1a7dc934dbc9ed305d644b17155/</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/notion_to_markdown/%5BPaper%20Review%5D%20Deconstructing%20Lottery%20Tickets%20Zero%20256c0f5ba9d2483cb37e197122f85459/</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/notion_to_markdown/%5BPaper%20Review%5D%20Shared%20Autonomy%20via%20Deep%20Reinforcem%20abb251ed95e24e3186ed46bd449bf6ce/</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/notion_to_markdown/%5BPaper%20Review%5D%20Shared%20Autonomy%20via%20Hindsight%20Optim%20738343bab70c49ef93e56604a8941ee8/</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/notion_to_markdown/%5BPaper%20Review%5D%20What%E2%80%99s%20Hidden%20in%20a%20Randomly%20Weighte%20a4b62c1371134df789f399dbc3f6e284/</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/notion_to_markdown/A%20comprehensive%20survey%20on%20model%20compression%20and%20ac%204c3c4286b4ba4b30ac64f7813827a86e/</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/notion_to_markdown/%5BPaper%20Review%5D%20The%20Lottery%20Ticket%20Hypothesis%20Findi%203d18358bc43c4a62ba460c6d8c5f75c7/</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/notion_to_markdown/%5BPaper%20Review%5D%20Neural%20Discrete%20Representation%20Lear%20bd407a55549646a2a73e1aa2d5b6cd61/</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/notion_to_markdown/%5BTheory%5D%20Extended%20Unscented%20Kalman%20Filter%20fdfb8f055fb740eb9d4433c806f68fde/</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/notion_to_markdown/%5BTutorial%5D%20Kalman%20Filter%20Applications%20cc2de64bc6e14a9c9129c72f8085032c/</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/notion_to_markdown/kalman-filter/</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/notion_to_markdown/%5BPaper%20Review%5D%20Memorizing%20Normality%20to%20Detect%20Anom%209d61a839fc9a41a68d1fd4d65a8ace01/</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/archive.html?tag=Model-Compression</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/archive.html?tag=Network-Pruning</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/archive.html?tag=Lottery-Ticket</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/archive.html?tag=Shared-Autonomy</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/archive.html?tag=Autoencoder</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/archive.html?tag=Control</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/archive.html?tag=Tutorial</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/coursework_project/icv</loc>
-  <lastmod>2021-04-19T07:19:13+00:00</lastmod>
-  <priority>0.51</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/coursework_project/principles_of_music.pdf</loc>
-  <lastmod>2021-04-19T07:19:03+00:00</lastmod>
-  <priority>0.51</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/notion_to_markdown/A%20comprehensive%20survey%20on%20model%20compression%20and%20ac%204c3c4286b4ba4b30ac64f7813827a86e/Balanced_Quantization__An_Effective_and_Efficient_Approach_to_Quantized_Neural_Networks.pdf</loc>
-  <lastmod>2021-04-19T07:19:03+00:00</lastmod>
-  <priority>0.51</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/coursework_project/icv_1.pdf</loc>
-  <lastmod>2021-04-19T07:19:02+00:00</lastmod>
-  <priority>0.41</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/coursework_project/icv_2.pdf</loc>
-  <lastmod>2021-04-19T07:19:02+00:00</lastmod>
-  <priority>0.41</priority>
-</url>
-<url>
-  <loc>https://younghyopark.github.io/coursework_project/icv_3.pdf</loc>
-  <lastmod>2021-04-19T07:19:03+00:00</lastmod>
-  <priority>0.41</priority>
-</url>
+      {% if post.sitemap.priority == null %}
+          <priority>0.5</priority>
+      {% else %}
+        <priority>{{ post.sitemap.priority }}</priority>
+      {% endif %}
 
-
+    </url>
+  {% endfor %}
 </urlset>
