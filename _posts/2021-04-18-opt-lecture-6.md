@@ -1,5 +1,5 @@
 ---
-title: "[Convex Optimization] 6 - Lagrange Duality, Slater's Condition"
+title: "[Optimization] 6 - Lagrange Duality, Slater's Condition"
 tags: Optimization Lecture-Note
 permalink: "/notion_to_markdown/opt-lecture-6/"
 ---
