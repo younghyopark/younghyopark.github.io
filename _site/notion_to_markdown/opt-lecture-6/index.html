@@ -1,11 +1,10 @@
 <!DOCTYPE html><html lang="en">
   <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>Home - Younghyo Park</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[Convex Optimization] 6 - Lagrange Duality, Slater's Condition - Younghyo Park</title>
 
-<meta name="description" content="Your Site Description
-">
-<link rel="canonical" href="http://localhost:4000/page3/"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
+<meta name="description" content="LagrangianConsider an optimization problem\[\begin{aligned} \min &amp; \ \ \ f_0 (x) \\ \text{s.t} &amp; \ \ \ f_i (x) \leq 0, \ \ \  i= 1, \cdots, m \\ &amp...">
+<link rel="canonical" href="http://localhost:4000/notion_to_markdown/opt-lecture-6/"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
 <!--<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
 
 <meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
@@ -263,7 +262,7 @@
 </head>
   <body>
     <div class="root" data-is-touch="false">
-      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport cell cell--auto">
+      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport has-aside cell cell--auto">
 
       <div class="page__main-inner"><div class="page__header d-print-none"><header class="header"><div class="main">
       <div class="header__title">
@@ -330,110 +329,396 @@ fill="#000000" stroke="none">
   </header>
 </div><div class="page__content"><div class ="main"><div class="grid grid--reverse">
 
-              <div class="col-aside d-print-none js-col-aside"></div>
+              <div class="col-aside d-print-none js-col-aside"><aside class="page__aside js-page-aside"><div class="toc-aside js-toc-root"></div>
+</aside></div>
 
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
 <!-- end custom main top snippet -->
-<article itemscope itemtype="http://schema.org/WebPage"><header style="display:none;"><h1>Home</h1></header><meta itemprop="headline" content="Home"><meta itemprop="author" content="Younghyo Park"/><div class="js-article-content"><div class="layout--articles"><div class="article-list items items--divided"><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/notion_to_markdown/kalman-filter/"><h2 itemprop="headline" class="item__header">[Control Theory] Kalman Filter</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Introduction
-
-Kalman filters are used to estimate states based on linear dynamical systems in state-space format.
-
-\[\mathbf{x}_k  = \mathbf{F}_k \mathbf{x}_{k-1} + \mathbf{B}_k \mathbf{u}_{k-1}+\mathbf{w}_{k-1}\]
-
-where $ \mathbf{x}_{k} $ is the state vector, $\mathbf{F}$ is the state transitiion matrix, $\mathbf{B}$ is the control-input matrix...</div><p><a href="/notion_to_markdown/kalman-filter/">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[Convex Optimization] 6 - Lagrange Duality, Slater's Condition</h1></header><span class="split-space">&nbsp;</span>
+          <a class="edit-on-github"
+            title="Edit on Github"
+            href="https://github.com/younghyopark/younghyopark.github.io/tree/main/_posts/2021-04-18-opt-lecture-6.md">
+            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[Convex Optimization] 6 - Lagrange Duality, Slater's Condition"><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Control">Control</a>
+                href="/archive.html?tag=Optimization">Optimization</a>
             </li><li>
               <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Theory%2FSurvey">Theory/Survey</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Mar 11, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-03-11T00:00:00+09:00">
-    <meta itemprop="keywords" content="Control,Theory/Survey"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/notion_to_markdown/%5BTutorial%5D%20Kalman%20Filter%20Applications%20cc2de64bc6e14a9c9129c72f8085032c/"><h2 itemprop="headline" class="item__header">[Control Theory] Kalman Filter Tutorial</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Kalman Filter
+                href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 18, 2021</span>
+            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-18T00:00:00+09:00">
+    <meta itemprop="keywords" content="Optimization,Lecture-Note"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
 
-Problem Statement
+<!-- end custom article top snippet -->
+<div class="article__content" itemprop="articleBody"><h2 id="lagrangian">Lagrangian</h2>
 
+<p>Consider an optimization problem</p>
 
-  Vehicle state, position, velocity estimated from IMU / GNSS
-  
-    Three dimensional position and velocity comprise the state vector
+\[\begin{aligned} \min &amp; \ \ \ f_0 (x) \\ \text{s.t} &amp; \ \ \ f_i (x) \leq 0, \ \ \  i= 1, \cdots, m \\ &amp; \ \ \ h_i (x) =0, \ \ \ i=1, \cdots, p \end{aligned}\]
 
-\[\mathbf{x}=[\mathbf{p}^T, \mathbf{v}^T ] ^T\]
+<p>Now, take the constraint into account by <strong>augmenting the objective function with a weighted sum of the constraint functions</strong>.</p>
 
-    where $\mathbf{p}= [p_x, p_y, p_z]^T$ and $\mathbf{v}= [v_x, v_y, v_z ] ^T$ are each position and velocity vector
-  
-  
-   ...</div><p><a href="/notion_to_markdown/%5BTutorial%5D%20Kalman%20Filter%20Applications%20cc2de64bc6e14a9c9129c72f8085032c/">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Control">Control</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Theory%2FSurvey">Theory/Survey</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Tutorial">Tutorial</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Mar 11, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-03-11T00:00:00+09:00">
-    <meta itemprop="keywords" content="Control,Theory/Survey,Tutorial"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/notion_to_markdown/%5BTheory%5D%20Extended%20Unscented%20Kalman%20Filter%20fdfb8f055fb740eb9d4433c806f68fde/"><h2 itemprop="headline" class="item__header">[Control Theory] Extended/Unscented Kalman Filter</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Introduction
+<p>Lagrangian $L: \mathbb{R}^n \times \mathbb{R}^m \times \mathbb{R}^p \rightarrow \mathbb{R}$ defined by</p>
 
+\[L(x,\lambda, \nu) := f_0 (x) + \sum_{i=1}^n \lambda_i f_i (x) + \sum_{i=1}^p \nu_i h_i (x)\]
 
-  
-    UKF belongs to a bigger class of filters called Sigma-Point Kalman Filters / Linear Regression Kalman Filters → using statistical lineraization technique.
+<p>where $\lambda_i$ is the Lagrange multiplier associated with the inequality constraints, and $\nu_i$ is the Lagrange multipler associated with equality constraints. We call $\lambda, \nu$ as <strong>dual variables</strong> or Lagrange multiplier vectors.</p>
 
-    Statistical linearization technique = technique that linearizes a nonlinear function of a random variable through a linear regression between $n$ points drawn from t...</div><p><a href="/notion_to_markdown/%5BTheory%5D%20Extended%20Unscented%20Kalman%20Filter%20fdfb8f055fb740eb9d4433c806f68fde/">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Control">Control</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Theory%2FSurvey">Theory/Survey</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Mar 11, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-03-11T00:00:00+09:00">
-    <meta itemprop="keywords" content="Control,Theory/Survey"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/notion_to_markdown/%5BPaper%20Review%5D%20Memorizing%20Normality%20to%20Detect%20Anom%209d61a839fc9a41a68d1fd4d65a8ace01/"><h2 itemprop="headline" class="item__header">[ICCV 2019] Memorizing Normality to Detect Anomaly: Memory-augmented Deep Autoencoder for Unsupervised Anomaly Detection</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Motivation
+<h2 id="lagrange-dual">Lagrange Dual</h2>
 
+<p>Define Lagrange dual function $g: \mathbb{R}^m \times \mathbb{R}^n \rightarrow \mathbb{R}$</p>
 
-  AE can “generalize” so well that it can also reconstruct the abnormal inputs well (same motivation with swyoon’s paper)
-  This paper proposes to augment the deep AE with a memory module : MemAE
-    
-      Given an input, MemAE does not directly feed its encoding into the decoder but uses it as a query to retrieve the most relevant...</div><p><a href="/notion_to_markdown/%5BPaper%20Review%5D%20Memorizing%20Normality%20to%20Detect%20Anom%209d61a839fc9a41a68d1fd4d65a8ace01/">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Autoencoder">Autoencoder</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Mar 09, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-03-09T00:00:00+09:00">
-    <meta itemprop="keywords" content="Autoencoder"></div>
-      </article></div>
-</div><div class="layout--home"><div class="pagination"><p>20 post articles, 3 pages.</p>
-    <div class="pagination__menu">
-      <ul class="menu menu--nowrap"><li><a class="button button--secondary button--circle" href="/page2">
-            <i class="fas fa-angle-left"></i>
-          </a></li><li>
-              <a class="button button--secondary button--circle" href="/"><span>1</span></a>
-            </li><li>
-                <a class="button button--secondary button--circle" href="/page2"><span>2</span></a>
-              </li><li>
-              <div class="button button--primary button--circle focus"><span>3</span></div>
-            </li><li><div class="button button--secondary button--circle disabled">
-            <i class="fas fa-angle-right"></i>
-          </div></li></ul>
-    </div>
-  </div></div>
-<script>/*(function () {
+\[g(\lambda, \nu) := \inf_{x\in \mathbb{R}^n } L(x,\lambda, \nu) = \inf_{x\in \mathbb{R}^n } \bigg [ f_0 (x) + \sum_{i=1}^n \lambda_i f_i (x) + \sum_{i=1}^p \nu_i h_i (x) \bigg ]\]
 
-})();*/
+<p>Note that this dual function is <strong>concave</strong> in $(\lambda, \nu)$, even when the original problem is non-convex.</p>
+
+<p><strong>[proof]</strong> Lagrangian is affine in $(\lambda, \nu)$. Thus, $g(\lambda, \nu)$ can be construed as a pointwise infimum of affine function.</p>
+
+<h3 id="lagrange-dual-lower-bounds-the-optimal-value">Lagrange Dual Lower bounds the Optimal Value</h3>
+
+<p><strong>[Proposition]</strong> For any $\lambda \geq 0$ and any $\nu$,</p>
+
+\[g(\lambda, \nu) \leq p^\star\]
+
+<p><strong>[proof]</strong> Fix an arbitrary feasible $\tilde{x}$. Then,</p>
+
+\[f_i (\tilde{x}) \leq 0 \\
+h_i (\tilde{x}) =0\]
+
+<p>Now, fix an arbitrary $\lambda \geq 0 $ and $\nu$. We have</p>
+
+\[\sum \lambda_i f_i (\tilde{x})  + \sum \nu_i h_i (\tilde{x}) \leq 0\]
+
+<p>Thus,</p>
+
+<p>\(L(\tilde{x}, \lambda, \nu) = f_o (\tilde{x}) +\sum \lambda_i f_i (\tilde{x})  + \sum \nu_i h_i (\tilde{x}) \leq f_o(\tilde{x}) \leq p^\star\)
+for all feasibe $\tilde{x}$.</p>
+
+<h3 id="lagrange-dual-problem">Lagrange Dual Problem</h3>
+
+\[\begin{aligned}
+\max &amp; \ \ \ g(\lambda,\nu)\\
+\text{s.t.} &amp; \ \ \ \lambda \geq 0 
+\end{aligned}\]
+
+<p>We have to maximize the Lagrange Dual (to at least get closer to the original optimal value $p^\star$).</p>
+
+<ul>
+  <li>
+    <p>A pair $(\lambda, \nu)$ is called <strong>dual-feasible</strong> if</p>
+
+\[\lambda \geq 0 , \ \ \ g(\lambda, \nu) &gt;-\infty\]
+  </li>
+  <li>
+    <p>This dual problem is always a convex optimization problem, even when the original problem is non-convex. (Recall that $g(\lambda, \nu)$ was concave function)</p>
+  </li>
+</ul>
+
+<h3 id="ex-dual-of-standard-form-lp">[Ex] Dual of standard form LP</h3>
+
+\[\begin{aligned}
+\min &amp; \ \ \ c^Tx \\
+\text{s.t.} &amp; \ \ \ Ax=b \\
+&amp; \ \ \ x\geq 0
+\end{aligned}\]
+
+<p><strong>[solution]</strong> First get the Lagrangian</p>
+
+\[\begin{aligned}
+L(x,\lambda, \nu) &amp;= c^T x+ \nu^T (Ax-b) + \lambda ^T (-x)\\
+&amp; = (c+A^T \nu -\lambda)^T x -\nu^T b
+\end{aligned}\]
+
+<p>Now, minimize the Lagrangian with respect to $x$.</p>
+
+\[g(\lambda, \nu) = \inf_x L(x,\lambda, \nu) = 
+\begin{cases} 
+-\nu^Tb &amp; \ \ \ \text{if } c+A^T \nu - \lambda =0\\
+-\infty &amp; \ \ \ \text{otherwise}
+\end{cases}\]
+
+<p>Thus, the dual problem is</p>
+
+\[\begin{aligned}
+\max &amp; \ \ \ -\nu^T b \\
+\text{s.t.} &amp; \ \ \ c+ A^T \nu - \lambda =0 \\
+&amp; \ \ \ \lambda \geq 0
+\end{aligned}\]
+
+<h3 id="ex-dual-of-inequality-form-lp">[Ex] Dual of inequality form LP</h3>
+
+<p>Same procedure, we get</p>
+
+\[\begin{aligned}
+\max &amp; \ \ \ -b^T \lambda \\
+\text{s.t.} &amp; \ \ \ c+ A^T \lambda  =0 \\
+&amp; \ \ \ \lambda \geq 0
+\end{aligned}\]
+
+<h2 id="interpreting-the-lagrangian-dual">Interpreting the Lagrangian Dual</h2>
+
+<h3 id="linear-approximation">Linear Approximation</h3>
+
+<p>We can rewrite the original problem (1) as</p>
+
+\[\min \ \ f_0 (x) + \sum_{i=1}^n I_- (f_i (x))  + \sum_{i=1}^p  I_0 (h_i (x))\]
+
+<p>where $I_- : \mathbb{R} \rightarrow \mathbb{R}$ is a penalty function for positive reals (blue line in below figure)</p>
+
+\[I_- (u) := \begin{cases}
+0 &amp; \ \ \ \text{if } u \leq 0 \\
++\infty &amp; \ \ \ \text {if } u&gt;0
+\end{cases}\]
+
+<p>Similarly, $I_0 : \mathbb{R} \rightarrow \mathbb{R}$ is a penalty function for nonzero values.</p>
+
+\[I_0 (u) := \begin{cases}
+0 &amp; \ \ \ \text{if } u = 0 \\
++\infty &amp; \ \ \ \text {if } u\not =0
+\end{cases}\]
+
+<p>Now, let’s relax the function a bit.</p>
+
+<center><img src="image-20210418201908558.png" alt="image-20210418201908558" style="zoom:50%;" /></center>
+
+<center><img src="image-20210418202115363.png" alt="image-20210418202115363" style="zoom:50%;" /></center>
+
+<p>Replace $I_-(u)$ with the linear function $\lambda_i u$ where $\lambda_i \geq 0$, and function $I_0 (u)$ with $\nu_i u$. We then have a Lagrangian.</p>
+
+<p>Thus, the linear penalty function introduced here is the <strong>underestimator</strong> of the original penalty function. Thus, it seems quite obvious that dual function has to yield a lower bound on the optimal value of the primal problem.</p>
+
+<h3 id="geometric-interpretation">Geometric Interpretation</h3>
+
+<p>Consider the following set of values</p>
+
+\[\mathcal{G}:= \{ (f_1(x), \cdots, f_m(x), h_1(x), \cdots, h_p(x), f_0 (x)) \}\in \mathbb{R}^m \times \mathbb{R}^p \times \mathbb{R}\]
+
+<p>Now, the optimal value of the primal problem can be expressed as</p>
+
+\[p^\star = \inf \{ p \ \vert \ (u,v,t) \in \mathcal{G}, \ u\leq 0 , v=0\}\]
+
+<p>Meanwhile, the dual function can be expressed as</p>
+
+\[g(\lambda, \nu) = \inf \{ (\lambda, \nu, 1)^T (u,v,t) \ \vert \ (u,v,t) \in \mathcal{G}\}\]
+
+<p>Suppose $\lambda \geq 0$. Then, if $u\leq 0$ and $v=0$,</p>
+
+\[t \geq (\lambda , \nu, 1)^T (u,v,t)\]
+
+<p>Therfore,</p>
+
+\[\begin{aligned}
+p^\star &amp;= \inf \ \{ t \ \vert \ (u,v,t) \in \mathcal{G}, u\leq 0, v=0\}\\
+&amp; \geq \inf \ \{ (\lambda , \nu, 1)^T (u,v,t) \ \vert \ (u,v,t) \in \mathcal{G}, u\leq 0, v=0\}\\
+&amp; \geq \inf \ \{ (\lambda , \nu, 1)^T (u,v,t) \ \vert \ (u,v,t) \in \mathcal{G}\} = g(\lambda, \nu) \\
+\end{aligned}\]
+
+<center><img src="image-20210418203400472.png" alt="image-20210418203400472" style="zoom:50%;" /></center>
+
+<center><img src="image-20210418203616032.png" alt="image-20210418203616032" style="zoom:35%;" /></center>
+
+<h2 id="strong-duality">Strong Duality</h2>
+
+<h3 id="weak-duality">Weak Duality</h3>
+
+<ul>
+  <li>$p^\star$ = optimal value of the primal problem</li>
+  <li>$d^\star$ = optimal value of the dual problem</li>
+</ul>
+
+<p>Then, “weak duality” holds, regardless of the convexity of the primal problem.</p>
+
+\[d^\star \leq p^\star\]
+
+<p>and $p^\star - d^\star$ is called the <strong>duality gap</strong>.</p>
+
+<h3 id="strong-duality-1">Strong Duality</h3>
+
+<p>We say strong duality holds if</p>
+
+\[p^\star = d^\star\]
+
+<p><strong>Note that strong duality generally does not hold</strong>. However, under certain condition, strong duality holds.</p>
+
+<h3 id="slaters-condition">Slater’s condition</h3>
+
+<hr />
+
+<p><strong>[Theorem]</strong> Strong duality holds for a convex optimization problem if Slater’s condition holds. Slater’s condition means that, there exists $x$ such that 
+\(f_i (x) &lt;0 , \ \ \ i=1, \cdots, m, \ \ \ Ax= b\)
+(In other words, slater’s condition states that the point should satisfy the inequality condition <strong>strictly</strong>.)</p>
+
+<p>However, if some of its inequality constraint is <strong>affine</strong>, such inequality constraints does not have to hold strictly. If $f_1, \cdots, f_k$ are affine, then strong duality holds if there exists $x$ such that</p>
+
+\[f_i (x) \leq 0, \ \ \ i=1, \cdots, k, \ \ f_i (x) &lt;0 , \ \ i= k+1, \cdots, m, \ \ Ax=b\]
+
+<hr />
+
+<ul>
+  <li>We can see that, for LP, <strong>slater’s condition</strong> is achieved when $x$ is feasible.</li>
+</ul>
+
+<h2 id="proving-the-slaters-theorem">Proving the Slater’s Theorem</h2>
+
+<h3 id="lets-prove">Let’s Prove…</h3>
+
+<p>Consider the convex optimization problem</p>
+
+\[\begin{aligned} \min &amp; \ \ \ f_0 (x) \\ \text{s.t} &amp; \ \ \ f_i (x) \leq 0, \ \ \  i= 1, \cdots, m \\ &amp; \ \ \ Ax=b \end{aligned}\]
+
+<p>where $\tilde{x}$ satisfies the Slater’s condition. In other words,</p>
+
+\[f_i (\tilde{x}) &lt;0, \ \ i=1,\cdots, m, \ \text{and } A\tilde{x}=b\]
+
+<p>To simplify the proof, assume the primal optimal value $p^\star$ is finite, and $\text{rank }A = p$.</p>
+
+<p>Let’s first define two sets $\mathcal{A, B}$.</p>
+
+\[\mathcal{A}:= \{(u,v,t) \ \vert \ \exists x \in \mathcal{D} \text{ s.t.} f_i (x)\leq u_i, h_i (x) =v_i , f_0 (x)\leq t\}\\
+\mathcal{B} := \{(0,0,s) \in \mathbb{R}^m \times \mathbb{R}^p \times \mathbb{R} \ \vert \ s&lt;p^\star \}\]
+
+<h3 id="separating-hyperplane-theorem">Separating Hyperplane Theorem</h3>
+
+<p><strong>[Theorem]</strong> Suppose $C$ and $D$ are nonempty disjoint convex sets. Then there exist $a\not =0$ and $b$ such that
+\(a^Tx \leq b \ \ \ \forall x \in C\\
+a^Tx \geq b \ \ \ \forall x \in D\)</p>
+
+<center><img src="image-20210418205855515.png" alt="image-20210418205855515" style="zoom:50%;" /></center>
+
+<p>We call that a <strong>separating hyperplane</strong> for $C$ and $D$.</p>
+
+<h3 id="step1--claim-mathcalacap-mathcalb-varnothing">Step1 : Claim $\mathcal{A}\cap \mathcal{B} =\varnothing$</h3>
+
+<p>Suppose $\exists (u,v,t) \in \mathcal{A \cap B}$ . Since $(u,v,t)\in \mathcal{B}$, we have</p>
+
+\[u=0, \ \ v=0,\ \ t&lt;p^\star\]
+
+<p>Meanwhile, since $(u,v,t) \in \mathcal{A}$, there exists $x$ such that</p>
+
+\[f_i (x) \leq u =0, \ \ h_i (x)=v=0 , \ \ \ f_0 (x) \leq t &lt;p^\star\]
+
+<p>This is contradictory, since we assumed that $p^\star$ is the optimal value of the primal problem.</p>
+
+<h3 id="step-2--use-the-separting-hyperplane-theorem">Step 2 : Use the Separting Hyperplane Theorem</h3>
+
+<p>By the separating hyperplane theorem, there exists $(\tilde{\lambda}, \tilde{\nu}, \mu)\not =0$ and $\alpha$ such that</p>
+
+\[\tilde{\lambda}^T u + \tilde{\nu}v + \mu t \geq \alpha  \ \ \ \forall (u,v,t) \in \mathcal{A}\\
+\tilde{\lambda}^T u + \tilde{\nu}v + \mu t \leq \alpha  \ \ \ \forall (u,v,t) \in \mathcal{B}\\\]
+
+<ul>
+  <li>
+    <p>Note that, for $(u,v,t)\in \mathcal{A}$,  $u$ and $t$ is unbounded upwards. Thus, to make the first condition feasible, we can deduce that $\tilde{\lambda} \geq 0$ and $\mu \geq 0$. (otherwise, $\tilde{\lambda}^T u + \mu t$ will be unbounded below)</p>
+  </li>
+  <li>
+    <p>Also, the second condition implies that</p>
+
+\[\mu t \leq \alpha \ \ \ \forall t &lt;p^\star\]
+
+    <p>which also implies</p>
+
+\[\mu p^\star \leq \alpha\]
+  </li>
+  <li>
+    <p>Combining with the first condition for $u_i = f_i (x), v_i = h_i (x) = Ax-b, t= f_0 (x)$</p>
+
+\[\sum_{i=1}^n \tilde{\lambda}_i f_i (x) + \tilde{\nu}^T(Ax-b)+ \mu f_0 (x) \geq \alpha \geq \mu p^\star \label{28}\]
+  </li>
+</ul>
+
+<h3 id="step-3--suppose-that-mu0">Step 3 : Suppose that $\mu&gt;0$</h3>
+
+<p>Divide equation ($\ref{28}$) with $\mu$. Then, we obtain</p>
+
+\[L(x,\tilde{\lambda}/\mu, \tilde{\nu}/\mu) \geq p^\star\]
+
+<p>Minimizing the Lagrangian over $x$, we have</p>
+
+\[g(\lambda, \nu)\geq p^\star\]
+
+<p>Meanwhile, the weak-duality still holds.</p>
+
+\[g(\lambda, \nu) \leq p^\star\]
+
+<p>Thus,</p>
+
+\[g(\lambda, \nu) = p^\star\]
+
+<p>the strong duality holds.</p>
+
+<h3 id="step-4--what-if-mu0">Step 4 : What if $\mu=0$?</h3>
+
+<p>Now, assume $\mu =0$. We then have</p>
+
+\[\sum_{i=1}^n \tilde{\lambda}_i f_i (x) + \tilde{\nu}^T(Ax-b) \geq \alpha \geq \mu p^\star =0\]
+
+<p>Applying this to $\tilde{x}$ that satisfies the Slater’s condition, ($A\tilde{x}-b =0$ and $f_i (\tilde{x}) &lt; 0$)</p>
+
+\[\sum_{i=1}^n \tilde{\lambda}_i f_i (\tilde{x}) \geq 0\]
+
+<p>Since $f_i (\tilde{x}) &lt;0$ and $\tilde{\lambda}_i \geq 0$, above inequality can only hold when</p>
+
+\[\tilde{\lambda}=0\]
+
+<p>Since the separating hyperplane requires $(\tilde{\lambda}, \tilde{\nu},\mu)$ to be nonzero, the remaining nonzero item $\tilde{\nu}\not=0$.</p>
+
+<p>Then, equation (29) can be rewritten as</p>
+
+\[\tilde{\nu}^T(Ax-b)\geq 0 \ \ \ \forall x\]
+
+<p>while for $\tilde{x}$,</p>
+
+\[\tilde{\nu}^T (A\tilde{x}-b)=0\]
+
+<p>However, since $A^T \tilde{\nu} \not =0$, there is always an $x$ that satisfies</p>
+
+\[\tilde{\nu}^T (Ax-b) &lt;0\]
+
+<p>This is a contradiction! Thus, $\mu &gt;0$.</p>
+
+<h3 id="geometric-idea-behind-the-proof">Geometric Idea behind the Proof</h3>
+
+<center><img src="image-20210418213553709.png" alt="image-20210418213553709" style="zoom:50%;" /></center>
+
+</div><section class="article__sharing d-print-none"></section><div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-04-18T00:00:00+09:00"><!-- start custom article footer snippet -->
+
+<!-- end custom article footer snippet -->
+<div class="article__license"><div class="license">
+    <p>This work is licensed under a <a itemprop="license" rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">Attribution-NonCommercial 4.0 International</a> license.
+      <a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">
+        <img alt="Attribution-NonCommercial 4.0 International" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" />
+      </a>
+    </p>
+  </div></div></footer>
+<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/notion_to_markdown/opt-lecture-5/">[Convex Optimization] 5 - Typical Convex Optimization Problems</a></div></div></div>
+
+</div>
+
+<script>(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    $(function() {
+      var $this ,$scroll;
+      var $articleContent = $('.js-article-content');
+      var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+      var scroll = hasSidebar ? '.js-page-main' : 'html, body';
+      $scroll = $(scroll);
+
+      $articleContent.find('.highlight').each(function() {
+        $this = $(this);
+        $this.attr('data-lang', $this.find('code').attr('data-lang'));
+      });
+      $articleContent.find('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]').each(function() {
+        $this = $(this);
+        $this.append($('<a class="anchor d-print-none" aria-hidden="true"></a>').html('<i class="fas fa-anchor"></i>'));
+      });
+      $articleContent.on('click', '.anchor', function() {
+        $scroll.scrollToAnchor('#' + $(this).parent().attr('id'), 400);
+      });
+    });
+  });
+})();
 </script>
-
-
-
 </div><section class="page__comments d-print-none"></section></article><!-- start custom main bottom snippet -->
 
 <!-- end custom main bottom snippet -->
@@ -981,6 +1266,68 @@ window.Lazyload.js([SOURCES.jquery, PAHTS.search_js], function() {
 /*(function () {
 
 })();*/
+</script><script>
+  /* toc must before affix, since affix need to konw toc' height. */(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  var TOC_SELECTOR = window.TEXT_VARIABLES.site.toc.selectors;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window);
+    var $articleContent = $('.js-article-content');
+    var $tocRoot = $('.js-toc-root'), $col2 = $('.js-col-aside');
+    var toc;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+    var hasToc = $articleContent.find(TOC_SELECTOR).length > 0;
+
+    function disabled() {
+      return $col2.css('display') === 'none' || !hasToc;
+    }
+
+    tocDisabled = disabled();
+
+    toc = $tocRoot.toc({
+      selectors: TOC_SELECTOR,
+      container: $articleContent,
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      tocDisabled = disabled();
+      toc && toc.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+  });
+})();
+(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window), $pageFooter = $('.js-page-footer');
+    var $pageAside = $('.js-page-aside');
+    var affix;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+
+    affix = $pageAside.affix({
+      offsetBottom: $pageFooter.outerHeight(),
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      scroll: hasSidebar ? $('.js-page-main').children() : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      affix && affix.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+    window.pageAsideAffix = affix;
+  });
+})();
 </script><script>
   window.Lazyload.js(['https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js', 'https://cdn.bootcss.com/Chart.js/2.7.2/Chart.bundle.min.js'], function() {
     var $canvas = null, $this = null, _ctx = null, _text = '';

@@ -1,5 +1,333 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-04-18T19:34:03+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Younghyo Park</title><subtitle>Your Site Description
-</subtitle><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><entry><title type="html">[Convex Optimization] 4 - Operations that preserve Convexity</title><link href="http://localhost:4000/2021/04/18/opt-lecture-4-1.html" rel="alternate" type="text/html" title="[Convex Optimization] 4 - Operations that preserve Convexity" /><published>2021-04-18T00:00:00+09:00</published><updated>2021-04-18T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/18/opt-lecture-4-1</id><content type="html" xml:base="http://localhost:4000/2021/04/18/opt-lecture-4-1.html">&lt;h2 id=&quot;operations-that-preserve-convexity&quot;&gt;Operations that preserve convexity&lt;/h2&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-04-18T22:37:32+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Younghyo Park</title><subtitle>Your Site Description
+</subtitle><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><entry><title type="html">[Convex Optimization] 6 - Lagrange Duality, Slater’s Condition</title><link href="http://localhost:4000/notion_to_markdown/opt-lecture-6/" rel="alternate" type="text/html" title="[Convex Optimization] 6 - Lagrange Duality, Slater’s Condition" /><published>2021-04-18T00:00:00+09:00</published><updated>2021-04-18T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/opt-lecture-6</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/opt-lecture-6/">&lt;h2 id=&quot;lagrangian&quot;&gt;Lagrangian&lt;/h2&gt;
+
+&lt;p&gt;Consider an optimization problem&lt;/p&gt;
+
+\[\begin{aligned} \min &amp;amp; \ \ \ f_0 (x) \\ \text{s.t} &amp;amp; \ \ \ f_i (x) \leq 0, \ \ \  i= 1, \cdots, m \\ &amp;amp; \ \ \ h_i (x) =0, \ \ \ i=1, \cdots, p \end{aligned}\]
+
+&lt;p&gt;Now, take the constraint into account by &lt;strong&gt;augmenting the objective function with a weighted sum of the constraint functions&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;Lagrangian $L: \mathbb{R}^n \times \mathbb{R}^m \times \mathbb{R}^p \rightarrow \mathbb{R}$ defined by&lt;/p&gt;
+
+\[L(x,\lambda, \nu) := f_0 (x) + \sum_{i=1}^n \lambda_i f_i (x) + \sum_{i=1}^p \nu_i h_i (x)\]
+
+&lt;p&gt;where $\lambda_i$ is the Lagrange multiplier associated with the inequality constraints, and $\nu_i$ is the Lagrange multipler associated with equality constraints. We call $\lambda, \nu$ as &lt;strong&gt;dual variables&lt;/strong&gt; or Lagrange multiplier vectors.&lt;/p&gt;
+
+&lt;h2 id=&quot;lagrange-dual&quot;&gt;Lagrange Dual&lt;/h2&gt;
+
+&lt;p&gt;Define Lagrange dual function $g: \mathbb{R}^m \times \mathbb{R}^n \rightarrow \mathbb{R}$&lt;/p&gt;
+
+\[g(\lambda, \nu) := \inf_{x\in \mathbb{R}^n } L(x,\lambda, \nu) = \inf_{x\in \mathbb{R}^n } \bigg [ f_0 (x) + \sum_{i=1}^n \lambda_i f_i (x) + \sum_{i=1}^p \nu_i h_i (x) \bigg ]\]
+
+&lt;p&gt;Note that this dual function is &lt;strong&gt;concave&lt;/strong&gt; in $(\lambda, \nu)$, even when the original problem is non-convex.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;[proof]&lt;/strong&gt; Lagrangian is affine in $(\lambda, \nu)$. Thus, $g(\lambda, \nu)$ can be construed as a pointwise infimum of affine function.&lt;/p&gt;
+
+&lt;h3 id=&quot;lagrange-dual-lower-bounds-the-optimal-value&quot;&gt;Lagrange Dual Lower bounds the Optimal Value&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;[Proposition]&lt;/strong&gt; For any $\lambda \geq 0$ and any $\nu$,&lt;/p&gt;
+
+\[g(\lambda, \nu) \leq p^\star\]
+
+&lt;p&gt;&lt;strong&gt;[proof]&lt;/strong&gt; Fix an arbitrary feasible $\tilde{x}$. Then,&lt;/p&gt;
+
+\[f_i (\tilde{x}) \leq 0 \\
+h_i (\tilde{x}) =0\]
+
+&lt;p&gt;Now, fix an arbitrary $\lambda \geq 0 $ and $\nu$. We have&lt;/p&gt;
+
+\[\sum \lambda_i f_i (\tilde{x})  + \sum \nu_i h_i (\tilde{x}) \leq 0\]
+
+&lt;p&gt;Thus,&lt;/p&gt;
+
+&lt;p&gt;\(L(\tilde{x}, \lambda, \nu) = f_o (\tilde{x}) +\sum \lambda_i f_i (\tilde{x})  + \sum \nu_i h_i (\tilde{x}) \leq f_o(\tilde{x}) \leq p^\star\)
+for all feasibe $\tilde{x}$.&lt;/p&gt;
+
+&lt;h3 id=&quot;lagrange-dual-problem&quot;&gt;Lagrange Dual Problem&lt;/h3&gt;
+
+\[\begin{aligned}
+\max &amp;amp; \ \ \ g(\lambda,\nu)\\
+\text{s.t.} &amp;amp; \ \ \ \lambda \geq 0 
+\end{aligned}\]
+
+&lt;p&gt;We have to maximize the Lagrange Dual (to at least get closer to the original optimal value $p^\star$).&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;A pair $(\lambda, \nu)$ is called &lt;strong&gt;dual-feasible&lt;/strong&gt; if&lt;/p&gt;
+
+\[\lambda \geq 0 , \ \ \ g(\lambda, \nu) &amp;gt;-\infty\]
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;This dual problem is always a convex optimization problem, even when the original problem is non-convex. (Recall that $g(\lambda, \nu)$ was concave function)&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;ex-dual-of-standard-form-lp&quot;&gt;[Ex] Dual of standard form LP&lt;/h3&gt;
+
+\[\begin{aligned}
+\min &amp;amp; \ \ \ c^Tx \\
+\text{s.t.} &amp;amp; \ \ \ Ax=b \\
+&amp;amp; \ \ \ x\geq 0
+\end{aligned}\]
+
+&lt;p&gt;&lt;strong&gt;[solution]&lt;/strong&gt; First get the Lagrangian&lt;/p&gt;
+
+\[\begin{aligned}
+L(x,\lambda, \nu) &amp;amp;= c^T x+ \nu^T (Ax-b) + \lambda ^T (-x)\\
+&amp;amp; = (c+A^T \nu -\lambda)^T x -\nu^T b
+\end{aligned}\]
+
+&lt;p&gt;Now, minimize the Lagrangian with respect to $x$.&lt;/p&gt;
+
+\[g(\lambda, \nu) = \inf_x L(x,\lambda, \nu) = 
+\begin{cases} 
+-\nu^Tb &amp;amp; \ \ \ \text{if } c+A^T \nu - \lambda =0\\
+-\infty &amp;amp; \ \ \ \text{otherwise}
+\end{cases}\]
+
+&lt;p&gt;Thus, the dual problem is&lt;/p&gt;
+
+\[\begin{aligned}
+\max &amp;amp; \ \ \ -\nu^T b \\
+\text{s.t.} &amp;amp; \ \ \ c+ A^T \nu - \lambda =0 \\
+&amp;amp; \ \ \ \lambda \geq 0
+\end{aligned}\]
+
+&lt;h3 id=&quot;ex-dual-of-inequality-form-lp&quot;&gt;[Ex] Dual of inequality form LP&lt;/h3&gt;
+
+&lt;p&gt;Same procedure, we get&lt;/p&gt;
+
+\[\begin{aligned}
+\max &amp;amp; \ \ \ -b^T \lambda \\
+\text{s.t.} &amp;amp; \ \ \ c+ A^T \lambda  =0 \\
+&amp;amp; \ \ \ \lambda \geq 0
+\end{aligned}\]
+
+&lt;h2 id=&quot;interpreting-the-lagrangian-dual&quot;&gt;Interpreting the Lagrangian Dual&lt;/h2&gt;
+
+&lt;h3 id=&quot;linear-approximation&quot;&gt;Linear Approximation&lt;/h3&gt;
+
+&lt;p&gt;We can rewrite the original problem (1) as&lt;/p&gt;
+
+\[\min \ \ f_0 (x) + \sum_{i=1}^n I_- (f_i (x))  + \sum_{i=1}^p  I_0 (h_i (x))\]
+
+&lt;p&gt;where $I_- : \mathbb{R} \rightarrow \mathbb{R}$ is a penalty function for positive reals (blue line in below figure)&lt;/p&gt;
+
+\[I_- (u) := \begin{cases}
+0 &amp;amp; \ \ \ \text{if } u \leq 0 \\
++\infty &amp;amp; \ \ \ \text {if } u&amp;gt;0
+\end{cases}\]
+
+&lt;p&gt;Similarly, $I_0 : \mathbb{R} \rightarrow \mathbb{R}$ is a penalty function for nonzero values.&lt;/p&gt;
+
+\[I_0 (u) := \begin{cases}
+0 &amp;amp; \ \ \ \text{if } u = 0 \\
++\infty &amp;amp; \ \ \ \text {if } u\not =0
+\end{cases}\]
+
+&lt;p&gt;Now, let’s relax the function a bit.&lt;/p&gt;
+
+&lt;center&gt;&lt;img src=&quot;image-20210418201908558.png&quot; alt=&quot;image-20210418201908558&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/center&gt;
+
+&lt;center&gt;&lt;img src=&quot;image-20210418202115363.png&quot; alt=&quot;image-20210418202115363&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/center&gt;
+
+&lt;p&gt;Replace $I_-(u)$ with the linear function $\lambda_i u$ where $\lambda_i \geq 0$, and function $I_0 (u)$ with $\nu_i u$. We then have a Lagrangian.&lt;/p&gt;
+
+&lt;p&gt;Thus, the linear penalty function introduced here is the &lt;strong&gt;underestimator&lt;/strong&gt; of the original penalty function. Thus, it seems quite obvious that dual function has to yield a lower bound on the optimal value of the primal problem.&lt;/p&gt;
+
+&lt;h3 id=&quot;geometric-interpretation&quot;&gt;Geometric Interpretation&lt;/h3&gt;
+
+&lt;p&gt;Consider the following set of values&lt;/p&gt;
+
+\[\mathcal{G}:= \{ (f_1(x), \cdots, f_m(x), h_1(x), \cdots, h_p(x), f_0 (x)) \}\in \mathbb{R}^m \times \mathbb{R}^p \times \mathbb{R}\]
+
+&lt;p&gt;Now, the optimal value of the primal problem can be expressed as&lt;/p&gt;
+
+\[p^\star = \inf \{ p \ \vert \ (u,v,t) \in \mathcal{G}, \ u\leq 0 , v=0\}\]
+
+&lt;p&gt;Meanwhile, the dual function can be expressed as&lt;/p&gt;
+
+\[g(\lambda, \nu) = \inf \{ (\lambda, \nu, 1)^T (u,v,t) \ \vert \ (u,v,t) \in \mathcal{G}\}\]
+
+&lt;p&gt;Suppose $\lambda \geq 0$. Then, if $u\leq 0$ and $v=0$,&lt;/p&gt;
+
+\[t \geq (\lambda , \nu, 1)^T (u,v,t)\]
+
+&lt;p&gt;Therfore,&lt;/p&gt;
+
+\[\begin{aligned}
+p^\star &amp;amp;= \inf \ \{ t \ \vert \ (u,v,t) \in \mathcal{G}, u\leq 0, v=0\}\\
+&amp;amp; \geq \inf \ \{ (\lambda , \nu, 1)^T (u,v,t) \ \vert \ (u,v,t) \in \mathcal{G}, u\leq 0, v=0\}\\
+&amp;amp; \geq \inf \ \{ (\lambda , \nu, 1)^T (u,v,t) \ \vert \ (u,v,t) \in \mathcal{G}\} = g(\lambda, \nu) \\
+\end{aligned}\]
+
+&lt;center&gt;&lt;img src=&quot;image-20210418203400472.png&quot; alt=&quot;image-20210418203400472&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/center&gt;
+
+&lt;center&gt;&lt;img src=&quot;image-20210418203616032.png&quot; alt=&quot;image-20210418203616032&quot; style=&quot;zoom:35%;&quot; /&gt;&lt;/center&gt;
+
+&lt;h2 id=&quot;strong-duality&quot;&gt;Strong Duality&lt;/h2&gt;
+
+&lt;h3 id=&quot;weak-duality&quot;&gt;Weak Duality&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;$p^\star$ = optimal value of the primal problem&lt;/li&gt;
+  &lt;li&gt;$d^\star$ = optimal value of the dual problem&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Then, “weak duality” holds, regardless of the convexity of the primal problem.&lt;/p&gt;
+
+\[d^\star \leq p^\star\]
+
+&lt;p&gt;and $p^\star - d^\star$ is called the &lt;strong&gt;duality gap&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;strong-duality-1&quot;&gt;Strong Duality&lt;/h3&gt;
+
+&lt;p&gt;We say strong duality holds if&lt;/p&gt;
+
+\[p^\star = d^\star\]
+
+&lt;p&gt;&lt;strong&gt;Note that strong duality generally does not hold&lt;/strong&gt;. However, under certain condition, strong duality holds.&lt;/p&gt;
+
+&lt;h3 id=&quot;slaters-condition&quot;&gt;Slater’s condition&lt;/h3&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;strong&gt;[Theorem]&lt;/strong&gt; Strong duality holds for a convex optimization problem if Slater’s condition holds. Slater’s condition means that, there exists $x$ such that 
+\(f_i (x) &amp;lt;0 , \ \ \ i=1, \cdots, m, \ \ \ Ax= b\)
+(In other words, slater’s condition states that the point should satisfy the inequality condition &lt;strong&gt;strictly&lt;/strong&gt;.)&lt;/p&gt;
+
+&lt;p&gt;However, if some of its inequality constraint is &lt;strong&gt;affine&lt;/strong&gt;, such inequality constraints does not have to hold strictly. If $f_1, \cdots, f_k$ are affine, then strong duality holds if there exists $x$ such that&lt;/p&gt;
+
+\[f_i (x) \leq 0, \ \ \ i=1, \cdots, k, \ \ f_i (x) &amp;lt;0 , \ \ i= k+1, \cdots, m, \ \ Ax=b\]
+
+&lt;hr /&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;We can see that, for LP, &lt;strong&gt;slater’s condition&lt;/strong&gt; is achieved when $x$ is feasible.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;proving-the-slaters-theorem&quot;&gt;Proving the Slater’s Theorem&lt;/h2&gt;
+
+&lt;h3 id=&quot;lets-prove&quot;&gt;Let’s Prove…&lt;/h3&gt;
+
+&lt;p&gt;Consider the convex optimization problem&lt;/p&gt;
+
+\[\begin{aligned} \min &amp;amp; \ \ \ f_0 (x) \\ \text{s.t} &amp;amp; \ \ \ f_i (x) \leq 0, \ \ \  i= 1, \cdots, m \\ &amp;amp; \ \ \ Ax=b \end{aligned}\]
+
+&lt;p&gt;where $\tilde{x}$ satisfies the Slater’s condition. In other words,&lt;/p&gt;
+
+\[f_i (\tilde{x}) &amp;lt;0, \ \ i=1,\cdots, m, \ \text{and } A\tilde{x}=b\]
+
+&lt;p&gt;To simplify the proof, assume the primal optimal value $p^\star$ is finite, and $\text{rank }A = p$.&lt;/p&gt;
+
+&lt;p&gt;Let’s first define two sets $\mathcal{A, B}$.&lt;/p&gt;
+
+\[\mathcal{A}:= \{(u,v,t) \ \vert \ \exists x \in \mathcal{D} \text{ s.t.} f_i (x)\leq u_i, h_i (x) =v_i , f_0 (x)\leq t\}\\
+\mathcal{B} := \{(0,0,s) \in \mathbb{R}^m \times \mathbb{R}^p \times \mathbb{R} \ \vert \ s&amp;lt;p^\star \}\]
+
+&lt;h3 id=&quot;separating-hyperplane-theorem&quot;&gt;Separating Hyperplane Theorem&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;[Theorem]&lt;/strong&gt; Suppose $C$ and $D$ are nonempty disjoint convex sets. Then there exist $a\not =0$ and $b$ such that
+\(a^Tx \leq b \ \ \ \forall x \in C\\
+a^Tx \geq b \ \ \ \forall x \in D\)&lt;/p&gt;
+
+&lt;center&gt;&lt;img src=&quot;image-20210418205855515.png&quot; alt=&quot;image-20210418205855515&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/center&gt;
+
+&lt;p&gt;We call that a &lt;strong&gt;separating hyperplane&lt;/strong&gt; for $C$ and $D$.&lt;/p&gt;
+
+&lt;h3 id=&quot;step1--claim-mathcalacap-mathcalb-varnothing&quot;&gt;Step1 : Claim $\mathcal{A}\cap \mathcal{B} =\varnothing$&lt;/h3&gt;
+
+&lt;p&gt;Suppose $\exists (u,v,t) \in \mathcal{A \cap B}$ . Since $(u,v,t)\in \mathcal{B}$, we have&lt;/p&gt;
+
+\[u=0, \ \ v=0,\ \ t&amp;lt;p^\star\]
+
+&lt;p&gt;Meanwhile, since $(u,v,t) \in \mathcal{A}$, there exists $x$ such that&lt;/p&gt;
+
+\[f_i (x) \leq u =0, \ \ h_i (x)=v=0 , \ \ \ f_0 (x) \leq t &amp;lt;p^\star\]
+
+&lt;p&gt;This is contradictory, since we assumed that $p^\star$ is the optimal value of the primal problem.&lt;/p&gt;
+
+&lt;h3 id=&quot;step-2--use-the-separting-hyperplane-theorem&quot;&gt;Step 2 : Use the Separting Hyperplane Theorem&lt;/h3&gt;
+
+&lt;p&gt;By the separating hyperplane theorem, there exists $(\tilde{\lambda}, \tilde{\nu}, \mu)\not =0$ and $\alpha$ such that&lt;/p&gt;
+
+\[\tilde{\lambda}^T u + \tilde{\nu}v + \mu t \geq \alpha  \ \ \ \forall (u,v,t) \in \mathcal{A}\\
+\tilde{\lambda}^T u + \tilde{\nu}v + \mu t \leq \alpha  \ \ \ \forall (u,v,t) \in \mathcal{B}\\\]
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Note that, for $(u,v,t)\in \mathcal{A}$,  $u$ and $t$ is unbounded upwards. Thus, to make the first condition feasible, we can deduce that $\tilde{\lambda} \geq 0$ and $\mu \geq 0$. (otherwise, $\tilde{\lambda}^T u + \mu t$ will be unbounded below)&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Also, the second condition implies that&lt;/p&gt;
+
+\[\mu t \leq \alpha \ \ \ \forall t &amp;lt;p^\star\]
+
+    &lt;p&gt;which also implies&lt;/p&gt;
+
+\[\mu p^\star \leq \alpha\]
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Combining with the first condition for $u_i = f_i (x), v_i = h_i (x) = Ax-b, t= f_0 (x)$&lt;/p&gt;
+
+\[\sum_{i=1}^n \tilde{\lambda}_i f_i (x) + \tilde{\nu}^T(Ax-b)+ \mu f_0 (x) \geq \alpha \geq \mu p^\star \label{28}\]
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;step-3--suppose-that-mu0&quot;&gt;Step 3 : Suppose that $\mu&amp;gt;0$&lt;/h3&gt;
+
+&lt;p&gt;Divide equation ($\ref{28}$) with $\mu$. Then, we obtain&lt;/p&gt;
+
+\[L(x,\tilde{\lambda}/\mu, \tilde{\nu}/\mu) \geq p^\star\]
+
+&lt;p&gt;Minimizing the Lagrangian over $x$, we have&lt;/p&gt;
+
+\[g(\lambda, \nu)\geq p^\star\]
+
+&lt;p&gt;Meanwhile, the weak-duality still holds.&lt;/p&gt;
+
+\[g(\lambda, \nu) \leq p^\star\]
+
+&lt;p&gt;Thus,&lt;/p&gt;
+
+\[g(\lambda, \nu) = p^\star\]
+
+&lt;p&gt;the strong duality holds.&lt;/p&gt;
+
+&lt;h3 id=&quot;step-4--what-if-mu0&quot;&gt;Step 4 : What if $\mu=0$?&lt;/h3&gt;
+
+&lt;p&gt;Now, assume $\mu =0$. We then have&lt;/p&gt;
+
+\[\sum_{i=1}^n \tilde{\lambda}_i f_i (x) + \tilde{\nu}^T(Ax-b) \geq \alpha \geq \mu p^\star =0\]
+
+&lt;p&gt;Applying this to $\tilde{x}$ that satisfies the Slater’s condition, ($A\tilde{x}-b =0$ and $f_i (\tilde{x}) &amp;lt; 0$)&lt;/p&gt;
+
+\[\sum_{i=1}^n \tilde{\lambda}_i f_i (\tilde{x}) \geq 0\]
+
+&lt;p&gt;Since $f_i (\tilde{x}) &amp;lt;0$ and $\tilde{\lambda}_i \geq 0$, above inequality can only hold when&lt;/p&gt;
+
+\[\tilde{\lambda}=0\]
+
+&lt;p&gt;Since the separating hyperplane requires $(\tilde{\lambda}, \tilde{\nu},\mu)$ to be nonzero, the remaining nonzero item $\tilde{\nu}\not=0$.&lt;/p&gt;
+
+&lt;p&gt;Then, equation (29) can be rewritten as&lt;/p&gt;
+
+\[\tilde{\nu}^T(Ax-b)\geq 0 \ \ \ \forall x\]
+
+&lt;p&gt;while for $\tilde{x}$,&lt;/p&gt;
+
+\[\tilde{\nu}^T (A\tilde{x}-b)=0\]
+
+&lt;p&gt;However, since $A^T \tilde{\nu} \not =0$, there is always an $x$ that satisfies&lt;/p&gt;
+
+\[\tilde{\nu}^T (Ax-b) &amp;lt;0\]
+
+&lt;p&gt;This is a contradiction! Thus, $\mu &amp;gt;0$.&lt;/p&gt;
+
+&lt;h3 id=&quot;geometric-idea-behind-the-proof&quot;&gt;Geometric Idea behind the Proof&lt;/h3&gt;
+
+&lt;center&gt;&lt;img src=&quot;image-20210418213553709.png&quot; alt=&quot;image-20210418213553709&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/center&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Optimization" /><category term="Lecture-Note" /><summary type="html">Lagrangian Consider an optimization problem \[\begin{aligned} \min &amp;amp; \ \ \ f_0 (x) \\ \text{s.t} &amp;amp; \ \ \ f_i (x) \leq 0, \ \ \ i= 1, \cdots, m \\ &amp;amp; \ \ \ h_i (x) =0, \ \ \ i=1, \cdots, p \end{aligned}\] Now, take the constraint into account by augmenting the objective function with a weighted sum of the constraint functions. Lagrangian $L: \mathbb{R}^n \times \mathbb{R}^m \times \mathbb{R}^p \rightarrow \mathbb{R}$ defined by \[L(x,\lambda, \nu) := f_0 (x) + \sum_{i=1}^n \lambda_i f_i (x) + \sum_{i=1}^p \nu_i h_i (x)\] where $\lambda_i$ is the Lagrange multiplier associated with the inequality constraints, and $\nu_i$ is the Lagrange multipler associated with equality constraints. We call $\lambda, \nu$ as dual variables or Lagrange multiplier vectors. Lagrange Dual Define Lagrange dual function $g: \mathbb{R}^m \times \mathbb{R}^n \rightarrow \mathbb{R}$ \[g(\lambda, \nu) := \inf_{x\in \mathbb{R}^n } L(x,\lambda, \nu) = \inf_{x\in \mathbb{R}^n } \bigg [ f_0 (x) + \sum_{i=1}^n \lambda_i f_i (x) + \sum_{i=1}^p \nu_i h_i (x) \bigg ]\] Note that this dual function is concave in $(\lambda, \nu)$, even when the original problem is non-convex. [proof] Lagrangian is affine in $(\lambda, \nu)$. Thus, $g(\lambda, \nu)$ can be construed as a pointwise infimum of affine function. Lagrange Dual Lower bounds the Optimal Value [Proposition] For any $\lambda \geq 0$ and any $\nu$, \[g(\lambda, \nu) \leq p^\star\] [proof] Fix an arbitrary feasible $\tilde{x}$. Then, \[f_i (\tilde{x}) \leq 0 \\ h_i (\tilde{x}) =0\] Now, fix an arbitrary $\lambda \geq 0 $ and $\nu$. We have \[\sum \lambda_i f_i (\tilde{x}) + \sum \nu_i h_i (\tilde{x}) \leq 0\] Thus, \(L(\tilde{x}, \lambda, \nu) = f_o (\tilde{x}) +\sum \lambda_i f_i (\tilde{x}) + \sum \nu_i h_i (\tilde{x}) \leq f_o(\tilde{x}) \leq p^\star\) for all feasibe $\tilde{x}$. Lagrange Dual Problem \[\begin{aligned} \max &amp;amp; \ \ \ g(\lambda,\nu)\\ \text{s.t.} &amp;amp; \ \ \ \lambda \geq 0 \end{aligned}\] We have to maximize the Lagrange Dual (to at least get closer to the original optimal value $p^\star$). A pair $(\lambda, \nu)$ is called dual-feasible if \[\lambda \geq 0 , \ \ \ g(\lambda, \nu) &amp;gt;-\infty\] This dual problem is always a convex optimization problem, even when the original problem is non-convex. (Recall that $g(\lambda, \nu)$ was concave function) [Ex] Dual of standard form LP \[\begin{aligned} \min &amp;amp; \ \ \ c^Tx \\ \text{s.t.} &amp;amp; \ \ \ Ax=b \\ &amp;amp; \ \ \ x\geq 0 \end{aligned}\] [solution] First get the Lagrangian \[\begin{aligned} L(x,\lambda, \nu) &amp;amp;= c^T x+ \nu^T (Ax-b) + \lambda ^T (-x)\\ &amp;amp; = (c+A^T \nu -\lambda)^T x -\nu^T b \end{aligned}\] Now, minimize the Lagrangian with respect to $x$. \[g(\lambda, \nu) = \inf_x L(x,\lambda, \nu) = \begin{cases} -\nu^Tb &amp;amp; \ \ \ \text{if } c+A^T \nu - \lambda =0\\ -\infty &amp;amp; \ \ \ \text{otherwise} \end{cases}\] Thus, the dual problem is \[\begin{aligned} \max &amp;amp; \ \ \ -\nu^T b \\ \text{s.t.} &amp;amp; \ \ \ c+ A^T \nu - \lambda =0 \\ &amp;amp; \ \ \ \lambda \geq 0 \end{aligned}\] [Ex] Dual of inequality form LP Same procedure, we get \[\begin{aligned} \max &amp;amp; \ \ \ -b^T \lambda \\ \text{s.t.} &amp;amp; \ \ \ c+ A^T \lambda =0 \\ &amp;amp; \ \ \ \lambda \geq 0 \end{aligned}\] Interpreting the Lagrangian Dual Linear Approximation We can rewrite the original problem (1) as \[\min \ \ f_0 (x) + \sum_{i=1}^n I_- (f_i (x)) + \sum_{i=1}^p I_0 (h_i (x))\] where $I_- : \mathbb{R} \rightarrow \mathbb{R}$ is a penalty function for positive reals (blue line in below figure) \[I_- (u) := \begin{cases} 0 &amp;amp; \ \ \ \text{if } u \leq 0 \\ +\infty &amp;amp; \ \ \ \text {if } u&amp;gt;0 \end{cases}\] Similarly, $I_0 : \mathbb{R} \rightarrow \mathbb{R}$ is a penalty function for nonzero values. \[I_0 (u) := \begin{cases} 0 &amp;amp; \ \ \ \text{if } u = 0 \\ +\infty &amp;amp; \ \ \ \text {if } u\not =0 \end{cases}\] Now, let’s relax the function a bit. Replace $I_-(u)$ with the linear function $\lambda_i u$ where $\lambda_i \geq 0$, and function $I_0 (u)$ with $\nu_i u$. We then have a Lagrangian. Thus, the linear penalty function introduced here is the underestimator of the original penalty function. Thus, it seems quite obvious that dual function has to yield a lower bound on the optimal value of the primal problem. Geometric Interpretation Consider the following set of values \[\mathcal{G}:= \{ (f_1(x), \cdots, f_m(x), h_1(x), \cdots, h_p(x), f_0 (x)) \}\in \mathbb{R}^m \times \mathbb{R}^p \times \mathbb{R}\] Now, the optimal value of the primal problem can be expressed as \[p^\star = \inf \{ p \ \vert \ (u,v,t) \in \mathcal{G}, \ u\leq 0 , v=0\}\] Meanwhile, the dual function can be expressed as \[g(\lambda, \nu) = \inf \{ (\lambda, \nu, 1)^T (u,v,t) \ \vert \ (u,v,t) \in \mathcal{G}\}\] Suppose $\lambda \geq 0$. Then, if $u\leq 0$ and $v=0$, \[t \geq (\lambda , \nu, 1)^T (u,v,t)\] Therfore, \[\begin{aligned} p^\star &amp;amp;= \inf \ \{ t \ \vert \ (u,v,t) \in \mathcal{G}, u\leq 0, v=0\}\\ &amp;amp; \geq \inf \ \{ (\lambda , \nu, 1)^T (u,v,t) \ \vert \ (u,v,t) \in \mathcal{G}, u\leq 0, v=0\}\\ &amp;amp; \geq \inf \ \{ (\lambda , \nu, 1)^T (u,v,t) \ \vert \ (u,v,t) \in \mathcal{G}\} = g(\lambda, \nu) \\ \end{aligned}\] Strong Duality Weak Duality $p^\star$ = optimal value of the primal problem $d^\star$ = optimal value of the dual problem Then, “weak duality” holds, regardless of the convexity of the primal problem. \[d^\star \leq p^\star\] and $p^\star - d^\star$ is called the duality gap. Strong Duality We say strong duality holds if \[p^\star = d^\star\] Note that strong duality generally does not hold. However, under certain condition, strong duality holds. Slater’s condition [Theorem] Strong duality holds for a convex optimization problem if Slater’s condition holds. Slater’s condition means that, there exists $x$ such that \(f_i (x) &amp;lt;0 , \ \ \ i=1, \cdots, m, \ \ \ Ax= b\) (In other words, slater’s condition states that the point should satisfy the inequality condition strictly.) However, if some of its inequality constraint is affine, such inequality constraints does not have to hold strictly. If $f_1, \cdots, f_k$ are affine, then strong duality holds if there exists $x$ such that \[f_i (x) \leq 0, \ \ \ i=1, \cdots, k, \ \ f_i (x) &amp;lt;0 , \ \ i= k+1, \cdots, m, \ \ Ax=b\] We can see that, for LP, slater’s condition is achieved when $x$ is feasible. Proving the Slater’s Theorem Let’s Prove… Consider the convex optimization problem \[\begin{aligned} \min &amp;amp; \ \ \ f_0 (x) \\ \text{s.t} &amp;amp; \ \ \ f_i (x) \leq 0, \ \ \ i= 1, \cdots, m \\ &amp;amp; \ \ \ Ax=b \end{aligned}\] where $\tilde{x}$ satisfies the Slater’s condition. In other words, \[f_i (\tilde{x}) &amp;lt;0, \ \ i=1,\cdots, m, \ \text{and } A\tilde{x}=b\] To simplify the proof, assume the primal optimal value $p^\star$ is finite, and $\text{rank }A = p$. Let’s first define two sets $\mathcal{A, B}$. \[\mathcal{A}:= \{(u,v,t) \ \vert \ \exists x \in \mathcal{D} \text{ s.t.} f_i (x)\leq u_i, h_i (x) =v_i , f_0 (x)\leq t\}\\ \mathcal{B} := \{(0,0,s) \in \mathbb{R}^m \times \mathbb{R}^p \times \mathbb{R} \ \vert \ s&amp;lt;p^\star \}\] Separating Hyperplane Theorem [Theorem] Suppose $C$ and $D$ are nonempty disjoint convex sets. Then there exist $a\not =0$ and $b$ such that \(a^Tx \leq b \ \ \ \forall x \in C\\ a^Tx \geq b \ \ \ \forall x \in D\) We call that a separating hyperplane for $C$ and $D$. Step1 : Claim $\mathcal{A}\cap \mathcal{B} =\varnothing$ Suppose $\exists (u,v,t) \in \mathcal{A \cap B}$ . Since $(u,v,t)\in \mathcal{B}$, we have \[u=0, \ \ v=0,\ \ t&amp;lt;p^\star\] Meanwhile, since $(u,v,t) \in \mathcal{A}$, there exists $x$ such that \[f_i (x) \leq u =0, \ \ h_i (x)=v=0 , \ \ \ f_0 (x) \leq t &amp;lt;p^\star\] This is contradictory, since we assumed that $p^\star$ is the optimal value of the primal problem. Step 2 : Use the Separting Hyperplane Theorem By the separating hyperplane theorem, there exists $(\tilde{\lambda}, \tilde{\nu}, \mu)\not =0$ and $\alpha$ such that \[\tilde{\lambda}^T u + \tilde{\nu}v + \mu t \geq \alpha \ \ \ \forall (u,v,t) \in \mathcal{A}\\ \tilde{\lambda}^T u + \tilde{\nu}v + \mu t \leq \alpha \ \ \ \forall (u,v,t) \in \mathcal{B}\\\] Note that, for $(u,v,t)\in \mathcal{A}$, $u$ and $t$ is unbounded upwards. Thus, to make the first condition feasible, we can deduce that $\tilde{\lambda} \geq 0$ and $\mu \geq 0$. (otherwise, $\tilde{\lambda}^T u + \mu t$ will be unbounded below) Also, the second condition implies that \[\mu t \leq \alpha \ \ \ \forall t &amp;lt;p^\star\] which also implies \[\mu p^\star \leq \alpha\] Combining with the first condition for $u_i = f_i (x), v_i = h_i (x) = Ax-b, t= f_0 (x)$ \[\sum_{i=1}^n \tilde{\lambda}_i f_i (x) + \tilde{\nu}^T(Ax-b)+ \mu f_0 (x) \geq \alpha \geq \mu p^\star \label{28}\] Step 3 : Suppose that $\mu&amp;gt;0$ Divide equation ($\ref{28}$) with $\mu$. Then, we obtain \[L(x,\tilde{\lambda}/\mu, \tilde{\nu}/\mu) \geq p^\star\] Minimizing the Lagrangian over $x$, we have \[g(\lambda, \nu)\geq p^\star\] Meanwhile, the weak-duality still holds. \[g(\lambda, \nu) \leq p^\star\] Thus, \[g(\lambda, \nu) = p^\star\] the strong duality holds. Step 4 : What if $\mu=0$? Now, assume $\mu =0$. We then have \[\sum_{i=1}^n \tilde{\lambda}_i f_i (x) + \tilde{\nu}^T(Ax-b) \geq \alpha \geq \mu p^\star =0\] Applying this to $\tilde{x}$ that satisfies the Slater’s condition, ($A\tilde{x}-b =0$ and $f_i (\tilde{x}) &amp;lt; 0$) \[\sum_{i=1}^n \tilde{\lambda}_i f_i (\tilde{x}) \geq 0\] Since $f_i (\tilde{x}) &amp;lt;0$ and $\tilde{\lambda}_i \geq 0$, above inequality can only hold when \[\tilde{\lambda}=0\] Since the separating hyperplane requires $(\tilde{\lambda}, \tilde{\nu},\mu)$ to be nonzero, the remaining nonzero item $\tilde{\nu}\not=0$. Then, equation (29) can be rewritten as \[\tilde{\nu}^T(Ax-b)\geq 0 \ \ \ \forall x\] while for $\tilde{x}$, \[\tilde{\nu}^T (A\tilde{x}-b)=0\] However, since $A^T \tilde{\nu} \not =0$, there is always an $x$ that satisfies \[\tilde{\nu}^T (Ax-b) &amp;lt;0\] This is a contradiction! Thus, $\mu &amp;gt;0$. Geometric Idea behind the Proof</summary></entry><entry><title type="html">[Convex Optimization] 4 - Operations that preserve Convexity</title><link href="http://localhost:4000/2021/04/18/opt-lecture-4-1.html" rel="alternate" type="text/html" title="[Convex Optimization] 4 - Operations that preserve Convexity" /><published>2021-04-18T00:00:00+09:00</published><updated>2021-04-18T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/18/opt-lecture-4-1</id><content type="html" xml:base="http://localhost:4000/2021/04/18/opt-lecture-4-1.html">&lt;h2 id=&quot;operations-that-preserve-convexity&quot;&gt;Operations that preserve convexity&lt;/h2&gt;
 
 &lt;ol&gt;
   &lt;li&gt;nonnegative weighted sums&lt;/li&gt;
@@ -1033,132 +1361,7 @@ with $\text{dom }g= {(x,t)\in \text{dom }f, t&amp;gt;0}$&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;perform just the same as Horde architecture&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Multi-Reward/Objective" /><summary type="html">Introduction Extending the purpose of value function General value function $V_g(s)$ represent the utility of any state $s$ in achieving a given goal $g$, represented by a pseudo-reward function. A collection of general value functions is powerful, and can be used in many ways. Horde architecture → consist of discrete set of value functions, while all of it is learned simultaneously from a single stream of experience. Each value function may also be used to generate a policy or option that leas to a goal state collection of value functions can be used as a predictive representatino of state (predicted values themselves are used as a feature vector) Extending the idea of Value function approximator authors extend the idea of value function approximation to both states $s$ and goal $g$ \[V(s,g;\theta)\] By universal, authors mean that the value function can generalise to any goal $g$ in a set $\mathcal{G}$ of possible goals Learning UVFA can be difficult! Why? agent will only see a small subset of possible combinations of states and goals $(s,g)$ Background define a pseudo-reward function $R_g (s,a,s’)$ define a pseudo-discount function $\gamma_g(s)$ , $\gamma_g (s)=0$ iff $s$ is the goal. Define a general value function \[V_{g,\pi }(s) := \mathbb{E} \bigg [ \sum_{t=0}^\infty R_g (s_{t+1}, a_t, s_t ) \prod_{k=0}^t \gamma_g (s_k) \bigg | \ s_0 =s \bigg ]\] goal 에 다다르면 더 이상 reward function이 더해지지 않는 구조임 Define a general action-value (q) function \[Q_{g, \pi} (s,a) := \mathbb{E}_{s'} [R_g (s,a,s') + \gamma_ g(s') V_{g,\pi} (s') ]\] optimal policy for a given goal \[\pi_g^\star(s) := \argmax _a Q_{\pi, g} (s,a)\] Universal Value Function Approximators (UVFA) Consider function approximators \[\begin{aligned}V(s,g;\theta) &amp;amp;\approx V_g ^\star (s)\\ Q(s,a,g;\theta)&amp;amp; \approx Q_g^\star(s,a) \end{aligned}\] How should we design the function? There are two ways simply concatenate s and g two-stream architecture, mapping each state and goal to $\R^n$ → $h$ maps $\R^n \times \R^n \rightarrow \R$ knowing that goals and states often share the same structure, one might share features between $\phi$ and $\psi$. (maybe the first layers?) UVFA can be symmetric \[V_g^\star (s) = V_s ^\star (g)\] → this can be achieved by sharing the same network $\phi = \psi$. Two different ways to train UVFA At this section, authors focus on “supervised training”, where the values $V_g ^\star(s)$ are all given as a table. End-to-End Learning using gradient descent, minimize \[\mathbb{E} \Big [ (V_g^\star (s) - V(s,g;\theta) )^2 \Big ]\] Two-stage training procedure This can be only applied to two-stream architecture! First, using matrix-factorization of $V_g (s)$, extract embedding vectors $\hat \phi(s)$ and $\hat \psi (g)$. Second, Learn the parameters of $\phi$ and $\psi$ seperately. It turns out… Two-stream architecture, with two-stage learning procedure, with relatively small embedding dimension $n$ is better. UVFA training in RL Experiments Results? perform just the same as Horde architecture</summary></entry><entry><title type="html">[NIPS 2017] Hybrid Reward Architecture for Reinforcement Learning</title><link href="http://localhost:4000/notion_to_markdown/%5BNIPS%202017%5D%20Hybrid%20Reward%20Architecture%20for%20Reinfor%20ec4b86df520441bab17567b05419da01/" rel="alternate" type="text/html" title="[NIPS 2017] Hybrid Reward Architecture for Reinforcement Learning" /><published>2021-04-13T00:00:00+09:00</published><updated>2021-04-13T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/hybrid-reward-architecture</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/%5BNIPS%202017%5D%20Hybrid%20Reward%20Architecture%20for%20Reinfor%20ec4b86df520441bab17567b05419da01/">&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;center&gt;
-&lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;https://www.youtube.com/embed/DYNy7Fvonro&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;&lt;/center&gt;
-
-&lt;h2 id=&quot;horde-vs-hra-vs-uvfa&quot;&gt;Horde vs HRA vs UVFA&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Horde architecture learns multiple general value functions(GVFs), each corresponding to different reward functions and other question functions, using multiple demons.&lt;/li&gt;
-  &lt;li&gt;UVFA tries to generalize the value functions across different task and goals.&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;HRA, on the other hand, decomposes the reward function into $n$ different reward functions, with the intent to solve a &lt;strong&gt;SINGLE, but COMPLEX&lt;/strong&gt; task.&lt;/p&gt;
-
-    &lt;p&gt;Reward 가 너무 sparse하거나 function이 너무 high-dimensional일 경우 문제 해결이 어려움 → too much state component들에 dependent한 reward function을 여러 개의 small reward function (dependent on less state components) 들의 합으로 해석함&lt;/p&gt;
-
-    &lt;p&gt;→ Reward Function Decomposition 이라는 topic도 therefore closely related!&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;proposed-method&quot;&gt;Proposed Method&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;Let’s decompose the reward function $R_{env}$ into $n$ reward functions!&lt;/p&gt;
-
-\[R_{env} (s,a,s') = \sum_{k=1}^n  R_k(s,a,s')\]
-
-    &lt;p&gt;and train separate RL agent on each of these reward functions.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Because agent $k$ has its own reward function, it has also its own Q-value function, $Q_k$.&lt;/p&gt;
-
-    &lt;p&gt;In general, different agents can share multiple lower-level layers of deep Q-network. Hence, authors use a single vector $\theta$ to describe the combined weights of the agents!&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Combined network that represents all $Q$-value functions = &lt;strong&gt;Hybrid Reward Architecture&lt;/strong&gt;&lt;/p&gt;
-
-\[Q_{\text{HRA}}(s,a;\theta) = \sum_{k=1}^n Q_k (s,a;\theta)\]
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;The collection of agents can be viewed as a single agent with multiple heads!&lt;/p&gt;
-
-    &lt;p&gt;Lower-level layer는 고정되어 있는 상태에서 higher-level layer들의 weight들만 각 reward function에 대해 달라지는 것임.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Loss function associated with HRA&lt;/p&gt;
-
-\[\begin{aligned} \mathcal{L}_i (\theta_i ) &amp;amp; = \mathbb{E}_{s,a,r,s'}\bigg [ \sum_{k=1}^n (y_{k,i} - Q_k (s,a;\theta_i ))^2 \bigg ] , \\ \text{with }  &amp;amp; y_{k,i} = R_k (s,a,s') + \gamma \max_{a'} Q_k (s',a'; \theta_{k-1}) \end{aligned}\]
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;To that end, we get an optimal weight $\theta^\star$&lt;/p&gt;
-
-\[Q_k ^\star (s,a) = Q_k (s,a;\theta^\star)\]
-
-    &lt;p&gt;where&lt;/p&gt;
-
-\[Q_{\text{HRA}}^\star(s,a) := \sum_{k=1}^n Q_k^\star (s,a)\]
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Resulting $Q_{\text{HRA}}^\star$ is different from $Q_{env}^\star$  which is generated by $R_{env}$.&lt;/p&gt;
-
-&lt;center&gt;&lt;img src=&quot;Untitled.png&quot; width=&quot;400&quot; /&gt;&lt;/center&gt;
-
-&lt;h2 id=&quot;whats-good-about-hra&quot;&gt;What’s good about HRA?&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Easily exploit more domain knowledge!
-    &lt;ol&gt;
-      &lt;li&gt;Remove irrelevant features : reward에 영향을 주지 않는 feature들은 과감히 배제시켜버릴 수 있음&lt;/li&gt;
-      &lt;li&gt;Identifying terminal states : terminal state에 대해서는 학습을 하지 않도록 refrain 시켜 weight들이 오로지 meaningful 한 non-terminal state을 estimate 하는데 사용되도록 할 수 있음&lt;/li&gt;
-      &lt;li&gt;Using pseudo-reward functions : 실제 environment reward function을 decompose하는 것이 아니라, pseudo-reward function 을 사용하여 $\theta$ 를 update할 수도 있음.&lt;/li&gt;
-    &lt;/ol&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;experiments&quot;&gt;Experiments&lt;/h2&gt;
-
-&lt;h3 id=&quot;experiment-setting--fruit-collection-task&quot;&gt;Experiment Setting : Fruit Collection Task&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;10x10 격자에 과일들이 놓임&lt;/li&gt;
-  &lt;li&gt;과일들이 놓일 수 있는 위치는 10개가 있고, each episode마다 과일들은 랜덤한 5개 위치에 놓임&lt;/li&gt;
-  &lt;li&gt;agent는 랜덤한 위치에서 시작하고&lt;/li&gt;
-  &lt;li&gt;과일을 하나 먹을 때마다 reward +1 이 주어짐&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;each episode는 과일 5개를 다 먹거나 300 step 이 지나면 끝남&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;이 문제를 일반적인 DQN 으로 풀었을 때와 HRA로 풀었을 때 두 가지를 비교했음.&lt;/li&gt;
-  &lt;li&gt;HRA의 경우 → reward function을 10개의 다른 small-reward function으로 decompose했음, one per possible fruit location.&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;HRA network 의 실제 구성&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;input = 110 binary code (100 for encoding the agent’s position, and the remaining 10 for encoding whether the fruit is in each of the possible positions)&lt;/li&gt;
-      &lt;li&gt;FC layer 110 → 250 → (10 heads of) 4   (each consisting of the action values of 4 actions)&lt;/li&gt;
-      &lt;li&gt;Mean of all heads is computed through a final linear layer  (with fixed weights 1)&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;center&gt;&lt;img src=&quot;Untitled%201.png&quot; width=&quot;400&quot; /&gt;&lt;/center&gt;
-
-&lt;p&gt;위 그림에서, DQN은 맨 마지막 layer에서 나온 reward 를 가지고 loss function을 minimize한다면, HRA는 그 직전 layer에서 나온 reward (vector)들을 가지고 each agent들을 업데이트하는 것.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;여기서 HRA+3 에 주목하고 싶은데, decomposing the existing reward (fruit-related) 에 더해서 pseudo-reward 를 추가한 실험임. &lt;strong&gt;(reward is given when the agent GOT TO the predefined 10 places)&lt;/strong&gt;&lt;/p&gt;
-
-    &lt;p&gt;→ 그 장소에 과일이 없더라도 뭔가를 배울 수 있음&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;center&gt;&lt;img src=&quot;Untitled%202.png&quot; width=&quot;600&quot; /&gt;&lt;/center&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;그 결과 DQN보다 HRA를 썼을 때 훨씬 더 학습을 잘 했다는 것을 볼 수 있음. 특히, pseudo-reward를 썼을 때의 효과는 아주 강력했는데, 아무것도 쓰지 않는 상태와 비교해 아주 빠르게 학습을 완료함을 볼 수 있음.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;mspac-man&quot;&gt;Ms.Pac-Man&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;이 논문은 Ms.Pac-Man 게임에서 SOTA를 찍었다고 해서 꽤나 유명세를 탄 논문인데, 뭐 결론은 (전혀 놀랍지 않게도) HRA가 DQN보다 잘한다는 것이었음.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;reward function이 복잡해? → small reward function으로 쪼개세요!&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Multi-Reward/Objective" /><summary type="html">Horde vs HRA vs UVFA Horde architecture learns multiple general value functions(GVFs), each corresponding to different reward functions and other question functions, using multiple demons. UVFA tries to generalize the value functions across different task and goals. HRA, on the other hand, decomposes the reward function into $n$ different reward functions, with the intent to solve a SINGLE, but COMPLEX task. Reward 가 너무 sparse하거나 function이 너무 high-dimensional일 경우 문제 해결이 어려움 → too much state component들에 dependent한 reward function을 여러 개의 small reward function (dependent on less state components) 들의 합으로 해석함 → Reward Function Decomposition 이라는 topic도 therefore closely related! Proposed Method Let’s decompose the reward function $R_{env}$ into $n$ reward functions! \[R_{env} (s,a,s') = \sum_{k=1}^n R_k(s,a,s')\] and train separate RL agent on each of these reward functions. Because agent $k$ has its own reward function, it has also its own Q-value function, $Q_k$. In general, different agents can share multiple lower-level layers of deep Q-network. Hence, authors use a single vector $\theta$ to describe the combined weights of the agents! Combined network that represents all $Q$-value functions = Hybrid Reward Architecture \[Q_{\text{HRA}}(s,a;\theta) = \sum_{k=1}^n Q_k (s,a;\theta)\] The collection of agents can be viewed as a single agent with multiple heads! Lower-level layer는 고정되어 있는 상태에서 higher-level layer들의 weight들만 각 reward function에 대해 달라지는 것임. Loss function associated with HRA \[\begin{aligned} \mathcal{L}_i (\theta_i ) &amp;amp; = \mathbb{E}_{s,a,r,s'}\bigg [ \sum_{k=1}^n (y_{k,i} - Q_k (s,a;\theta_i ))^2 \bigg ] , \\ \text{with } &amp;amp; y_{k,i} = R_k (s,a,s') + \gamma \max_{a'} Q_k (s',a'; \theta_{k-1}) \end{aligned}\] To that end, we get an optimal weight $\theta^\star$ \[Q_k ^\star (s,a) = Q_k (s,a;\theta^\star)\] where \[Q_{\text{HRA}}^\star(s,a) := \sum_{k=1}^n Q_k^\star (s,a)\] Resulting $Q_{\text{HRA}}^\star$ is different from $Q_{env}^\star$ which is generated by $R_{env}$. What’s good about HRA? Easily exploit more domain knowledge! Remove irrelevant features : reward에 영향을 주지 않는 feature들은 과감히 배제시켜버릴 수 있음 Identifying terminal states : terminal state에 대해서는 학습을 하지 않도록 refrain 시켜 weight들이 오로지 meaningful 한 non-terminal state을 estimate 하는데 사용되도록 할 수 있음 Using pseudo-reward functions : 실제 environment reward function을 decompose하는 것이 아니라, pseudo-reward function 을 사용하여 $\theta$ 를 update할 수도 있음. Experiments Experiment Setting : Fruit Collection Task 10x10 격자에 과일들이 놓임 과일들이 놓일 수 있는 위치는 10개가 있고, each episode마다 과일들은 랜덤한 5개 위치에 놓임 agent는 랜덤한 위치에서 시작하고 과일을 하나 먹을 때마다 reward +1 이 주어짐 each episode는 과일 5개를 다 먹거나 300 step 이 지나면 끝남 이 문제를 일반적인 DQN 으로 풀었을 때와 HRA로 풀었을 때 두 가지를 비교했음. HRA의 경우 → reward function을 10개의 다른 small-reward function으로 decompose했음, one per possible fruit location. HRA network 의 실제 구성 input = 110 binary code (100 for encoding the agent’s position, and the remaining 10 for encoding whether the fruit is in each of the possible positions) FC layer 110 → 250 → (10 heads of) 4 (each consisting of the action values of 4 actions) Mean of all heads is computed through a final linear layer (with fixed weights 1) 위 그림에서, DQN은 맨 마지막 layer에서 나온 reward 를 가지고 loss function을 minimize한다면, HRA는 그 직전 layer에서 나온 reward (vector)들을 가지고 each agent들을 업데이트하는 것. 여기서 HRA+3 에 주목하고 싶은데, decomposing the existing reward (fruit-related) 에 더해서 pseudo-reward 를 추가한 실험임. (reward is given when the agent GOT TO the predefined 10 places) → 그 장소에 과일이 없더라도 뭔가를 배울 수 있음 그 결과 DQN보다 HRA를 썼을 때 훨씬 더 학습을 잘 했다는 것을 볼 수 있음. 특히, pseudo-reward를 썼을 때의 효과는 아주 강력했는데, 아무것도 쓰지 않는 상태와 비교해 아주 빠르게 학습을 완료함을 볼 수 있음. Ms.Pac-Man 이 논문은 Ms.Pac-Man 게임에서 SOTA를 찍었다고 해서 꽤나 유명세를 탄 논문인데, 뭐 결론은 (전혀 놀랍지 않게도) HRA가 DQN보다 잘한다는 것이었음. reward function이 복잡해? → small reward function으로 쪼개세요!</summary></entry><entry><title type="html">[NIPS 2017] Hindsight Experience Replay</title><link href="http://localhost:4000/notion_to_markdown/%5BNIPS%202017%5D%20Hindsight%20Experience%20Replay%206daf8b2ade014cf58ea2d223723e0390/" rel="alternate" type="text/html" title="[NIPS 2017] Hindsight Experience Replay" /><published>2021-04-13T00:00:00+09:00</published><updated>2021-04-13T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/hindsight-experience-replay</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/%5BNIPS%202017%5D%20Hindsight%20Experience%20Replay%206daf8b2ade014cf58ea2d223723e0390/">&lt;h2 id=&quot;introduction&quot;&gt;Introduction&lt;/h2&gt;
+&lt;/ul&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Multi-Reward/Objective" /><summary type="html">Introduction Extending the purpose of value function General value function $V_g(s)$ represent the utility of any state $s$ in achieving a given goal $g$, represented by a pseudo-reward function. A collection of general value functions is powerful, and can be used in many ways. Horde architecture → consist of discrete set of value functions, while all of it is learned simultaneously from a single stream of experience. Each value function may also be used to generate a policy or option that leas to a goal state collection of value functions can be used as a predictive representatino of state (predicted values themselves are used as a feature vector) Extending the idea of Value function approximator authors extend the idea of value function approximation to both states $s$ and goal $g$ \[V(s,g;\theta)\] By universal, authors mean that the value function can generalise to any goal $g$ in a set $\mathcal{G}$ of possible goals Learning UVFA can be difficult! Why? agent will only see a small subset of possible combinations of states and goals $(s,g)$ Background define a pseudo-reward function $R_g (s,a,s’)$ define a pseudo-discount function $\gamma_g(s)$ , $\gamma_g (s)=0$ iff $s$ is the goal. Define a general value function \[V_{g,\pi }(s) := \mathbb{E} \bigg [ \sum_{t=0}^\infty R_g (s_{t+1}, a_t, s_t ) \prod_{k=0}^t \gamma_g (s_k) \bigg | \ s_0 =s \bigg ]\] goal 에 다다르면 더 이상 reward function이 더해지지 않는 구조임 Define a general action-value (q) function \[Q_{g, \pi} (s,a) := \mathbb{E}_{s'} [R_g (s,a,s') + \gamma_ g(s') V_{g,\pi} (s') ]\] optimal policy for a given goal \[\pi_g^\star(s) := \argmax _a Q_{\pi, g} (s,a)\] Universal Value Function Approximators (UVFA) Consider function approximators \[\begin{aligned}V(s,g;\theta) &amp;amp;\approx V_g ^\star (s)\\ Q(s,a,g;\theta)&amp;amp; \approx Q_g^\star(s,a) \end{aligned}\] How should we design the function? There are two ways simply concatenate s and g two-stream architecture, mapping each state and goal to $\R^n$ → $h$ maps $\R^n \times \R^n \rightarrow \R$ knowing that goals and states often share the same structure, one might share features between $\phi$ and $\psi$. (maybe the first layers?) UVFA can be symmetric \[V_g^\star (s) = V_s ^\star (g)\] → this can be achieved by sharing the same network $\phi = \psi$. Two different ways to train UVFA At this section, authors focus on “supervised training”, where the values $V_g ^\star(s)$ are all given as a table. End-to-End Learning using gradient descent, minimize \[\mathbb{E} \Big [ (V_g^\star (s) - V(s,g;\theta) )^2 \Big ]\] Two-stage training procedure This can be only applied to two-stream architecture! First, using matrix-factorization of $V_g (s)$, extract embedding vectors $\hat \phi(s)$ and $\hat \psi (g)$. Second, Learn the parameters of $\phi$ and $\psi$ seperately. It turns out… Two-stream architecture, with two-stage learning procedure, with relatively small embedding dimension $n$ is better. UVFA training in RL Experiments Results? perform just the same as Horde architecture</summary></entry><entry><title type="html">[NIPS 2017] Hindsight Experience Replay</title><link href="http://localhost:4000/notion_to_markdown/%5BNIPS%202017%5D%20Hindsight%20Experience%20Replay%206daf8b2ade014cf58ea2d223723e0390/" rel="alternate" type="text/html" title="[NIPS 2017] Hindsight Experience Replay" /><published>2021-04-13T00:00:00+09:00</published><updated>2021-04-13T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/hindsight-experience-replay</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/%5BNIPS%202017%5D%20Hindsight%20Experience%20Replay%206daf8b2ade014cf58ea2d223723e0390/">&lt;h2 id=&quot;introduction&quot;&gt;Introduction&lt;/h2&gt;
 
 &lt;h3 id=&quot;designing-a-reward-function-is-important-but-not-easy&quot;&gt;Designing a reward function is important, but not easy.&lt;/h3&gt;
 
@@ -1381,168 +1584,132 @@ with $\text{dom }g= {(x,t)\in \text{dom }f, t&amp;gt;0}$&lt;/p&gt;
 &lt;center&gt;
 &lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;https://www.youtube.com/embed/Dz_HuzgMxzo&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;&lt;/center&gt;
 
-&lt;p&gt;&lt;img src=&quot;Untitled%201.png&quot; alt=&quot;Untitled%201.png&quot; /&gt;&lt;/p&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Multi-Reward/Objective" /><summary type="html">Introduction Designing a reward function is important, but not easy. common challenge of RL is to carefully enegineer the reward function → not only reflecting the task at hand, but also carefully shaped to guide the policy optimization. The necessity of cost engineering limits the applicability of RL in the real world, because it requires both RL expertise and domain-specific knowledge. Not applicable in situations where we do not know what admissible behaviour may look like. Therefore, we need to develop algorithms which can learn from unshaped reward signals (e.g. a binary signal indicating successful task completion) What can humans do? humans can learn almost as much from achieveing an undesired outcome as from the desired one. 인간은 실패로부터 배울 수 있다는데, 왜 RL은 못 하냐.. For example, 사람은 하키를 치는 방법을 배운다 쳤을 때, 반드시 골을 넣어야만 배우는 건 아니잖음? 네트의 오른쪽에 맞았을 때는 내가 좀 왼쪽으로 쳐야겠구나 뭐 이런 것을 배울 수 있으니.. 근데 RL은 네트에 골인하지 못하고 살짝 오른쪽으로 빗겨나갔을 때의 failed situation에서 배울 수 있는게 거의 없음. It is however possible to draw another conclusion: ⭐ this sequence of actions would be succesful if the net had been placed further to the right ⭐ RL은 네트에 골인을 해야만 무언가를 학습할 수 있다고 하면, 네트를 여러개 두면 안됨? 오른쪽으로 빗나간 케이스였으면, 살짝 오른쪽에 있는 네트에 대해서는 학습이 가능할 수도 있는거 아닌가? Authors propose “Hindsight Experience Replay” allows the algorithm to perform exactly this kind of reasoning and can be combined with any off-policy RL algorithm. multiple goals → always applicable. (e.g. achieving each state of the system may be treated as a separate goal) makes the training easier, even if the reward signal is sparse and binary Background Deep Q-Networks (DQN) model-free RL algorithm for discrete action spaces $\epsilon$-greedy policy w.r.t. Q is defined as: a) take the greedy action $\pi_Q (s) = \argmax _{a\in \mathcal{A}} Q(s,a)$ with probability $1-\epsilon$ b) take a random action sampled uniformly in $\mathcal{A}$ with probability $\epsilon$ taking an $\epsilon$-greedy policy, generate episodes transition tuples $\langle s_t, a_t, r_t, s_{t+1} \rangle$ is stored inside the replay buffer network is trained using mini-batch gradient descent on the loss $\mathcal{L}$ which encourages the approximated Q-function to satisfy the Bellman equation. \[\begin{aligned} y_t = r_t + \gamma \max_{a'\in \mathcal{A}} Q(s_{t+1}, a')\\ \mathcal{L} = \mathbb{E} (Q(s_t, a_t) - y_t)^2 \end{aligned}\] to make the optimization procedure more stable, targets $y_t$ are usually computed using a seperate target network, changes at a slower pace than the main network # update is done every n epochs/iterations, but way slower than the policy network target_network.load_state_dict(policy_network.state_dict()) Deep Determinisitc Policy Gradients (DDPG) DDPG is a model-free RL algoirithm for continuous action spaces. DDPG use two neural networks target poclicy (actor) $\pi : \mathcal{S} \rightarrow \mathcal{A}$ action-value function approximator (critic) : $Q: \mathcal{S} \times \mathcal{A} \rightarrow \mathbb{R}$ critic’s job is to approximate the actor’s action-value function $Q^\pi$ Episodes are generated using a behaviooral policy ($\pi_b$ ) - noisy version of target policy ($\pi$) \[\pi_b (s) = \pi(s) + \mathcal{N}(0,1)\] episodes stored inside the replay buffer $y_t = r_t + \gamma Q(s_{t+1}, \pi(s_{t+1}) )$ target is computed by the actor, not the max function of Q-function The actor is trained with mini-batch gradient descent on the loss \[\mathcal{L}_a = - \mathbb{E}_s Q(s,\pi(s))\] Universal Value Function Approximators (UVFA) [ICML 2015] Universal Value Function Approximators UVFA is extended version of DQN, where there is more than one goal we may try to achieve Let $\mathcal{G}$ be the space of possible goals. Every goal $g\in \mathcal{G}$ corresponds to some reward function \[r_g : \mathcal{S\times A} \rightarrow \mathbb{R}\] every episode starts with sampling a state-goal pair from some distribution $p(s_0, g)$, and the goal stays fixed for the entire episode. At every timestep, the agent gets as input not only the current state, but also the current goal. \[\pi : \mathcal{S\times G} \rightarrow \mathcal{A}\] and gets the reward \[r_t = r_g (s_t, a_t )\] Q-function now depends not only on state action pair, but also on goal. Thus, \[Q^\pi (s_t, a_t, g) = \mathbb{E}[R_t |s_t, a_t, g]\] we can similarly train an approximator Q-function using the Bellman equation, just like DQN. Hindsight Experience Replay A motivating example state space $\mathcal{S} = {0,1}^n$ action space $\mathcal{A} = {0,1,\cdots, n-1}$ → action $i$ flips the $i$-th bit of the state There’s a goal $g \in \mathcal{S}$ The agent receives a reward $r_g (s,a) =-[s\not = g]$. bit-flipping operation을 통해서 특정 n-bit binary code와 똑같이 만들지 못하는 이상 계속 -1 reward 밖에 못 받음. 당연히 $n$이 커지면 커질수록 reward는 점점 더 sparse 해질 것이고, 학습을 불안정하게 만들 것. As a matter of fact… Standard RL algorithms fail in this environment for $n&amp;gt;40$ One solution might be using a more informative reward function \[r_g (s,a) = -\|s-g\|^2\] however it might not be applicable to more complicated problems. How should we tackle this problem? consider an episode with state $s_1, \cdots, s_T$ and our goal is $g \not = s_1, \cdots, s_T$ → this means that the agent received a reward of -1 at every timestep. we now reexamine the same trajectory with a different goal! → this information can be harvested by using RL algorithm and experience replay where we replace $g$ in the replay buffer by $s_T$. 이왕 final state $s_T$ 까지 간거, 그 곳을 goal 이라고 생각하면 뭔가라도 얻을 수 있잖음? by implementing HER technique, DQN with HER easily solves the task for $n$ up to 50! Multi-goal RL follow the approach from UVFA, train policies and value functions which take as input not only a state $s\in \mathcal{S}$ but also a goal $g\in \mathcal{G}$. Authors also prove that “training an agent to perform multiple tasks can be easier than training it to perform only one task” → 자기네들 방법론이 다방면으로 사용될 수 있다는 것! They assume that every goal $g \in \mathcal{G}$ corresponds to some predicate \[f_g : \mathcal{S} \rightarrow \{0,1\}\] Agent’s goal is to acheve any state that satisfies \[f_g(s)=1\] One example of goal space is state space $\mathcal{S}$ 의 특정 state 하나를 goal 로 지정하는 경우 \[\begin{aligned} \mathcal{S}&amp;amp;=\mathcal{G} \\ f_g(s) &amp;amp;= [s=g]\end{aligned}\] Another example of goal space might be $\mathbb{R}^2$ state space 에서 특정 $x$ 좌표값을 goal 로 지정하고 싶은 경우 \[\begin{aligned} \mathcal{S}&amp;amp;=\mathbb{R}^2 \\ \mathcal{G} &amp;amp; = \mathbb{R} \\ f_g((x,y)) &amp;amp;= [x=g]\end{aligned}\] assume that, for a given state $s$, we can easily find a goal $g$ which is satisfied in this state. More formally, we assume that there is given a mapping \[m: \mathcal{S\rightarrow G}\ \ \text{s.t.} \ \ \forall s\in \mathcal{S}, \ f_{m(s)}(s) = 1\] 자신이 있는 state을 goal 이 되도록 해주는 mapping이라는 건데, 위 첫번째 예시에서는 $m(s) = s$, 두 번째 예시에서는 $m((x,y)) = x$. state space $\mathcal{S}$ 와 goal space $\mathcal{G}$ 가 항상 같지 않을 수 있으니 필요한 정의인 듯. Main Algorithm : Hindsight Experience Replay (HER) after experiencing some episode $s_0, s_1, \cdots, s_T$ we store in the replay buffer every trainsition $s_t \rightarrow s_{t+1}$ not only with the original goal used for this episode, but also with a subset of other goals. One choice which has to be made to use HER → set of additional goals used for replay. simplest version? we replay each trajectory with the goal $m(s_T)$ → goal which is achieved in the final state of the episode. Simple! Results</summary></entry><entry><title type="html">[JAIR 2013] A Survey of Multi-Objective Sequential Decision-Making</title><link href="http://localhost:4000/notion_to_markdown/%5BJAIR%202013%5D%20A%20Survey%20of%20Multi-Objective%20Sequential%202596a1a7dc934dbc9ed305d644b17155/" rel="alternate" type="text/html" title="[JAIR 2013] A Survey of Multi-Objective Sequential Decision-Making" /><published>2021-04-12T00:00:00+09:00</published><updated>2021-04-12T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/survey-of-multi-objective</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/%5BJAIR%202013%5D%20A%20Survey%20of%20Multi-Objective%20Sequential%202596a1a7dc934dbc9ed305d644b17155/">&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;Untitled%201.png&quot; alt=&quot;Untitled%201.png&quot; /&gt;&lt;/p&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Multi-Reward/Objective" /><summary type="html">Introduction Designing a reward function is important, but not easy. common challenge of RL is to carefully enegineer the reward function → not only reflecting the task at hand, but also carefully shaped to guide the policy optimization. The necessity of cost engineering limits the applicability of RL in the real world, because it requires both RL expertise and domain-specific knowledge. Not applicable in situations where we do not know what admissible behaviour may look like. Therefore, we need to develop algorithms which can learn from unshaped reward signals (e.g. a binary signal indicating successful task completion) What can humans do? humans can learn almost as much from achieveing an undesired outcome as from the desired one. 인간은 실패로부터 배울 수 있다는데, 왜 RL은 못 하냐.. For example, 사람은 하키를 치는 방법을 배운다 쳤을 때, 반드시 골을 넣어야만 배우는 건 아니잖음? 네트의 오른쪽에 맞았을 때는 내가 좀 왼쪽으로 쳐야겠구나 뭐 이런 것을 배울 수 있으니.. 근데 RL은 네트에 골인하지 못하고 살짝 오른쪽으로 빗겨나갔을 때의 failed situation에서 배울 수 있는게 거의 없음. It is however possible to draw another conclusion: ⭐ this sequence of actions would be succesful if the net had been placed further to the right ⭐ RL은 네트에 골인을 해야만 무언가를 학습할 수 있다고 하면, 네트를 여러개 두면 안됨? 오른쪽으로 빗나간 케이스였으면, 살짝 오른쪽에 있는 네트에 대해서는 학습이 가능할 수도 있는거 아닌가? Authors propose “Hindsight Experience Replay” allows the algorithm to perform exactly this kind of reasoning and can be combined with any off-policy RL algorithm. multiple goals → always applicable. (e.g. achieving each state of the system may be treated as a separate goal) makes the training easier, even if the reward signal is sparse and binary Background Deep Q-Networks (DQN) model-free RL algorithm for discrete action spaces $\epsilon$-greedy policy w.r.t. Q is defined as: a) take the greedy action $\pi_Q (s) = \argmax _{a\in \mathcal{A}} Q(s,a)$ with probability $1-\epsilon$ b) take a random action sampled uniformly in $\mathcal{A}$ with probability $\epsilon$ taking an $\epsilon$-greedy policy, generate episodes transition tuples $\langle s_t, a_t, r_t, s_{t+1} \rangle$ is stored inside the replay buffer network is trained using mini-batch gradient descent on the loss $\mathcal{L}$ which encourages the approximated Q-function to satisfy the Bellman equation. \[\begin{aligned} y_t = r_t + \gamma \max_{a'\in \mathcal{A}} Q(s_{t+1}, a')\\ \mathcal{L} = \mathbb{E} (Q(s_t, a_t) - y_t)^2 \end{aligned}\] to make the optimization procedure more stable, targets $y_t$ are usually computed using a seperate target network, changes at a slower pace than the main network # update is done every n epochs/iterations, but way slower than the policy network target_network.load_state_dict(policy_network.state_dict()) Deep Determinisitc Policy Gradients (DDPG) DDPG is a model-free RL algoirithm for continuous action spaces. DDPG use two neural networks target poclicy (actor) $\pi : \mathcal{S} \rightarrow \mathcal{A}$ action-value function approximator (critic) : $Q: \mathcal{S} \times \mathcal{A} \rightarrow \mathbb{R}$ critic’s job is to approximate the actor’s action-value function $Q^\pi$ Episodes are generated using a behaviooral policy ($\pi_b$ ) - noisy version of target policy ($\pi$) \[\pi_b (s) = \pi(s) + \mathcal{N}(0,1)\] episodes stored inside the replay buffer $y_t = r_t + \gamma Q(s_{t+1}, \pi(s_{t+1}) )$ target is computed by the actor, not the max function of Q-function The actor is trained with mini-batch gradient descent on the loss \[\mathcal{L}_a = - \mathbb{E}_s Q(s,\pi(s))\] Universal Value Function Approximators (UVFA) [ICML 2015] Universal Value Function Approximators UVFA is extended version of DQN, where there is more than one goal we may try to achieve Let $\mathcal{G}$ be the space of possible goals. Every goal $g\in \mathcal{G}$ corresponds to some reward function \[r_g : \mathcal{S\times A} \rightarrow \mathbb{R}\] every episode starts with sampling a state-goal pair from some distribution $p(s_0, g)$, and the goal stays fixed for the entire episode. At every timestep, the agent gets as input not only the current state, but also the current goal. \[\pi : \mathcal{S\times G} \rightarrow \mathcal{A}\] and gets the reward \[r_t = r_g (s_t, a_t )\] Q-function now depends not only on state action pair, but also on goal. Thus, \[Q^\pi (s_t, a_t, g) = \mathbb{E}[R_t |s_t, a_t, g]\] we can similarly train an approximator Q-function using the Bellman equation, just like DQN. Hindsight Experience Replay A motivating example state space $\mathcal{S} = {0,1}^n$ action space $\mathcal{A} = {0,1,\cdots, n-1}$ → action $i$ flips the $i$-th bit of the state There’s a goal $g \in \mathcal{S}$ The agent receives a reward $r_g (s,a) =-[s\not = g]$. bit-flipping operation을 통해서 특정 n-bit binary code와 똑같이 만들지 못하는 이상 계속 -1 reward 밖에 못 받음. 당연히 $n$이 커지면 커질수록 reward는 점점 더 sparse 해질 것이고, 학습을 불안정하게 만들 것. As a matter of fact… Standard RL algorithms fail in this environment for $n&amp;gt;40$ One solution might be using a more informative reward function \[r_g (s,a) = -\|s-g\|^2\] however it might not be applicable to more complicated problems. How should we tackle this problem? consider an episode with state $s_1, \cdots, s_T$ and our goal is $g \not = s_1, \cdots, s_T$ → this means that the agent received a reward of -1 at every timestep. we now reexamine the same trajectory with a different goal! → this information can be harvested by using RL algorithm and experience replay where we replace $g$ in the replay buffer by $s_T$. 이왕 final state $s_T$ 까지 간거, 그 곳을 goal 이라고 생각하면 뭔가라도 얻을 수 있잖음? by implementing HER technique, DQN with HER easily solves the task for $n$ up to 50! Multi-goal RL follow the approach from UVFA, train policies and value functions which take as input not only a state $s\in \mathcal{S}$ but also a goal $g\in \mathcal{G}$. Authors also prove that “training an agent to perform multiple tasks can be easier than training it to perform only one task” → 자기네들 방법론이 다방면으로 사용될 수 있다는 것! They assume that every goal $g \in \mathcal{G}$ corresponds to some predicate \[f_g : \mathcal{S} \rightarrow \{0,1\}\] Agent’s goal is to acheve any state that satisfies \[f_g(s)=1\] One example of goal space is state space $\mathcal{S}$ 의 특정 state 하나를 goal 로 지정하는 경우 \[\begin{aligned} \mathcal{S}&amp;amp;=\mathcal{G} \\ f_g(s) &amp;amp;= [s=g]\end{aligned}\] Another example of goal space might be $\mathbb{R}^2$ state space 에서 특정 $x$ 좌표값을 goal 로 지정하고 싶은 경우 \[\begin{aligned} \mathcal{S}&amp;amp;=\mathbb{R}^2 \\ \mathcal{G} &amp;amp; = \mathbb{R} \\ f_g((x,y)) &amp;amp;= [x=g]\end{aligned}\] assume that, for a given state $s$, we can easily find a goal $g$ which is satisfied in this state. More formally, we assume that there is given a mapping \[m: \mathcal{S\rightarrow G}\ \ \text{s.t.} \ \ \forall s\in \mathcal{S}, \ f_{m(s)}(s) = 1\] 자신이 있는 state을 goal 이 되도록 해주는 mapping이라는 건데, 위 첫번째 예시에서는 $m(s) = s$, 두 번째 예시에서는 $m((x,y)) = x$. state space $\mathcal{S}$ 와 goal space $\mathcal{G}$ 가 항상 같지 않을 수 있으니 필요한 정의인 듯. Main Algorithm : Hindsight Experience Replay (HER) after experiencing some episode $s_0, s_1, \cdots, s_T$ we store in the replay buffer every trainsition $s_t \rightarrow s_{t+1}$ not only with the original goal used for this episode, but also with a subset of other goals. One choice which has to be made to use HER → set of additional goals used for replay. simplest version? we replay each trajectory with the goal $m(s_T)$ → goal which is achieved in the final state of the episode. Simple! Results</summary></entry><entry><title type="html">[NIPS 2017] Hybrid Reward Architecture for Reinforcement Learning</title><link href="http://localhost:4000/notion_to_markdown/%5BNIPS%202017%5D%20Hybrid%20Reward%20Architecture%20for%20Reinfor%20ec4b86df520441bab17567b05419da01/" rel="alternate" type="text/html" title="[NIPS 2017] Hybrid Reward Architecture for Reinforcement Learning" /><published>2021-04-13T00:00:00+09:00</published><updated>2021-04-13T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/hybrid-reward-architecture</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/%5BNIPS%202017%5D%20Hybrid%20Reward%20Architecture%20for%20Reinfor%20ec4b86df520441bab17567b05419da01/">&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;center&gt;
+&lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;https://www.youtube.com/embed/DYNy7Fvonro&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;&lt;/center&gt;
 
-&lt;center&gt;&lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;https://www.youtube.com/embed/_zJ_cbg3TzY&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;&lt;/center&gt;
-
-&lt;h2 id=&quot;introduction-of-momdp&quot;&gt;Introduction of MOMDP&lt;/h2&gt;
+&lt;h2 id=&quot;horde-vs-hra-vs-uvfa&quot;&gt;Horde vs HRA vs UVFA&lt;/h2&gt;
 
 &lt;ul&gt;
+  &lt;li&gt;Horde architecture learns multiple general value functions(GVFs), each corresponding to different reward functions and other question functions, using multiple demons.&lt;/li&gt;
+  &lt;li&gt;UVFA tries to generalize the value functions across different task and goals.&lt;/li&gt;
   &lt;li&gt;
-    &lt;p&gt;MOMDP is an MDP wichih the reward function&lt;/p&gt;
+    &lt;p&gt;HRA, on the other hand, decomposes the reward function into $n$ different reward functions, with the intent to solve a &lt;strong&gt;SINGLE, but COMPLEX&lt;/strong&gt; task.&lt;/p&gt;
 
-\[\mathbf{R} : \mathcal{S\times A \times S} \rightarrow \mathbb{R}^n\]
+    &lt;p&gt;Reward 가 너무 sparse하거나 function이 너무 high-dimensional일 경우 문제 해결이 어려움 → too much state component들에 dependent한 reward function을 여러 개의 small reward function (dependent on less state components) 들의 합으로 해석함&lt;/p&gt;
 
-    &lt;p&gt;is a vector of $n$ rewards, one for each objective, instead of a scalar.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Value function $\mathbf{V}^\pi$ is also a vector where&lt;/p&gt;
-
-\[\mathbf{V}^\pi (s) = \mathbb{E}^\pi \bigg [ \sum_{k=0}^\infty \gamma^k \mathbf{r}_{t+k+1} \ | \ s_t = s \bigg ]\]
+    &lt;p&gt;→ Reward Function Decomposition 이라는 topic도 therefore closely related!&lt;/p&gt;
   &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;Unlike in an MDP, we can no longer determine which values are optimal without additional information about how to prioritize the objectives!&lt;/p&gt;
+&lt;h2 id=&quot;proposed-method&quot;&gt;Proposed Method&lt;/h2&gt;
 
 &lt;ul&gt;
   &lt;li&gt;
-    &lt;p&gt;ordering of the value function is complete for SOMDP&lt;/p&gt;
+    &lt;p&gt;Let’s decompose the reward function $R_{env}$ into $n$ reward functions!&lt;/p&gt;
 
-\[V^\pi (s) &amp;gt; V^{\pi'} (s)\]
+\[R_{env} (s,a,s') = \sum_{k=1}^n  R_k(s,a,s')\]
+
+    &lt;p&gt;and train separate RL agent on each of these reward functions.&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
-    &lt;p&gt;only a partial ordering is possible for MOMDP&lt;/p&gt;
+    &lt;p&gt;Because agent $k$ has its own reward function, it has also its own Q-value function, $Q_k$.&lt;/p&gt;
 
-\[\mathbf{V}_i ^\pi (s) &amp;gt; \mathbf{V}_i ^{\pi'}(s) \ \ \ \text{but} \ \ \ \mathbf{V}_j ^\pi (s) &amp;lt; \mathbf{V}_j ^{\pi'}(s)\]
+    &lt;p&gt;In general, different agents can share multiple lower-level layers of deep Q-network. Hence, authors use a single vector $\theta$ to describe the combined weights of the agents!&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Combined network that represents all $Q$-value functions = &lt;strong&gt;Hybrid Reward Architecture&lt;/strong&gt;&lt;/p&gt;
+
+\[Q_{\text{HRA}}(s,a;\theta) = \sum_{k=1}^n Q_k (s,a;\theta)\]
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;The collection of agents can be viewed as a single agent with multiple heads!&lt;/p&gt;
+
+    &lt;p&gt;Lower-level layer는 고정되어 있는 상태에서 higher-level layer들의 weight들만 각 reward function에 대해 달라지는 것임.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Loss function associated with HRA&lt;/p&gt;
+
+\[\begin{aligned} \mathcal{L}_i (\theta_i ) &amp;amp; = \mathbb{E}_{s,a,r,s'}\bigg [ \sum_{k=1}^n (y_{k,i} - Q_k (s,a;\theta_i ))^2 \bigg ] , \\ \text{with }  &amp;amp; y_{k,i} = R_k (s,a,s') + \gamma \max_{a'} Q_k (s',a'; \theta_{k-1}) \end{aligned}\]
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;To that end, we get an optimal weight $\theta^\star$&lt;/p&gt;
+
+\[Q_k ^\star (s,a) = Q_k (s,a;\theta^\star)\]
+
+    &lt;p&gt;where&lt;/p&gt;
+
+\[Q_{\text{HRA}}^\star(s,a) := \sum_{k=1}^n Q_k^\star (s,a)\]
   &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2 id=&quot;fortuantely-momdp-can-always-be-converted-to-somdp&quot;&gt;Fortuantely, MOMDP can always be converted to SOMDP&lt;/h2&gt;
+&lt;p&gt;Resulting $Q_{\text{HRA}}^\star$ is different from $Q_{env}^\star$  which is generated by $R_{env}$.&lt;/p&gt;
+
+&lt;center&gt;&lt;img src=&quot;Untitled.png&quot; width=&quot;400&quot; /&gt;&lt;/center&gt;
+
+&lt;h2 id=&quot;whats-good-about-hra&quot;&gt;What’s good about HRA?&lt;/h2&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;Such a conversion is done by, specifying a scalarization function.&lt;/p&gt;
-
-\[V_\mathbf{w}^\pi (s) = f(\mathbf{V}^\pi (s), \mathbf{w})\]
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;For example, $f$ may be a linear function → $\mathbf{w}$ quantifies the relative importance of the corresponding objective.&lt;/p&gt;
-
-\[V_\mathbf{w}^\pi  = \mathbf{w} \cdot \mathbf{V}^\pi\]
+  &lt;li&gt;Easily exploit more domain knowledge!
+    &lt;ol&gt;
+      &lt;li&gt;Remove irrelevant features : reward에 영향을 주지 않는 feature들은 과감히 배제시켜버릴 수 있음&lt;/li&gt;
+      &lt;li&gt;Identifying terminal states : terminal state에 대해서는 학습을 하지 않도록 refrain 시켜 weight들이 오로지 meaningful 한 non-terminal state을 estimate 하는데 사용되도록 할 수 있음&lt;/li&gt;
+      &lt;li&gt;Using pseudo-reward functions : 실제 environment reward function을 decompose하는 것이 아니라, pseudo-reward function 을 사용하여 $\theta$ 를 update할 수도 있음.&lt;/li&gt;
+    &lt;/ol&gt;
   &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;만약 이게 가능하다면, why specifically target the MOMDP problem?&lt;/p&gt;
+&lt;h2 id=&quot;experiments&quot;&gt;Experiments&lt;/h2&gt;
 
-&lt;h2 id=&quot;unfortuantely-the-conversion-is-not-always-possible--desirable&quot;&gt;Unfortuantely, the conversion is not always possible / desirable.&lt;/h2&gt;
+&lt;h3 id=&quot;experiment-setting--fruit-collection-task&quot;&gt;Experiment Setting : Fruit Collection Task&lt;/h3&gt;
 
-&lt;p&gt;대중교통 시스템을 RL 로 결정한다고 해보자. 두 개의 objective 가 있음. 하나는 “Latency”이고, 다른 하나는 “Pollution costs”임.&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;strong&gt;Unknown weights scenario&lt;/strong&gt;
+&lt;ul&gt;
+  &lt;li&gt;10x10 격자에 과일들이 놓임&lt;/li&gt;
+  &lt;li&gt;과일들이 놓일 수 있는 위치는 10개가 있고, each episode마다 과일들은 랜덤한 5개 위치에 놓임&lt;/li&gt;
+  &lt;li&gt;agent는 랜덤한 위치에서 시작하고&lt;/li&gt;
+  &lt;li&gt;과일을 하나 먹을 때마다 reward +1 이 주어짐&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;each episode는 과일 5개를 다 먹거나 300 step 이 지나면 끝남&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;이 문제를 일반적인 DQN 으로 풀었을 때와 HRA로 풀었을 때 두 가지를 비교했음.&lt;/li&gt;
+  &lt;li&gt;HRA의 경우 → reward function을 10개의 다른 small-reward function으로 decompose했음, one per possible fruit location.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;HRA network 의 실제 구성&lt;/strong&gt;
     &lt;ul&gt;
-      &lt;li&gt;the weights $\mathbf{w}$ is unknown at the time of learning, or even at inference (planning).&lt;/li&gt;
-      &lt;li&gt;
-        &lt;p&gt;it also includes the case where $\mathbf{w}$ fluctuates quite often, making the computation of new plan everytime the $\mathbf{w}$  changes burdensome.&lt;/p&gt;
-
-        &lt;p&gt;예를 들어 위 문제에서, pollution cost가 시시각각 변한다고 해보자. (실제로 온실가스 배출권거래제.. 때문에 pollution cost는 open market에 의해 시시각각 변한다고 함) → 그러면 weight $\mathbf{w}$는 그 값에 의해서 시시각각 변해야 할 것이고, SOMDP 로 문제를 풀려면 그 때마다 retraining을 해줘야 함.&lt;/p&gt;
-      &lt;/li&gt;
+      &lt;li&gt;input = 110 binary code (100 for encoding the agent’s position, and the remaining 10 for encoding whether the fruit is in each of the possible positions)&lt;/li&gt;
+      &lt;li&gt;FC layer 110 → 250 → (10 heads of) 4   (each consisting of the action values of 4 actions)&lt;/li&gt;
+      &lt;li&gt;Mean of all heads is computed through a final linear layer  (with fixed weights 1)&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Decision support scenario&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;
-        &lt;p&gt;scalarization is in fact infeasible!&lt;/p&gt;
-
-        &lt;p&gt;one might say that : “Latency” cannot be converted to a scalar accurately → “economists cannot accurately compute the cost of lost productivity due to commuting” → there’s a scaling issue as well  →  &lt;strong&gt;thus, specifying $\mathbf{w}$ is feckless.&lt;/strong&gt;&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-        &lt;p&gt;Humans’ arbitrary decision should be made.&lt;/p&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Known weights scenario&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;weight도 알고 있는데 뭐가 문제냐고?&lt;/li&gt;
-      &lt;li&gt;If $f$ is nonlinear, then the resulting single-obejctive MDP may noat have additive returns, or even become stochastic.  ⇒ The resulting SOMDP can be difficult to solve.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h2 id=&quot;important-definitions-and-terminologies&quot;&gt;Important definitions and terminologies&lt;/h2&gt;
-
-&lt;p&gt;In the planning or learning phase where $\mathbf{w}$ is unavailable, the planning or learning algorithm must return a set of policies, not a single policy.   → These policies should be an optimal policy for each $\mathbf{w}$. To that end, we define&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;strong&gt;Undominated policies&lt;/strong&gt; for MOMDP $m$&lt;/p&gt;
-
-\[U(\Pi^m ) = \{\pi : \pi \in \Pi ^m  \ | \ V_\mathbf{w}^\pi \geq V_\mathbf{w}^{\pi'}, \ \ \forall \pi ' \in \Pi ^m,\  \exists \mathbf{w} \}\]
-
-    &lt;p&gt;However, this undominated policies contain redundant policies (some of those are &lt;strong&gt;not the only optimal policy&lt;/strong&gt; for $\mathbf{w}$)  → such policies can be removed!&lt;/p&gt;
-
-    &lt;p&gt;적어도 하나의 $\mathbf{w}$ 에 대해서는 optimal policy 가 되는 policy들을 모두 모아놓은 집합.
- → 그런데 given $\mathbf{w}$ 에 대해서 $U(\Pi^m )$  안에 오직 하나의 optimal policy가 있지는 않을 것임.&lt;br /&gt;
- → 어떤 $\mathbf{w}$가 들어왔을 때, 그에 해당하는 optimal policy &lt;strong&gt;하나를&lt;/strong&gt; 딱 뽑아낼 수 있는 set이 필요!&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;strong&gt;Coverage Set&lt;/strong&gt; (CS) for MOMDP $m$  ← &lt;strong&gt;set we are interested in!&lt;/strong&gt;&lt;/p&gt;
-
-\[\begin{aligned} CS(\Pi^m ) &amp;amp; \subseteq U(\Pi^m )\\ \pi \in CS(\Pi^m ) &amp;amp; \ \ \forall \mathbf{w}, \exists \pi \text{ s.t.}  V_\mathbf{w}^\pi \geq V_{\mathbf{w}}^{\pi'} \end{aligned}\]
-
-    &lt;p&gt;undominated policies의 subset임과 동시에,
- 모든 $\mathbf{w}$에 대한 optimal policy가 모두 담겨 있는 set 임.&lt;/p&gt;
-
-    &lt;p&gt;Shimon Whiteson calls the process of going to &lt;strong&gt;U → CS&lt;/strong&gt; (the fundamental of MOMDP), a &lt;strong&gt;pruning process&lt;/strong&gt; : &lt;em&gt;“even if we don’t know the weights a-priori, we are already eliminating the policies that we know that we aren’t going to use”&lt;/em&gt;&lt;/p&gt;
-
-    &lt;ul&gt;
-      &lt;li&gt;
-        &lt;p&gt;&lt;strong&gt;Checkout the example if you’re unclear about the difference between U vs CS&lt;/strong&gt;&lt;/p&gt;
-
-        &lt;p&gt;&lt;img src=&quot;Untitled.png&quot; alt=&quot;Untitled.png&quot; /&gt;&lt;/p&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;strong&gt;Convex Hull&lt;/strong&gt; (CH) for MOMDP $m$   → &lt;strong&gt;undominated policy for linear scalarization function&lt;/strong&gt;&lt;/p&gt;
-
-\[CH(\Pi^m ) = \{\pi : \pi \in \Pi^m \ | \ \mathbf{w} \cdot \mathbf{V}^\pi \geq \mathbf{w} \cdot \mathbf{V}^{\pi'}, \ \ \forall \pi' \in \Pi^m , \ \ \exists \mathbf{w} \}\]
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;strong&gt;Convex Coverage Set&lt;/strong&gt; (CCS) for MOMDP $m$  → &lt;strong&gt;coverage set for linear scalarization function&lt;/strong&gt;&lt;/p&gt;
-
-\[\begin{aligned} CCS(\Pi^m ) &amp;amp; \subseteq CH(\Pi^m )\\ \pi \in CCS(\Pi^m ) &amp;amp; \ \ \forall \mathbf{w}, \exists \pi \text{ s.t.} \  \mathbf{w}\cdot \mathbf{V}^\pi \geq {\mathbf{w}}\cdot \mathbf{V}^{\pi'} \end{aligned}\]
-  &lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h2 id=&quot;important-visualizations&quot;&gt;Important Visualizations&lt;/h2&gt;
-
-&lt;p&gt;&lt;img src=&quot;Untitled%201.png&quot; alt=&quot;Untitled%201.png&quot; /&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;we have two objectives $V_0$ and $V_1$&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;left side graph tells exactly where our multi objective vector is, in this case, in $\mathbb{R}^2$&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;right side graph, shows the ‘scalarized version’ → for this case, it’s a linear function&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;each line in “Weight space”&lt;/strong&gt; corresponds to the &lt;strong&gt;point in “Objective space”&lt;/strong&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;→ So what’s the coverage set?&lt;/p&gt;
+&lt;center&gt;&lt;img src=&quot;Untitled%201.png&quot; width=&quot;400&quot; /&gt;&lt;/center&gt;
 
-&lt;p&gt;Upper surface in the weight space!&lt;/p&gt;
+&lt;p&gt;위 그림에서, DQN은 맨 마지막 layer에서 나온 reward 를 가지고 loss function을 minimize한다면, HRA는 그 직전 layer에서 나온 reward (vector)들을 가지고 each agent들을 업데이트하는 것.&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;for $0 \leq w_1 \leq 0.4$    →  policy corresponding to point 1  is the optimal policy&lt;/li&gt;
-  &lt;li&gt;for $0.4 \leq w_1 \leq 0.8$   →  policy correspondnig to point 2 is the optimal policy&lt;/li&gt;
-  &lt;li&gt;for $0.8 \leq w_1 \leq 1$   →  policy corresponding to point 3 is the optimal policy&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;여기서 HRA+3 에 주목하고 싶은데, decomposing the existing reward (fruit-related) 에 더해서 pseudo-reward 를 추가한 실험임. &lt;strong&gt;(reward is given when the agent GOT TO the predefined 10 places)&lt;/strong&gt;&lt;/p&gt;
+
+    &lt;p&gt;→ 그 장소에 과일이 없더라도 뭔가를 배울 수 있음&lt;/p&gt;
+  &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;여기서 파란색 line/point는 undominated policy set (convex hull) 에는 들어있지만 coverage set (convex coverage set) 안에는 들어있지 않음. 왜냐? upper surface를 define하는데 파란색 line은 필요가 없거든.&lt;/p&gt;
+&lt;center&gt;&lt;img src=&quot;Untitled%202.png&quot; width=&quot;600&quot; /&gt;&lt;/center&gt;
 
-\[\mathbf{V} = [\mathbf{V}_0 , \mathbf{V}_1 ]\]
+&lt;ul&gt;
+  &lt;li&gt;그 결과 DQN보다 HRA를 썼을 때 훨씬 더 학습을 잘 했다는 것을 볼 수 있음. 특히, pseudo-reward를 썼을 때의 효과는 아주 강력했는데, 아무것도 쓰지 않는 상태와 비교해 아주 빠르게 학습을 완료함을 볼 수 있음.&lt;/li&gt;
+&lt;/ul&gt;
 
-\[V_{\mathbf{w}} = \mathbf{w}_0 \mathbf{V}_0 + \mathbf{w}_1 \mathbf{V}_1, \ \ \ \ \mathbf{w}_0 + \mathbf{w}_1 = 1\]</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Multi-Reward/Objective" /><summary type="html">Introduction of MOMDP MOMDP is an MDP wichih the reward function \[\mathbf{R} : \mathcal{S\times A \times S} \rightarrow \mathbb{R}^n\] is a vector of $n$ rewards, one for each objective, instead of a scalar. Value function $\mathbf{V}^\pi$ is also a vector where \[\mathbf{V}^\pi (s) = \mathbb{E}^\pi \bigg [ \sum_{k=0}^\infty \gamma^k \mathbf{r}_{t+k+1} \ | \ s_t = s \bigg ]\] Unlike in an MDP, we can no longer determine which values are optimal without additional information about how to prioritize the objectives! ordering of the value function is complete for SOMDP \[V^\pi (s) &amp;gt; V^{\pi'} (s)\] only a partial ordering is possible for MOMDP \[\mathbf{V}_i ^\pi (s) &amp;gt; \mathbf{V}_i ^{\pi'}(s) \ \ \ \text{but} \ \ \ \mathbf{V}_j ^\pi (s) &amp;lt; \mathbf{V}_j ^{\pi'}(s)\] Fortuantely, MOMDP can always be converted to SOMDP Such a conversion is done by, specifying a scalarization function. \[V_\mathbf{w}^\pi (s) = f(\mathbf{V}^\pi (s), \mathbf{w})\] For example, $f$ may be a linear function → $\mathbf{w}$ quantifies the relative importance of the corresponding objective. \[V_\mathbf{w}^\pi = \mathbf{w} \cdot \mathbf{V}^\pi\] 만약 이게 가능하다면, why specifically target the MOMDP problem? Unfortuantely, the conversion is not always possible / desirable. 대중교통 시스템을 RL 로 결정한다고 해보자. 두 개의 objective 가 있음. 하나는 “Latency”이고, 다른 하나는 “Pollution costs”임. Unknown weights scenario the weights $\mathbf{w}$ is unknown at the time of learning, or even at inference (planning). it also includes the case where $\mathbf{w}$ fluctuates quite often, making the computation of new plan everytime the $\mathbf{w}$ changes burdensome. 예를 들어 위 문제에서, pollution cost가 시시각각 변한다고 해보자. (실제로 온실가스 배출권거래제.. 때문에 pollution cost는 open market에 의해 시시각각 변한다고 함) → 그러면 weight $\mathbf{w}$는 그 값에 의해서 시시각각 변해야 할 것이고, SOMDP 로 문제를 풀려면 그 때마다 retraining을 해줘야 함. Decision support scenario scalarization is in fact infeasible! one might say that : “Latency” cannot be converted to a scalar accurately → “economists cannot accurately compute the cost of lost productivity due to commuting” → there’s a scaling issue as well → thus, specifying $\mathbf{w}$ is feckless. Humans’ arbitrary decision should be made. Known weights scenario weight도 알고 있는데 뭐가 문제냐고? If $f$ is nonlinear, then the resulting single-obejctive MDP may noat have additive returns, or even become stochastic. ⇒ The resulting SOMDP can be difficult to solve. Important definitions and terminologies In the planning or learning phase where $\mathbf{w}$ is unavailable, the planning or learning algorithm must return a set of policies, not a single policy. → These policies should be an optimal policy for each $\mathbf{w}$. To that end, we define Undominated policies for MOMDP $m$ \[U(\Pi^m ) = \{\pi : \pi \in \Pi ^m \ | \ V_\mathbf{w}^\pi \geq V_\mathbf{w}^{\pi'}, \ \ \forall \pi ' \in \Pi ^m,\ \exists \mathbf{w} \}\] However, this undominated policies contain redundant policies (some of those are not the only optimal policy for $\mathbf{w}$) → such policies can be removed! 적어도 하나의 $\mathbf{w}$ 에 대해서는 optimal policy 가 되는 policy들을 모두 모아놓은 집합. → 그런데 given $\mathbf{w}$ 에 대해서 $U(\Pi^m )$ 안에 오직 하나의 optimal policy가 있지는 않을 것임. → 어떤 $\mathbf{w}$가 들어왔을 때, 그에 해당하는 optimal policy 하나를 딱 뽑아낼 수 있는 set이 필요! Coverage Set (CS) for MOMDP $m$ ← set we are interested in! \[\begin{aligned} CS(\Pi^m ) &amp;amp; \subseteq U(\Pi^m )\\ \pi \in CS(\Pi^m ) &amp;amp; \ \ \forall \mathbf{w}, \exists \pi \text{ s.t.} V_\mathbf{w}^\pi \geq V_{\mathbf{w}}^{\pi'} \end{aligned}\] undominated policies의 subset임과 동시에, 모든 $\mathbf{w}$에 대한 optimal policy가 모두 담겨 있는 set 임. Shimon Whiteson calls the process of going to U → CS (the fundamental of MOMDP), a pruning process : “even if we don’t know the weights a-priori, we are already eliminating the policies that we know that we aren’t going to use” Checkout the example if you’re unclear about the difference between U vs CS Convex Hull (CH) for MOMDP $m$ → undominated policy for linear scalarization function \[CH(\Pi^m ) = \{\pi : \pi \in \Pi^m \ | \ \mathbf{w} \cdot \mathbf{V}^\pi \geq \mathbf{w} \cdot \mathbf{V}^{\pi'}, \ \ \forall \pi' \in \Pi^m , \ \ \exists \mathbf{w} \}\] Convex Coverage Set (CCS) for MOMDP $m$ → coverage set for linear scalarization function \[\begin{aligned} CCS(\Pi^m ) &amp;amp; \subseteq CH(\Pi^m )\\ \pi \in CCS(\Pi^m ) &amp;amp; \ \ \forall \mathbf{w}, \exists \pi \text{ s.t.} \ \mathbf{w}\cdot \mathbf{V}^\pi \geq {\mathbf{w}}\cdot \mathbf{V}^{\pi'} \end{aligned}\] Important Visualizations we have two objectives $V_0$ and $V_1$ left side graph tells exactly where our multi objective vector is, in this case, in $\mathbb{R}^2$ right side graph, shows the ‘scalarized version’ → for this case, it’s a linear function each line in “Weight space” corresponds to the point in “Objective space” → So what’s the coverage set? Upper surface in the weight space! for $0 \leq w_1 \leq 0.4$ → policy corresponding to point 1 is the optimal policy for $0.4 \leq w_1 \leq 0.8$ → policy correspondnig to point 2 is the optimal policy for $0.8 \leq w_1 \leq 1$ → policy corresponding to point 3 is the optimal policy 여기서 파란색 line/point는 undominated policy set (convex hull) 에는 들어있지만 coverage set (convex coverage set) 안에는 들어있지 않음. 왜냐? upper surface를 define하는데 파란색 line은 필요가 없거든. \[\mathbf{V} = [\mathbf{V}_0 , \mathbf{V}_1 ]\] \[V_{\mathbf{w}} = \mathbf{w}_0 \mathbf{V}_0 + \mathbf{w}_1 \mathbf{V}_1, \ \ \ \ \mathbf{w}_0 + \mathbf{w}_1 = 1\]</summary></entry><entry><title type="html">[NIPS 2000] Balancing Multiple Sources of Reward in Reinforcement Learning</title><link href="http://localhost:4000/notion_to_markdown/%5BNIPS%202000%5D%20Balancing%20Multiple%20Sources%20of%20Reward%20i%20d60cc762d6104f86a42d227fabdf7e6f/" rel="alternate" type="text/html" title="[NIPS 2000] Balancing Multiple Sources of Reward in Reinforcement Learning" /><published>2021-04-12T00:00:00+09:00</published><updated>2021-04-12T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/balancing-multiple-reward-sources</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/%5BNIPS%202000%5D%20Balancing%20Multiple%20Sources%20of%20Reward%20i%20d60cc762d6104f86a42d227fabdf7e6f/">&lt;p&gt;For many problems, the reward signal is not a single scalar, but has multiple scalar components. &lt;strong&gt;Creating a single reward value by combining the multiple components can throw anway vial information&lt;/strong&gt; and can lead to incorrect solutions!&lt;/p&gt;
+&lt;h3 id=&quot;mspac-man&quot;&gt;Ms.Pac-Man&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;이 논문은 Ms.Pac-Man 게임에서 SOTA를 찍었다고 해서 꽤나 유명세를 탄 논문인데, 뭐 결론은 (전혀 놀랍지 않게도) HRA가 DQN보다 잘한다는 것이었음.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;reward function이 복잡해? → small reward function으로 쪼개세요!&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Multi-Reward/Objective" /><summary type="html">Horde vs HRA vs UVFA Horde architecture learns multiple general value functions(GVFs), each corresponding to different reward functions and other question functions, using multiple demons. UVFA tries to generalize the value functions across different task and goals. HRA, on the other hand, decomposes the reward function into $n$ different reward functions, with the intent to solve a SINGLE, but COMPLEX task. Reward 가 너무 sparse하거나 function이 너무 high-dimensional일 경우 문제 해결이 어려움 → too much state component들에 dependent한 reward function을 여러 개의 small reward function (dependent on less state components) 들의 합으로 해석함 → Reward Function Decomposition 이라는 topic도 therefore closely related! Proposed Method Let’s decompose the reward function $R_{env}$ into $n$ reward functions! \[R_{env} (s,a,s') = \sum_{k=1}^n R_k(s,a,s')\] and train separate RL agent on each of these reward functions. Because agent $k$ has its own reward function, it has also its own Q-value function, $Q_k$. In general, different agents can share multiple lower-level layers of deep Q-network. Hence, authors use a single vector $\theta$ to describe the combined weights of the agents! Combined network that represents all $Q$-value functions = Hybrid Reward Architecture \[Q_{\text{HRA}}(s,a;\theta) = \sum_{k=1}^n Q_k (s,a;\theta)\] The collection of agents can be viewed as a single agent with multiple heads! Lower-level layer는 고정되어 있는 상태에서 higher-level layer들의 weight들만 각 reward function에 대해 달라지는 것임. Loss function associated with HRA \[\begin{aligned} \mathcal{L}_i (\theta_i ) &amp;amp; = \mathbb{E}_{s,a,r,s'}\bigg [ \sum_{k=1}^n (y_{k,i} - Q_k (s,a;\theta_i ))^2 \bigg ] , \\ \text{with } &amp;amp; y_{k,i} = R_k (s,a,s') + \gamma \max_{a'} Q_k (s',a'; \theta_{k-1}) \end{aligned}\] To that end, we get an optimal weight $\theta^\star$ \[Q_k ^\star (s,a) = Q_k (s,a;\theta^\star)\] where \[Q_{\text{HRA}}^\star(s,a) := \sum_{k=1}^n Q_k^\star (s,a)\] Resulting $Q_{\text{HRA}}^\star$ is different from $Q_{env}^\star$ which is generated by $R_{env}$. What’s good about HRA? Easily exploit more domain knowledge! Remove irrelevant features : reward에 영향을 주지 않는 feature들은 과감히 배제시켜버릴 수 있음 Identifying terminal states : terminal state에 대해서는 학습을 하지 않도록 refrain 시켜 weight들이 오로지 meaningful 한 non-terminal state을 estimate 하는데 사용되도록 할 수 있음 Using pseudo-reward functions : 실제 environment reward function을 decompose하는 것이 아니라, pseudo-reward function 을 사용하여 $\theta$ 를 update할 수도 있음. Experiments Experiment Setting : Fruit Collection Task 10x10 격자에 과일들이 놓임 과일들이 놓일 수 있는 위치는 10개가 있고, each episode마다 과일들은 랜덤한 5개 위치에 놓임 agent는 랜덤한 위치에서 시작하고 과일을 하나 먹을 때마다 reward +1 이 주어짐 each episode는 과일 5개를 다 먹거나 300 step 이 지나면 끝남 이 문제를 일반적인 DQN 으로 풀었을 때와 HRA로 풀었을 때 두 가지를 비교했음. HRA의 경우 → reward function을 10개의 다른 small-reward function으로 decompose했음, one per possible fruit location. HRA network 의 실제 구성 input = 110 binary code (100 for encoding the agent’s position, and the remaining 10 for encoding whether the fruit is in each of the possible positions) FC layer 110 → 250 → (10 heads of) 4 (each consisting of the action values of 4 actions) Mean of all heads is computed through a final linear layer (with fixed weights 1) 위 그림에서, DQN은 맨 마지막 layer에서 나온 reward 를 가지고 loss function을 minimize한다면, HRA는 그 직전 layer에서 나온 reward (vector)들을 가지고 each agent들을 업데이트하는 것. 여기서 HRA+3 에 주목하고 싶은데, decomposing the existing reward (fruit-related) 에 더해서 pseudo-reward 를 추가한 실험임. (reward is given when the agent GOT TO the predefined 10 places) → 그 장소에 과일이 없더라도 뭔가를 배울 수 있음 그 결과 DQN보다 HRA를 썼을 때 훨씬 더 학습을 잘 했다는 것을 볼 수 있음. 특히, pseudo-reward를 썼을 때의 효과는 아주 강력했는데, 아무것도 쓰지 않는 상태와 비교해 아주 빠르게 학습을 완료함을 볼 수 있음. Ms.Pac-Man 이 논문은 Ms.Pac-Man 게임에서 SOTA를 찍었다고 해서 꽤나 유명세를 탄 논문인데, 뭐 결론은 (전혀 놀랍지 않게도) HRA가 DQN보다 잘한다는 것이었음. reward function이 복잡해? → small reward function으로 쪼개세요!</summary></entry><entry><title type="html">[NIPS 2000] Balancing Multiple Sources of Reward in Reinforcement Learning</title><link href="http://localhost:4000/notion_to_markdown/%5BNIPS%202000%5D%20Balancing%20Multiple%20Sources%20of%20Reward%20i%20d60cc762d6104f86a42d227fabdf7e6f/" rel="alternate" type="text/html" title="[NIPS 2000] Balancing Multiple Sources of Reward in Reinforcement Learning" /><published>2021-04-12T00:00:00+09:00</published><updated>2021-04-12T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/balancing-multiple-reward-sources</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/%5BNIPS%202000%5D%20Balancing%20Multiple%20Sources%20of%20Reward%20i%20d60cc762d6104f86a42d227fabdf7e6f/">&lt;p&gt;For many problems, the reward signal is not a single scalar, but has multiple scalar components. &lt;strong&gt;Creating a single reward value by combining the multiple components can throw anway vial information&lt;/strong&gt; and can lead to incorrect solutions!&lt;/p&gt;
 
 &lt;p&gt;This paper &lt;strong&gt;discuss a multiple reward source&lt;/strong&gt; problem, and the problems of applying traditional RL algorithm.&lt;/p&gt;
 
@@ -1756,7 +1923,168 @@ $s_2$ 는 $s_1$ 의 눈치를 보고 (지가 실제로 원하는 것은 $(0.5,0.
 &lt;ul&gt;
   &lt;li&gt;Constructing a reward signal that is the sum of the source’s rewards does not lead to a good solution.&lt;/li&gt;
   &lt;li&gt;if we remove one source, the agent automatically adapts to the ideal policy for the reamining source (just a few nash equilibrium finding iteration)&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Multi-Reward/Objective" /><summary type="html">For many problems, the reward signal is not a single scalar, but has multiple scalar components. Creating a single reward value by combining the multiple components can throw anway vial information and can lead to incorrect solutions! This paper discuss a multiple reward source problem, and the problems of applying traditional RL algorithm. Introduction Traditional RL framework vs Real-world scenario traditional RL receive scalar value reward every step However, this single value can be problematic. First, consider this situation: Home entertainment system that automatically selects a television program to suit their tastes! a typical / traditional reward function might be : \[r_{\text{trad}} = \text{Total number of people paying attention to the system}\] However, there’s a problem. Why? A single information of $r_{\text{trad}}=2$ does not contain the information of “WHO EXACTLY are those two people?” in this case, multiple rewards come from “different users” In other cases, multiple rewards come from “different goals”. Elevator Scheduling have multiple goals 1) maximize people serviced per minute 2) minimize average waiting time for these cases, we might want to update the ‘ratio / importance’ between different goals, without completely retraining the solution from scratch. Problem Setup working on POMDP problem, discrete actions, discrete observations $x(t), a(t) \leftarrow$ observation and action $\pi(x,a)$ ← probabiolity the agent will take action $a$ when observing $x$. $R_s^\pi$ is the expected return from source $s$ for following policy $\pi$ assume that the algorithm knows the set of sources present at each time step Goal is to produce an algorithm that will produce a policy, based on previous experience and sources present. Reward is now a triplet! Balancing Multiple Rewards 1. Policy Votes authors introduce the concept of vote! \[\text{given state }x, \ \text{reward source }s\rightarrow \text{vote for action }a = v_s (x,a)\] of course, their vote for actions will sum to 1 \[\sum_a v_s (x,a) = 1\] Using this multiple reward’s vote, they create a policy \[\pi(x,a) = \frac{\sum_s \alpha_s (x)v_s(x,a)}{\sum_s \alpha_s (x)}\] it is basically counting the “continuous” votes to create a single policy. $\alpha_s (x)$ → how much effort source $s$ is putting into affecting the policy for observation $x$ observation $x$ 에 따라, source $s$ 에 따라 각자에게 주어진 투표권의 비중이 다른데, 하나의 source $s$ 는 자신의 투표권을 여러 observation $x$ 에 조금씩 나눠서 행사할 수 있음. 다시 말해, source 간의 scaling 문제를 해결하기 위해, 각 source별로 “동등한 크기의 투표권”을 배정했다고 이해하면 좋을 것 같음. \[\sum_ x\alpha_s (x)=1\] 실제로 선거에서 유권자가 자신의 목소리를 내기 위해 투표를 하는 것처럼, 각 reward source는 자신의 vote $v_s (x,a)$ 를 학습하면서 자신의 reward를 maximize하기 위해 노력할 것. However, this is still problematic: vote $v_s(x,a)$ is affected by the existence of other sources $s$. 각 유권자(source)가 다른 유권자들의 눈치를 보면서 투표를 한다는 건데 (자신의 true reward function에 대해서 거짓말을 하는 것) → 이것의 문제는, 다른 유권자들이 투표 후에 (training 후에) 이민을 가버리거나 할 수 있다는 것. 그러면 눈치를 본 이유가 없어지잖음.. 예를 들어서, action space $\mathcal{A} = {a_1, a_2 }$, rewared source ${s_1, s_2 }$ 인 상황이라고 해보자. 이 때 reward source $s_1$ 은 어느 state $x$ 에서건 $a_1$ 을 선호한다 치고, reward source $s_2$ 는 어느 state $x$ 에서건 $a_1$ 과 $a_2$ 를 같은 선호도로 동등하게 선호한다 해보자. 그럼 각 source가 vote를 결정(training 할 때,) $s_1$은 무조건 $(v_s (x,a_1), v_s (x,a_2)) = (1,0)$ 이라는 표를 던질테니, $s_2$ 는 $s_1$ 의 눈치를 보고 (지가 실제로 원하는 것은 $(0.5,0.5)$ 이므로) $(0,1)$ 을 던진다는 것. 문제는 $s_1$ 이 만약에 없어졌을 경우임. (해당 reward function을 고려하지 않기로 했을 때) 그럼 남는 $s_2$는 (training을 다시 하지 않는 한) $a_2$ 만 선택하고 살아야 하는 처지에 놓이는 것.. 따라서, 이 policy vote scheme은 “does not provide a description of the source’s preferences which would allow for the removal or addition of sources.” 2. Returns as Preferences reward source $s$ 끼리의 직접적인 비교가 어렵다하지만, (scaling issue 때문) 하나의 reward source 안에서는 policy 비교가 여전히 가능함 \[R_s ^{\pi_1} &amp;gt; R_s ^{\pi_2}\] 이면 $s$는 $\pi_1$ 을 $\pi_2$ 보다 선호하는 것. 하지만 여전히 이러한 각 reward source별 ‘preference’를 source별로 얼마나, 어떻게 weighting 할지는 또 다른 문제임. “But we can limit (using the voting scheme) how much one source’s preference can override another source’s preference! 근데 이건 game theory 에서 nash equilibrium 을 찾는 문제와 동일. 다른 source(player)의 선택(voting / playing) 이 자신의 reward (gain) 을 결정하는데, 모든 source가 만족하는 최적의 조합을 찾으려면 → no single player can change its playing (voting) and achieve a gain (increase in their reward) → nash equilibrium! Multiple Reward Source Algorithm Return Parametrization First, authors parameterize the estimated return of $\hat {R}_s ^\pi$ using parameters $a_s, b_s, \beta_s (x) ,p_s (x,a)$ → This is a KL-divergence form \[\hat{R}_s ^\pi = a_s \sum_x \beta_s (x) \sum_a p_s(x,a) \log \frac{p_s(x,a)}{\pi(x,a)} + b_s\] 잘 뜯어보면 얘네는 cumulative return function을 linear로 근사했는데 \[\hat R_s ^\pi = a_s m + b_s\] while \[m = \sum_x \beta_s (x) \sum_a p_s(x,a) \log \frac{p_s(x,a)}{\pi(x,a)}\] $m$ 을 잘 뜯어보면 target vote와 $\pi$ 사이의 KL divergence 임. $\sum \beta_s (x) = 1$ 일테고. 이건 나중에 neural network 로 대체될 가능성 아주 농후.. 그니까 말하자면, 각 source의 reward를 다음과 같이 design/approximate 한다는 것. 최종적으로 선택된 policy $\pi(x,a)$ 가 내가 진정 원하는 action’s probability distribution $p_s(x,a)$ 와 비슷하면 높은 reward, 아니면 낮은 reward. 여기서 헷갈리면 안되는 것이, $p_s (x,a)$랑 $v_s (x,a)$의 차이. “while $v_s(x,a)$ is the policy vote for observation $x$ for source $s$, $p_s(x,a)$ is the preferred policy for observation $x$ for source $s$.” 이라고 적혀있는데, 이를 다시 풀어서 쓰면 $p_s(x,a)$ : 유권자의 진짜 욕망 $v_s (x,a)$ : 유권자의 진짜 욕망을 실현하기 위한 전략적 선택이 담긴 voting $p_s (x,a)$ 는 source $s$ 별로 fix 되어 있는 것이고, $v_s (x,a)$는 조절 가능한 것인데, 이것을 조절함으로써 전체 policy $\pi(x,a)$ 가 결정이 되는 것. How do we estimate the real $p_s(x,a) ?$ → linear least-squares method based on the experiences of different policies and empirical returns Best responce Algorithm 일단 nash equilibrium을 찾기 전에 각 source에게 최적화된 $v_s(x,a)$ 부터 먼저 찾아야 됨. 각 source가 원하는 것은 위에서 parameterize된 reward를 maximize 하는 것. 뭐를 조절함으로써? 자신의 vote를 조절함으로써. “We need to find the set of $\alpha_s(x)$ and $v_s(x,a)$ to maximize $R_s^\pi$ , which is the same as minimizing \[\sum_x \beta_s (x) \sum_a p_s (x,a) \log \frac{\sum_{s'}\alpha_{s'}(x)v_{s'}(x)}{\sum_{s'}\alpha_{s'}(x)}\] minimization problem 은 gradient descent 를 하던, 직접 미분을 하던.. 알아서… Nash Equilibrium Algorithm nash equilibrium을 찾는 전형적인 iterative algorithm을 적용 → iterate to an equiilibrium by repeatedly finding the best response for each source and simulataneously replacing the old solution with the new best responses. Easily adjust the nash equilibrium when a player (reward source) is added or removed. (In contrast to the conventional RL training algorithm that has to be trained from scratch) Results Constructing a reward signal that is the sum of the source’s rewards does not lead to a good solution. if we remove one source, the agent automatically adapts to the ideal policy for the reamining source (just a few nash equilibrium finding iteration)</summary></entry><entry><title type="html">[NIPS 2019] Deconstructing Lottery Tickets: Zeros, Signs, and the Supermask</title><link href="http://localhost:4000/notion_to_markdown/%5BPaper%20Review%5D%20Deconstructing%20Lottery%20Tickets%20Zero%20256c0f5ba9d2483cb37e197122f85459/" rel="alternate" type="text/html" title="[NIPS 2019] Deconstructing Lottery Tickets: Zeros, Signs, and the Supermask" /><published>2021-04-01T00:00:00+09:00</published><updated>2021-04-01T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/deconstructing-lottery-tickets</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/%5BPaper%20Review%5D%20Deconstructing%20Lottery%20Tickets%20Zero%20256c0f5ba9d2483cb37e197122f85459/">&lt;h2 id=&quot;generalizing-the-lottery-ticket-hypothesis&quot;&gt;Generalizing the Lottery Ticket Hypothesis&lt;/h2&gt;
+&lt;/ul&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Multi-Reward/Objective" /><summary type="html">For many problems, the reward signal is not a single scalar, but has multiple scalar components. Creating a single reward value by combining the multiple components can throw anway vial information and can lead to incorrect solutions! This paper discuss a multiple reward source problem, and the problems of applying traditional RL algorithm. Introduction Traditional RL framework vs Real-world scenario traditional RL receive scalar value reward every step However, this single value can be problematic. First, consider this situation: Home entertainment system that automatically selects a television program to suit their tastes! a typical / traditional reward function might be : \[r_{\text{trad}} = \text{Total number of people paying attention to the system}\] However, there’s a problem. Why? A single information of $r_{\text{trad}}=2$ does not contain the information of “WHO EXACTLY are those two people?” in this case, multiple rewards come from “different users” In other cases, multiple rewards come from “different goals”. Elevator Scheduling have multiple goals 1) maximize people serviced per minute 2) minimize average waiting time for these cases, we might want to update the ‘ratio / importance’ between different goals, without completely retraining the solution from scratch. Problem Setup working on POMDP problem, discrete actions, discrete observations $x(t), a(t) \leftarrow$ observation and action $\pi(x,a)$ ← probabiolity the agent will take action $a$ when observing $x$. $R_s^\pi$ is the expected return from source $s$ for following policy $\pi$ assume that the algorithm knows the set of sources present at each time step Goal is to produce an algorithm that will produce a policy, based on previous experience and sources present. Reward is now a triplet! Balancing Multiple Rewards 1. Policy Votes authors introduce the concept of vote! \[\text{given state }x, \ \text{reward source }s\rightarrow \text{vote for action }a = v_s (x,a)\] of course, their vote for actions will sum to 1 \[\sum_a v_s (x,a) = 1\] Using this multiple reward’s vote, they create a policy \[\pi(x,a) = \frac{\sum_s \alpha_s (x)v_s(x,a)}{\sum_s \alpha_s (x)}\] it is basically counting the “continuous” votes to create a single policy. $\alpha_s (x)$ → how much effort source $s$ is putting into affecting the policy for observation $x$ observation $x$ 에 따라, source $s$ 에 따라 각자에게 주어진 투표권의 비중이 다른데, 하나의 source $s$ 는 자신의 투표권을 여러 observation $x$ 에 조금씩 나눠서 행사할 수 있음. 다시 말해, source 간의 scaling 문제를 해결하기 위해, 각 source별로 “동등한 크기의 투표권”을 배정했다고 이해하면 좋을 것 같음. \[\sum_ x\alpha_s (x)=1\] 실제로 선거에서 유권자가 자신의 목소리를 내기 위해 투표를 하는 것처럼, 각 reward source는 자신의 vote $v_s (x,a)$ 를 학습하면서 자신의 reward를 maximize하기 위해 노력할 것. However, this is still problematic: vote $v_s(x,a)$ is affected by the existence of other sources $s$. 각 유권자(source)가 다른 유권자들의 눈치를 보면서 투표를 한다는 건데 (자신의 true reward function에 대해서 거짓말을 하는 것) → 이것의 문제는, 다른 유권자들이 투표 후에 (training 후에) 이민을 가버리거나 할 수 있다는 것. 그러면 눈치를 본 이유가 없어지잖음.. 예를 들어서, action space $\mathcal{A} = {a_1, a_2 }$, rewared source ${s_1, s_2 }$ 인 상황이라고 해보자. 이 때 reward source $s_1$ 은 어느 state $x$ 에서건 $a_1$ 을 선호한다 치고, reward source $s_2$ 는 어느 state $x$ 에서건 $a_1$ 과 $a_2$ 를 같은 선호도로 동등하게 선호한다 해보자. 그럼 각 source가 vote를 결정(training 할 때,) $s_1$은 무조건 $(v_s (x,a_1), v_s (x,a_2)) = (1,0)$ 이라는 표를 던질테니, $s_2$ 는 $s_1$ 의 눈치를 보고 (지가 실제로 원하는 것은 $(0.5,0.5)$ 이므로) $(0,1)$ 을 던진다는 것. 문제는 $s_1$ 이 만약에 없어졌을 경우임. (해당 reward function을 고려하지 않기로 했을 때) 그럼 남는 $s_2$는 (training을 다시 하지 않는 한) $a_2$ 만 선택하고 살아야 하는 처지에 놓이는 것.. 따라서, 이 policy vote scheme은 “does not provide a description of the source’s preferences which would allow for the removal or addition of sources.” 2. Returns as Preferences reward source $s$ 끼리의 직접적인 비교가 어렵다하지만, (scaling issue 때문) 하나의 reward source 안에서는 policy 비교가 여전히 가능함 \[R_s ^{\pi_1} &amp;gt; R_s ^{\pi_2}\] 이면 $s$는 $\pi_1$ 을 $\pi_2$ 보다 선호하는 것. 하지만 여전히 이러한 각 reward source별 ‘preference’를 source별로 얼마나, 어떻게 weighting 할지는 또 다른 문제임. “But we can limit (using the voting scheme) how much one source’s preference can override another source’s preference! 근데 이건 game theory 에서 nash equilibrium 을 찾는 문제와 동일. 다른 source(player)의 선택(voting / playing) 이 자신의 reward (gain) 을 결정하는데, 모든 source가 만족하는 최적의 조합을 찾으려면 → no single player can change its playing (voting) and achieve a gain (increase in their reward) → nash equilibrium! Multiple Reward Source Algorithm Return Parametrization First, authors parameterize the estimated return of $\hat {R}_s ^\pi$ using parameters $a_s, b_s, \beta_s (x) ,p_s (x,a)$ → This is a KL-divergence form \[\hat{R}_s ^\pi = a_s \sum_x \beta_s (x) \sum_a p_s(x,a) \log \frac{p_s(x,a)}{\pi(x,a)} + b_s\] 잘 뜯어보면 얘네는 cumulative return function을 linear로 근사했는데 \[\hat R_s ^\pi = a_s m + b_s\] while \[m = \sum_x \beta_s (x) \sum_a p_s(x,a) \log \frac{p_s(x,a)}{\pi(x,a)}\] $m$ 을 잘 뜯어보면 target vote와 $\pi$ 사이의 KL divergence 임. $\sum \beta_s (x) = 1$ 일테고. 이건 나중에 neural network 로 대체될 가능성 아주 농후.. 그니까 말하자면, 각 source의 reward를 다음과 같이 design/approximate 한다는 것. 최종적으로 선택된 policy $\pi(x,a)$ 가 내가 진정 원하는 action’s probability distribution $p_s(x,a)$ 와 비슷하면 높은 reward, 아니면 낮은 reward. 여기서 헷갈리면 안되는 것이, $p_s (x,a)$랑 $v_s (x,a)$의 차이. “while $v_s(x,a)$ is the policy vote for observation $x$ for source $s$, $p_s(x,a)$ is the preferred policy for observation $x$ for source $s$.” 이라고 적혀있는데, 이를 다시 풀어서 쓰면 $p_s(x,a)$ : 유권자의 진짜 욕망 $v_s (x,a)$ : 유권자의 진짜 욕망을 실현하기 위한 전략적 선택이 담긴 voting $p_s (x,a)$ 는 source $s$ 별로 fix 되어 있는 것이고, $v_s (x,a)$는 조절 가능한 것인데, 이것을 조절함으로써 전체 policy $\pi(x,a)$ 가 결정이 되는 것. How do we estimate the real $p_s(x,a) ?$ → linear least-squares method based on the experiences of different policies and empirical returns Best responce Algorithm 일단 nash equilibrium을 찾기 전에 각 source에게 최적화된 $v_s(x,a)$ 부터 먼저 찾아야 됨. 각 source가 원하는 것은 위에서 parameterize된 reward를 maximize 하는 것. 뭐를 조절함으로써? 자신의 vote를 조절함으로써. “We need to find the set of $\alpha_s(x)$ and $v_s(x,a)$ to maximize $R_s^\pi$ , which is the same as minimizing \[\sum_x \beta_s (x) \sum_a p_s (x,a) \log \frac{\sum_{s'}\alpha_{s'}(x)v_{s'}(x)}{\sum_{s'}\alpha_{s'}(x)}\] minimization problem 은 gradient descent 를 하던, 직접 미분을 하던.. 알아서… Nash Equilibrium Algorithm nash equilibrium을 찾는 전형적인 iterative algorithm을 적용 → iterate to an equiilibrium by repeatedly finding the best response for each source and simulataneously replacing the old solution with the new best responses. Easily adjust the nash equilibrium when a player (reward source) is added or removed. (In contrast to the conventional RL training algorithm that has to be trained from scratch) Results Constructing a reward signal that is the sum of the source’s rewards does not lead to a good solution. if we remove one source, the agent automatically adapts to the ideal policy for the reamining source (just a few nash equilibrium finding iteration)</summary></entry><entry><title type="html">[JAIR 2013] A Survey of Multi-Objective Sequential Decision-Making</title><link href="http://localhost:4000/notion_to_markdown/%5BJAIR%202013%5D%20A%20Survey%20of%20Multi-Objective%20Sequential%202596a1a7dc934dbc9ed305d644b17155/" rel="alternate" type="text/html" title="[JAIR 2013] A Survey of Multi-Objective Sequential Decision-Making" /><published>2021-04-12T00:00:00+09:00</published><updated>2021-04-12T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/survey-of-multi-objective</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/%5BJAIR%202013%5D%20A%20Survey%20of%20Multi-Objective%20Sequential%202596a1a7dc934dbc9ed305d644b17155/">&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;center&gt;&lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;https://www.youtube.com/embed/_zJ_cbg3TzY&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;&lt;/center&gt;
+
+&lt;h2 id=&quot;introduction-of-momdp&quot;&gt;Introduction of MOMDP&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;MOMDP is an MDP wichih the reward function&lt;/p&gt;
+
+\[\mathbf{R} : \mathcal{S\times A \times S} \rightarrow \mathbb{R}^n\]
+
+    &lt;p&gt;is a vector of $n$ rewards, one for each objective, instead of a scalar.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Value function $\mathbf{V}^\pi$ is also a vector where&lt;/p&gt;
+
+\[\mathbf{V}^\pi (s) = \mathbb{E}^\pi \bigg [ \sum_{k=0}^\infty \gamma^k \mathbf{r}_{t+k+1} \ | \ s_t = s \bigg ]\]
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Unlike in an MDP, we can no longer determine which values are optimal without additional information about how to prioritize the objectives!&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;ordering of the value function is complete for SOMDP&lt;/p&gt;
+
+\[V^\pi (s) &amp;gt; V^{\pi'} (s)\]
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;only a partial ordering is possible for MOMDP&lt;/p&gt;
+
+\[\mathbf{V}_i ^\pi (s) &amp;gt; \mathbf{V}_i ^{\pi'}(s) \ \ \ \text{but} \ \ \ \mathbf{V}_j ^\pi (s) &amp;lt; \mathbf{V}_j ^{\pi'}(s)\]
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;fortuantely-momdp-can-always-be-converted-to-somdp&quot;&gt;Fortuantely, MOMDP can always be converted to SOMDP&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Such a conversion is done by, specifying a scalarization function.&lt;/p&gt;
+
+\[V_\mathbf{w}^\pi (s) = f(\mathbf{V}^\pi (s), \mathbf{w})\]
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;For example, $f$ may be a linear function → $\mathbf{w}$ quantifies the relative importance of the corresponding objective.&lt;/p&gt;
+
+\[V_\mathbf{w}^\pi  = \mathbf{w} \cdot \mathbf{V}^\pi\]
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;만약 이게 가능하다면, why specifically target the MOMDP problem?&lt;/p&gt;
+
+&lt;h2 id=&quot;unfortuantely-the-conversion-is-not-always-possible--desirable&quot;&gt;Unfortuantely, the conversion is not always possible / desirable.&lt;/h2&gt;
+
+&lt;p&gt;대중교통 시스템을 RL 로 결정한다고 해보자. 두 개의 objective 가 있음. 하나는 “Latency”이고, 다른 하나는 “Pollution costs”임.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;Unknown weights scenario&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;the weights $\mathbf{w}$ is unknown at the time of learning, or even at inference (planning).&lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;it also includes the case where $\mathbf{w}$ fluctuates quite often, making the computation of new plan everytime the $\mathbf{w}$  changes burdensome.&lt;/p&gt;
+
+        &lt;p&gt;예를 들어 위 문제에서, pollution cost가 시시각각 변한다고 해보자. (실제로 온실가스 배출권거래제.. 때문에 pollution cost는 open market에 의해 시시각각 변한다고 함) → 그러면 weight $\mathbf{w}$는 그 값에 의해서 시시각각 변해야 할 것이고, SOMDP 로 문제를 풀려면 그 때마다 retraining을 해줘야 함.&lt;/p&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Decision support scenario&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;
+        &lt;p&gt;scalarization is in fact infeasible!&lt;/p&gt;
+
+        &lt;p&gt;one might say that : “Latency” cannot be converted to a scalar accurately → “economists cannot accurately compute the cost of lost productivity due to commuting” → there’s a scaling issue as well  →  &lt;strong&gt;thus, specifying $\mathbf{w}$ is feckless.&lt;/strong&gt;&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;Humans’ arbitrary decision should be made.&lt;/p&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Known weights scenario&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;weight도 알고 있는데 뭐가 문제냐고?&lt;/li&gt;
+      &lt;li&gt;If $f$ is nonlinear, then the resulting single-obejctive MDP may noat have additive returns, or even become stochastic.  ⇒ The resulting SOMDP can be difficult to solve.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;important-definitions-and-terminologies&quot;&gt;Important definitions and terminologies&lt;/h2&gt;
+
+&lt;p&gt;In the planning or learning phase where $\mathbf{w}$ is unavailable, the planning or learning algorithm must return a set of policies, not a single policy.   → These policies should be an optimal policy for each $\mathbf{w}$. To that end, we define&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Undominated policies&lt;/strong&gt; for MOMDP $m$&lt;/p&gt;
+
+\[U(\Pi^m ) = \{\pi : \pi \in \Pi ^m  \ | \ V_\mathbf{w}^\pi \geq V_\mathbf{w}^{\pi'}, \ \ \forall \pi ' \in \Pi ^m,\  \exists \mathbf{w} \}\]
+
+    &lt;p&gt;However, this undominated policies contain redundant policies (some of those are &lt;strong&gt;not the only optimal policy&lt;/strong&gt; for $\mathbf{w}$)  → such policies can be removed!&lt;/p&gt;
+
+    &lt;p&gt;적어도 하나의 $\mathbf{w}$ 에 대해서는 optimal policy 가 되는 policy들을 모두 모아놓은 집합.
+ → 그런데 given $\mathbf{w}$ 에 대해서 $U(\Pi^m )$  안에 오직 하나의 optimal policy가 있지는 않을 것임.&lt;br /&gt;
+ → 어떤 $\mathbf{w}$가 들어왔을 때, 그에 해당하는 optimal policy &lt;strong&gt;하나를&lt;/strong&gt; 딱 뽑아낼 수 있는 set이 필요!&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Coverage Set&lt;/strong&gt; (CS) for MOMDP $m$  ← &lt;strong&gt;set we are interested in!&lt;/strong&gt;&lt;/p&gt;
+
+\[\begin{aligned} CS(\Pi^m ) &amp;amp; \subseteq U(\Pi^m )\\ \pi \in CS(\Pi^m ) &amp;amp; \ \ \forall \mathbf{w}, \exists \pi \text{ s.t.}  V_\mathbf{w}^\pi \geq V_{\mathbf{w}}^{\pi'} \end{aligned}\]
+
+    &lt;p&gt;undominated policies의 subset임과 동시에,
+ 모든 $\mathbf{w}$에 대한 optimal policy가 모두 담겨 있는 set 임.&lt;/p&gt;
+
+    &lt;p&gt;Shimon Whiteson calls the process of going to &lt;strong&gt;U → CS&lt;/strong&gt; (the fundamental of MOMDP), a &lt;strong&gt;pruning process&lt;/strong&gt; : &lt;em&gt;“even if we don’t know the weights a-priori, we are already eliminating the policies that we know that we aren’t going to use”&lt;/em&gt;&lt;/p&gt;
+
+    &lt;ul&gt;
+      &lt;li&gt;
+        &lt;p&gt;&lt;strong&gt;Checkout the example if you’re unclear about the difference between U vs CS&lt;/strong&gt;&lt;/p&gt;
+
+        &lt;p&gt;&lt;img src=&quot;Untitled.png&quot; alt=&quot;Untitled.png&quot; /&gt;&lt;/p&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Convex Hull&lt;/strong&gt; (CH) for MOMDP $m$   → &lt;strong&gt;undominated policy for linear scalarization function&lt;/strong&gt;&lt;/p&gt;
+
+\[CH(\Pi^m ) = \{\pi : \pi \in \Pi^m \ | \ \mathbf{w} \cdot \mathbf{V}^\pi \geq \mathbf{w} \cdot \mathbf{V}^{\pi'}, \ \ \forall \pi' \in \Pi^m , \ \ \exists \mathbf{w} \}\]
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Convex Coverage Set&lt;/strong&gt; (CCS) for MOMDP $m$  → &lt;strong&gt;coverage set for linear scalarization function&lt;/strong&gt;&lt;/p&gt;
+
+\[\begin{aligned} CCS(\Pi^m ) &amp;amp; \subseteq CH(\Pi^m )\\ \pi \in CCS(\Pi^m ) &amp;amp; \ \ \forall \mathbf{w}, \exists \pi \text{ s.t.} \  \mathbf{w}\cdot \mathbf{V}^\pi \geq {\mathbf{w}}\cdot \mathbf{V}^{\pi'} \end{aligned}\]
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;important-visualizations&quot;&gt;Important Visualizations&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;Untitled%201.png&quot; alt=&quot;Untitled%201.png&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;we have two objectives $V_0$ and $V_1$&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;left side graph tells exactly where our multi objective vector is, in this case, in $\mathbb{R}^2$&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;right side graph, shows the ‘scalarized version’ → for this case, it’s a linear function&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;each line in “Weight space”&lt;/strong&gt; corresponds to the &lt;strong&gt;point in “Objective space”&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;→ So what’s the coverage set?&lt;/p&gt;
+
+&lt;p&gt;Upper surface in the weight space!&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;for $0 \leq w_1 \leq 0.4$    →  policy corresponding to point 1  is the optimal policy&lt;/li&gt;
+  &lt;li&gt;for $0.4 \leq w_1 \leq 0.8$   →  policy correspondnig to point 2 is the optimal policy&lt;/li&gt;
+  &lt;li&gt;for $0.8 \leq w_1 \leq 1$   →  policy corresponding to point 3 is the optimal policy&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;여기서 파란색 line/point는 undominated policy set (convex hull) 에는 들어있지만 coverage set (convex coverage set) 안에는 들어있지 않음. 왜냐? upper surface를 define하는데 파란색 line은 필요가 없거든.&lt;/p&gt;
+
+\[\mathbf{V} = [\mathbf{V}_0 , \mathbf{V}_1 ]\]
+
+\[V_{\mathbf{w}} = \mathbf{w}_0 \mathbf{V}_0 + \mathbf{w}_1 \mathbf{V}_1, \ \ \ \ \mathbf{w}_0 + \mathbf{w}_1 = 1\]</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Multi-Reward/Objective" /><summary type="html">Introduction of MOMDP MOMDP is an MDP wichih the reward function \[\mathbf{R} : \mathcal{S\times A \times S} \rightarrow \mathbb{R}^n\] is a vector of $n$ rewards, one for each objective, instead of a scalar. Value function $\mathbf{V}^\pi$ is also a vector where \[\mathbf{V}^\pi (s) = \mathbb{E}^\pi \bigg [ \sum_{k=0}^\infty \gamma^k \mathbf{r}_{t+k+1} \ | \ s_t = s \bigg ]\] Unlike in an MDP, we can no longer determine which values are optimal without additional information about how to prioritize the objectives! ordering of the value function is complete for SOMDP \[V^\pi (s) &amp;gt; V^{\pi'} (s)\] only a partial ordering is possible for MOMDP \[\mathbf{V}_i ^\pi (s) &amp;gt; \mathbf{V}_i ^{\pi'}(s) \ \ \ \text{but} \ \ \ \mathbf{V}_j ^\pi (s) &amp;lt; \mathbf{V}_j ^{\pi'}(s)\] Fortuantely, MOMDP can always be converted to SOMDP Such a conversion is done by, specifying a scalarization function. \[V_\mathbf{w}^\pi (s) = f(\mathbf{V}^\pi (s), \mathbf{w})\] For example, $f$ may be a linear function → $\mathbf{w}$ quantifies the relative importance of the corresponding objective. \[V_\mathbf{w}^\pi = \mathbf{w} \cdot \mathbf{V}^\pi\] 만약 이게 가능하다면, why specifically target the MOMDP problem? Unfortuantely, the conversion is not always possible / desirable. 대중교통 시스템을 RL 로 결정한다고 해보자. 두 개의 objective 가 있음. 하나는 “Latency”이고, 다른 하나는 “Pollution costs”임. Unknown weights scenario the weights $\mathbf{w}$ is unknown at the time of learning, or even at inference (planning). it also includes the case where $\mathbf{w}$ fluctuates quite often, making the computation of new plan everytime the $\mathbf{w}$ changes burdensome. 예를 들어 위 문제에서, pollution cost가 시시각각 변한다고 해보자. (실제로 온실가스 배출권거래제.. 때문에 pollution cost는 open market에 의해 시시각각 변한다고 함) → 그러면 weight $\mathbf{w}$는 그 값에 의해서 시시각각 변해야 할 것이고, SOMDP 로 문제를 풀려면 그 때마다 retraining을 해줘야 함. Decision support scenario scalarization is in fact infeasible! one might say that : “Latency” cannot be converted to a scalar accurately → “economists cannot accurately compute the cost of lost productivity due to commuting” → there’s a scaling issue as well → thus, specifying $\mathbf{w}$ is feckless. Humans’ arbitrary decision should be made. Known weights scenario weight도 알고 있는데 뭐가 문제냐고? If $f$ is nonlinear, then the resulting single-obejctive MDP may noat have additive returns, or even become stochastic. ⇒ The resulting SOMDP can be difficult to solve. Important definitions and terminologies In the planning or learning phase where $\mathbf{w}$ is unavailable, the planning or learning algorithm must return a set of policies, not a single policy. → These policies should be an optimal policy for each $\mathbf{w}$. To that end, we define Undominated policies for MOMDP $m$ \[U(\Pi^m ) = \{\pi : \pi \in \Pi ^m \ | \ V_\mathbf{w}^\pi \geq V_\mathbf{w}^{\pi'}, \ \ \forall \pi ' \in \Pi ^m,\ \exists \mathbf{w} \}\] However, this undominated policies contain redundant policies (some of those are not the only optimal policy for $\mathbf{w}$) → such policies can be removed! 적어도 하나의 $\mathbf{w}$ 에 대해서는 optimal policy 가 되는 policy들을 모두 모아놓은 집합. → 그런데 given $\mathbf{w}$ 에 대해서 $U(\Pi^m )$ 안에 오직 하나의 optimal policy가 있지는 않을 것임. → 어떤 $\mathbf{w}$가 들어왔을 때, 그에 해당하는 optimal policy 하나를 딱 뽑아낼 수 있는 set이 필요! Coverage Set (CS) for MOMDP $m$ ← set we are interested in! \[\begin{aligned} CS(\Pi^m ) &amp;amp; \subseteq U(\Pi^m )\\ \pi \in CS(\Pi^m ) &amp;amp; \ \ \forall \mathbf{w}, \exists \pi \text{ s.t.} V_\mathbf{w}^\pi \geq V_{\mathbf{w}}^{\pi'} \end{aligned}\] undominated policies의 subset임과 동시에, 모든 $\mathbf{w}$에 대한 optimal policy가 모두 담겨 있는 set 임. Shimon Whiteson calls the process of going to U → CS (the fundamental of MOMDP), a pruning process : “even if we don’t know the weights a-priori, we are already eliminating the policies that we know that we aren’t going to use” Checkout the example if you’re unclear about the difference between U vs CS Convex Hull (CH) for MOMDP $m$ → undominated policy for linear scalarization function \[CH(\Pi^m ) = \{\pi : \pi \in \Pi^m \ | \ \mathbf{w} \cdot \mathbf{V}^\pi \geq \mathbf{w} \cdot \mathbf{V}^{\pi'}, \ \ \forall \pi' \in \Pi^m , \ \ \exists \mathbf{w} \}\] Convex Coverage Set (CCS) for MOMDP $m$ → coverage set for linear scalarization function \[\begin{aligned} CCS(\Pi^m ) &amp;amp; \subseteq CH(\Pi^m )\\ \pi \in CCS(\Pi^m ) &amp;amp; \ \ \forall \mathbf{w}, \exists \pi \text{ s.t.} \ \mathbf{w}\cdot \mathbf{V}^\pi \geq {\mathbf{w}}\cdot \mathbf{V}^{\pi'} \end{aligned}\] Important Visualizations we have two objectives $V_0$ and $V_1$ left side graph tells exactly where our multi objective vector is, in this case, in $\mathbb{R}^2$ right side graph, shows the ‘scalarized version’ → for this case, it’s a linear function each line in “Weight space” corresponds to the point in “Objective space” → So what’s the coverage set? Upper surface in the weight space! for $0 \leq w_1 \leq 0.4$ → policy corresponding to point 1 is the optimal policy for $0.4 \leq w_1 \leq 0.8$ → policy correspondnig to point 2 is the optimal policy for $0.8 \leq w_1 \leq 1$ → policy corresponding to point 3 is the optimal policy 여기서 파란색 line/point는 undominated policy set (convex hull) 에는 들어있지만 coverage set (convex coverage set) 안에는 들어있지 않음. 왜냐? upper surface를 define하는데 파란색 line은 필요가 없거든. \[\mathbf{V} = [\mathbf{V}_0 , \mathbf{V}_1 ]\] \[V_{\mathbf{w}} = \mathbf{w}_0 \mathbf{V}_0 + \mathbf{w}_1 \mathbf{V}_1, \ \ \ \ \mathbf{w}_0 + \mathbf{w}_1 = 1\]</summary></entry><entry><title type="html">[NIPS 2019] Deconstructing Lottery Tickets: Zeros, Signs, and the Supermask</title><link href="http://localhost:4000/notion_to_markdown/%5BPaper%20Review%5D%20Deconstructing%20Lottery%20Tickets%20Zero%20256c0f5ba9d2483cb37e197122f85459/" rel="alternate" type="text/html" title="[NIPS 2019] Deconstructing Lottery Tickets: Zeros, Signs, and the Supermask" /><published>2021-04-01T00:00:00+09:00</published><updated>2021-04-01T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/deconstructing-lottery-tickets</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/%5BPaper%20Review%5D%20Deconstructing%20Lottery%20Tickets%20Zero%20256c0f5ba9d2483cb37e197122f85459/">&lt;h2 id=&quot;generalizing-the-lottery-ticket-hypothesis&quot;&gt;Generalizing the Lottery Ticket Hypothesis&lt;/h2&gt;
 
 &lt;h3 id=&quot;lottery-ticket-lt-algorithm-is-in-fact-doing&quot;&gt;Lottery Ticket (LT) Algorithm is in fact doing…&lt;/h3&gt;
 
@@ -1974,141 +2302,4 @@ $s_2$ 는 $s_1$ 의 눈치를 보고 (지가 실제로 원하는 것은 $(0.5,0.
 
 &lt;ol&gt;
   &lt;li&gt;Training from scratch 가 outlier detection 성능에 영향을 줄 수 있을까? 도 고민해봐야 할 것 같음. 상웅 조교님이 지지난 미팅 과정에서 언뜻 임의의 criterion을 가지고 pruned 된 네트워크를 scratch에서 training 시키는 것도 한 번 해보면 좋을 것 같다고 하시긴 하셨는데, 사실 LT 페이퍼에 의하면 이게 쉬운 일은 아니라고 하니까. 근데 pruning + finetuning 과 pruning + training from scratch 의 결과가 많이 다를까? 잘 모르겠음.&lt;/li&gt;
-&lt;/ol&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Model-Compression" /><category term="Network-Pruning" /><category term="Lottery-Ticket" /><summary type="html">Generalizing the Lottery Ticket Hypothesis Lottery Ticket (LT) Algorithm is in fact doing… Initiailize a mask $m$ to one (no pruning at all). Randomize the parameters $w$ of a network. Network is $f(x; w \odot m)$ Train the parameters $w$ of the network. Initial weights before the training is denoted as $w_i$ and weights after the training is denoted as $w_f$. To determine the weights to prune, we use a ‘mask criterion’. Mask criterion is defined as a scalar function $M(w_i, w_f )$ defined by both the initial and final weights. Specific shape of the function $M$ is yet undetermined, while the original LT algorithm used $M(w_i , w_f) = \vert w_f \vert$. After that, we rank the weights by the value obtained from $M$, and the mask corresponding to top $p\%$ of weights are set to 1, and the bottom $(100-p)\%$ to 1. For the weights which its corresponding mask values are 1, “Mask-1 Actions” are taken. In the original LT algorithm, “Mask-1 Action” was to reinitialize its weights to their initial values, and marking as a trainable parameter in the subsequent training. For the weights which its corresponding mask values are 0, “Mask-0 Actions” are taken. In the original LT algorithm, “Mask-0 Action” was to freeze those weights with mask value 0. Repeat above procedure for iterative pruning. This paper tries to generalize the LT algorithm by… Trying various versions of “mask criteria” Trying various versions of “mask-1 actions” Trying various versions of “mask-0 actions” In this summary article, I will… (since this paper further analyzes the LT algorithm, which in my opinion can give us a deeper insight about the network pruning) summarize the experiment details &amp;amp; insights which can be applied to our experiment trying to connect pruning with outlier detection. Step 1. Trying various masking criterions Authors focused on intial weights $w_i$ and final weights $w_f$. Maybe they believed that the importance of weights can be sufficiently expressed by $w_i$ and $w_f$. Note that authors visualize different masking criterions using a cartoon-form ellipse area of $w_i$ and $w_f$ space like below. Result shows that, while $\texttt{large_final}$ criterion, which is originally used in the LT algorithm (and the one I am using for outlier detection experiments), is a very competitive masking criterion, other criterion such as $\texttt{magnitude_increase}$ / $\texttt{large_init_large_final}$ $\texttt{movement}$ shows similar behavior. However, what we still don’t know is the “Why” question. “Why does those $\texttt{magnitude_increase}$ or $\texttt{large_final}$ criteria work better than the others?” Mask-1 Action : sign is everything. For those lucky weights that survived the pruning process, we have to decide the initialization method for training. Recall, original LT algorithm paper stated that, to make the pruned network to learn successfully from scratch, we need to rewind the intialization to the original one: randomly reintializing degrades the performance. However, it is still unknown exactly which component of reinitialization process is responsible for the subsequent training procedure. To find out, authors tried out three variants for Mask-1 Actions. Reinitializing : reintialize the kept-weights based on the initialization distribution $\mathcal{D}_\theta$ Reshuffling : within the trained kept-weights, shuffle them. Constants : Every weight on a layer becomes one of three values $-\alpha, 0 , \alpha$ while $\alpha$ is the standard deviation of each layer’s $\mathcal{D}_\theta$ Well, the result showed that, it is not easy to win the “rewind” technique (original LT algorithm) - none of above three intialization techniques showed promising results. Meanwhile, the authors didn’t stop there: they asked themselves below questions. All of above intialization techniques doesn’t preserve the ‘signs’ of original weights. What if we preserve the signs of new-intialization? Well, surprisingly, as soon as we ensured the new values of kept weights to have the same sign as their original initial values, all three variants above worked better (solid-line in Figure 4). We can clearly see that the key-point of using the original initialization is preserving the sign. This might allow us to state an interesting corollary about the behaviour of optimizers. Optimizers work well anywhere in the correct sign quadrant for the weights, but encounter difficulty crossing the zero barrier between signs. Mask-0 Action : masking is in fact a new type of training. Authors asked themselves a quite unique question. What should we do with the pruned weights? Just simply leave them and fix it to zero? Hmm. something more could have been done there as well. The term ‘pruning’ implies that we want to disconnect the connections between the neurons. Thus, fixing the pruned weights to zero might be a reasonable thing to do. However, if we think it differently, we might construe the pruned connections being “unimportant” to the performance of the network. In other words, we might think that the network “doesn’t care that much” about those pruned weights! If that’s the case, (authors wondered) why don’t we set them to some other non-zero value? To that end, authors designed an interesting experiment. Experiment A : (original LT) reintialize the pruned weights to zero + freeze during training Experiment B : reintialize the pruned weights to their initial value + freeze during training. By conducting above experiment, we can get a sense how important the zero-ing procedure is! If Experiment B wins (or at least perform similarly), it means that the zero-ing process isn’t that significant. However, the results showed that zero-ing process is actually very important. Authors then stated an hypothesis, which I personally consider really interesting. Hypothesis: Mask criterion we use ($\texttt{large_final}$) tends to mask the weights that were headed to zero anyway! To test above hypothesis, authors designed another experiment (mask-0 action) as well. Experiment C : for the weights that are pruned, we set it and fix it to zero if they move towards zero during the training process, and set it to the initial value otherwise. Experiment D : for every weights in the network, we set it and fix it to zero if they move towards zero during the training process → this experiment actually doesn’t prune the network. Above experiments C and D each correspond to Variant 1 and Variant 2 in Figure 5 above. Surprisingly, jusy by masking the weights without any further training, it works better than non-pruned network. Also, since experiment D outperformed experiment C, we can conclude that this masking action of considering the ‘movement of weights’ during the training process is not only beneficial to mask-0 , but in fact also beneficial to mask-1 weights. To that end, authors conclude an interesting approach; Masking can be considered as a novel type of training procedure! Now, we can gain a new perspective to answer why certain mask criteria works better than others →  $\texttt{large_final}$ , pruning the weights that are small and setting it to zero, is in fact effectively pushing them further in the direction they were heading anyway. important contribution of the value of the pruned weights to the overall performance of pruned networks benefit of setting these select weights to zero as a better intialization for the network Supermask: if masking is training, let’s realllly use it for training No training at all, but a simple masking to the randomly initialized network. It turns out, that a well-chosen mask can already attain a test accuracy far better than chance! (MNIST classifier - random accuracy 10% → well-chosen mask operation 40%) Authors call those masks “supermask”, which is a mask that can produce better-than-chance accuracy without training of the underlying weights. How can we find a supermask? Authors first tested below types of masks. It turns out, just by applying a large-final mask with additional same-sign constraint can improve the accuracy of original network by far without any training. (Orange solid line in Figure 7) We can apply this method for model compression ; simply saving a binary mask and a random seed can reconstruct the full weights of the network. Bit more? Optimizing the supermask: training the mask, not the weights. For an original weight tensor $w$ and a mask tensor $m$ of the same shape, we define an effective weight \[w' = w_i \odot g(m)\] Training the mask with \[g(m) = \text{Bern}(S(m))\] where $\text{Bern}(p)$ is the bernoulli sample with probability $p$ and $S(m)$ is the sigmoid function. Training the $m$ matrix with SGD, authors obtained 95.3% test accuracy on MNIST and 65.4% on CIFAR-10. (red dashed-line in Figure 7) A Simple trick during training : Dynamic Weight Rescaling For each training iteration and for each layer, we multiply the underlying weights by the ratio of the total number of weigts in the layer over the number of ones in the corresponding mask. Final Results &amp;amp; Remarks Network upon initialization already contains powerful subnetworks that work well without training! So.. what’s left for me? Opinions &amp;amp; Insights 흥미로운 페이퍼였다고 생각함. Lottery Ticket 페이퍼의 경우는 사실 “해봤더니 되었다” 정도여서 오호 그렇구나 정도였고 사실 크게 감흥은 없었는데.. 이 페이퍼의 경우 (물론 theoretical한 설명을 준 건 아니지만) 적어도 “왜 intialization을 그렇게 해야하는지” 라는 질문에 대해 어느 정도 안개를 걷어준 것 같아서 재미있게 읽었음. 뭔가 연구에서 인사이트와 적절한 실험 설계의 중요성을 보여준 것 같달까.. 일단 제일 먼저.. 두 페이퍼의 가장 큰 contribution이 무엇일지를 한번 생각해봐야될 것 같은데… 왜냐하면… 사실 굳이 복잡하게 왜 intialization을 하려고 하냐 하는지를 사실 잘 이해를 못하겠어서임. LeCun이 subnetwork에서 아무렇게나 initialize하면 training이 잘 안된다고 이미 말한 사실이 있는데, 그 문제를 굳이 왜 태클하려고 하냐 이 말임. 어차피 LT algorithm의 경우 pruning을 하기 위해서 일단 한번은 training을 해야되는데, 차라리 거기서 굳이 initialize를 또 하지 않고 바로 fine-tuning을 해버리면 일이 쉬워지는데.. 굳이 이런 걸 연구해야 해? 하는 생각을 할 수도 있으니까. 근데 학계의 관심이 Lottery Ticket 페이퍼에 쏠리게 된 데에는 그 만한 이유가 있을 것이라고 생각. 지금이야 over-parameterized된 네트워크에서 smaller network로 축소시키는 과정에서 $w_f$ (weight after training)을 써야 하지만, 나중에 혹시 아나? training 없이, 혹은 아주 짧은 training 과정만으로 위 두 논문에서 보인 effective sub-network 을 찾아내게 될 수 있을지 (pruning 을 할 수 있을지)? 그럴 경우 어쨌든 간에 그런 subnetwork를 (거의) scratch로부터 training을 시켜야 할텐데 그 때 충분히 유용하게 쓰일 내용일 것이고, 그래서 사람들의 attention이 모이지 않았나 하는 생각이 든다. 그럼 이제 나에게 남은 문제는.. 이 두 편의 논문을 읽으면서 내가 얻었던 insight들과 그것들이 내 연구에 어떻게 활용될 수 있을지를 생각해봐야될텐데, 일단 먼저 위 연구들에서 추가적으로 확인하고 싶은 내용들을 몇 가지 적어보면서 생각을 정리해봐야겠음. 일단 당장 이 논문에서 masking criterion을 $M(w_i , w_f )$ 로 정의했는데, 사실 variable 들을 저렇게 두 개 사용하겠다고 한 것도 사실은 human choice였던 거고.. specific 한 function shape도 사실 intuition에 의지해서 hand-crafted되어 있는 함수들이어서.. 논문에서 네이밍한 $\texttt{large_final}$ criterion이 반드시 optimal한 (optimal in what sense?의 문제가 남아있긴 하지만..) masking criterion이라는 보장은 없지 않나 싶음. 또 $w_f$를 criterion의 변수로 쓰는 순간 사실 original big (over-parameterized) network 에 대한 training을 한 번은 진행해야 하는데.. 아까 말했듯 그런 경우 그냥 fine-tuning을 하면 되지 않냐? 는 질문을 할 수도 있을 거고. 어쨌든 적절한 masking criterion이 무엇인지에 대한 문제를 조금 살펴봐야될 듯함. 근데 이 과정에서.. optimal in what sense? 라는 질문에 답을 해야 함. 대다수의 LT 후속 논문들, 그리고 대부분의 model compression 관련 페이퍼들은 classifier에 대해서 다루고 있고, 일련의 optimization problem에서 minimization function을 “remaining weight의 숫자”, primal equality/inequality constraint를 “classifier accuracy의 보존 혹은 향상”으로 잡고 있는데, 지금 내가 다루고자 하는 autoencoder + outlier detection + pruning 문제의 경우 그것들과 같은 선상에서 다룰 수 있는 문제가 아님. 우리 상황에서는, autoencoder의 accuracy격인.. training data 에 대한 mean reconstruction error가 pruning 이후에 기존의 bigger network 와 비교했을 때 높아진다 하더라도 크게 상관이 없음. 우리가 원하는 것은 IND 와 OOD의 reconstruction error 사이 간격이 더 벌어지기를 바랄 뿐이지, IND의 RE가 보존되길 바라는 것이 아님. 그렇다면 여러 masking criterion 중 무엇이 optimal인지를 결정할 때, 무엇을 바탕으로 결정을 해야 하는가? outlier detection 성능? 근데 그것은 이 세상에 존재하는 모든 outlier 에 대해서 다 실험을 해보지 않는 이상 그리 좋은 방법이 아닌듯 하고.. 상웅 조교님이 말씀하신 NAE의 objective function을 optimality의 기준으로 삼는 것이 이 시점에서는 가장 적절해 보이긴 하는데.. EBGAN의 objective을 써도 될 것 같기도 하고. 이건 autoencoder 쪽 논문을 더 읽어봐야 하나… 일단 조금 더 고민을 해봐야겠음. Supermask에 대한 내용은 무척 흥미롭게 읽었던 부분 중 하나인데, 일단 weight 대신에 mask를 training 한다는 것 자체가 매우 흥미로웠음. which neuron 간의 연결을 끊어버릴지를 learning을 통해서 학습을 한다는 것인데, 조금 거창히 말하자면 optimal 한 network architecture를 learning으로 학습하는 것과 같다고 생각함. 사실 지금까지 (특히 computer vision 분야에서) network architecture는 대부분 hand-crafted되는 경우가 많았던 것 같은데 - 이는 개인적으로 (그럴 깜냥도 안되지만) computer vision 분야의 deep learning 관련 성능 향상 progress가 그다지 흥미롭게 느껴지지 않는 이유이기도 했고 - supermask의 경우 optimal한 network architecture를 찾아내는 나름 합리적인 방법인 것 같다는 점에서 아주 인상적이었음. 그러나 이 논문에서 소개된 supermask 의 경우 pruning ratio를 explicit하게 조절할 수는 없어 보이는데 (supermask 형성 과정 자체가 stochastic한 측면이 있고, 논문에서도 20~80% 사이의 pruning ratio 정도만 obtain할 수 있었던 것으로 보임) pruning ratio를 직접적으로 정해야 하는 상황이라면 문제가 될 수도 있을 것 같음 (근데 그런 상황이 있나?) 또한, supermask generating function을 $g(m) = \text{Bern}(\text{sigmoid}(m))$ 으로 결정하였는데 이것도 다른 방법이 있을 것이라고 생각함. 당장 생각나는 건 예를 들어 \[g(m) = u{(\text{sigmoid}(m))}\] where \[u(s;t \in (0,1))=\begin{cases}1 &amp;amp; \text{if } s&amp;gt;t \\ 0&amp;amp; \text{else}\end{cases}\] 이렇게 정의를 한다면 $t$를 조절하면서 간접적으로 pruning ratio를 조절할 수 있을 수도 있을 것 같고, supermask generating 과정이 stochastic하지 않기 때문에 조금 더 나을 수도 (물론 못할 수도) 있을 것 같고. 실험을 해봐야될 것 같음. 이 supermask 에 대한 논의도 마찬가지로, 현재 우리의 문제인 autoencoder + pruning + outlier detection 쪽에다가 적용을 하려면 무엇을 objective function으로 삼아 training할 것인지를 결정해야됨. 일단 가장 간단하게 생각 나는 것은 일반적인 AE를 학습하듯 mean RE를 minimize하는 방안인데, 이것이 흥미로운 결과가 되려면 Result A - weight를 학습 (original) Result B - weight는 first initialization 상태 그대로 fix 시켜둔 상태에서 mask 를 학습 Result C - Result 2의 결과에서 학습된 mask를 통해 pruned된 weight들은 고정시켜둔 상태에서 한 차례 더 weight들을 fine-tuning Result B 혹은 C 에서 Result A와 비교해 comparable or better outlier detection performance를 보여줄 수 있어야 함. 만약 Result B 혹은 C의 결과가 동일한 pruning ratio를 가진 base pruning method 결과보다 좋다면 또 다른 의미를 찾을 수도 있을 것 같음. 쓰다가 또 든 생각인데, autoencoder + pruning + outlier detection 쪽에 supermask의 아이디어를 적용하는 것의 장점은 뭐지? 일단 지금까지 했던 pruning 실험과 supermask가 다른 점은.. pruning : $\texttt{large_final}$ mask criterion을 사용한 hand-crafted pruning process + precise weight fine-tuning supermask : original objective function를 minimize하기 위한 mask function을 학습 supermask 테크닉의 경우 minimize하고자 하는 objective function 을 precise하게 minimize 한다기보다는 조금 rough 하게 minimize 시킨다는 특징이 있는 것 같은데, better outlier detection을 위해서 precise한 training이 좋을지, rough한 training이 좋을지는 모르는 일 아닌가? (당장 rough한 training이라는게 뭔지,, 구체적으로 정의할 수 있는 개념도 아닌 듯 하고..) objective function이 NAE처럼 outlier detection task를 잘 하기 위해 specifically design 되어 있다면 해당 objective function을 매우 precise하게 minimize하는게 중요하겠지만, outlier에 대한 고려가 되지 않은 채 설계된 objective function의 경우 regularizing term 을 적절히 잘 넣는 것이 (= rough 하게 training 시키는 것과 동의어일 것 같긴 한데) outlier detection에 도움이 될 수도 있을 것 같고… Training from scratch 가 outlier detection 성능에 영향을 줄 수 있을까? 도 고민해봐야 할 것 같음. 상웅 조교님이 지지난 미팅 과정에서 언뜻 임의의 criterion을 가지고 pruned 된 네트워크를 scratch에서 training 시키는 것도 한 번 해보면 좋을 것 같다고 하시긴 하셨는데, 사실 LT 페이퍼에 의하면 이게 쉬운 일은 아니라고 하니까. 근데 pruning + finetuning 과 pruning + training from scratch 의 결과가 많이 다를까? 잘 모르겠음.</summary></entry><entry><title type="html">[arXiv 2018] Shared Autonomy via Deep Reinforcement Learning</title><link href="http://localhost:4000/notion_to_markdown/%5BPaper%20Review%5D%20Shared%20Autonomy%20via%20Deep%20Reinforcem%20abb251ed95e24e3186ed46bd449bf6ce/" rel="alternate" type="text/html" title="[arXiv 2018] Shared Autonomy via Deep Reinforcement Learning" /><published>2021-03-31T00:00:00+09:00</published><updated>2021-03-31T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/shared-autonomy-via-deep-rl</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/%5BPaper%20Review%5D%20Shared%20Autonomy%20via%20Deep%20Reinforcem%20abb251ed95e24e3186ed46bd449bf6ce/">&lt;h2 id=&quot;introduction&quot;&gt;Introduction&lt;/h2&gt;
-
-&lt;h3 id=&quot;imagine-a-situation-of-landing-a-quadrotor-safely&quot;&gt;Imagine a situation of landing a quadrotor safely…&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Humans suffer mostly because… &lt;strong&gt;controlling many degrees of freedom is hard!&lt;/strong&gt;
-→ but knows what a “safe landing” is.&lt;/li&gt;
-  &lt;li&gt;Robots suffer mostly because… &lt;strong&gt;they don’t know the concept of good landing!&lt;/strong&gt;&lt;br /&gt;
-&lt;em&gt;??? : By the way, can’t I just stop spinning the rotors? I can make this land anyway.&lt;/em&gt;
-→ but they do not struggle with high degrees of freedom&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Shared autonomy can be the solution in this case… 
-&lt;strong&gt;“by combining the user input with automated assistance”&lt;/strong&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;whats-different-with-the-hindsight-optimization-paper&quot;&gt;What’s different with the Hindsight-optimization paper?&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;“We focus on an area of shared autoonomy in which information about the user’s intent is hidden from the robot….”&lt;/p&gt;
-
-    &lt;p&gt;그럼 hindsight optimization 에서는 안 그랬나?
-  “…in which prior work has proposed approaches that infer the user’s goal from their input and autonomously act to achieve it.”&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;However, t&lt;strong&gt;hese approahces tend to assume that&lt;/strong&gt;
-    &lt;ol&gt;
-      &lt;li&gt;we know the dynamics model fo the world&lt;/li&gt;
-      &lt;li&gt;we know how to represent our goal&lt;/li&gt;
-      &lt;li&gt;we know the policy to achieve that goal&lt;/li&gt;
-    &lt;/ol&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;However, above assumptions may be too much of a constraint considering that&lt;/strong&gt;
-    &lt;ol&gt;
-      &lt;li&gt;Fitting an accurate global dynamics model can be more difficult than learning to perform the task&lt;/li&gt;
-      &lt;li&gt;assuming a fixed representation of the user’s goal reduces the flexibility of the system to perform tasks in which the user’s desires are difficult to specify but easy to evaluate&lt;/li&gt;
-      &lt;li&gt;user input can exhibit systematic suboptimality that prevents standard goal inference algorithms from recovering user intent by inverting a geneartive model of behavior.&lt;/li&gt;
-    &lt;/ol&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;from-each-perspective&quot;&gt;From each perspective..&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;From the agent’s perspective → the user acts like a prior policy that can be fine-tuned + additional sensor generating observations from which the agent can implicitly decode the user’s private information&lt;/li&gt;
-  &lt;li&gt;From the user’s perspective → the agent behvaes like an adaptive interface that learns a personalized mapping from user commands to actions that maximizes task reward.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;to-achieve-their-goal&quot;&gt;To achieve their goal..&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;use human-in-loop deep Q-learning to learn an approximate state-action value function that computes the expected future return of an action given the current environmental observation&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;model-free-shared-autonomy&quot;&gt;Model-free shared autonomy&lt;/h2&gt;
-
-&lt;h3 id=&quot;problem-statement&quot;&gt;Problem statement&lt;/h3&gt;
-
-&lt;p&gt;Authors relax the standard formulation of shared autonomy defined by POMDP in &lt;a href=&quot;https://www.notion.so/Paper-Review-Shared-Autonomy-via-Hindsight-Optimization-e7d311f0436f496dbc50a97ed6b29594&quot;&gt;[Paper Review] Shared Autonomy via Hindsight Optimization&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;In their problem formulation, the transition $T$, the user’s policy $\pi_h$, and the goal space $\mathcal{G}$ are no longer all necessarily known to the robot.&lt;/p&gt;
-
-&lt;p&gt;그치, hindsight optimization 페이퍼에서는 POMDP를 사용하기 위해서 이것들을 다 알아야 했었지. user’s policy $\pi_h$의 경우 MaxEnt IOC로 알아내려고 했었고.&lt;/p&gt;
-
-&lt;p&gt;The reward function, which still depends on the user’s private information, is decomposed as:&lt;/p&gt;
-
-\[R(s,a,s') =R_{general}(s,a,s')+ R_{feedback}(s,a,s')\]
-
-&lt;p&gt;여기서 $R_{general}$이란 거는 reward that are known (e.g. such as the need to avoid collisions)&lt;/p&gt;
-
-&lt;p&gt;$R_{feedback}$ is a user-generated feedback that depends on their private information. (do not know)&lt;/p&gt;
-
-&lt;p&gt;In practice, the user might simply indicate once per trail whether the robot succeeded or not.&lt;/p&gt;
-
-&lt;h3 id=&quot;three-types-of-setting&quot;&gt;Three types of setting&lt;/h3&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;known-user-policy : &lt;strong&gt;unknown&lt;/strong&gt; dynamics, &lt;strong&gt;known&lt;/strong&gt; goal space and user policy&lt;/li&gt;
-  &lt;li&gt;known-goal-space : &lt;strong&gt;unknown&lt;/strong&gt; dynamics, user policy, and &lt;strong&gt;known&lt;/strong&gt; goal space&lt;/li&gt;
-  &lt;li&gt;min assumptions : &lt;strong&gt;unknown&lt;/strong&gt; dynamics, user policy, goal space ← most focused&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h3 id=&quot;method-overview&quot;&gt;Method overview&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;input  =  observations of the environment and the user’s controls or inferred goal&lt;/li&gt;
-  &lt;li&gt;output =  high value action / control output that is as close as possible to the user’s control&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;→ how the agent combines user input with environmental observations?&lt;/p&gt;
-
-&lt;h3 id=&quot;incorporating-user-control&quot;&gt;Incorporating user control&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;incorporate information from the user as useful observations for the agent&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;jointly embeds the agent’s observation of the environement $s_t$ with the information from the user $u_t$ by simply concatenating&lt;/p&gt;
-
-\[\tilde s_t = \begin{bmatrix} s_t \\ u_t\end{bmatrix}\]
-  &lt;/li&gt;
-  &lt;li&gt;for min-assumption case…
-    &lt;ul&gt;
-      &lt;li&gt;the policy directly takes in the user’s actions $a_t ^h$ and must learn to implicitly decode the user’s intent and perform the task (action → intent)&lt;/li&gt;
-      &lt;li&gt;to the agent, the user is part of the external environment → user’s control is yet another source of observations&lt;/li&gt;
-      &lt;li&gt;
-        &lt;p&gt;Agent can discover arbitrary relationships between user controls and observations of the physical environment, rather than explicitly assuming the existence of a goal.&lt;/p&gt;
-
-        &lt;p&gt;음.. 훨씬 깔끔하군.. information $u_t$ 로서 raw $a_t ^h$를 사용한다는 거고, 나머지는 deep neural network 에 맡긴다는 거 같음.&lt;/p&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;q-learning-with-user-control&quot;&gt;Q-learning with user control&lt;/h3&gt;
-
-&lt;p&gt;human-in-the-loop model-free RL 의 biggest challenge&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;maintaining informative user input → user input이 suggested control 일 경우, user의 suggestion 을 계속 무시한 채 different action을 취하면 user input의 quality가 떨어지게 될 것 (user는 자신의 action으로부터 파생된 feedback을 바탕으로 control을 하니까)&lt;/li&gt;
-  &lt;li&gt;minimizing the number of interactions with the environment → model-free reinforcement learning은 주변 environment와 많은 interaction을 필요로 하는데 이게 impractical 하다.&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;이를 해결하기 위해 DQN 대신에 neural fitted Q-iteration (NFQI)를 사용.&lt;/p&gt;
-
-&lt;h3 id=&quot;control-sharing&quot;&gt;Control Sharing&lt;/h3&gt;
-
-&lt;p&gt;Select a &lt;strong&gt;feasible action closest to the user’s suggestion&lt;/strong&gt;, where an action is feasible if it isn’t that much worse than the optimal action.&lt;/p&gt;
-
-\[\pi_\alpha (a|\tilde{s}, a^h) = \delta \Big (a= \argmax_{\{a:Q'(\tilde{s},a)\geq(1-\alpha)Q'(\tilde{s},a^*)\}} f(a,a^h) \Big )\]
-
-&lt;p&gt;where $f$ is an action simliarty function  and&lt;/p&gt;
-
-\[Q'(\tilde{s},a) = Q(\tilde{s},a) - \min_{a'\in \mathcal{A}} Q(\tilde{s},a')\]
-
-&lt;p&gt;$\alpha$ determines the tolerance of the system to suboptimal human suggestions → &lt;strong&gt;amount of assistance!&lt;/strong&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;exact-algorithm&quot;&gt;Exact Algorithm&lt;/h3&gt;
-
-&lt;center&gt;&lt;img src=&quot;Untitled.png&quot; width=&quot;400&quot; /&gt;&lt;/center&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Shared-Autonomy" /><summary type="html">Introduction Imagine a situation of landing a quadrotor safely… Humans suffer mostly because… controlling many degrees of freedom is hard! → but knows what a “safe landing” is. Robots suffer mostly because… they don’t know the concept of good landing! ??? : By the way, can’t I just stop spinning the rotors? I can make this land anyway. → but they do not struggle with high degrees of freedom Shared autonomy can be the solution in this case… “by combining the user input with automated assistance” What’s different with the Hindsight-optimization paper? “We focus on an area of shared autoonomy in which information about the user’s intent is hidden from the robot….” 그럼 hindsight optimization 에서는 안 그랬나? “…in which prior work has proposed approaches that infer the user’s goal from their input and autonomously act to achieve it.” However, these approahces tend to assume that we know the dynamics model fo the world we know how to represent our goal we know the policy to achieve that goal However, above assumptions may be too much of a constraint considering that Fitting an accurate global dynamics model can be more difficult than learning to perform the task assuming a fixed representation of the user’s goal reduces the flexibility of the system to perform tasks in which the user’s desires are difficult to specify but easy to evaluate user input can exhibit systematic suboptimality that prevents standard goal inference algorithms from recovering user intent by inverting a geneartive model of behavior. From each perspective.. From the agent’s perspective → the user acts like a prior policy that can be fine-tuned + additional sensor generating observations from which the agent can implicitly decode the user’s private information From the user’s perspective → the agent behvaes like an adaptive interface that learns a personalized mapping from user commands to actions that maximizes task reward. To achieve their goal.. use human-in-loop deep Q-learning to learn an approximate state-action value function that computes the expected future return of an action given the current environmental observation Model-free shared autonomy Problem statement Authors relax the standard formulation of shared autonomy defined by POMDP in [Paper Review] Shared Autonomy via Hindsight Optimization In their problem formulation, the transition $T$, the user’s policy $\pi_h$, and the goal space $\mathcal{G}$ are no longer all necessarily known to the robot. 그치, hindsight optimization 페이퍼에서는 POMDP를 사용하기 위해서 이것들을 다 알아야 했었지. user’s policy $\pi_h$의 경우 MaxEnt IOC로 알아내려고 했었고. The reward function, which still depends on the user’s private information, is decomposed as: \[R(s,a,s') =R_{general}(s,a,s')+ R_{feedback}(s,a,s')\] 여기서 $R_{general}$이란 거는 reward that are known (e.g. such as the need to avoid collisions) $R_{feedback}$ is a user-generated feedback that depends on their private information. (do not know) In practice, the user might simply indicate once per trail whether the robot succeeded or not. Three types of setting known-user-policy : unknown dynamics, known goal space and user policy known-goal-space : unknown dynamics, user policy, and known goal space min assumptions : unknown dynamics, user policy, goal space ← most focused Method overview input = observations of the environment and the user’s controls or inferred goal output = high value action / control output that is as close as possible to the user’s control → how the agent combines user input with environmental observations? Incorporating user control incorporate information from the user as useful observations for the agent jointly embeds the agent’s observation of the environement $s_t$ with the information from the user $u_t$ by simply concatenating \[\tilde s_t = \begin{bmatrix} s_t \\ u_t\end{bmatrix}\] for min-assumption case… the policy directly takes in the user’s actions $a_t ^h$ and must learn to implicitly decode the user’s intent and perform the task (action → intent) to the agent, the user is part of the external environment → user’s control is yet another source of observations Agent can discover arbitrary relationships between user controls and observations of the physical environment, rather than explicitly assuming the existence of a goal. 음.. 훨씬 깔끔하군.. information $u_t$ 로서 raw $a_t ^h$를 사용한다는 거고, 나머지는 deep neural network 에 맡긴다는 거 같음. Q-learning with user control human-in-the-loop model-free RL 의 biggest challenge maintaining informative user input → user input이 suggested control 일 경우, user의 suggestion 을 계속 무시한 채 different action을 취하면 user input의 quality가 떨어지게 될 것 (user는 자신의 action으로부터 파생된 feedback을 바탕으로 control을 하니까) minimizing the number of interactions with the environment → model-free reinforcement learning은 주변 environment와 많은 interaction을 필요로 하는데 이게 impractical 하다. 이를 해결하기 위해 DQN 대신에 neural fitted Q-iteration (NFQI)를 사용. Control Sharing Select a feasible action closest to the user’s suggestion, where an action is feasible if it isn’t that much worse than the optimal action. \[\pi_\alpha (a|\tilde{s}, a^h) = \delta \Big (a= \argmax_{\{a:Q'(\tilde{s},a)\geq(1-\alpha)Q'(\tilde{s},a^*)\}} f(a,a^h) \Big )\] where $f$ is an action simliarty function and \[Q'(\tilde{s},a) = Q(\tilde{s},a) - \min_{a'\in \mathcal{A}} Q(\tilde{s},a')\] $\alpha$ determines the tolerance of the system to suboptimal human suggestions → amount of assistance! Exact Algorithm</summary></entry></feed>
+&lt;/ol&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Model-Compression" /><category term="Network-Pruning" /><category term="Lottery-Ticket" /><summary type="html">Generalizing the Lottery Ticket Hypothesis Lottery Ticket (LT) Algorithm is in fact doing… Initiailize a mask $m$ to one (no pruning at all). Randomize the parameters $w$ of a network. Network is $f(x; w \odot m)$ Train the parameters $w$ of the network. Initial weights before the training is denoted as $w_i$ and weights after the training is denoted as $w_f$. To determine the weights to prune, we use a ‘mask criterion’. Mask criterion is defined as a scalar function $M(w_i, w_f )$ defined by both the initial and final weights. Specific shape of the function $M$ is yet undetermined, while the original LT algorithm used $M(w_i , w_f) = \vert w_f \vert$. After that, we rank the weights by the value obtained from $M$, and the mask corresponding to top $p\%$ of weights are set to 1, and the bottom $(100-p)\%$ to 1. For the weights which its corresponding mask values are 1, “Mask-1 Actions” are taken. In the original LT algorithm, “Mask-1 Action” was to reinitialize its weights to their initial values, and marking as a trainable parameter in the subsequent training. For the weights which its corresponding mask values are 0, “Mask-0 Actions” are taken. In the original LT algorithm, “Mask-0 Action” was to freeze those weights with mask value 0. Repeat above procedure for iterative pruning. This paper tries to generalize the LT algorithm by… Trying various versions of “mask criteria” Trying various versions of “mask-1 actions” Trying various versions of “mask-0 actions” In this summary article, I will… (since this paper further analyzes the LT algorithm, which in my opinion can give us a deeper insight about the network pruning) summarize the experiment details &amp;amp; insights which can be applied to our experiment trying to connect pruning with outlier detection. Step 1. Trying various masking criterions Authors focused on intial weights $w_i$ and final weights $w_f$. Maybe they believed that the importance of weights can be sufficiently expressed by $w_i$ and $w_f$. Note that authors visualize different masking criterions using a cartoon-form ellipse area of $w_i$ and $w_f$ space like below. Result shows that, while $\texttt{large_final}$ criterion, which is originally used in the LT algorithm (and the one I am using for outlier detection experiments), is a very competitive masking criterion, other criterion such as $\texttt{magnitude_increase}$ / $\texttt{large_init_large_final}$ $\texttt{movement}$ shows similar behavior. However, what we still don’t know is the “Why” question. “Why does those $\texttt{magnitude_increase}$ or $\texttt{large_final}$ criteria work better than the others?” Mask-1 Action : sign is everything. For those lucky weights that survived the pruning process, we have to decide the initialization method for training. Recall, original LT algorithm paper stated that, to make the pruned network to learn successfully from scratch, we need to rewind the intialization to the original one: randomly reintializing degrades the performance. However, it is still unknown exactly which component of reinitialization process is responsible for the subsequent training procedure. To find out, authors tried out three variants for Mask-1 Actions. Reinitializing : reintialize the kept-weights based on the initialization distribution $\mathcal{D}_\theta$ Reshuffling : within the trained kept-weights, shuffle them. Constants : Every weight on a layer becomes one of three values $-\alpha, 0 , \alpha$ while $\alpha$ is the standard deviation of each layer’s $\mathcal{D}_\theta$ Well, the result showed that, it is not easy to win the “rewind” technique (original LT algorithm) - none of above three intialization techniques showed promising results. Meanwhile, the authors didn’t stop there: they asked themselves below questions. All of above intialization techniques doesn’t preserve the ‘signs’ of original weights. What if we preserve the signs of new-intialization? Well, surprisingly, as soon as we ensured the new values of kept weights to have the same sign as their original initial values, all three variants above worked better (solid-line in Figure 4). We can clearly see that the key-point of using the original initialization is preserving the sign. This might allow us to state an interesting corollary about the behaviour of optimizers. Optimizers work well anywhere in the correct sign quadrant for the weights, but encounter difficulty crossing the zero barrier between signs. Mask-0 Action : masking is in fact a new type of training. Authors asked themselves a quite unique question. What should we do with the pruned weights? Just simply leave them and fix it to zero? Hmm. something more could have been done there as well. The term ‘pruning’ implies that we want to disconnect the connections between the neurons. Thus, fixing the pruned weights to zero might be a reasonable thing to do. However, if we think it differently, we might construe the pruned connections being “unimportant” to the performance of the network. In other words, we might think that the network “doesn’t care that much” about those pruned weights! If that’s the case, (authors wondered) why don’t we set them to some other non-zero value? To that end, authors designed an interesting experiment. Experiment A : (original LT) reintialize the pruned weights to zero + freeze during training Experiment B : reintialize the pruned weights to their initial value + freeze during training. By conducting above experiment, we can get a sense how important the zero-ing procedure is! If Experiment B wins (or at least perform similarly), it means that the zero-ing process isn’t that significant. However, the results showed that zero-ing process is actually very important. Authors then stated an hypothesis, which I personally consider really interesting. Hypothesis: Mask criterion we use ($\texttt{large_final}$) tends to mask the weights that were headed to zero anyway! To test above hypothesis, authors designed another experiment (mask-0 action) as well. Experiment C : for the weights that are pruned, we set it and fix it to zero if they move towards zero during the training process, and set it to the initial value otherwise. Experiment D : for every weights in the network, we set it and fix it to zero if they move towards zero during the training process → this experiment actually doesn’t prune the network. Above experiments C and D each correspond to Variant 1 and Variant 2 in Figure 5 above. Surprisingly, jusy by masking the weights without any further training, it works better than non-pruned network. Also, since experiment D outperformed experiment C, we can conclude that this masking action of considering the ‘movement of weights’ during the training process is not only beneficial to mask-0 , but in fact also beneficial to mask-1 weights. To that end, authors conclude an interesting approach; Masking can be considered as a novel type of training procedure! Now, we can gain a new perspective to answer why certain mask criteria works better than others →  $\texttt{large_final}$ , pruning the weights that are small and setting it to zero, is in fact effectively pushing them further in the direction they were heading anyway. important contribution of the value of the pruned weights to the overall performance of pruned networks benefit of setting these select weights to zero as a better intialization for the network Supermask: if masking is training, let’s realllly use it for training No training at all, but a simple masking to the randomly initialized network. It turns out, that a well-chosen mask can already attain a test accuracy far better than chance! (MNIST classifier - random accuracy 10% → well-chosen mask operation 40%) Authors call those masks “supermask”, which is a mask that can produce better-than-chance accuracy without training of the underlying weights. How can we find a supermask? Authors first tested below types of masks. It turns out, just by applying a large-final mask with additional same-sign constraint can improve the accuracy of original network by far without any training. (Orange solid line in Figure 7) We can apply this method for model compression ; simply saving a binary mask and a random seed can reconstruct the full weights of the network. Bit more? Optimizing the supermask: training the mask, not the weights. For an original weight tensor $w$ and a mask tensor $m$ of the same shape, we define an effective weight \[w' = w_i \odot g(m)\] Training the mask with \[g(m) = \text{Bern}(S(m))\] where $\text{Bern}(p)$ is the bernoulli sample with probability $p$ and $S(m)$ is the sigmoid function. Training the $m$ matrix with SGD, authors obtained 95.3% test accuracy on MNIST and 65.4% on CIFAR-10. (red dashed-line in Figure 7) A Simple trick during training : Dynamic Weight Rescaling For each training iteration and for each layer, we multiply the underlying weights by the ratio of the total number of weigts in the layer over the number of ones in the corresponding mask. Final Results &amp;amp; Remarks Network upon initialization already contains powerful subnetworks that work well without training! So.. what’s left for me? Opinions &amp;amp; Insights 흥미로운 페이퍼였다고 생각함. Lottery Ticket 페이퍼의 경우는 사실 “해봤더니 되었다” 정도여서 오호 그렇구나 정도였고 사실 크게 감흥은 없었는데.. 이 페이퍼의 경우 (물론 theoretical한 설명을 준 건 아니지만) 적어도 “왜 intialization을 그렇게 해야하는지” 라는 질문에 대해 어느 정도 안개를 걷어준 것 같아서 재미있게 읽었음. 뭔가 연구에서 인사이트와 적절한 실험 설계의 중요성을 보여준 것 같달까.. 일단 제일 먼저.. 두 페이퍼의 가장 큰 contribution이 무엇일지를 한번 생각해봐야될 것 같은데… 왜냐하면… 사실 굳이 복잡하게 왜 intialization을 하려고 하냐 하는지를 사실 잘 이해를 못하겠어서임. LeCun이 subnetwork에서 아무렇게나 initialize하면 training이 잘 안된다고 이미 말한 사실이 있는데, 그 문제를 굳이 왜 태클하려고 하냐 이 말임. 어차피 LT algorithm의 경우 pruning을 하기 위해서 일단 한번은 training을 해야되는데, 차라리 거기서 굳이 initialize를 또 하지 않고 바로 fine-tuning을 해버리면 일이 쉬워지는데.. 굳이 이런 걸 연구해야 해? 하는 생각을 할 수도 있으니까. 근데 학계의 관심이 Lottery Ticket 페이퍼에 쏠리게 된 데에는 그 만한 이유가 있을 것이라고 생각. 지금이야 over-parameterized된 네트워크에서 smaller network로 축소시키는 과정에서 $w_f$ (weight after training)을 써야 하지만, 나중에 혹시 아나? training 없이, 혹은 아주 짧은 training 과정만으로 위 두 논문에서 보인 effective sub-network 을 찾아내게 될 수 있을지 (pruning 을 할 수 있을지)? 그럴 경우 어쨌든 간에 그런 subnetwork를 (거의) scratch로부터 training을 시켜야 할텐데 그 때 충분히 유용하게 쓰일 내용일 것이고, 그래서 사람들의 attention이 모이지 않았나 하는 생각이 든다. 그럼 이제 나에게 남은 문제는.. 이 두 편의 논문을 읽으면서 내가 얻었던 insight들과 그것들이 내 연구에 어떻게 활용될 수 있을지를 생각해봐야될텐데, 일단 먼저 위 연구들에서 추가적으로 확인하고 싶은 내용들을 몇 가지 적어보면서 생각을 정리해봐야겠음. 일단 당장 이 논문에서 masking criterion을 $M(w_i , w_f )$ 로 정의했는데, 사실 variable 들을 저렇게 두 개 사용하겠다고 한 것도 사실은 human choice였던 거고.. specific 한 function shape도 사실 intuition에 의지해서 hand-crafted되어 있는 함수들이어서.. 논문에서 네이밍한 $\texttt{large_final}$ criterion이 반드시 optimal한 (optimal in what sense?의 문제가 남아있긴 하지만..) masking criterion이라는 보장은 없지 않나 싶음. 또 $w_f$를 criterion의 변수로 쓰는 순간 사실 original big (over-parameterized) network 에 대한 training을 한 번은 진행해야 하는데.. 아까 말했듯 그런 경우 그냥 fine-tuning을 하면 되지 않냐? 는 질문을 할 수도 있을 거고. 어쨌든 적절한 masking criterion이 무엇인지에 대한 문제를 조금 살펴봐야될 듯함. 근데 이 과정에서.. optimal in what sense? 라는 질문에 답을 해야 함. 대다수의 LT 후속 논문들, 그리고 대부분의 model compression 관련 페이퍼들은 classifier에 대해서 다루고 있고, 일련의 optimization problem에서 minimization function을 “remaining weight의 숫자”, primal equality/inequality constraint를 “classifier accuracy의 보존 혹은 향상”으로 잡고 있는데, 지금 내가 다루고자 하는 autoencoder + outlier detection + pruning 문제의 경우 그것들과 같은 선상에서 다룰 수 있는 문제가 아님. 우리 상황에서는, autoencoder의 accuracy격인.. training data 에 대한 mean reconstruction error가 pruning 이후에 기존의 bigger network 와 비교했을 때 높아진다 하더라도 크게 상관이 없음. 우리가 원하는 것은 IND 와 OOD의 reconstruction error 사이 간격이 더 벌어지기를 바랄 뿐이지, IND의 RE가 보존되길 바라는 것이 아님. 그렇다면 여러 masking criterion 중 무엇이 optimal인지를 결정할 때, 무엇을 바탕으로 결정을 해야 하는가? outlier detection 성능? 근데 그것은 이 세상에 존재하는 모든 outlier 에 대해서 다 실험을 해보지 않는 이상 그리 좋은 방법이 아닌듯 하고.. 상웅 조교님이 말씀하신 NAE의 objective function을 optimality의 기준으로 삼는 것이 이 시점에서는 가장 적절해 보이긴 하는데.. EBGAN의 objective을 써도 될 것 같기도 하고. 이건 autoencoder 쪽 논문을 더 읽어봐야 하나… 일단 조금 더 고민을 해봐야겠음. Supermask에 대한 내용은 무척 흥미롭게 읽었던 부분 중 하나인데, 일단 weight 대신에 mask를 training 한다는 것 자체가 매우 흥미로웠음. which neuron 간의 연결을 끊어버릴지를 learning을 통해서 학습을 한다는 것인데, 조금 거창히 말하자면 optimal 한 network architecture를 learning으로 학습하는 것과 같다고 생각함. 사실 지금까지 (특히 computer vision 분야에서) network architecture는 대부분 hand-crafted되는 경우가 많았던 것 같은데 - 이는 개인적으로 (그럴 깜냥도 안되지만) computer vision 분야의 deep learning 관련 성능 향상 progress가 그다지 흥미롭게 느껴지지 않는 이유이기도 했고 - supermask의 경우 optimal한 network architecture를 찾아내는 나름 합리적인 방법인 것 같다는 점에서 아주 인상적이었음. 그러나 이 논문에서 소개된 supermask 의 경우 pruning ratio를 explicit하게 조절할 수는 없어 보이는데 (supermask 형성 과정 자체가 stochastic한 측면이 있고, 논문에서도 20~80% 사이의 pruning ratio 정도만 obtain할 수 있었던 것으로 보임) pruning ratio를 직접적으로 정해야 하는 상황이라면 문제가 될 수도 있을 것 같음 (근데 그런 상황이 있나?) 또한, supermask generating function을 $g(m) = \text{Bern}(\text{sigmoid}(m))$ 으로 결정하였는데 이것도 다른 방법이 있을 것이라고 생각함. 당장 생각나는 건 예를 들어 \[g(m) = u{(\text{sigmoid}(m))}\] where \[u(s;t \in (0,1))=\begin{cases}1 &amp;amp; \text{if } s&amp;gt;t \\ 0&amp;amp; \text{else}\end{cases}\] 이렇게 정의를 한다면 $t$를 조절하면서 간접적으로 pruning ratio를 조절할 수 있을 수도 있을 것 같고, supermask generating 과정이 stochastic하지 않기 때문에 조금 더 나을 수도 (물론 못할 수도) 있을 것 같고. 실험을 해봐야될 것 같음. 이 supermask 에 대한 논의도 마찬가지로, 현재 우리의 문제인 autoencoder + pruning + outlier detection 쪽에다가 적용을 하려면 무엇을 objective function으로 삼아 training할 것인지를 결정해야됨. 일단 가장 간단하게 생각 나는 것은 일반적인 AE를 학습하듯 mean RE를 minimize하는 방안인데, 이것이 흥미로운 결과가 되려면 Result A - weight를 학습 (original) Result B - weight는 first initialization 상태 그대로 fix 시켜둔 상태에서 mask 를 학습 Result C - Result 2의 결과에서 학습된 mask를 통해 pruned된 weight들은 고정시켜둔 상태에서 한 차례 더 weight들을 fine-tuning Result B 혹은 C 에서 Result A와 비교해 comparable or better outlier detection performance를 보여줄 수 있어야 함. 만약 Result B 혹은 C의 결과가 동일한 pruning ratio를 가진 base pruning method 결과보다 좋다면 또 다른 의미를 찾을 수도 있을 것 같음. 쓰다가 또 든 생각인데, autoencoder + pruning + outlier detection 쪽에 supermask의 아이디어를 적용하는 것의 장점은 뭐지? 일단 지금까지 했던 pruning 실험과 supermask가 다른 점은.. pruning : $\texttt{large_final}$ mask criterion을 사용한 hand-crafted pruning process + precise weight fine-tuning supermask : original objective function를 minimize하기 위한 mask function을 학습 supermask 테크닉의 경우 minimize하고자 하는 objective function 을 precise하게 minimize 한다기보다는 조금 rough 하게 minimize 시킨다는 특징이 있는 것 같은데, better outlier detection을 위해서 precise한 training이 좋을지, rough한 training이 좋을지는 모르는 일 아닌가? (당장 rough한 training이라는게 뭔지,, 구체적으로 정의할 수 있는 개념도 아닌 듯 하고..) objective function이 NAE처럼 outlier detection task를 잘 하기 위해 specifically design 되어 있다면 해당 objective function을 매우 precise하게 minimize하는게 중요하겠지만, outlier에 대한 고려가 되지 않은 채 설계된 objective function의 경우 regularizing term 을 적절히 잘 넣는 것이 (= rough 하게 training 시키는 것과 동의어일 것 같긴 한데) outlier detection에 도움이 될 수도 있을 것 같고… Training from scratch 가 outlier detection 성능에 영향을 줄 수 있을까? 도 고민해봐야 할 것 같음. 상웅 조교님이 지지난 미팅 과정에서 언뜻 임의의 criterion을 가지고 pruned 된 네트워크를 scratch에서 training 시키는 것도 한 번 해보면 좋을 것 같다고 하시긴 하셨는데, 사실 LT 페이퍼에 의하면 이게 쉬운 일은 아니라고 하니까. 근데 pruning + finetuning 과 pruning + training from scratch 의 결과가 많이 다를까? 잘 모르겠음.</summary></entry></feed>
