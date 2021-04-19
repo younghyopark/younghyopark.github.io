@@ -1,5 +1,113 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-04-19T16:23:35+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Younghyo Park</title><subtitle>Your Site Description
-</subtitle><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><entry><title type="html">[RL Theory] 3 - Finite Horizon MDP (1)</title><link href="http://localhost:4000/2021/04/19/scrl-3.html" rel="alternate" type="text/html" title="[RL Theory] 3 - Finite Horizon MDP (1)" /><published>2021-04-19T00:00:00+09:00</published><updated>2021-04-19T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/19/scrl-3</id><content type="html" xml:base="http://localhost:4000/2021/04/19/scrl-3.html">&lt;h2 id=&quot;finite-horizon-mdp&quot;&gt;Finite-Horizon MDP&lt;/h2&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-04-19T19:42:47+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Younghyo Park</title><subtitle>Your Site Description
+</subtitle><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><entry><title type="html">[RL Theory] 4 - Finite Horizon MDP (2)</title><link href="http://localhost:4000/2021/04/19/scrl-4.html" rel="alternate" type="text/html" title="[RL Theory] 4 - Finite Horizon MDP (2)" /><published>2021-04-19T00:00:00+09:00</published><updated>2021-04-19T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/19/scrl-4</id><content type="html" xml:base="http://localhost:4000/2021/04/19/scrl-4.html">&lt;h2 id=&quot;optimal-policy-of-finite-horizon-mdp&quot;&gt;Optimal Policy of Finite-Horizon MDP&lt;/h2&gt;
+
+&lt;h3 id=&quot;deterministic-markov-policy&quot;&gt;Deterministic Markov Policy&lt;/h3&gt;
+
+&lt;p&gt;Define a deterministic Markov policy $\pi^\star$ by&lt;/p&gt;
+
+\[\pi_t^\star (s) \in \arg\max_{a\in A} \bigg (r_t (s,a) + \sum_{s'\in S} p(s' \vert s,a)v_{t+1}^\star (s') \bigg )\]
+
+&lt;h3 id=&quot;optimality-of-deterministic-markov-policy&quot;&gt;Optimality of Deterministic Markov Policy&lt;/h3&gt;
+
+&lt;p&gt;Assume that $S, A$ are finite sets. Then, the deterministic Markov policy defined above is an optimal policy.&lt;/p&gt;
+
+\[v_t^{\pi^\star} = v_t^\star\]
+
+&lt;p&gt;This means that, for finite MDPs, it suffice to &lt;strong&gt;consider only the deterministic Markov policies&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;proving-the-optimality&quot;&gt;Proving the optimality&lt;/h3&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;By definition, we have $v_t^{\pi^\star} \leq v_t^\star$ for each $t$.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;We will use mathematical induction to show the opposite : $v_t^{\pi^\star} \geq v_t^\star$  for each $t$.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;First, for $t=T$, $v_T^{\pi^\star} = r_T = v_T^\star$&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Then, assume that $v_{t+1}^{\pi^\star} \geq v_{t+1}^\star$ . Then we have&lt;/p&gt;
+
+\[\sum_{s'\in S} p(s' \vert s, \pi_t^\star (s) ) v_{t+1}^{\pi^\star} (s') \geq \sum_{s'\in S} p(s' \vert s, \pi_t^\star (s) ) v_{t+1}^{\star} (s')\]
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Then, by the definitionof $\pi_t^\star$, we have&lt;/p&gt;
+
+\[r_t (s, \pi_t^\star(s)) + \sum_{s'\in S} p(s' \vert s, \pi_t^\star(s))v_{t+1}^\star (s') \geq r_t (s, a) + \sum_{s'\in S} p(s' \vert s, a)v_{t+1}^\star (s')\]
+
+    &lt;p&gt;for all $a\in A$.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Combining the two equalities, we have&lt;/p&gt;
+
+\[r(s,\pi_t^\star(s)) + \sum_{s'\in S} p(s' \vert s, \pi_t^\star(s))v_{t+1}^\star (s') \geq r_t (s, a) + \sum_{s'\in S} p(s' \vert s, a)v_{t+1}^\star (s')\]
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Taking the maximum for both sides with respect to $a$, we have&lt;/p&gt;
+
+\[v_t^{\pi^\star} (s) \geq v_t^\star (s)\]
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Therefore, $v_t^{\pi^\star} = v_t^\star$ .&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;dynamic-programming-backward-induction-algorithm&quot;&gt;Dynamic Programming (Backward Induction) Algorithm&lt;/h2&gt;
+
+&lt;h3 id=&quot;algorithm&quot;&gt;Algorithm&lt;/h3&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;Initialize $v_T^\star(s) = r_T (s)$&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;For $t=T-1 : -1 : 0$ , set&lt;/p&gt;
+
+\[v_t^\star (s) = \max _{a\in A} \bigg ( r_t (s,a) + \sum_{s'\in S} p(s' \vert s,a) v_{t+1}^\star (s') \bigg ) \\
+\pi_t^\star (s) = \arg \max_ {a\in A}\bigg ( r_t (s,a) + \sum_{s'\in S} p(s' \vert s,a) v_{t+1}^\star (s') \bigg )\]
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;extensions-to-continuous-control&quot;&gt;Extensions to Continuous Control&lt;/h2&gt;
+
+&lt;h3 id=&quot;problem-definition&quot;&gt;Problem Definition&lt;/h3&gt;
+
+&lt;p&gt;Define the system model&lt;/p&gt;
+
+\[s_{t+1}= f(s_t, a_t, w_t)\]
+
+&lt;p&gt;where the probability distribution of $w_t$ is knwon ($p_w(\cdot)$)&lt;/p&gt;
+
+&lt;p&gt;Then, the problem can be defined as&lt;/p&gt;
+
+\[\max_\pi \mathbb{E}^\pi \bigg [ \sum_{t=0}^{T-1} r(s_t, a_t) + r(s_T) \bigg ]\]
+
+&lt;h3 id=&quot;transition-probability&quot;&gt;Transition Probability&lt;/h3&gt;
+
+&lt;p&gt;We cannot define the transition probability just like we did in the discrete space.&lt;/p&gt;
+
+\[p(s' \vert s,a) = p_w (w) \mathbf{1}_{s'=f(s,a,w)}\]
+
+&lt;p&gt;where $\mathbf{1}$ is the indicator function, where&lt;/p&gt;
+
+\[\mathbf{1}_{\text{true}} = 1\\
+\mathbf{1}_{\text{false}} = 0\]
+
+&lt;h3 id=&quot;bellman-equation&quot;&gt;Bellman Equation&lt;/h3&gt;
+
+\[v_t(s) = \sup_{a\in A} \bigg [ r(s,a) + \int_{s'\in S} v_{t+1}(s') p(ds' \vert s,a) \bigg ]\]
+
+&lt;p&gt;Note that, there’s no $p_w$ term included in the equation above.&lt;/p&gt;
+
+\[v_t(s) = \sup_{a\in A} \bigg [ r(s,a) + \int_{w} v_{t+1}(f(s,a,w)) p_w(dw) \bigg ]\]
+
+&lt;h3 id=&quot;optimal-policy&quot;&gt;Optimal Policy&lt;/h3&gt;
+
+\[\pi_t^\star (s) \in \arg \max_{a\in A} \bigg [ r(s,a) + \int_w v_{t+1}(f(s,a,w))p_w (dw) \bigg ]\]
+
+&lt;p&gt;&lt;strong&gt;Existence of an optimal policy is not gauranteed!&lt;/strong&gt; We can rather find an $\epsilon-$ optimal policy.&lt;/p&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Lecture-Note" /><category term="Theory/Survey" /><summary type="html">Optimal Policy of Finite-Horizon MDP Deterministic Markov Policy Define a deterministic Markov policy $\pi^\star$ by \[\pi_t^\star (s) \in \arg\max_{a\in A} \bigg (r_t (s,a) + \sum_{s'\in S} p(s' \vert s,a)v_{t+1}^\star (s') \bigg )\] Optimality of Deterministic Markov Policy Assume that $S, A$ are finite sets. Then, the deterministic Markov policy defined above is an optimal policy. \[v_t^{\pi^\star} = v_t^\star\] This means that, for finite MDPs, it suffice to consider only the deterministic Markov policies. Proving the optimality By definition, we have $v_t^{\pi^\star} \leq v_t^\star$ for each $t$. We will use mathematical induction to show the opposite : $v_t^{\pi^\star} \geq v_t^\star$ for each $t$. First, for $t=T$, $v_T^{\pi^\star} = r_T = v_T^\star$ Then, assume that $v_{t+1}^{\pi^\star} \geq v_{t+1}^\star$ . Then we have \[\sum_{s'\in S} p(s' \vert s, \pi_t^\star (s) ) v_{t+1}^{\pi^\star} (s') \geq \sum_{s'\in S} p(s' \vert s, \pi_t^\star (s) ) v_{t+1}^{\star} (s')\] Then, by the definitionof $\pi_t^\star$, we have \[r_t (s, \pi_t^\star(s)) + \sum_{s'\in S} p(s' \vert s, \pi_t^\star(s))v_{t+1}^\star (s') \geq r_t (s, a) + \sum_{s'\in S} p(s' \vert s, a)v_{t+1}^\star (s')\] for all $a\in A$. Combining the two equalities, we have \[r(s,\pi_t^\star(s)) + \sum_{s'\in S} p(s' \vert s, \pi_t^\star(s))v_{t+1}^\star (s') \geq r_t (s, a) + \sum_{s'\in S} p(s' \vert s, a)v_{t+1}^\star (s')\] Taking the maximum for both sides with respect to $a$, we have \[v_t^{\pi^\star} (s) \geq v_t^\star (s)\] Therefore, $v_t^{\pi^\star} = v_t^\star$ . Dynamic Programming (Backward Induction) Algorithm Algorithm Initialize $v_T^\star(s) = r_T (s)$ For $t=T-1 : -1 : 0$ , set \[v_t^\star (s) = \max _{a\in A} \bigg ( r_t (s,a) + \sum_{s'\in S} p(s' \vert s,a) v_{t+1}^\star (s') \bigg ) \\ \pi_t^\star (s) = \arg \max_ {a\in A}\bigg ( r_t (s,a) + \sum_{s'\in S} p(s' \vert s,a) v_{t+1}^\star (s') \bigg )\] Extensions to Continuous Control Problem Definition Define the system model \[s_{t+1}= f(s_t, a_t, w_t)\] where the probability distribution of $w_t$ is knwon ($p_w(\cdot)$) Then, the problem can be defined as \[\max_\pi \mathbb{E}^\pi \bigg [ \sum_{t=0}^{T-1} r(s_t, a_t) + r(s_T) \bigg ]\] Transition Probability We cannot define the transition probability just like we did in the discrete space. \[p(s' \vert s,a) = p_w (w) \mathbf{1}_{s'=f(s,a,w)}\] where $\mathbf{1}$ is the indicator function, where \[\mathbf{1}_{\text{true}} = 1\\ \mathbf{1}_{\text{false}} = 0\] Bellman Equation \[v_t(s) = \sup_{a\in A} \bigg [ r(s,a) + \int_{s'\in S} v_{t+1}(s') p(ds' \vert s,a) \bigg ]\] Note that, there’s no $p_w$ term included in the equation above. \[v_t(s) = \sup_{a\in A} \bigg [ r(s,a) + \int_{w} v_{t+1}(f(s,a,w)) p_w(dw) \bigg ]\] Optimal Policy \[\pi_t^\star (s) \in \arg \max_{a\in A} \bigg [ r(s,a) + \int_w v_{t+1}(f(s,a,w))p_w (dw) \bigg ]\] Existence of an optimal policy is not gauranteed! We can rather find an $\epsilon-$ optimal policy.</summary></entry><entry><title type="html">[RL Theory] 3 - Finite Horizon MDP (1)</title><link href="http://localhost:4000/2021/04/19/scrl-3.html" rel="alternate" type="text/html" title="[RL Theory] 3 - Finite Horizon MDP (1)" /><published>2021-04-19T00:00:00+09:00</published><updated>2021-04-19T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/19/scrl-3</id><content type="html" xml:base="http://localhost:4000/2021/04/19/scrl-3.html">&lt;h2 id=&quot;finite-horizon-mdp&quot;&gt;Finite-Horizon MDP&lt;/h2&gt;
 
 &lt;h3 id=&quot;problem-definition&quot;&gt;Problem Definition&lt;/h3&gt;
 
@@ -97,35 +205,7 @@
 
 &lt;p&gt;Since this inequality should hold for any Diract delta $\pi_t(\cdot \vert s)$,&lt;/p&gt;
 
-\[v_t ^\star (s) \geq \max_{a\in A} \bigg [r_t (s,a) + \sum_{s'\in S}p(s'|s,a)v_{t+1}^\star (s') \bigg ]\]</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Lecture-Note" /><category term="Theory/Survey" /><summary type="html">Finite-Horizon MDP Problem Definition Instead of $\gamma$, we set the length of the horizon as $T$. Thus, a finite-horizon MDP is a tuple $\langle T,S,A,P,R \rangle$, consisting of $T$ : length of horizon everything else is the same. Our goal is to find the optimal policy that maximizes the expected cumulative reward: \[\max_{\pi \in \Pi} \mathbb{E}^\pi \bigg [ \sum_{t=0}^{T-1} r_t (s_t, a_t) + r_T (s_T) \bigg ]\] Value Function For a give policy $\pi : = (\pi_0, \cdots, \pi_{T-1})$ consider evaluating \[\mathbb{E}^\pi \bigg [ \sum_{t=0}^{T-1} r_t (s_t, a_t) + r_T (S_T) \bigg ]\] To do so, let’s first define a value function $v_t ^\pi (s)$, which is a expected return starting from state $s$ under executing $\pi$: \[v_t ^\pi (s): = \mathbb{E}^\pi \bigg [ \sum_{\tau=t} ^{T-1} r_\tau (s_\tau, a_\tau) + r_T (s_T) |s_t =s \bigg ]\] Optimal Policy We are trying to find a policy $\pi^\star$ with the largest expected total reward, i.e., \[v_0 ^{\pi^\star} (s) \geq v_0 ^\pi (s) \ \ \forall s, \pi\] which is defined as an optimal policy. $\epsilon$-optimal policy In some models an optimal policy may not exist, so instead we seek an $\epsilon$-optimal policy \[v_0 ^{\pi_\epsilon ^\star}(s) + \epsilon &amp;gt; v_0 ^\pi (s)\ \ \ \forall s,\pi\] Optimal Value Function The optimal value function $v_t ^\star (s)$ is the maximum value function over all policies \[v_t ^\star (s) := \sup _{\pi \in \Pi} v_t ^\pi (s) =\sup_{\pi \in \Pi} \bigg [ \sum_{\tau=t}^{T-1}r_\tau(s_\tau, a_\tau) + r_T(s_T) | s_t = s \bigg ]\] $v_0 ^\star$ defines the best possible performance in MDP \[v_T^\star (s) = \sup_{\pi \in \Pi} \big [ r_T (s_T) \vert s_T = s \big ] = r_T(s)\] Finite-Horizon Policy Evaluation \[v_t ^\pi (s) = \mathbb{E}^\pi [r_t (s_t, a_t ) + v_{t+1}^\pi (s_{t+1}) |s_t =s ]\] which can be decomposed as \[v_t ^\pi (s) = r_t (s, \pi_t (s) ) + \sum_{s'\in S}p(s'|s,\pi_t (s))v_{t+1}^\pi (s') \ \ \ \leftarrow \text{deterministic case}\] \[v_t ^\pi (s) = \sum_{a\in A} \pi_t(a|s) \bigg (r_t(s, a ) + \sum_{s'\in S}p(s'|s,a)v_{t+1}^\pi (s')\bigg ) \ \ \ \leftarrow \text{stochastic case}\] To conduct an policy evaluation for all $t$, first initialize $v_T^\pi (s) :=r_T (s)$ Then, conduct a backward calculation using either of the equation above Bellman Equation for Finite-Horizon MDP Theorem The optimal value functions $v_t ^\star$ solve the following Bellman equation: \[v_t ^\star (s) = \max_a \bigg ( r_t (s,a) + \sum_{s'\in S} p(s'|s,a)v_{t+1}^\star (s') \bigg ) \ \ \ \forall s\in S\] with $v_T^\star (s) = r_T (s)$. Step 1 : $\leq$ By definition, \[\begin{aligned}v_t ^\star (s) &amp;amp;= \sup_{\pi \in \Pi} \mathbb{E}^\pi \bigg [r_t (s_t, a_t ) + \sum_{\tau=t+1}^{T-1}r_\tau (s_\tau, a_\tau) + r_T(s_T) | s_t=s \bigg ]\\ &amp;amp; =\sup_{\pi \in \Pi }\mathbb{E}^\pi \bigg [ r_t (s_t, a_t ) + \mathbb{E}^\pi \Big[\sum_{t+1}^{T-1} r_\tau (s_\tau, a_\tau)+r_T (s_T) |s_{t+1}\Big ]|s_t = s \bigg ] \\ &amp;amp; = \sup_{\pi \in \Pi} \mathbb{E}^\pi \Big [ r_t (s_t, a_t) +v_{t+1}^\pi (s_{t+1}) | s_t = s \Big ] \\ &amp;amp; \leq \sup_{\pi \in \Pi }\mathbb{E}^\pi \Big [ r_t (s_t, a_t) + v_{t+1}^\star (s_{t+1}) |s_t = s \Big ]\\ &amp;amp; = \max_{a\in A} \bigg [r_t (s,a) + \sum_{s'\in S}p(s'|s,a)v_{t+1}^\star (s') \bigg ] \end{aligned}\] Step 2 : $\geq$ On the other hand, for any $\pi$, \[\begin{aligned}v_t ^\star (s) \geq v_t ^\pi (s) &amp;amp;= \mathbb{E}^\pi \Big [ r_t (s_t, a_t) + \sum_{\tau =t+1}^{T-1} r_\tau (s_\tau , a_\tau )+ r_T (s_T )|s_t = s \Big ]\\ &amp;amp;=\mathbb{E}^\pi \Big [r_t (s_t, a_t ) +v_{t+1}^\pi (s_{t+1})|s_t = s \Big ] \\ &amp;amp;= \sum_{a\in A}\pi_t (a|s ) \Big [r_t (s,a) + \sum_{s'\in S} p(s'|s,a)v_{t+1}^\pi (s') \Big]\end{aligned}\] Since the inequality above holds for any $(\pi_{t+1}, \cdots, \pi_{T-1})$ \[\begin{aligned}v_t ^\star (s) &amp;amp; \geq \sum_{a\in A} \pi_t (a|s) \Big [r_t (s,a) + \sum_{s'\in S}p(s'|s,a) v_{t+1}^\star(s') \Big ] \end{aligned}\] (Note that we changed $v_{t+1}^\pi$ to $v_{t+1}^\star$) Since this inequality should hold for any Diract delta $\pi_t(\cdot \vert s)$, \[v_t ^\star (s) \geq \max_{a\in A} \bigg [r_t (s,a) + \sum_{s'\in S}p(s'|s,a)v_{t+1}^\star (s') \bigg ]\]</summary></entry><entry><title type="html">[macOS Tips] App Specific New Tab/Window Preference</title><link href="http://localhost:4000/2021/04/19/mac-tips-1.html" rel="alternate" type="text/html" title="[macOS Tips] App Specific New Tab/Window Preference" /><published>2021-04-19T00:00:00+09:00</published><updated>2021-04-19T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/19/mac-tips-1</id><content type="html" xml:base="http://localhost:4000/2021/04/19/mac-tips-1.html">&lt;h2 id=&quot;problem&quot;&gt;Problem&lt;/h2&gt;
-
-&lt;p&gt;macOS allows you to change the &lt;strong&gt;prefer tabs&lt;/strong&gt; behavior in the settings &amp;gt; general panel.&lt;/p&gt;
-
-&lt;center&gt;&lt;img src=&quot;https://tva1.sinaimg.cn/large/008eGmZEgy1gpovmflpcsj30u00uuaos.jpg&quot; alt=&quot;image-20210419104545111&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/center&gt;
-
-&lt;p&gt;However, the option they give is quite black and white.&lt;/p&gt;
-
-&lt;center&gt;&lt;img src=&quot;https://tva1.sinaimg.cn/large/008eGmZEgy1gpovmuwpbyj30l404u0tr.jpg&quot; alt=&quot;image-20210419105216074&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/center&gt;
-
-&lt;p&gt;If you prefer &lt;strong&gt;new tabs&lt;/strong&gt; on &lt;em&gt;Preview&lt;/em&gt; , but prefer &lt;strong&gt;new windows&lt;/strong&gt; on &lt;em&gt;Finder&lt;/em&gt; or &lt;em&gt;Safari&lt;/em&gt;, there’s nothing you can do on the settings panel.&lt;/p&gt;
-
-&lt;h2 id=&quot;solution&quot;&gt;Solution&lt;/h2&gt;
-
-&lt;p&gt;In that case,&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;revert the prefer tabs setting to “never”&lt;/li&gt;
-  &lt;li&gt;execute the following code on Terminal, replacing the “Preview” app to whatever app you like to &lt;strong&gt;prefer tabs&lt;/strong&gt;.
-    &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; defaults write com.apple.Preview AppleWindowTabbingMode &lt;span class=&quot;nt&quot;&gt;-string&lt;/span&gt; always
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;If you want to revert the setting, execute:&lt;/p&gt;
-
-    &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;defaults delete com.apple.Preview AppleWindowTabbingMode
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="macOS-Tips" /><summary type="html">Problem macOS allows you to change the prefer tabs behavior in the settings &amp;gt; general panel. However, the option they give is quite black and white. If you prefer new tabs on Preview , but prefer new windows on Finder or Safari, there’s nothing you can do on the settings panel. Solution In that case, revert the prefer tabs setting to “never” execute the following code on Terminal, replacing the “Preview” app to whatever app you like to prefer tabs. defaults write com.apple.Preview AppleWindowTabbingMode -string always If you want to revert the setting, execute: defaults delete com.apple.Preview AppleWindowTabbingMode</summary></entry><entry><title type="html">[Optimization] 7 - KKT Optimality Condition</title><link href="http://localhost:4000/notion_to_markdown/opt-lecture-7/" rel="alternate" type="text/html" title="[Optimization] 7 - KKT Optimality Condition" /><published>2021-04-19T00:00:00+09:00</published><updated>2021-04-19T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/opt-lecture-7</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/opt-lecture-7/">&lt;h2 id=&quot;characterizing-the-optimality&quot;&gt;Characterizing the Optimality&lt;/h2&gt;
+\[v_t ^\star (s) \geq \max_{a\in A} \bigg [r_t (s,a) + \sum_{s'\in S}p(s'|s,a)v_{t+1}^\star (s') \bigg ]\]</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Lecture-Note" /><category term="Theory/Survey" /><summary type="html">Finite-Horizon MDP Problem Definition Instead of $\gamma$, we set the length of the horizon as $T$. Thus, a finite-horizon MDP is a tuple $\langle T,S,A,P,R \rangle$, consisting of $T$ : length of horizon everything else is the same. Our goal is to find the optimal policy that maximizes the expected cumulative reward: \[\max_{\pi \in \Pi} \mathbb{E}^\pi \bigg [ \sum_{t=0}^{T-1} r_t (s_t, a_t) + r_T (s_T) \bigg ]\] Value Function For a give policy $\pi : = (\pi_0, \cdots, \pi_{T-1})$ consider evaluating \[\mathbb{E}^\pi \bigg [ \sum_{t=0}^{T-1} r_t (s_t, a_t) + r_T (S_T) \bigg ]\] To do so, let’s first define a value function $v_t ^\pi (s)$, which is a expected return starting from state $s$ under executing $\pi$: \[v_t ^\pi (s): = \mathbb{E}^\pi \bigg [ \sum_{\tau=t} ^{T-1} r_\tau (s_\tau, a_\tau) + r_T (s_T) |s_t =s \bigg ]\] Optimal Policy We are trying to find a policy $\pi^\star$ with the largest expected total reward, i.e., \[v_0 ^{\pi^\star} (s) \geq v_0 ^\pi (s) \ \ \forall s, \pi\] which is defined as an optimal policy. $\epsilon$-optimal policy In some models an optimal policy may not exist, so instead we seek an $\epsilon$-optimal policy \[v_0 ^{\pi_\epsilon ^\star}(s) + \epsilon &amp;gt; v_0 ^\pi (s)\ \ \ \forall s,\pi\] Optimal Value Function The optimal value function $v_t ^\star (s)$ is the maximum value function over all policies \[v_t ^\star (s) := \sup _{\pi \in \Pi} v_t ^\pi (s) =\sup_{\pi \in \Pi} \bigg [ \sum_{\tau=t}^{T-1}r_\tau(s_\tau, a_\tau) + r_T(s_T) | s_t = s \bigg ]\] $v_0 ^\star$ defines the best possible performance in MDP \[v_T^\star (s) = \sup_{\pi \in \Pi} \big [ r_T (s_T) \vert s_T = s \big ] = r_T(s)\] Finite-Horizon Policy Evaluation \[v_t ^\pi (s) = \mathbb{E}^\pi [r_t (s_t, a_t ) + v_{t+1}^\pi (s_{t+1}) |s_t =s ]\] which can be decomposed as \[v_t ^\pi (s) = r_t (s, \pi_t (s) ) + \sum_{s'\in S}p(s'|s,\pi_t (s))v_{t+1}^\pi (s') \ \ \ \leftarrow \text{deterministic case}\] \[v_t ^\pi (s) = \sum_{a\in A} \pi_t(a|s) \bigg (r_t(s, a ) + \sum_{s'\in S}p(s'|s,a)v_{t+1}^\pi (s')\bigg ) \ \ \ \leftarrow \text{stochastic case}\] To conduct an policy evaluation for all $t$, first initialize $v_T^\pi (s) :=r_T (s)$ Then, conduct a backward calculation using either of the equation above Bellman Equation for Finite-Horizon MDP Theorem The optimal value functions $v_t ^\star$ solve the following Bellman equation: \[v_t ^\star (s) = \max_a \bigg ( r_t (s,a) + \sum_{s'\in S} p(s'|s,a)v_{t+1}^\star (s') \bigg ) \ \ \ \forall s\in S\] with $v_T^\star (s) = r_T (s)$. Step 1 : $\leq$ By definition, \[\begin{aligned}v_t ^\star (s) &amp;amp;= \sup_{\pi \in \Pi} \mathbb{E}^\pi \bigg [r_t (s_t, a_t ) + \sum_{\tau=t+1}^{T-1}r_\tau (s_\tau, a_\tau) + r_T(s_T) | s_t=s \bigg ]\\ &amp;amp; =\sup_{\pi \in \Pi }\mathbb{E}^\pi \bigg [ r_t (s_t, a_t ) + \mathbb{E}^\pi \Big[\sum_{t+1}^{T-1} r_\tau (s_\tau, a_\tau)+r_T (s_T) |s_{t+1}\Big ]|s_t = s \bigg ] \\ &amp;amp; = \sup_{\pi \in \Pi} \mathbb{E}^\pi \Big [ r_t (s_t, a_t) +v_{t+1}^\pi (s_{t+1}) | s_t = s \Big ] \\ &amp;amp; \leq \sup_{\pi \in \Pi }\mathbb{E}^\pi \Big [ r_t (s_t, a_t) + v_{t+1}^\star (s_{t+1}) |s_t = s \Big ]\\ &amp;amp; = \max_{a\in A} \bigg [r_t (s,a) + \sum_{s'\in S}p(s'|s,a)v_{t+1}^\star (s') \bigg ] \end{aligned}\] Step 2 : $\geq$ On the other hand, for any $\pi$, \[\begin{aligned}v_t ^\star (s) \geq v_t ^\pi (s) &amp;amp;= \mathbb{E}^\pi \Big [ r_t (s_t, a_t) + \sum_{\tau =t+1}^{T-1} r_\tau (s_\tau , a_\tau )+ r_T (s_T )|s_t = s \Big ]\\ &amp;amp;=\mathbb{E}^\pi \Big [r_t (s_t, a_t ) +v_{t+1}^\pi (s_{t+1})|s_t = s \Big ] \\ &amp;amp;= \sum_{a\in A}\pi_t (a|s ) \Big [r_t (s,a) + \sum_{s'\in S} p(s'|s,a)v_{t+1}^\pi (s') \Big]\end{aligned}\] Since the inequality above holds for any $(\pi_{t+1}, \cdots, \pi_{T-1})$ \[\begin{aligned}v_t ^\star (s) &amp;amp; \geq \sum_{a\in A} \pi_t (a|s) \Big [r_t (s,a) + \sum_{s'\in S}p(s'|s,a) v_{t+1}^\star(s') \Big ] \end{aligned}\] (Note that we changed $v_{t+1}^\pi$ to $v_{t+1}^\star$) Since this inequality should hold for any Diract delta $\pi_t(\cdot \vert s)$, \[v_t ^\star (s) \geq \max_{a\in A} \bigg [r_t (s,a) + \sum_{s'\in S}p(s'|s,a)v_{t+1}^\star (s') \bigg ]\]</summary></entry><entry><title type="html">[Optimization] 7 - KKT Optimality Condition</title><link href="http://localhost:4000/notion_to_markdown/opt-lecture-7/" rel="alternate" type="text/html" title="[Optimization] 7 - KKT Optimality Condition" /><published>2021-04-19T00:00:00+09:00</published><updated>2021-04-19T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/opt-lecture-7</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/opt-lecture-7/">&lt;h2 id=&quot;characterizing-the-optimality&quot;&gt;Characterizing the Optimality&lt;/h2&gt;
 
 &lt;h3 id=&quot;how-should-we-characterize-the-conditions-for-optimality&quot;&gt;How should we characterize the conditions for optimality?&lt;/h3&gt;
 
@@ -247,7 +327,217 @@ g(\tilde{\lambda}, \tilde{\nu}) &amp;amp; = L(\tilde{x}, \tilde{\lambda}, \tilde
   &lt;li&gt;
     &lt;p&gt;Optimization Theory and Applications, SNU EE 2021, Insoon Yang&lt;/p&gt;
   &lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Optimization" /><category term="Lecture-Note" /><summary type="html">Characterizing the Optimality How should we characterize the conditions for optimality? What are the necessary and sufficient conditions for \[x: \text{primal feasible point}\\ (\lambda, \nu) : \text{dual feasible point}\] to be optimal? Complementary slackness Suppose that strong duality holds, and (somehow) the primal and dual optimal values are attained. \[x^\star : \text{primal optimal point}\\ (\lambda^\star, \nu^\star) : \text{dual optimal point}\] We then have \[\begin{aligned} p^\star = f_0(x^\star) &amp;amp; = g(\lambda^\star , \nu^\star) = d^\star \ \ \ \because \text{strong duality}\\ &amp;amp; = \inf_x \ \bigg ( f_0 (x) + \sum_{i=1}^m \lambda^\star _i f_i (x) + \sum_{i=1}^p \nu_i^\star h_i (x) \bigg ) \ \ \ (=L(x,\lambda^\star, \nu^\star) )\\ &amp;amp; \leq f_0 (x^\star) + \sum_{i=1}^n \lambda_i ^\star f_i (x^\star) + \sum_{i=1}^p \nu_i^\star h_i (x^\star) \ \ \ (=L(x^\star, \lambda^\star, \nu^\star ))\\ &amp;amp; \leq f_0 (x^\star) \ \ \ (\because x^\star \text{ is feasible}) \end{aligned}\] which implies that the inequality above should hold with equality. Thus, we can say that \[\sum_{i=1}^n \lambda_i ^\star f_i (x^\star) =0\] and considering that $\lambda_i ^\star f_i (x^\star) \leq 0$ for all $i$, we can finally deduce the complementary slackness condition. \[\lambda_i ^\star f_i (x^\star ) =0 \ \ \ i = 1, \cdots, m\] This complementary slackness can be expressed as two cases: \[\lambda_i ^\star &amp;gt;0 \ \ \ \implies \ \ \ f_i (x^\star) =0\] or, equivalently, \[f_i (x^\star) &amp;lt;0 \ \ \ \implies \ \ \ \lambda_i ^\star =0\] Unless the $i$th constraint is active at the optimum, the $i$th optimal Lagrange multiplier is zero. If dual optimal point is given If dual optimal point is given, you can easily get the primal optimal point by \[x^\star = \arg \min _x L(x,\lambda^\star, \nu^\star)\] KKT Optimality Conditions Before beginning Assume that $f_0, \cdots, f_m, h_1, \cdots, h_p$ are differentiable. (open domains) No assumptions about the convexity (yet) KKT Conditions for Nonconvex Problems First, assume that $x^\star, (\lambda^\star, \nu^\star)$ is the primal and dual optimal points with zero duality gap. Then we know that $x^\star$ minimizes the Lagrangian $L(x,\lambda^\star, \nu^\star)$ with respect to $x$. Thus, the gradient must vanish at $x^\star$ . \[\nabla f_0 (x^\star) + \sum_{i=1}^m \lambda_i ^\star \nabla f_i (x^\star) + \sum_{i=1}^p \nu_i ^\star \nabla h_i (x^\star) =0\] **Note that this is a necessary condition (not sufficient) for optimality, since the functions are not convex in this case. ** Thus, we have the following necessary conditions for optimality, called “Karush-Kuhn-Tucker (KKT)” conditions. Also, this condition requires a “strong duality” condition. KKT Conditions for Convex Problems When the primal problem is convex, we cany say something more. KKT conditions are also a sufficient condition for the points to be primal and dual optimal. Note that, KKT condition also implies zero duality gap. As long as the KKT conditions are satisfied for convex problems, we can gaurantee that those points are each primal and dual optimal points, with strong duality. Proving the KKT Condition First two conditions say that $\tilde{x}$ is feasible. Let’s then consider a mapping (convex mapping) \[x \rightarrow L(x,\tilde{\lambda}, \tilde{\nu}) = f_0 (x) + \sum_{i=1}^m \tilde{\lambda}_i f_i (x) + \sum_{i=1}^p \tilde{\nu}_i h_i (x)\] Since we know that above Lagrangian is convex, and first-order derivative condition holds (by the KKT) for $\tilde{x}$, we can conclude that \[\tilde{x} \in \arg \min _x L(x, \tilde{\lambda}, \tilde{\nu})\] Meanwhile, the dual optimal point \[\begin{aligned} g(\tilde{\lambda}, \tilde{\nu}) &amp;amp; = L(\tilde{x}, \tilde{\lambda}, \tilde{\nu})\\ &amp;amp; = f_0 (\tilde{x}) + \sum_i \tilde{\lambda}_i f_i (\tilde{x}) + \sum_i \tilde{\nu}_i h_i (\tilde{x}) \\ &amp;amp; = f_0 (\tilde{x}) \ \ \ (\because \text{ complementary slackness and feasibility}) \end{aligned}\] shows that there is no duality gap. Thus, $\tilde{x}, (\tilde{\lambda}, \tilde{\nu})$ are primal and dual optimal points. Solving the Primal problem via the Dual Suppose that strong duality holds, and an optimal dual is known. We assume that the minimizer of $L(x,\lambda^\star, \nu^\star)$ is unique. Then, we can say solution of $\min_x L(x,\lambda^\star, \nu^\star)$ is the primal optimal point. If it’s not primal feasible, then no primal point can exist. References S. Boyd, L.Vandenberghe, Convex Opimization, Cambridge University Press, 2004. http://stanford.edu/~boyd/cvxbook/ Optimization Theory and Applications, SNU EE 2021, Insoon Yang</summary></entry><entry><title type="html">[Optimization] 5 - Typical Convex Optimization Problems</title><link href="http://localhost:4000/notion_to_markdown/opt-lecture-5/" rel="alternate" type="text/html" title="[Optimization] 5 - Typical Convex Optimization Problems" /><published>2021-04-18T00:00:00+09:00</published><updated>2021-04-18T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/opt-lecture-5</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/opt-lecture-5/">&lt;h2 id=&quot;standard-form-of-convex-optimization-problems&quot;&gt;Standard Form of Convex Optimization Problems&lt;/h2&gt;
+&lt;/ul&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Optimization" /><category term="Lecture-Note" /><summary type="html">Characterizing the Optimality How should we characterize the conditions for optimality? What are the necessary and sufficient conditions for \[x: \text{primal feasible point}\\ (\lambda, \nu) : \text{dual feasible point}\] to be optimal? Complementary slackness Suppose that strong duality holds, and (somehow) the primal and dual optimal values are attained. \[x^\star : \text{primal optimal point}\\ (\lambda^\star, \nu^\star) : \text{dual optimal point}\] We then have \[\begin{aligned} p^\star = f_0(x^\star) &amp;amp; = g(\lambda^\star , \nu^\star) = d^\star \ \ \ \because \text{strong duality}\\ &amp;amp; = \inf_x \ \bigg ( f_0 (x) + \sum_{i=1}^m \lambda^\star _i f_i (x) + \sum_{i=1}^p \nu_i^\star h_i (x) \bigg ) \ \ \ (=L(x,\lambda^\star, \nu^\star) )\\ &amp;amp; \leq f_0 (x^\star) + \sum_{i=1}^n \lambda_i ^\star f_i (x^\star) + \sum_{i=1}^p \nu_i^\star h_i (x^\star) \ \ \ (=L(x^\star, \lambda^\star, \nu^\star ))\\ &amp;amp; \leq f_0 (x^\star) \ \ \ (\because x^\star \text{ is feasible}) \end{aligned}\] which implies that the inequality above should hold with equality. Thus, we can say that \[\sum_{i=1}^n \lambda_i ^\star f_i (x^\star) =0\] and considering that $\lambda_i ^\star f_i (x^\star) \leq 0$ for all $i$, we can finally deduce the complementary slackness condition. \[\lambda_i ^\star f_i (x^\star ) =0 \ \ \ i = 1, \cdots, m\] This complementary slackness can be expressed as two cases: \[\lambda_i ^\star &amp;gt;0 \ \ \ \implies \ \ \ f_i (x^\star) =0\] or, equivalently, \[f_i (x^\star) &amp;lt;0 \ \ \ \implies \ \ \ \lambda_i ^\star =0\] Unless the $i$th constraint is active at the optimum, the $i$th optimal Lagrange multiplier is zero. If dual optimal point is given If dual optimal point is given, you can easily get the primal optimal point by \[x^\star = \arg \min _x L(x,\lambda^\star, \nu^\star)\] KKT Optimality Conditions Before beginning Assume that $f_0, \cdots, f_m, h_1, \cdots, h_p$ are differentiable. (open domains) No assumptions about the convexity (yet) KKT Conditions for Nonconvex Problems First, assume that $x^\star, (\lambda^\star, \nu^\star)$ is the primal and dual optimal points with zero duality gap. Then we know that $x^\star$ minimizes the Lagrangian $L(x,\lambda^\star, \nu^\star)$ with respect to $x$. Thus, the gradient must vanish at $x^\star$ . \[\nabla f_0 (x^\star) + \sum_{i=1}^m \lambda_i ^\star \nabla f_i (x^\star) + \sum_{i=1}^p \nu_i ^\star \nabla h_i (x^\star) =0\] **Note that this is a necessary condition (not sufficient) for optimality, since the functions are not convex in this case. ** Thus, we have the following necessary conditions for optimality, called “Karush-Kuhn-Tucker (KKT)” conditions. Also, this condition requires a “strong duality” condition. KKT Conditions for Convex Problems When the primal problem is convex, we cany say something more. KKT conditions are also a sufficient condition for the points to be primal and dual optimal. Note that, KKT condition also implies zero duality gap. As long as the KKT conditions are satisfied for convex problems, we can gaurantee that those points are each primal and dual optimal points, with strong duality. Proving the KKT Condition First two conditions say that $\tilde{x}$ is feasible. Let’s then consider a mapping (convex mapping) \[x \rightarrow L(x,\tilde{\lambda}, \tilde{\nu}) = f_0 (x) + \sum_{i=1}^m \tilde{\lambda}_i f_i (x) + \sum_{i=1}^p \tilde{\nu}_i h_i (x)\] Since we know that above Lagrangian is convex, and first-order derivative condition holds (by the KKT) for $\tilde{x}$, we can conclude that \[\tilde{x} \in \arg \min _x L(x, \tilde{\lambda}, \tilde{\nu})\] Meanwhile, the dual optimal point \[\begin{aligned} g(\tilde{\lambda}, \tilde{\nu}) &amp;amp; = L(\tilde{x}, \tilde{\lambda}, \tilde{\nu})\\ &amp;amp; = f_0 (\tilde{x}) + \sum_i \tilde{\lambda}_i f_i (\tilde{x}) + \sum_i \tilde{\nu}_i h_i (\tilde{x}) \\ &amp;amp; = f_0 (\tilde{x}) \ \ \ (\because \text{ complementary slackness and feasibility}) \end{aligned}\] shows that there is no duality gap. Thus, $\tilde{x}, (\tilde{\lambda}, \tilde{\nu})$ are primal and dual optimal points. Solving the Primal problem via the Dual Suppose that strong duality holds, and an optimal dual is known. We assume that the minimizer of $L(x,\lambda^\star, \nu^\star)$ is unique. Then, we can say solution of $\min_x L(x,\lambda^\star, \nu^\star)$ is the primal optimal point. If it’s not primal feasible, then no primal point can exist. References S. Boyd, L.Vandenberghe, Convex Opimization, Cambridge University Press, 2004. http://stanford.edu/~boyd/cvxbook/ Optimization Theory and Applications, SNU EE 2021, Insoon Yang</summary></entry><entry><title type="html">[macOS Tips] App Specific New Tab/Window Preference</title><link href="http://localhost:4000/2021/04/19/mac-tips-1.html" rel="alternate" type="text/html" title="[macOS Tips] App Specific New Tab/Window Preference" /><published>2021-04-19T00:00:00+09:00</published><updated>2021-04-19T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/19/mac-tips-1</id><content type="html" xml:base="http://localhost:4000/2021/04/19/mac-tips-1.html">&lt;h2 id=&quot;problem&quot;&gt;Problem&lt;/h2&gt;
+
+&lt;p&gt;macOS allows you to change the &lt;strong&gt;prefer tabs&lt;/strong&gt; behavior in the settings &amp;gt; general panel.&lt;/p&gt;
+
+&lt;center&gt;&lt;img src=&quot;https://tva1.sinaimg.cn/large/008eGmZEgy1gpovmflpcsj30u00uuaos.jpg&quot; alt=&quot;image-20210419104545111&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/center&gt;
+
+&lt;p&gt;However, the option they give is quite black and white.&lt;/p&gt;
+
+&lt;center&gt;&lt;img src=&quot;https://tva1.sinaimg.cn/large/008eGmZEgy1gpovmuwpbyj30l404u0tr.jpg&quot; alt=&quot;image-20210419105216074&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/center&gt;
+
+&lt;p&gt;If you prefer &lt;strong&gt;new tabs&lt;/strong&gt; on &lt;em&gt;Preview&lt;/em&gt; , but prefer &lt;strong&gt;new windows&lt;/strong&gt; on &lt;em&gt;Finder&lt;/em&gt; or &lt;em&gt;Safari&lt;/em&gt;, there’s nothing you can do on the settings panel.&lt;/p&gt;
+
+&lt;h2 id=&quot;solution&quot;&gt;Solution&lt;/h2&gt;
+
+&lt;p&gt;In that case,&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;revert the prefer tabs setting to “never”&lt;/li&gt;
+  &lt;li&gt;execute the following code on Terminal, replacing the “Preview” app to whatever app you like to &lt;strong&gt;prefer tabs&lt;/strong&gt;.
+    &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; defaults write com.apple.Preview AppleWindowTabbingMode &lt;span class=&quot;nt&quot;&gt;-string&lt;/span&gt; always
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;If you want to revert the setting, execute:&lt;/p&gt;
+
+    &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;defaults delete com.apple.Preview AppleWindowTabbingMode
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="macOS-Tips" /><summary type="html">Problem macOS allows you to change the prefer tabs behavior in the settings &amp;gt; general panel. However, the option they give is quite black and white. If you prefer new tabs on Preview , but prefer new windows on Finder or Safari, there’s nothing you can do on the settings panel. Solution In that case, revert the prefer tabs setting to “never” execute the following code on Terminal, replacing the “Preview” app to whatever app you like to prefer tabs. defaults write com.apple.Preview AppleWindowTabbingMode -string always If you want to revert the setting, execute: defaults delete com.apple.Preview AppleWindowTabbingMode</summary></entry><entry><title type="html">[RL Theory] 5 - Infinite Horizon MDP, Value Iteration</title><link href="http://localhost:4000/2021/04/19/scrl-5.html" rel="alternate" type="text/html" title="[RL Theory] 5 - Infinite Horizon MDP, Value Iteration" /><published>2021-04-19T00:00:00+09:00</published><updated>2021-04-19T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/19/scrl-5</id><content type="html" xml:base="http://localhost:4000/2021/04/19/scrl-5.html">&lt;h2 id=&quot;infinite-horizon-discounted-mdp&quot;&gt;Infinite Horizon Discounted MDP&lt;/h2&gt;
+&lt;h3 id=&quot;assumptions&quot;&gt;Assumptions&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Stationary rewards and transition probabilities:
+  $r(s,a)$ and $p(s’ \vert s,a)$ doesn’t change over time.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Finite state and action sets&lt;/p&gt;
+
+    &lt;p&gt;$\rightarrow$ this implies that $r(s,a)$ is bounded! There exists a constant $M$ such that&lt;/p&gt;
+
+\[|r(s,a)|&amp;lt;M \ \ \forall s \in S, \ \ \forall a \in A.\]
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Stationary Policy : policy doesn’t change over time!&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;policy-evaluation&quot;&gt;Policy Evaluation&lt;/h3&gt;
+
+&lt;p&gt;We need to evaluate&lt;/p&gt;
+
+\[\mathbb{E}^\pi \bigg [ \sum_{t=0}^\infty \gamma^t r(s_t, a_t) \bigg ]\]
+
+&lt;p&gt;given a policy $\pi$.&lt;/p&gt;
+
+&lt;h3 id=&quot;value-function&quot;&gt;Value Function&lt;/h3&gt;
+
+&lt;p&gt;To do so, we define a &lt;strong&gt;value function&lt;/strong&gt;, which is the expected return starting from state $s$ under executing the policy $\pi$.&lt;/p&gt;
+
+\[v^\pi (s) := \mathbb{E}^\pi \bigg [ \sum_{\tau = t}^\infty \gamma^{\tau -t} r(s_\tau , a_\tau) \ \vert \ s_t = s \bigg ]\]
+
+&lt;p&gt;Using this value function, we decompose the value function into two parts. (1) immediate reward + (2) discounted value of next state.&lt;/p&gt;
+
+\[v^\pi (s) = \mathbb{E}^\pi [ r(s_t, a_t) + \gamma v^\pi (s_{t+1})  \ \vert \ s_t =s ]\]
+
+&lt;p&gt;This can be expressed as&lt;/p&gt;
+
+\[v^\pi (s) = \sum_{a\in A} \pi (a \vert s) \bigg [ r(s, a) + \sum_{s'\in S} p(s' \vert s, a) v^\pi (s') \bigg ]\]
+
+&lt;h3 id=&quot;vector-form&quot;&gt;Vector Form&lt;/h3&gt;
+
+&lt;p&gt;Recall, that we assumed finite state space and action space. Then,&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;$v^\pi := (v^\pi(s_1),\cdots, v^\pi(s_n)) \in \mathbb{R}^n $&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;$R^\pi := (r(s_1, \pi(s_1), \cdots, r(s_n, \pi(s_n)) \in \mathbb{R}^n$ if deterministic&lt;/p&gt;
+
+    &lt;p&gt;$ R^\pi := (\sum_{a\in A}\pi(a \vert s_1)r(s_1, a), \cdots, \sum_{a\in A}\pi(a \vert s_n)r(s_n, a)) \in \mathbb{R}^n $ if stochastic&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Transition probability matrix&lt;/p&gt;
+
+    &lt;center&gt;&lt;img src=&quot;https://tva1.sinaimg.cn/large/008eGmZEgy1gpp5klgl9bj318a0emgo0.jpg&quot; alt=&quot;image-20210419175247441&quot; style=&quot;zoom:30%;&quot; /&gt;&lt;/center&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Then, the policy evaluation can be expressed as&lt;/p&gt;
+
+\[v^\pi = R^\pi + \gamma P^\pi v^\pi\]
+
+&lt;h3 id=&quot;eigenvalues-of-transition-probability-matrix&quot;&gt;Eigenvalues of Transition Probability Matrix&lt;/h3&gt;
+
+&lt;p&gt;Note that stochastic matrix has an eigenvalue of 1: let A as a $n\times n$ stochastic matrix. Then,&lt;/p&gt;
+
+\[A \begin{bmatrix}1\\1\\ \vdots \\1 \end{bmatrix} = \begin{bmatrix} \sum_i{a_{1i}}\\ \sum_i{a_{2i}}\\ \vdots \\ \sum_i{a_{ni}} \end{bmatrix} =  \begin{bmatrix}1\\1\\ \vdots \\1 \end{bmatrix}\]
+
+&lt;p&gt;which shows that $A$ has an eigenvalue of 1.&lt;/p&gt;
+
+&lt;p&gt;Now, we are going to claim that &lt;strong&gt;other eigenvalues does not exceed 1.&lt;/strong&gt; To do so, let’s assume that $Ax = \lambda x$ for some $\lambda &amp;gt;1 $.&lt;/p&gt;
+
+&lt;p&gt;Knowing that the row-sum of $A$ is 1, we can interpret each component of $Ax$ as the convex combination of $x$ components, thus cannot exceed the maximum value of $x_{\max}$. However, since $\lambda&amp;gt;1$, at least one element of $\lambda x$ will be greater than $x_\max$.&lt;/p&gt;
+
+&lt;p&gt;Thus, we can conclude that $\lambda &amp;gt;1$ is not possible. &lt;strong&gt;Eigenvalues of $P^\pi$&lt;/strong&gt; &lt;strong&gt;are less than or equal to 1.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;unique-solution-of-policy-evaluation-equation&quot;&gt;Unique solution of Policy Evaluation Equation&lt;/h3&gt;
+
+&lt;p&gt;Now, we can prove that the policy evaluation equation has a unique solution.&lt;/p&gt;
+
+\[v^\pi = R^\pi + \gamma P^\pi v^\pi\]
+
+&lt;p&gt;This is because,&lt;/p&gt;
+
+\[(I-\gamma P^\pi ) v^\pi =R^\pi\]
+
+&lt;p&gt;$I-\gamma P^\pi$ has an eigenvalue greater than zero, and thus invertible.&lt;/p&gt;
+
+&lt;p&gt;Than, the unique soluition is given by&lt;/p&gt;
+
+&lt;p&gt;\(v^\pi = (I- \gamma P^\pi )^{-1} R^\pi\)
+&lt;strong&gt;However, this method is inefficient when the problem gets larger.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;policy-evaluation--value-iteration&quot;&gt;Policy Evaluation : Value Iteration&lt;/h2&gt;
+
+&lt;h3 id=&quot;definition&quot;&gt;Definition&lt;/h3&gt;
+
+&lt;p&gt;Define the operator $\mathcal{T} : \mathbb{R} \rightarrow \mathbb{R}$&lt;/p&gt;
+
+\[\mathcal{T}^\pi v := R^\pi + \gamma P^\pi\]
+
+&lt;p&gt;In a non-vector form,&lt;/p&gt;
+
+\[\mathcal{T}^\pi v(s) = \sum_{a \in A} \pi(a\vert s) \bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s, a) v(s') \bigg ]\]
+
+&lt;p&gt;Then, the policy evaluation equation can be expressed as&lt;/p&gt;
+
+\[\mathcal{T}^\pi v^\pi  = v^\pi\]
+
+&lt;p&gt;which is a fixed point problem.&lt;/p&gt;
+
+&lt;h3 id=&quot;contraction-property&quot;&gt;Contraction Property&lt;/h3&gt;
+
+&lt;p&gt;We should prove that the operator $\mathcal{T}$ is a $\gamma$-contraction with respect to $| \cdot |_\infty$ for any stationary policy $\pi$.&lt;/p&gt;
+
+&lt;p&gt;Recall that infinity norm of a vector $x \in \mathbb{R}^n$ is defined as&lt;/p&gt;
+
+\[\|\mathbf{x}\|_\infty = \max_i |\mathbf{x}_i|.\]
+
+&lt;p&gt;Also, consider the following statement&lt;/p&gt;
+
+\[| \max_z f(z) - \max_z h(z) | \leq \max_z |f(z)-h(z)|\]
+
+&lt;p&gt;which can be easily proved by the following:&lt;/p&gt;
+
+\[\begin{aligned}
+        		\max_z f(z) - \max_z h(z) &amp;amp; = f(z^\star) - \max_z h(z)\\
+        		&amp;amp; \leq f(z^\star) - h(z^\star) \\ 
+        		&amp;amp; \leq \max_z |f(z) - h(z)|\\
+\end{aligned}\]
+
+\[\begin{aligned}
+\max_z f(z) - \max_z h(z) &amp;amp; = \max_z f(z) - h(z^\star)\\
+        		&amp;amp; \geq f(z^\star) - h(z^\star) \\ 
+        		&amp;amp; \geq - \max_z |f(z) - h(z)|
+\end{aligned}\]
+
+&lt;p&gt;Applying this to operator $\mathcal{T}$, we have:&lt;/p&gt;
+
+\[\begin{aligned}
+        	\|\mathcal{T}v-\mathcal{T}v' \|_\infty &amp;amp; = \max_s \Big [ (\mathcal{T}v)(s) - (\mathcal{T}v')(s) \Big ]\\
+        	 &amp;amp; = \max_s \bigg [ \max_a \Big [r(s,a)+\gamma \sum_{s' \in S}p(s'|s,a)v(s)\Big ] -
+        	  \max_a \Big [r(s,a)+\gamma \sum_{s' \in S}p(s'|s,a)v'(s)\Big ]  \bigg ]  &amp;amp; \\
+        	 &amp;amp; \leq  \max_s \bigg [ \max_a \Big |\gamma \sum_{s'\in S}p(s'|s,a)[v(s)-v'(s)] \Big | \bigg ]  \ \ \ \ \ \because \text{inequality (6)}\\
+        	 &amp;amp; = \max_{s,a} \Big |\gamma \sum_{s'\in S}p(s'|s,a)[v(s)-v'(s)] \Big |  \\
+        	 &amp;amp; \leq  \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a)\  \big |v(s)-v'(s)\big | &amp;amp; \\ 
+        	 &amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_s |v(s)-v'(s)| &amp;amp; \\
+        	 &amp;amp; =  \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \|v-v'\| \ \ \ \ \  \because \text{definition (5)}\\
+        	 &amp;amp; = \gamma \|v-v'\|_\infty
+        \end{aligned}\]
+
+&lt;h3 id=&quot;banach-fixed-point-theorem&quot;&gt;Banach Fixed Point Theorem&lt;/h3&gt;
+
+&lt;p&gt;If $\mathcal{T}$ is a contraction mapping, then&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;$\mathcal{T}$ admits a unique fixed point $v^\star \in \mathbb{R}^n$.&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Meanwhile, $v^\star$ can be found by value iteration!&lt;/p&gt;
+
+\[v_{k+1} := \mathcal{T}v_k\]
+
+    &lt;p&gt;which leads to $v_k \rightarrow v^\star$.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;value-iteration-algorithm&quot;&gt;Value Iteration Algorithm&lt;/h3&gt;
+
+&lt;p&gt;For a stationary policy $\pi$,&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;initialize $v_0$ as an arbitrary vector in $\mathbb{R}^n$.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Repeat until convergence:&lt;/p&gt;
+
+\[v_{k+1} := \mathcal{T}^\pi v_k\]
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;optimal-value-function&quot;&gt;Optimal Value Function&lt;/h2&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Lecture-Note" /><category term="Theory/Survey" /><summary type="html">Infinite Horizon Discounted MDP Assumptions Stationary rewards and transition probabilities: $r(s,a)$ and $p(s’ \vert s,a)$ doesn’t change over time. Finite state and action sets $\rightarrow$ this implies that $r(s,a)$ is bounded! There exists a constant $M$ such that \[|r(s,a)|&amp;lt;M \ \ \forall s \in S, \ \ \forall a \in A.\] Stationary Policy : policy doesn’t change over time! Policy Evaluation We need to evaluate \[\mathbb{E}^\pi \bigg [ \sum_{t=0}^\infty \gamma^t r(s_t, a_t) \bigg ]\] given a policy $\pi$. Value Function To do so, we define a value function, which is the expected return starting from state $s$ under executing the policy $\pi$. \[v^\pi (s) := \mathbb{E}^\pi \bigg [ \sum_{\tau = t}^\infty \gamma^{\tau -t} r(s_\tau , a_\tau) \ \vert \ s_t = s \bigg ]\] Using this value function, we decompose the value function into two parts. (1) immediate reward + (2) discounted value of next state. \[v^\pi (s) = \mathbb{E}^\pi [ r(s_t, a_t) + \gamma v^\pi (s_{t+1}) \ \vert \ s_t =s ]\] This can be expressed as \[v^\pi (s) = \sum_{a\in A} \pi (a \vert s) \bigg [ r(s, a) + \sum_{s'\in S} p(s' \vert s, a) v^\pi (s') \bigg ]\] Vector Form Recall, that we assumed finite state space and action space. Then, $v^\pi := (v^\pi(s_1),\cdots, v^\pi(s_n)) \in \mathbb{R}^n $ $R^\pi := (r(s_1, \pi(s_1), \cdots, r(s_n, \pi(s_n)) \in \mathbb{R}^n$ if deterministic $ R^\pi := (\sum_{a\in A}\pi(a \vert s_1)r(s_1, a), \cdots, \sum_{a\in A}\pi(a \vert s_n)r(s_n, a)) \in \mathbb{R}^n $ if stochastic Transition probability matrix Then, the policy evaluation can be expressed as \[v^\pi = R^\pi + \gamma P^\pi v^\pi\] Eigenvalues of Transition Probability Matrix Note that stochastic matrix has an eigenvalue of 1: let A as a $n\times n$ stochastic matrix. Then, \[A \begin{bmatrix}1\\1\\ \vdots \\1 \end{bmatrix} = \begin{bmatrix} \sum_i{a_{1i}}\\ \sum_i{a_{2i}}\\ \vdots \\ \sum_i{a_{ni}} \end{bmatrix} = \begin{bmatrix}1\\1\\ \vdots \\1 \end{bmatrix}\] which shows that $A$ has an eigenvalue of 1. Now, we are going to claim that other eigenvalues does not exceed 1. To do so, let’s assume that $Ax = \lambda x$ for some $\lambda &amp;gt;1 $. Knowing that the row-sum of $A$ is 1, we can interpret each component of $Ax$ as the convex combination of $x$ components, thus cannot exceed the maximum value of $x_{\max}$. However, since $\lambda&amp;gt;1$, at least one element of $\lambda x$ will be greater than $x_\max$. Thus, we can conclude that $\lambda &amp;gt;1$ is not possible. Eigenvalues of $P^\pi$ are less than or equal to 1. Unique solution of Policy Evaluation Equation Now, we can prove that the policy evaluation equation has a unique solution. \[v^\pi = R^\pi + \gamma P^\pi v^\pi\] This is because, \[(I-\gamma P^\pi ) v^\pi =R^\pi\] $I-\gamma P^\pi$ has an eigenvalue greater than zero, and thus invertible. Than, the unique soluition is given by \(v^\pi = (I- \gamma P^\pi )^{-1} R^\pi\) However, this method is inefficient when the problem gets larger. Policy Evaluation : Value Iteration Definition Define the operator $\mathcal{T} : \mathbb{R} \rightarrow \mathbb{R}$ \[\mathcal{T}^\pi v := R^\pi + \gamma P^\pi\] In a non-vector form, \[\mathcal{T}^\pi v(s) = \sum_{a \in A} \pi(a\vert s) \bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s, a) v(s') \bigg ]\] Then, the policy evaluation equation can be expressed as \[\mathcal{T}^\pi v^\pi = v^\pi\] which is a fixed point problem. Contraction Property We should prove that the operator $\mathcal{T}$ is a $\gamma$-contraction with respect to $| \cdot |_\infty$ for any stationary policy $\pi$. Recall that infinity norm of a vector $x \in \mathbb{R}^n$ is defined as \[\|\mathbf{x}\|_\infty = \max_i |\mathbf{x}_i|.\] Also, consider the following statement \[| \max_z f(z) - \max_z h(z) | \leq \max_z |f(z)-h(z)|\] which can be easily proved by the following: \[\begin{aligned} \max_z f(z) - \max_z h(z) &amp;amp; = f(z^\star) - \max_z h(z)\\ &amp;amp; \leq f(z^\star) - h(z^\star) \\ &amp;amp; \leq \max_z |f(z) - h(z)|\\ \end{aligned}\] \[\begin{aligned} \max_z f(z) - \max_z h(z) &amp;amp; = \max_z f(z) - h(z^\star)\\ &amp;amp; \geq f(z^\star) - h(z^\star) \\ &amp;amp; \geq - \max_z |f(z) - h(z)| \end{aligned}\] Applying this to operator $\mathcal{T}$, we have: \[\begin{aligned} \|\mathcal{T}v-\mathcal{T}v' \|_\infty &amp;amp; = \max_s \Big [ (\mathcal{T}v)(s) - (\mathcal{T}v')(s) \Big ]\\ &amp;amp; = \max_s \bigg [ \max_a \Big [r(s,a)+\gamma \sum_{s' \in S}p(s'|s,a)v(s)\Big ] - \max_a \Big [r(s,a)+\gamma \sum_{s' \in S}p(s'|s,a)v'(s)\Big ] \bigg ] &amp;amp; \\ &amp;amp; \leq \max_s \bigg [ \max_a \Big |\gamma \sum_{s'\in S}p(s'|s,a)[v(s)-v'(s)] \Big | \bigg ] \ \ \ \ \ \because \text{inequality (6)}\\ &amp;amp; = \max_{s,a} \Big |\gamma \sum_{s'\in S}p(s'|s,a)[v(s)-v'(s)] \Big | \\ &amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a)\ \big |v(s)-v'(s)\big | &amp;amp; \\ &amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_s |v(s)-v'(s)| &amp;amp; \\ &amp;amp; = \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \|v-v'\| \ \ \ \ \ \because \text{definition (5)}\\ &amp;amp; = \gamma \|v-v'\|_\infty \end{aligned}\] Banach Fixed Point Theorem If $\mathcal{T}$ is a contraction mapping, then $\mathcal{T}$ admits a unique fixed point $v^\star \in \mathbb{R}^n$. Meanwhile, $v^\star$ can be found by value iteration! \[v_{k+1} := \mathcal{T}v_k\] which leads to $v_k \rightarrow v^\star$. Value Iteration Algorithm For a stationary policy $\pi$, initialize $v_0$ as an arbitrary vector in $\mathbb{R}^n$. Repeat until convergence: \[v_{k+1} := \mathcal{T}^\pi v_k\] Optimal Value Function</summary></entry><entry><title type="html">[Optimization] 5 - Typical Convex Optimization Problems</title><link href="http://localhost:4000/notion_to_markdown/opt-lecture-5/" rel="alternate" type="text/html" title="[Optimization] 5 - Typical Convex Optimization Problems" /><published>2021-04-18T00:00:00+09:00</published><updated>2021-04-18T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/opt-lecture-5</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/opt-lecture-5/">&lt;h2 id=&quot;standard-form-of-convex-optimization-problems&quot;&gt;Standard Form of Convex Optimization Problems&lt;/h2&gt;
 
 \[\begin{aligned}
 \min &amp;amp;\ \ f_0 (x) \\
@@ -1631,352 +1921,4 @@ a^Tx \geq b \ \ \ \forall x \in D\)&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;perform just the same as Horde architecture&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Multi-Reward/Objective" /><summary type="html">Introduction Extending the purpose of value function General value function $V_g(s)$ represent the utility of any state $s$ in achieving a given goal $g$, represented by a pseudo-reward function. A collection of general value functions is powerful, and can be used in many ways. Horde architecture → consist of discrete set of value functions, while all of it is learned simultaneously from a single stream of experience. Each value function may also be used to generate a policy or option that leas to a goal state collection of value functions can be used as a predictive representatino of state (predicted values themselves are used as a feature vector) Extending the idea of Value function approximator authors extend the idea of value function approximation to both states $s$ and goal $g$ \[V(s,g;\theta)\] By universal, authors mean that the value function can generalise to any goal $g$ in a set $\mathcal{G}$ of possible goals Learning UVFA can be difficult! Why? agent will only see a small subset of possible combinations of states and goals $(s,g)$ Background define a pseudo-reward function $R_g (s,a,s’)$ define a pseudo-discount function $\gamma_g(s)$ , $\gamma_g (s)=0$ iff $s$ is the goal. Define a general value function \[V_{g,\pi }(s) := \mathbb{E} \bigg [ \sum_{t=0}^\infty R_g (s_{t+1}, a_t, s_t ) \prod_{k=0}^t \gamma_g (s_k) \bigg | \ s_0 =s \bigg ]\] goal 에 다다르면 더 이상 reward function이 더해지지 않는 구조임 Define a general action-value (q) function \[Q_{g, \pi} (s,a) := \mathbb{E}_{s'} [R_g (s,a,s') + \gamma_ g(s') V_{g,\pi} (s') ]\] optimal policy for a given goal \[\pi_g^\star(s) := \argmax _a Q_{\pi, g} (s,a)\] Universal Value Function Approximators (UVFA) Consider function approximators \[\begin{aligned}V(s,g;\theta) &amp;amp;\approx V_g ^\star (s)\\ Q(s,a,g;\theta)&amp;amp; \approx Q_g^\star(s,a) \end{aligned}\] How should we design the function? There are two ways simply concatenate s and g two-stream architecture, mapping each state and goal to $\R^n$ → $h$ maps $\R^n \times \R^n \rightarrow \R$ knowing that goals and states often share the same structure, one might share features between $\phi$ and $\psi$. (maybe the first layers?) UVFA can be symmetric \[V_g^\star (s) = V_s ^\star (g)\] → this can be achieved by sharing the same network $\phi = \psi$. Two different ways to train UVFA At this section, authors focus on “supervised training”, where the values $V_g ^\star(s)$ are all given as a table. End-to-End Learning using gradient descent, minimize \[\mathbb{E} \Big [ (V_g^\star (s) - V(s,g;\theta) )^2 \Big ]\] Two-stage training procedure This can be only applied to two-stream architecture! First, using matrix-factorization of $V_g (s)$, extract embedding vectors $\hat \phi(s)$ and $\hat \psi (g)$. Second, Learn the parameters of $\phi$ and $\psi$ seperately. It turns out… Two-stream architecture, with two-stage learning procedure, with relatively small embedding dimension $n$ is better. UVFA training in RL Experiments Results? perform just the same as Horde architecture</summary></entry><entry><title type="html">[NIPS 2017] Hybrid Reward Architecture for Reinforcement Learning</title><link href="http://localhost:4000/notion_to_markdown/%5BNIPS%202017%5D%20Hybrid%20Reward%20Architecture%20for%20Reinfor%20ec4b86df520441bab17567b05419da01/" rel="alternate" type="text/html" title="[NIPS 2017] Hybrid Reward Architecture for Reinforcement Learning" /><published>2021-04-13T00:00:00+09:00</published><updated>2021-04-13T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/hybrid-reward-architecture</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/%5BNIPS%202017%5D%20Hybrid%20Reward%20Architecture%20for%20Reinfor%20ec4b86df520441bab17567b05419da01/">&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;center&gt;
-&lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;https://www.youtube.com/embed/DYNy7Fvonro&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;&lt;/center&gt;
-
-&lt;h2 id=&quot;horde-vs-hra-vs-uvfa&quot;&gt;Horde vs HRA vs UVFA&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Horde architecture learns multiple general value functions(GVFs), each corresponding to different reward functions and other question functions, using multiple demons.&lt;/li&gt;
-  &lt;li&gt;UVFA tries to generalize the value functions across different task and goals.&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;HRA, on the other hand, decomposes the reward function into $n$ different reward functions, with the intent to solve a &lt;strong&gt;SINGLE, but COMPLEX&lt;/strong&gt; task.&lt;/p&gt;
-
-    &lt;p&gt;Reward 가 너무 sparse하거나 function이 너무 high-dimensional일 경우 문제 해결이 어려움 → too much state component들에 dependent한 reward function을 여러 개의 small reward function (dependent on less state components) 들의 합으로 해석함&lt;/p&gt;
-
-    &lt;p&gt;→ Reward Function Decomposition 이라는 topic도 therefore closely related!&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;proposed-method&quot;&gt;Proposed Method&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;Let’s decompose the reward function $R_{env}$ into $n$ reward functions!&lt;/p&gt;
-
-\[R_{env} (s,a,s') = \sum_{k=1}^n  R_k(s,a,s')\]
-
-    &lt;p&gt;and train separate RL agent on each of these reward functions.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Because agent $k$ has its own reward function, it has also its own Q-value function, $Q_k$.&lt;/p&gt;
-
-    &lt;p&gt;In general, different agents can share multiple lower-level layers of deep Q-network. Hence, authors use a single vector $\theta$ to describe the combined weights of the agents!&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Combined network that represents all $Q$-value functions = &lt;strong&gt;Hybrid Reward Architecture&lt;/strong&gt;&lt;/p&gt;
-
-\[Q_{\text{HRA}}(s,a;\theta) = \sum_{k=1}^n Q_k (s,a;\theta)\]
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;The collection of agents can be viewed as a single agent with multiple heads!&lt;/p&gt;
-
-    &lt;p&gt;Lower-level layer는 고정되어 있는 상태에서 higher-level layer들의 weight들만 각 reward function에 대해 달라지는 것임.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Loss function associated with HRA&lt;/p&gt;
-
-\[\begin{aligned} \mathcal{L}_i (\theta_i ) &amp;amp; = \mathbb{E}_{s,a,r,s'}\bigg [ \sum_{k=1}^n (y_{k,i} - Q_k (s,a;\theta_i ))^2 \bigg ] , \\ \text{with }  &amp;amp; y_{k,i} = R_k (s,a,s') + \gamma \max_{a'} Q_k (s',a'; \theta_{k-1}) \end{aligned}\]
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;To that end, we get an optimal weight $\theta^\star$&lt;/p&gt;
-
-\[Q_k ^\star (s,a) = Q_k (s,a;\theta^\star)\]
-
-    &lt;p&gt;where&lt;/p&gt;
-
-\[Q_{\text{HRA}}^\star(s,a) := \sum_{k=1}^n Q_k^\star (s,a)\]
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Resulting $Q_{\text{HRA}}^\star$ is different from $Q_{env}^\star$  which is generated by $R_{env}$.&lt;/p&gt;
-
-&lt;center&gt;&lt;img src=&quot;Untitled.png&quot; width=&quot;400&quot; /&gt;&lt;/center&gt;
-
-&lt;h2 id=&quot;whats-good-about-hra&quot;&gt;What’s good about HRA?&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Easily exploit more domain knowledge!
-    &lt;ol&gt;
-      &lt;li&gt;Remove irrelevant features : reward에 영향을 주지 않는 feature들은 과감히 배제시켜버릴 수 있음&lt;/li&gt;
-      &lt;li&gt;Identifying terminal states : terminal state에 대해서는 학습을 하지 않도록 refrain 시켜 weight들이 오로지 meaningful 한 non-terminal state을 estimate 하는데 사용되도록 할 수 있음&lt;/li&gt;
-      &lt;li&gt;Using pseudo-reward functions : 실제 environment reward function을 decompose하는 것이 아니라, pseudo-reward function 을 사용하여 $\theta$ 를 update할 수도 있음.&lt;/li&gt;
-    &lt;/ol&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;experiments&quot;&gt;Experiments&lt;/h2&gt;
-
-&lt;h3 id=&quot;experiment-setting--fruit-collection-task&quot;&gt;Experiment Setting : Fruit Collection Task&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;10x10 격자에 과일들이 놓임&lt;/li&gt;
-  &lt;li&gt;과일들이 놓일 수 있는 위치는 10개가 있고, each episode마다 과일들은 랜덤한 5개 위치에 놓임&lt;/li&gt;
-  &lt;li&gt;agent는 랜덤한 위치에서 시작하고&lt;/li&gt;
-  &lt;li&gt;과일을 하나 먹을 때마다 reward +1 이 주어짐&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;each episode는 과일 5개를 다 먹거나 300 step 이 지나면 끝남&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;이 문제를 일반적인 DQN 으로 풀었을 때와 HRA로 풀었을 때 두 가지를 비교했음.&lt;/li&gt;
-  &lt;li&gt;HRA의 경우 → reward function을 10개의 다른 small-reward function으로 decompose했음, one per possible fruit location.&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;HRA network 의 실제 구성&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;input = 110 binary code (100 for encoding the agent’s position, and the remaining 10 for encoding whether the fruit is in each of the possible positions)&lt;/li&gt;
-      &lt;li&gt;FC layer 110 → 250 → (10 heads of) 4   (each consisting of the action values of 4 actions)&lt;/li&gt;
-      &lt;li&gt;Mean of all heads is computed through a final linear layer  (with fixed weights 1)&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;center&gt;&lt;img src=&quot;Untitled%201.png&quot; width=&quot;400&quot; /&gt;&lt;/center&gt;
-
-&lt;p&gt;위 그림에서, DQN은 맨 마지막 layer에서 나온 reward 를 가지고 loss function을 minimize한다면, HRA는 그 직전 layer에서 나온 reward (vector)들을 가지고 each agent들을 업데이트하는 것.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;여기서 HRA+3 에 주목하고 싶은데, decomposing the existing reward (fruit-related) 에 더해서 pseudo-reward 를 추가한 실험임. &lt;strong&gt;(reward is given when the agent GOT TO the predefined 10 places)&lt;/strong&gt;&lt;/p&gt;
-
-    &lt;p&gt;→ 그 장소에 과일이 없더라도 뭔가를 배울 수 있음&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;center&gt;&lt;img src=&quot;Untitled%202.png&quot; width=&quot;600&quot; /&gt;&lt;/center&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;그 결과 DQN보다 HRA를 썼을 때 훨씬 더 학습을 잘 했다는 것을 볼 수 있음. 특히, pseudo-reward를 썼을 때의 효과는 아주 강력했는데, 아무것도 쓰지 않는 상태와 비교해 아주 빠르게 학습을 완료함을 볼 수 있음.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;mspac-man&quot;&gt;Ms.Pac-Man&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;이 논문은 Ms.Pac-Man 게임에서 SOTA를 찍었다고 해서 꽤나 유명세를 탄 논문인데, 뭐 결론은 (전혀 놀랍지 않게도) HRA가 DQN보다 잘한다는 것이었음.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;reward function이 복잡해? → small reward function으로 쪼개세요!&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Multi-Reward/Objective" /><summary type="html">Horde vs HRA vs UVFA Horde architecture learns multiple general value functions(GVFs), each corresponding to different reward functions and other question functions, using multiple demons. UVFA tries to generalize the value functions across different task and goals. HRA, on the other hand, decomposes the reward function into $n$ different reward functions, with the intent to solve a SINGLE, but COMPLEX task. Reward 가 너무 sparse하거나 function이 너무 high-dimensional일 경우 문제 해결이 어려움 → too much state component들에 dependent한 reward function을 여러 개의 small reward function (dependent on less state components) 들의 합으로 해석함 → Reward Function Decomposition 이라는 topic도 therefore closely related! Proposed Method Let’s decompose the reward function $R_{env}$ into $n$ reward functions! \[R_{env} (s,a,s') = \sum_{k=1}^n R_k(s,a,s')\] and train separate RL agent on each of these reward functions. Because agent $k$ has its own reward function, it has also its own Q-value function, $Q_k$. In general, different agents can share multiple lower-level layers of deep Q-network. Hence, authors use a single vector $\theta$ to describe the combined weights of the agents! Combined network that represents all $Q$-value functions = Hybrid Reward Architecture \[Q_{\text{HRA}}(s,a;\theta) = \sum_{k=1}^n Q_k (s,a;\theta)\] The collection of agents can be viewed as a single agent with multiple heads! Lower-level layer는 고정되어 있는 상태에서 higher-level layer들의 weight들만 각 reward function에 대해 달라지는 것임. Loss function associated with HRA \[\begin{aligned} \mathcal{L}_i (\theta_i ) &amp;amp; = \mathbb{E}_{s,a,r,s'}\bigg [ \sum_{k=1}^n (y_{k,i} - Q_k (s,a;\theta_i ))^2 \bigg ] , \\ \text{with } &amp;amp; y_{k,i} = R_k (s,a,s') + \gamma \max_{a'} Q_k (s',a'; \theta_{k-1}) \end{aligned}\] To that end, we get an optimal weight $\theta^\star$ \[Q_k ^\star (s,a) = Q_k (s,a;\theta^\star)\] where \[Q_{\text{HRA}}^\star(s,a) := \sum_{k=1}^n Q_k^\star (s,a)\] Resulting $Q_{\text{HRA}}^\star$ is different from $Q_{env}^\star$ which is generated by $R_{env}$. What’s good about HRA? Easily exploit more domain knowledge! Remove irrelevant features : reward에 영향을 주지 않는 feature들은 과감히 배제시켜버릴 수 있음 Identifying terminal states : terminal state에 대해서는 학습을 하지 않도록 refrain 시켜 weight들이 오로지 meaningful 한 non-terminal state을 estimate 하는데 사용되도록 할 수 있음 Using pseudo-reward functions : 실제 environment reward function을 decompose하는 것이 아니라, pseudo-reward function 을 사용하여 $\theta$ 를 update할 수도 있음. Experiments Experiment Setting : Fruit Collection Task 10x10 격자에 과일들이 놓임 과일들이 놓일 수 있는 위치는 10개가 있고, each episode마다 과일들은 랜덤한 5개 위치에 놓임 agent는 랜덤한 위치에서 시작하고 과일을 하나 먹을 때마다 reward +1 이 주어짐 each episode는 과일 5개를 다 먹거나 300 step 이 지나면 끝남 이 문제를 일반적인 DQN 으로 풀었을 때와 HRA로 풀었을 때 두 가지를 비교했음. HRA의 경우 → reward function을 10개의 다른 small-reward function으로 decompose했음, one per possible fruit location. HRA network 의 실제 구성 input = 110 binary code (100 for encoding the agent’s position, and the remaining 10 for encoding whether the fruit is in each of the possible positions) FC layer 110 → 250 → (10 heads of) 4 (each consisting of the action values of 4 actions) Mean of all heads is computed through a final linear layer (with fixed weights 1) 위 그림에서, DQN은 맨 마지막 layer에서 나온 reward 를 가지고 loss function을 minimize한다면, HRA는 그 직전 layer에서 나온 reward (vector)들을 가지고 each agent들을 업데이트하는 것. 여기서 HRA+3 에 주목하고 싶은데, decomposing the existing reward (fruit-related) 에 더해서 pseudo-reward 를 추가한 실험임. (reward is given when the agent GOT TO the predefined 10 places) → 그 장소에 과일이 없더라도 뭔가를 배울 수 있음 그 결과 DQN보다 HRA를 썼을 때 훨씬 더 학습을 잘 했다는 것을 볼 수 있음. 특히, pseudo-reward를 썼을 때의 효과는 아주 강력했는데, 아무것도 쓰지 않는 상태와 비교해 아주 빠르게 학습을 완료함을 볼 수 있음. Ms.Pac-Man 이 논문은 Ms.Pac-Man 게임에서 SOTA를 찍었다고 해서 꽤나 유명세를 탄 논문인데, 뭐 결론은 (전혀 놀랍지 않게도) HRA가 DQN보다 잘한다는 것이었음. reward function이 복잡해? → small reward function으로 쪼개세요!</summary></entry><entry><title type="html">[NIPS 2017] Hindsight Experience Replay</title><link href="http://localhost:4000/notion_to_markdown/%5BNIPS%202017%5D%20Hindsight%20Experience%20Replay%206daf8b2ade014cf58ea2d223723e0390/" rel="alternate" type="text/html" title="[NIPS 2017] Hindsight Experience Replay" /><published>2021-04-13T00:00:00+09:00</published><updated>2021-04-13T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/hindsight-experience-replay</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/%5BNIPS%202017%5D%20Hindsight%20Experience%20Replay%206daf8b2ade014cf58ea2d223723e0390/">&lt;h2 id=&quot;introduction&quot;&gt;Introduction&lt;/h2&gt;
-
-&lt;h3 id=&quot;designing-a-reward-function-is-important-but-not-easy&quot;&gt;Designing a reward function is important, but not easy.&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;common challenge of RL is to carefully enegineer the reward function → not only reflecting the task at hand, but also carefully shaped to guide the policy optimization.&lt;/li&gt;
-  &lt;li&gt;The necessity of cost engineering limits the applicability of RL in the real world, because it requires both RL expertise and domain-specific knowledge.&lt;/li&gt;
-  &lt;li&gt;Not applicable in situations where we do not know what admissible behaviour may look like.&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Therefore, we need to develop algorithms which can learn from unshaped reward signals (e.g. a binary signal indicating successful task completion)&lt;/strong&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;what-can-humans-do&quot;&gt;What can humans do?&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;humans can learn almost as much from achieveing an undesired outcome as from the desired one.&lt;/p&gt;
-
-    &lt;p&gt;인간은 실패로부터 배울 수 있다는데, 왜 RL은 못 하냐.. For example, 사람은 하키를 치는 방법을 배운다 쳤을 때, 반드시 골을 넣어야만 배우는 건 아니잖음? 네트의 오른쪽에 맞았을 때는 내가 좀 왼쪽으로 쳐야겠구나 뭐 이런 것을 배울 수 있으니.. 근데 RL은 네트에 골인하지 못하고 살짝 오른쪽으로 빗겨나갔을 때의 failed situation에서 배울 수 있는게 거의 없음.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;It is however possible to draw another conclusion: ⭐ &lt;strong&gt;this sequence of actions would be succesful if the net had been placed further to the right&lt;/strong&gt; ⭐&lt;/p&gt;
-
-    &lt;p&gt;RL은 네트에 골인을 해야만 무언가를 학습할 수 있다고 하면, 네트를 여러개 두면 안됨? 오른쪽으로 빗나간 케이스였으면, 살짝 오른쪽에 있는 네트에 대해서는 학습이 가능할 수도 있는거 아닌가?&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;authors-propose-hindsight-experience-replay&quot;&gt;Authors propose “Hindsight Experience Replay”&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;allows the algorithm to perform exactly this kind of reasoning and can be combined with any off-policy RL algorithm.&lt;/li&gt;
-  &lt;li&gt;multiple goals → always applicable.  (e.g. achieving each state of the system may be treated as a separate goal)&lt;/li&gt;
-  &lt;li&gt;makes the training easier, even if the reward signal is sparse and binary&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;background&quot;&gt;Background&lt;/h2&gt;
-
-&lt;h3 id=&quot;deep-q-networks-dqn&quot;&gt;Deep Q-Networks (DQN)&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;model-free RL algorithm for discrete action spaces&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;$\epsilon$-greedy policy w.r.t. Q is defined as:&lt;/p&gt;
-
-    &lt;p&gt;a) take the greedy action $\pi_Q (s) = \argmax _{a\in \mathcal{A}} Q(s,a)$ with probability $1-\epsilon$&lt;/p&gt;
-
-    &lt;p&gt;b) take a random action sampled uniformly in $\mathcal{A}$ with probability $\epsilon$&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;taking an $\epsilon$-greedy policy, generate episodes&lt;/li&gt;
-  &lt;li&gt;transition tuples $\langle s_t, a_t, r_t, s_{t+1} \rangle$ is stored inside the replay buffer&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;network is trained using mini-batch gradient descent on the loss $\mathcal{L}$ which encourages the approximated Q-function to satisfy the Bellman equation.&lt;/p&gt;
-
-\[\begin{aligned} y_t = r_t + \gamma \max_{a'\in \mathcal{A}} Q(s_{t+1}, a')\\ \mathcal{L} = \mathbb{E} (Q(s_t, a_t) - y_t)^2 \end{aligned}\]
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;to make the optimization procedure more stable, targets $y_t$ are usually computed using a seperate target network, changes at a slower pace than the main network&lt;/p&gt;
-
-    &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;c1&quot;&gt;# update is done every n epochs/iterations, but way slower than the policy network
-&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;target_network&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;load_state_dict&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;policy_network&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;state_dict&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;deep-determinisitc-policy-gradients-ddpg&quot;&gt;Deep Determinisitc Policy Gradients (DDPG)&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;DDPG is a model-free RL algoirithm for continuous action spaces.&lt;/li&gt;
-  &lt;li&gt;DDPG use two neural networks
-    &lt;ol&gt;
-      &lt;li&gt;target poclicy (actor) $\pi : \mathcal{S} \rightarrow \mathcal{A}$&lt;/li&gt;
-      &lt;li&gt;action-value function approximator (critic) : $Q: \mathcal{S} \times \mathcal{A} \rightarrow \mathbb{R}$&lt;/li&gt;
-    &lt;/ol&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;critic’s job is to approximate the actor’s action-value function $Q^\pi$&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Episodes are generated using a behaviooral policy ($\pi_b$ ) - noisy version of target policy ($\pi$)&lt;/p&gt;
-
-\[\pi_b (s) = \pi(s) + \mathcal{N}(0,1)\]
-  &lt;/li&gt;
-  &lt;li&gt;episodes stored inside the replay buffer&lt;/li&gt;
-  &lt;li&gt;$y_t = r_t + \gamma Q(s_{t+1}, \pi(s_{t+1}) )$ target is computed by the actor, not the max function of Q-function&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;The actor is trained with mini-batch gradient descent on the loss&lt;/p&gt;
-
-\[\mathcal{L}_a = - \mathbb{E}_s Q(s,\pi(s))\]
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;universal-value-function-approximators-uvfa&quot;&gt;Universal Value Function Approximators (UVFA)&lt;/h3&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://www.notion.so/ICML-2015-Universal-Value-Function-Approximators-7f40ff1fd4d54484990b57dd8c2d4b14&quot;&gt;[ICML 2015] Universal Value Function Approximators&lt;/a&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;UVFA is extended version of DQN, where there is more than one goal we may try to achieve&lt;/li&gt;
-  &lt;li&gt;Let $\mathcal{G}$ be the space of possible goals.&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Every goal $g\in \mathcal{G}$ corresponds to some reward function&lt;/p&gt;
-
-\[r_g : \mathcal{S\times A} \rightarrow \mathbb{R}\]
-  &lt;/li&gt;
-  &lt;li&gt;every episode starts with sampling a state-goal pair from some distribution $p(s_0, g)$, and the goal stays fixed for the entire episode.&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;At every timestep, the agent gets as input not only the current state, but also the current goal.&lt;/p&gt;
-
-\[\pi : \mathcal{S\times G} \rightarrow \mathcal{A}\]
-
-    &lt;p&gt;and gets the reward&lt;/p&gt;
-
-\[r_t  = r_g (s_t, a_t )\]
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Q-function now depends not only on state action pair, but also on goal. Thus,&lt;/p&gt;
-
-\[Q^\pi (s_t, a_t, g) = \mathbb{E}[R_t |s_t, a_t, g]\]
-  &lt;/li&gt;
-  &lt;li&gt;we can similarly train an approximator Q-function using the Bellman equation, just like DQN.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;hindsight-experience-replay&quot;&gt;Hindsight Experience Replay&lt;/h2&gt;
-
-&lt;h3 id=&quot;a-motivating-example&quot;&gt;A motivating example&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;state space $\mathcal{S} = {0,1}^n$&lt;/li&gt;
-  &lt;li&gt;action space $\mathcal{A} = {0,1,\cdots, n-1}$   → action $i$ flips the $i$-th bit of the state&lt;/li&gt;
-  &lt;li&gt;There’s a goal $g \in \mathcal{S}$&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;The agent receives a reward $r_g (s,a) =-[s\not = g]$.&lt;/p&gt;
-
-    &lt;p&gt;bit-flipping operation을 통해서 특정 n-bit binary code와 똑같이 만들지 못하는 이상 계속 -1 reward 밖에 못 받음. 당연히 $n$이 커지면 커질수록 reward는 점점 더 sparse 해질 것이고, 학습을 불안정하게 만들 것. As a matter of fact…&lt;/p&gt;
-
-    &lt;ul&gt;
-      &lt;li&gt;Standard RL algorithms fail in this environment for $n&amp;gt;40$&lt;/li&gt;
-      &lt;li&gt;
-        &lt;p&gt;One solution might be using a more informative reward function&lt;/p&gt;
-
-\[r_g (s,a) = -\|s-g\|^2\]
-
-        &lt;p&gt;however it might not be applicable to more complicated problems.&lt;/p&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;how-should-we-tackle-this-problem&quot;&gt;How should we tackle this problem?&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;consider an episode with state $s_1, \cdots, s_T$&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;and our goal is $g \not = s_1, \cdots, s_T$&lt;/p&gt;
-
-    &lt;p&gt;→ this means that the agent received a reward of -1 at every timestep.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;we now reexamine the same trajectory with a different goal!&lt;/p&gt;
-
-    &lt;p&gt;→ this information can be harvested by using RL algorithm and experience replay &lt;strong&gt;where we replace $g$ in the replay buffer by $s_T$.&lt;/strong&gt;&lt;/p&gt;
-
-    &lt;p&gt;이왕 final state $s_T$ 까지 간거, 그 곳을 goal 이라고 생각하면 뭔가라도 얻을 수 있잖음?&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;by implementing HER technique, DQN with HER easily solves the task for $n$ up to 50!&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;multi-goal-rl&quot;&gt;Multi-goal RL&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;follow the approach from UVFA, train policies and value functions which take as input not only a state $s\in \mathcal{S}$ but also a goal $g\in \mathcal{G}$.&lt;/p&gt;
-
-    &lt;p&gt;Authors also prove that
-  “training an agent to perform multiple tasks can be easier than training it to perform only one task”  → 자기네들 방법론이 다방면으로 사용될 수 있다는 것!&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;They assume that every goal $g \in \mathcal{G}$ corresponds to some predicate&lt;/p&gt;
-
-\[f_g : \mathcal{S} \rightarrow \{0,1\}\]
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Agent’s goal is to acheve any state that satisfies&lt;/p&gt;
-
-\[f_g(s)=1\]
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;One example of goal space is&lt;/p&gt;
-
-    &lt;p&gt;state space $\mathcal{S}$ 의 특정 state 하나를 goal 로 지정하는 경우&lt;/p&gt;
-
-\[\begin{aligned} \mathcal{S}&amp;amp;=\mathcal{G} \\ f_g(s) &amp;amp;= [s=g]\end{aligned}\]
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Another example of goal space might be&lt;/p&gt;
-
-    &lt;p&gt;$\mathbb{R}^2$ state space 에서 특정 $x$  좌표값을 goal 로 지정하고 싶은 경우&lt;/p&gt;
-
-\[\begin{aligned} \mathcal{S}&amp;amp;=\mathbb{R}^2 \\ \mathcal{G} &amp;amp; = \mathbb{R} \\ f_g((x,y)) &amp;amp;= [x=g]\end{aligned}\]
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;assume that, for a given state $s$, we can easily find a goal $g$  which is satisfied in this state. More formally, we assume that there is given a mapping&lt;/p&gt;
-
-\[m: \mathcal{S\rightarrow G}\ \ \text{s.t.} \ \ \forall s\in \mathcal{S}, \  f_{m(s)}(s) = 1\]
-
-    &lt;p&gt;자신이 있는 state을 goal 이 되도록 해주는 mapping이라는 건데, 위 첫번째 예시에서는 $m(s) = s$, 두 번째 예시에서는 $m((x,y)) = x$. state space $\mathcal{S}$ 와 goal space $\mathcal{G}$ 가 항상 같지 않을 수 있으니 필요한 정의인 듯.&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;main-algorithm--hindsight-experience-replay-her&quot;&gt;Main Algorithm : Hindsight Experience Replay (HER)&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;after experiencing some episode $s_0, s_1, \cdots, s_T$ we store in the replay buffer every trainsition $s_t \rightarrow s_{t+1}$ not only with the original goal used for this episode, but also with a subset of other goals.&lt;/li&gt;
-  &lt;li&gt;One choice which has to be made to use HER → set of additional goals used for replay.&lt;/li&gt;
-  &lt;li&gt;simplest version? we replay each trajectory with the goal $m(s_T)$ → goal which is achieved in the final state of the episode.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;center&gt;&lt;img src=&quot;Untitled.png&quot; width=&quot;500&quot; /&gt;&lt;/center&gt;
-
-&lt;p&gt;Simple!&lt;/p&gt;
-
-&lt;h2 id=&quot;results&quot;&gt;Results&lt;/h2&gt;
-&lt;center&gt;
-&lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;https://www.youtube.com/embed/Dz_HuzgMxzo&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;&lt;/center&gt;
-
-&lt;p&gt;&lt;img src=&quot;Untitled%201.png&quot; alt=&quot;Untitled%201.png&quot; /&gt;&lt;/p&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Multi-Reward/Objective" /><summary type="html">Introduction Designing a reward function is important, but not easy. common challenge of RL is to carefully enegineer the reward function → not only reflecting the task at hand, but also carefully shaped to guide the policy optimization. The necessity of cost engineering limits the applicability of RL in the real world, because it requires both RL expertise and domain-specific knowledge. Not applicable in situations where we do not know what admissible behaviour may look like. Therefore, we need to develop algorithms which can learn from unshaped reward signals (e.g. a binary signal indicating successful task completion) What can humans do? humans can learn almost as much from achieveing an undesired outcome as from the desired one. 인간은 실패로부터 배울 수 있다는데, 왜 RL은 못 하냐.. For example, 사람은 하키를 치는 방법을 배운다 쳤을 때, 반드시 골을 넣어야만 배우는 건 아니잖음? 네트의 오른쪽에 맞았을 때는 내가 좀 왼쪽으로 쳐야겠구나 뭐 이런 것을 배울 수 있으니.. 근데 RL은 네트에 골인하지 못하고 살짝 오른쪽으로 빗겨나갔을 때의 failed situation에서 배울 수 있는게 거의 없음. It is however possible to draw another conclusion: ⭐ this sequence of actions would be succesful if the net had been placed further to the right ⭐ RL은 네트에 골인을 해야만 무언가를 학습할 수 있다고 하면, 네트를 여러개 두면 안됨? 오른쪽으로 빗나간 케이스였으면, 살짝 오른쪽에 있는 네트에 대해서는 학습이 가능할 수도 있는거 아닌가? Authors propose “Hindsight Experience Replay” allows the algorithm to perform exactly this kind of reasoning and can be combined with any off-policy RL algorithm. multiple goals → always applicable. (e.g. achieving each state of the system may be treated as a separate goal) makes the training easier, even if the reward signal is sparse and binary Background Deep Q-Networks (DQN) model-free RL algorithm for discrete action spaces $\epsilon$-greedy policy w.r.t. Q is defined as: a) take the greedy action $\pi_Q (s) = \argmax _{a\in \mathcal{A}} Q(s,a)$ with probability $1-\epsilon$ b) take a random action sampled uniformly in $\mathcal{A}$ with probability $\epsilon$ taking an $\epsilon$-greedy policy, generate episodes transition tuples $\langle s_t, a_t, r_t, s_{t+1} \rangle$ is stored inside the replay buffer network is trained using mini-batch gradient descent on the loss $\mathcal{L}$ which encourages the approximated Q-function to satisfy the Bellman equation. \[\begin{aligned} y_t = r_t + \gamma \max_{a'\in \mathcal{A}} Q(s_{t+1}, a')\\ \mathcal{L} = \mathbb{E} (Q(s_t, a_t) - y_t)^2 \end{aligned}\] to make the optimization procedure more stable, targets $y_t$ are usually computed using a seperate target network, changes at a slower pace than the main network # update is done every n epochs/iterations, but way slower than the policy network target_network.load_state_dict(policy_network.state_dict()) Deep Determinisitc Policy Gradients (DDPG) DDPG is a model-free RL algoirithm for continuous action spaces. DDPG use two neural networks target poclicy (actor) $\pi : \mathcal{S} \rightarrow \mathcal{A}$ action-value function approximator (critic) : $Q: \mathcal{S} \times \mathcal{A} \rightarrow \mathbb{R}$ critic’s job is to approximate the actor’s action-value function $Q^\pi$ Episodes are generated using a behaviooral policy ($\pi_b$ ) - noisy version of target policy ($\pi$) \[\pi_b (s) = \pi(s) + \mathcal{N}(0,1)\] episodes stored inside the replay buffer $y_t = r_t + \gamma Q(s_{t+1}, \pi(s_{t+1}) )$ target is computed by the actor, not the max function of Q-function The actor is trained with mini-batch gradient descent on the loss \[\mathcal{L}_a = - \mathbb{E}_s Q(s,\pi(s))\] Universal Value Function Approximators (UVFA) [ICML 2015] Universal Value Function Approximators UVFA is extended version of DQN, where there is more than one goal we may try to achieve Let $\mathcal{G}$ be the space of possible goals. Every goal $g\in \mathcal{G}$ corresponds to some reward function \[r_g : \mathcal{S\times A} \rightarrow \mathbb{R}\] every episode starts with sampling a state-goal pair from some distribution $p(s_0, g)$, and the goal stays fixed for the entire episode. At every timestep, the agent gets as input not only the current state, but also the current goal. \[\pi : \mathcal{S\times G} \rightarrow \mathcal{A}\] and gets the reward \[r_t = r_g (s_t, a_t )\] Q-function now depends not only on state action pair, but also on goal. Thus, \[Q^\pi (s_t, a_t, g) = \mathbb{E}[R_t |s_t, a_t, g]\] we can similarly train an approximator Q-function using the Bellman equation, just like DQN. Hindsight Experience Replay A motivating example state space $\mathcal{S} = {0,1}^n$ action space $\mathcal{A} = {0,1,\cdots, n-1}$ → action $i$ flips the $i$-th bit of the state There’s a goal $g \in \mathcal{S}$ The agent receives a reward $r_g (s,a) =-[s\not = g]$. bit-flipping operation을 통해서 특정 n-bit binary code와 똑같이 만들지 못하는 이상 계속 -1 reward 밖에 못 받음. 당연히 $n$이 커지면 커질수록 reward는 점점 더 sparse 해질 것이고, 학습을 불안정하게 만들 것. As a matter of fact… Standard RL algorithms fail in this environment for $n&amp;gt;40$ One solution might be using a more informative reward function \[r_g (s,a) = -\|s-g\|^2\] however it might not be applicable to more complicated problems. How should we tackle this problem? consider an episode with state $s_1, \cdots, s_T$ and our goal is $g \not = s_1, \cdots, s_T$ → this means that the agent received a reward of -1 at every timestep. we now reexamine the same trajectory with a different goal! → this information can be harvested by using RL algorithm and experience replay where we replace $g$ in the replay buffer by $s_T$. 이왕 final state $s_T$ 까지 간거, 그 곳을 goal 이라고 생각하면 뭔가라도 얻을 수 있잖음? by implementing HER technique, DQN with HER easily solves the task for $n$ up to 50! Multi-goal RL follow the approach from UVFA, train policies and value functions which take as input not only a state $s\in \mathcal{S}$ but also a goal $g\in \mathcal{G}$. Authors also prove that “training an agent to perform multiple tasks can be easier than training it to perform only one task” → 자기네들 방법론이 다방면으로 사용될 수 있다는 것! They assume that every goal $g \in \mathcal{G}$ corresponds to some predicate \[f_g : \mathcal{S} \rightarrow \{0,1\}\] Agent’s goal is to acheve any state that satisfies \[f_g(s)=1\] One example of goal space is state space $\mathcal{S}$ 의 특정 state 하나를 goal 로 지정하는 경우 \[\begin{aligned} \mathcal{S}&amp;amp;=\mathcal{G} \\ f_g(s) &amp;amp;= [s=g]\end{aligned}\] Another example of goal space might be $\mathbb{R}^2$ state space 에서 특정 $x$ 좌표값을 goal 로 지정하고 싶은 경우 \[\begin{aligned} \mathcal{S}&amp;amp;=\mathbb{R}^2 \\ \mathcal{G} &amp;amp; = \mathbb{R} \\ f_g((x,y)) &amp;amp;= [x=g]\end{aligned}\] assume that, for a given state $s$, we can easily find a goal $g$ which is satisfied in this state. More formally, we assume that there is given a mapping \[m: \mathcal{S\rightarrow G}\ \ \text{s.t.} \ \ \forall s\in \mathcal{S}, \ f_{m(s)}(s) = 1\] 자신이 있는 state을 goal 이 되도록 해주는 mapping이라는 건데, 위 첫번째 예시에서는 $m(s) = s$, 두 번째 예시에서는 $m((x,y)) = x$. state space $\mathcal{S}$ 와 goal space $\mathcal{G}$ 가 항상 같지 않을 수 있으니 필요한 정의인 듯. Main Algorithm : Hindsight Experience Replay (HER) after experiencing some episode $s_0, s_1, \cdots, s_T$ we store in the replay buffer every trainsition $s_t \rightarrow s_{t+1}$ not only with the original goal used for this episode, but also with a subset of other goals. One choice which has to be made to use HER → set of additional goals used for replay. simplest version? we replay each trajectory with the goal $m(s_T)$ → goal which is achieved in the final state of the episode. Simple! Results</summary></entry></feed>
+&lt;/ul&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Multi-Reward/Objective" /><summary type="html">Introduction Extending the purpose of value function General value function $V_g(s)$ represent the utility of any state $s$ in achieving a given goal $g$, represented by a pseudo-reward function. A collection of general value functions is powerful, and can be used in many ways. Horde architecture → consist of discrete set of value functions, while all of it is learned simultaneously from a single stream of experience. Each value function may also be used to generate a policy or option that leas to a goal state collection of value functions can be used as a predictive representatino of state (predicted values themselves are used as a feature vector) Extending the idea of Value function approximator authors extend the idea of value function approximation to both states $s$ and goal $g$ \[V(s,g;\theta)\] By universal, authors mean that the value function can generalise to any goal $g$ in a set $\mathcal{G}$ of possible goals Learning UVFA can be difficult! Why? agent will only see a small subset of possible combinations of states and goals $(s,g)$ Background define a pseudo-reward function $R_g (s,a,s’)$ define a pseudo-discount function $\gamma_g(s)$ , $\gamma_g (s)=0$ iff $s$ is the goal. Define a general value function \[V_{g,\pi }(s) := \mathbb{E} \bigg [ \sum_{t=0}^\infty R_g (s_{t+1}, a_t, s_t ) \prod_{k=0}^t \gamma_g (s_k) \bigg | \ s_0 =s \bigg ]\] goal 에 다다르면 더 이상 reward function이 더해지지 않는 구조임 Define a general action-value (q) function \[Q_{g, \pi} (s,a) := \mathbb{E}_{s'} [R_g (s,a,s') + \gamma_ g(s') V_{g,\pi} (s') ]\] optimal policy for a given goal \[\pi_g^\star(s) := \argmax _a Q_{\pi, g} (s,a)\] Universal Value Function Approximators (UVFA) Consider function approximators \[\begin{aligned}V(s,g;\theta) &amp;amp;\approx V_g ^\star (s)\\ Q(s,a,g;\theta)&amp;amp; \approx Q_g^\star(s,a) \end{aligned}\] How should we design the function? There are two ways simply concatenate s and g two-stream architecture, mapping each state and goal to $\R^n$ → $h$ maps $\R^n \times \R^n \rightarrow \R$ knowing that goals and states often share the same structure, one might share features between $\phi$ and $\psi$. (maybe the first layers?) UVFA can be symmetric \[V_g^\star (s) = V_s ^\star (g)\] → this can be achieved by sharing the same network $\phi = \psi$. Two different ways to train UVFA At this section, authors focus on “supervised training”, where the values $V_g ^\star(s)$ are all given as a table. End-to-End Learning using gradient descent, minimize \[\mathbb{E} \Big [ (V_g^\star (s) - V(s,g;\theta) )^2 \Big ]\] Two-stage training procedure This can be only applied to two-stream architecture! First, using matrix-factorization of $V_g (s)$, extract embedding vectors $\hat \phi(s)$ and $\hat \psi (g)$. Second, Learn the parameters of $\phi$ and $\psi$ seperately. It turns out… Two-stream architecture, with two-stage learning procedure, with relatively small embedding dimension $n$ is better. UVFA training in RL Experiments Results? perform just the same as Horde architecture</summary></entry></feed>
