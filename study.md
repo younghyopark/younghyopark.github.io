@@ -8,16 +8,16 @@ comment: false
 <br/>
 
 <div style="width: 100%;">
-    <a href="./optimization">
+    <a href="./ml-summary">
     <div style="width: 50%; height: 300px; float: left;"> 
         <center>
         <div class="card">
           <div class="card__image">
-            <img class="image" src="./optimization-logo.png"/>
+            <img class="image" src="./ml-logo.png"/>
           </div>
           <div class="card__content">
             <div class="card__header">
-              <h4>Optimization</h4>
+              <h4>Machine/Deep Learning</h4>
             </div>
           </div>
         </div>
@@ -43,16 +43,16 @@ comment: false
 <br/>
 
 <div style="width: 100%;">
-    <a href="./ml-summary">
+    <a href="./optimization">
     <div style="width: 50%; height: 300px; float: left;"> 
         <center>
         <div class="card">
           <div class="card__image">
-            <img class="image" src="./ml-logo.png"/>
+            <img class="image" src="./optimization-logo.png"/>
           </div>
           <div class="card__content">
             <div class="card__header">
-              <h4>Machine/Deep Learning</h4>
+              <h4>Optimization</h4>
             </div>
           </div>
         </div>
@@ -68,6 +68,41 @@ comment: false
           <div class="card__content">
             <div class="card__header">
               <h4>Control Theory</h4>
+            </div>
+          </div>
+        </div>
+        </center>
+    </div></a>
+</div>
+
+<br/>
+
+<div style="width: 100%;">
+    <a href="./robotics-summary">
+    <div style="width: 50%; height: 300px; float: left;"> 
+        <center>
+        <div class="card">
+          <div class="card__image">
+            <img class="image" src="./robotics-logo.png"/>
+          </div>
+          <div class="card__content">
+            <div class="card__header">
+              <h4>Robotics</h4>
+            </div>
+          </div>
+        </div>
+        </center>
+    </div></a>
+    <a href="./control-summary">
+    <div style="margin-left: 50%; height: 300px; "> 
+        <center>
+        <div class="card">
+          <div class="card__image">
+            <img class="image" src="./miscallaneous-logo.png"/>
+          </div>
+          <div class="card__content">
+            <div class="card__header">
+              <h4>Miscellaneous</h4>
             </div>
           </div>
         </div>

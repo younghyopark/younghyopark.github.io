@@ -1,10 +1,10 @@
 <!DOCTYPE html><html lang="en">
   <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[RL Theory] Stochastic Approximation - Younghyo Park</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[RL Theory] Q-learning - Younghyo Park</title>
 
-<meta name="description" content="Review: MDP ProblemBellman EquationsRecall, that both policy evaluation and optimality equation is a fixed point problem.      Policy Evaluation\[v = \mathca...">
-<link rel="canonical" href="http://localhost:4000/2021/04/20/scrl-9.html"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
+<meta name="description" content="">
+<link rel="canonical" href="http://localhost:4000/2021/04/21/scrl-11.html"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
 <!--<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
 
 <meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
@@ -336,11 +336,11 @@ fill="#000000" stroke="none">
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
 <!-- end custom main top snippet -->
-<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[RL Theory] Stochastic Approximation</h1></header><span class="split-space">&nbsp;</span>
+<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[RL Theory] Q-learning</h1></header><span class="split-space">&nbsp;</span>
           <a class="edit-on-github"
             title="Edit on Github"
-            href="https://github.com/younghyopark/younghyopark.github.io/tree/main/_posts/2021-04-20-scrl-9.md">
-            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[RL Theory] Stochastic Approximation"><div class="article__info clearfix"><ul class="left-col menu"><li>
+            href="https://github.com/younghyopark/younghyopark.github.io/tree/main/_posts/2021-04-21-scrl-11.md">
+            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[RL Theory] Q-learning"><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
                 href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
             </li><li>
@@ -349,201 +349,12 @@ fill="#000000" stroke="none">
             </li><li>
               <a class="button button--secondary button--pill button--sm"
                 href="/archive.html?tag=Theory%2FSurvey">Theory/Survey</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 20, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-20T00:00:00+09:00">
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 21, 2021</span>
+            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-21T00:00:00+09:00">
     <meta itemprop="keywords" content="Reinforcement-Learning,Lecture-Note,Theory/Survey"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
 
 <!-- end custom article top snippet -->
-<div class="article__content" itemprop="articleBody"><h2 id="review-mdp-problem">Review: MDP Problem</h2>
-
-<h3 id="bellman-equations">Bellman Equations</h3>
-
-<p>Recall, that both policy evaluation and optimality equation is a fixed point problem.</p>
-
-<ul>
-  <li>
-    <p><strong>Policy Evaluation</strong></p>
-
-\[v = \mathcal{T}^\pi v\]
-
-    <p>or equivalently</p>
-  </li>
-</ul>
-
-\[v(s) = r(s, \pi(s)) + \gamma \sum_{s' \in S} p(s' \vert s, \pi(s) ) v(s')\]
-
-<ul>
-  <li>
-    <p><strong>Optimality Equation</strong></p>
-
-\[v = \mathcal{T}v\]
-
-    <p>or equivalently</p>
-
-\[v(s) = \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) v(s') \bigg ]\]
-  </li>
-</ul>
-
-<p>Thus, we need to solve a <strong>fixed-point problem in a model-free manner</strong>.</p>
-
-<h3 id="fixed-point-problem">Fixed Point Problem</h3>
-
-<p>Consider the following system of equations:</p>
-
-\[Hx = x\]
-
-<p>where $ H: \mathbb{R}^n \rightarrow \mathbb{R}^n $.</p>
-
-<p>We may want to use a deterministic iterative algorithm,</p>
-
-\[x_{k+1} := Hx_k\]
-
-<p>or its variant with a small stepsize $\alpha_k \in (0,1)$.</p>
-
-\[x_{k+1} := (1-\alpha_k ) x_k + \alpha_k Hx_k\]
-
-<h2 id="stochastic-approximation">Stochastic Approximation</h2>
-
-<h3 id="what-if-h-is-not-completely-known">What if $H$ is not completely known?</h3>
-
-<p>Even in the case when $H$ is not completely known, or $Hx_k$ itself cannot be calculated easily, <strong>we might still have access to a random observation $s_k$</strong></p>
-
-\[s_k = Hx_k + w_k\]
-
-<p>along with the information about the random noise $w_k$.</p>
-
-<p>In this case, we might try to iteratively update the equation using this observation!</p>
-
-\[\begin{aligned}
-x_{k+1} &amp; = (1-\alpha_k) x_k + \alpha_k s_k \\
-&amp; = (1-\alpha_k) + \alpha_k (Hx_k + w_k)
-\end{aligned}\]
-
-<h3 id="stochastic-approximation-algorithm">Stochastic Approximation Algorithm</h3>
-
-<p>Stochastic approximation algorithm starts from this point!</p>
-
-\[x_{k+1} = (1-\alpha_k) x_k + \alpha_k (Hx_k + w_k )\]
-
-<p>where $s_k = Hx_k +w_k$ can be available using sample data. It is known that, under certain conditions, the error between $s_k$ and $Hx_k$ can be neglected at the end. This is the key idea of stochastic approximation!</p>
-
-<h3 id="robbins-monro-algorithm">Robbins-Monro Algorithm</h3>
-
-<p>For instance, let’s consider the <strong>policy evaluation</strong> equation</p>
-
-\[\begin{aligned}
-v^\pi &amp; = \mathcal{T}^\pi v^\pi\\
-&amp; = r(s,\pi(s) ) + \gamma \sum_{s' \in S} p (s' \vert s, a) v(s') \
-\end{aligned}\]
-
-<p>This can be expressed by the following form</p>
-
-\[x = \mathbb{E} [ f(x, \xi) ]\]
-
-<p>where $\xi$ is a random variable.</p>
-
-<p>Let’s say we have a sample of $\xi$, ${\hat{\xi}_1, \hat{\xi}_2, \cdots, \hat{\xi}_N}$. Then, we might use an empirical mean to to estimate $\mathbb{E}[f(x,\xi)]$ in the iterative algorithm.</p>
-
-\[x_{k+1} := (1-\alpha_k) x_k + \alpha_k \frac{1}{N} \sum_{i=1}^N f(x, \hat{\xi}_i )\]
-
-<p>However, this can be extremely inefficient when $N$ becomes large. Thus, we might want to use a simplified version: using a single sample $\hat{\xi}_i$ in each update.</p>
-
-\[x_{k+1} := (1-\alpha_k) x_k + \alpha_k f(x_k , \hat{\xi}_k )\]
-
-<p>This is called the <strong>Robbins-Monro</strong> algorithm. This is one of the special case of stochastic approximation method, with zero mean $w_k$.</p>
-
-<h3 id="algorithm">Algorithm</h3>
-
-<p>The stochastic approximation algorithm for $Hx=x$ can be written as</p>
-
-\[\begin{aligned}
-x_{k+1}(i) &amp; = (1-\alpha_k (i) ) x_k (i) + \alpha_k (i) [(Hx_k) (i) + w_k (i) ]\\
-&amp; = x_k (i) + \alpha_k (i) [ (Hx_k) (i) + w_k (i) - x_k (i) ]
-\end{aligned}\]
-
-<p>Thus, the step direction is $(Hx_k) (i) - x_k (i) + w_k (i)$. Also, we need to carefully choose the stepsize.</p>
-
-<h2 id="stepsize-analysis">Stepsize Analysis</h2>
-
-<p>Let’s first assume that our noise term $w_k (i)$ has variance $\sigma^2$. We may also assume that $w_k$ is independent of $x_k$.</p>
-
-<h3 id="attempt-1-constant-stepsize">Attempt 1: Constant Stepsize</h3>
-
-<p>What if we use a constant step size of $\alpha_k (i) = \alpha$?</p>
-<ul>
-  <li>
-    <p>The variance of $x_{k+1}(i)$ will be greater than (or equal to) $\alpha^2 \sigma^2 $.</p>
-  </li>
-  <li>
-    <p>Thus, $x_k$ might possibly reach near the neighborhood of $x^\star$, but just randomly move around it, without conerging it to $x^\star$.</p>
-  </li>
-  <li>
-    <p>Therfore, the effect of noise term will not be diminished at end.</p>
-
-    <center><img src="https://tva1.sinaimg.cn/large/008eGmZEgy1gpqgnq0kg1j30ak04ejru.jpg" alt="image-20210420210200814" style="zoom:50%;" /></center>
-  </li>
-</ul>
-
-<h3 id="attempt-2-stepsize-decreasing-so-quickly">Attempt 2: Stepsize Decreasing so quickly</h3>
-
-<p>Now, let’s consider the case where the stepsize decreases so quickly that both</p>
-
-\[\sum_{k}^\infty \alpha_k (i) &lt; +\infty\]
-
-<p>and</p>
-
-\[(Hx_k)(i) + w_k (i) - x_k (i) &lt; +\infty\]
-
-<p>are bounded. Then,</p>
-
-\[|x_k(i) - x_0 (i) | \leq \sum_{\tau=0}^{k-1} | x_{\tau+1}(i) - x_\tau (i) |  = \sum_{\tau=0}^{k-1}\alpha_\tau (i) |(Hx_\tau ) (i) - x_\tau (i) + w_\tau (i) |\]
-
-<p>we can see that $x_k(i)$ can never escape a fixed boundary around $x_0 (i)$. Thus, if $x_0$ is placed outside hte neighborhood of $x^\star$, $x_k$ can never reach at $x^\star$.</p>
-
-<p>Thus, the noise must be large enough to explore the entire space of $H$.</p>
-
-<h3 id="condition-on-stepsizes">Condition on Stepsizes</h3>
-
-<p><code class="language-plaintext warning highlighter-rouge">Assumptions</code> For each $i$, the following conditions hold with probability 1.</p>
-
-\[\sum_{k=0}^\infty \alpha_k (i) = +\infty\\
-\sum_{k=0}^\infty \alpha_k^2 (i) &lt;+\infty\]
-
-<h3 id="condition-on-noise">Condition on Noise</h3>
-
-<p>Define the history</p>
-
-\[\mathcal{F}_k:= \{ x_0, \cdots, x_k, w_0, \cdots, w_{k-1}, \alpha_0, \cdots, \alpha_k \}\]
-
-<p><code class="language-plaintext warning highlighter-rouge">Assumptions</code> For each $i$, the following conditions hold:</p>
-
-\[\mathbb{E}[w_k (i) \ \vert \ \mathcal{F}_k ] =0\\
-\mathbb{E}[w_k^2 (i)  \ \vert \ \mathcal{F}_k ] \leq C_0 + C_1 \|x_k \|^2\]
-
-<p>for some costant $C_0, C_1$.</p>
-
-<h2 id="convergence-theorem">Convergence Theorem</h2>
-
-<h3 id="convergence-under-contraction-property">Convergence under contraction property</h3>
-
-<p><code class="language-plaintext info highlighter-rouge">Theorem</code> If both of the assumptions hold and $H$ is a contraction mapping, $x_k$ converges to the fixed point $x^\star$ of $H$, with probability 1.</p>
-
-<p><code class="language-plaintext success highlighter-rouge">proof</code></p>
-
-<h3 id="convergence-under-monotonicity">Convergence under monotonicity</h3>
-
-<p><code class="language-plaintext warning highlighter-rouge">Assumptions</code> Suppose that mapping $H$ satisfies the following conditions:</p>
-
-<ol>
-  <li>$H$ is monotone</li>
-  <li>There exists a unique vector $x^\star$ such that $Hx^\star = x^\star$.</li>
-  <li>Let $\mathbf{1}$ be the vector with all components equal to 1. Then, 
-\(Hx - \eta \mathbf{1} \leq H(x- \eta \mathbf{1}) \leq H(x+ \eta \mathbf{1}) \leq Hx + \eta \mathbf{1}\)</li>
-</ol>
-
-<p><code class="language-plaintext info highlighter-rouge">Theorem</code> Suppose that all three assumptions hold. If the sequence $x_k$ generated by the stochastic approximation algorithm is bounded with probability 1, then $x_k$ converges to $x^\star$ with probability 1.</p>
-
-<p><code class="language-plaintext success highlighter-rouge">proof</code></p>
+<div class="article__content" itemprop="articleBody">
 </div><section class="article__sharing d-print-none"></section><br/>
   
   <div id="disqus_thread"></div>
@@ -565,7 +376,7 @@ x_{k+1}(i) &amp; = (1-\alpha_k (i) ) x_k (i) + \alpha_k (i) [(Hx_k) (i) + w_k (i
       })();
   </script>
 
-  <div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-04-20T00:00:00+09:00"><!-- start custom article footer snippet -->
+  <div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-04-21T00:00:00+09:00"><!-- start custom article footer snippet -->
 
 <!-- end custom article footer snippet -->
 <div class="article__license"><div class="license">
@@ -576,7 +387,7 @@ x_{k+1}(i) &amp; = (1-\alpha_k (i) ) x_k (i) + \alpha_k (i) [(Hx_k) (i) + w_k (i
     </p>
   </div></div><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </footer>
-<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2021/04/20/scrl-8.html">[RL Theory] Q-function</a></div><div class="next"><span>NEXT</span><a href="/2021/04/21/scrl-10.html">[RL Theory] Temporal Difference Learning</a></div></div></div>
+<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2021/04/21/scrl-10.html">[RL Theory] Temporal Difference Learning</a></div></div></div>
 
 </div>
 

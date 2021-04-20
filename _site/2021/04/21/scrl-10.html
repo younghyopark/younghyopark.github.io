@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[RL Theory] Temporal Difference Learning - Younghyo Park</title>
 
 <meta name="description" content="Review : Fixed Point ProblemsBellman EquationsRecall, that both policy evaluation and optimality equation is a fixed point problem.      Policy Evaluation\[v...">
-<link rel="canonical" href="http://localhost:4000/2021/04/20/scrl-10.html"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
+<link rel="canonical" href="http://localhost:4000/2021/04/21/scrl-10.html"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
 <!--<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
 
 <meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
@@ -339,7 +339,7 @@ fill="#000000" stroke="none">
 <article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[RL Theory] Temporal Difference Learning</h1></header><span class="split-space">&nbsp;</span>
           <a class="edit-on-github"
             title="Edit on Github"
-            href="https://github.com/younghyopark/younghyopark.github.io/tree/main/_posts/2021-04-20-scrl-10.md">
+            href="https://github.com/younghyopark/younghyopark.github.io/tree/main/_posts/2021-04-21-scrl-10.md">
             <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[RL Theory] Temporal Difference Learning"><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
                 href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
@@ -349,8 +349,8 @@ fill="#000000" stroke="none">
             </li><li>
               <a class="button button--secondary button--pill button--sm"
                 href="/archive.html?tag=Theory%2FSurvey">Theory/Survey</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 20, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-20T00:00:00+09:00">
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 21, 2021</span>
+            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-21T00:00:00+09:00">
     <meta itemprop="keywords" content="Reinforcement-Learning,Lecture-Note,Theory/Survey"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
 
 <!-- end custom article top snippet -->
@@ -448,7 +448,159 @@ where the step size is given by</p>
 
 \[x_{k+1}(i) = (1-\alpha_k (i) )x_k (i) + \alpha_k (i) [(Hx_k) (i) + w_k (i) ].\]
 
-<p>We know that</p>
+<p>We know that this converges if the following conditions hold.</p>
+
+<ol>
+  <li>$\sum_{k=0}^\infty \alpha_k (i) = +\infty$</li>
+  <li>$\sum_{k=0}^\infty \alpha_k ^2 (i) &lt;+\infty$</li>
+  <li>$\mathbb{E}[ w_k (i) \ \vert \ \mathcal{F}_k ] =0$</li>
+  <li>$\mathbb{E}[ w_k^2 (i) \ \vert \mathcal{F}_k ] \leq C_0 + C_1 |x_k |^2$</li>
+</ol>
+
+<h3 id="td0-stochastic-approximation-to-policy-evaluation">TD(0): Stochastic Approximation to Policy Evaluation</h3>
+
+<p>Recall, our policy evaluation equation is</p>
+
+\[\begin{aligned}
+v^\pi (s_t) &amp; = r(s_t,\pi(s_t)) + \gamma \sum_{s_{t+1}\in S} p(s_{t+1} \vert s_t,\pi(s_t)) v^\pi (s_{t+1})\\
+&amp; = r(s_t,\pi(s_t)) + \gamma \ \mathbb{E}\Big [ v^\pi (s_{t+1}) \Big ]\\
+&amp; = \mathbb{E} \Big [ r(s_t, \pi(s_t) ) + \gamma v^\pi (s_{t+1}) \Big ]
+\end{aligned}\]
+
+<p>and we are observing the transition (under policy $\pi$)</p>
+
+\[s_t, \ \ \ a_t ( = \pi(s_t) ), \ \ \ s_{t+1}, \ \ \ r_t ( = r(s_t, \pi(s_t) )\]
+
+<p>Recall that the simpliest <strong>Robbins-Monro</strong> stochastic approximation algorithm updates the value function using a single estimate</p>
+
+\[v^\pi (s_t) \leftarrow (1-\alpha_t ) v^\pi (s_t ) + \alpha_t \Big [ r_t + \gamma v^\pi (s_{t+1}) \Big ]\]
+
+<p>which can be rewritten as</p>
+
+\[v^\pi (s_t ) \leftarrow v^\pi (s_t) + \alpha_t \bigg [ r_t + \gamma v^\pi (s_{t+1}) - v^\pi (s_t) \bigg ]\]
+
+<p>We call the last term <strong>temporal difference</strong>:</p>
+
+\[\text{temporal difference} = d_t =  r_t + \gamma v^\pi (s_{t+1}) - v^\pi (s_t)\]
+
+<p>As you can see, this TD(0) algorithm updates the value function $v$ at state $s_t$ <strong>only at the time when our trajectory visits</strong> the state $s_t$. Since we are not using an approximating function of value function $v^\pi$, we need a <strong>lookup table</strong> of $v$.</p>
+
+<p>At this point, one might wonder: <strong>Why TD(0)?</strong> In fact, this is the lightest version of temporal difference learning, depending only on a single state transition ${s_t, a_t, s_{t+1}, r_t }$.</p>
+
+<h3 id="multi-step-generalization">Multi-Step Generalization</h3>
+
+<p>First of all, let’s consider <strong>multi-step Bellman equation</strong>:</p>
+
+\[v^\pi (s_t ) = \mathbb{E} ^\pi \bigg [ \sum_{k=0}^l \gamma ^k r(s_{t+k}, \pi(s_{t+k}) ) + \gamma ^{l+1}v^\pi (s_{t+l+1})\  \Big \vert \ \mathcal{F}_t \bigg ]\]
+
+<p>You can see that we are considering $(l+1)$ steps ahead, and leaving the steps after $t+l+1$ for the dynamic programming. Now, let’s consider a weighted average of the multistep Bellman equations:</p>
+
+\[(1-\lambda) \sum_{l=0}^\infty \lambda^l v(s_t)  = v(s_t)\]
+
+<p>We can then play with some algebra:</p>
+
+\[\begin{aligned}
+v(s_t) &amp; = (1-\lambda) \sum_{l=0}^\infty \lambda^l v(s_t) \\
+&amp; = (1-\lambda) \sum_{l=0}^\infty \lambda^l \mathbb{E}^\pi \bigg [ \sum_{k=0}^l \gamma ^k r(s_{t+k}, a_{t+k} ) + \gamma ^{l+1}v (s_{t+l+1}) \Big \vert \mathcal{F}_t \bigg ] \\
+&amp; = (1-\lambda) \mathbb{E}^\pi \bigg [ \sum_{l=0}^\infty \lambda^l \sum_{k=0}^l \bigg ( \gamma ^k r(s_{t+k}, a_{t+k} ) \bigg )+ \sum_{l=0}^\infty \lambda^l \gamma ^{l+1}v (s_{t+l+1}) \Big \vert \mathcal{F}_t   \bigg] \\
+&amp; = (1-\lambda)  \mathbb{E}^\pi \bigg [\sum_{l=0}^\infty \lambda^l  \sum_{k=0}^l \gamma ^k r(s_{t+k}, a_{t+k} ) + \sum_{l=0}^\infty  \lambda^l \gamma ^{l+1}v (s_{t+l+1}) \Big \vert \mathcal{F}_t \bigg ] \\
+\end{aligned}\]
+
+<p>At this point, let’s brake this up a bit.</p>
+
+\[\begin{aligned}
+\sum_{l=0}^\infty \lambda ^l \sum_{k=0}^l \gamma^k r(s_{t+k}, a_{t+k}) &amp; = r(s_t,a_t) + \lambda \big ( r(s_t, a_t) +  \gamma r(s_{t+1}, a_{t+1}) \big ) +  \\ &amp; \ \ \ \ \ \ \ \ \ \ \ \ \ \  + \lambda^2 \big ( r(s_t, a_t) +  \gamma r(s_{t+1}, a_{t+1})+ \gamma^2 (s_{t+2}, a_{t+2}) \big ) + \cdots \\
+&amp; = r(s_t, a_t) \sum_{l=0}^\infty  \lambda^l + \gamma r(s_{t+1}, a_{t+1}) \sum_{l=1}^\infty \lambda^l  + \gamma ^2 r(s_{t+2}, a_{t+2}) \sum_{l=2}^\infty \lambda^l + \cdots \\
+&amp; = \sum_{k=0}^\infty \gamma^k r(s_{t+k}, a_{t+k})\sum_{l=k}^\infty \lambda^l 
+\end{aligned}\]
+
+<p>Let’s continue playing with some algebra:</p>
+
+\[\begin{aligned}
+v(s_t) &amp; = (1-\lambda)  \mathbb{E}^\pi \bigg [\sum_{l=0}^\infty \lambda^l  \sum_{k=0}^l \gamma ^k r(s_{t+k}, a_{t+k} ) + \sum_{l=0}^\infty  \lambda^l \gamma ^{l+1}v (s_{t+l+1}) \Big \vert \mathcal{F}_t \bigg ] \\
+&amp; = (1-\lambda) \mathbb{E}^\pi \bigg [ \sum_{k=0}^\infty \gamma^k r(s_{t+k} , a_{t+k}) \sum_{l=k}^\infty \lambda^l   + \sum_{l=0}
+^\infty \lambda ^l \gamma ^{l+1} v(s_{t+l+1}) \ \vert \mathcal{F}_t \bigg ] \\
+&amp; = \mathbb{E}^\pi \bigg [ \sum_{k=0}^\infty \gamma^k r(s_{t+k}, a_{t+k}) \sum_{l=k}^\infty (\lambda^l - \lambda^{l+1}) + \sum_{l=0}^\infty (\lambda^l - \lambda^{l+1}) \gamma ^{l+1} v(s_{t+l+1}) \vert \mathcal{F}_t \bigg ] \\
+&amp; = \mathbb{E}^\pi \bigg [ \sum_{k=0}^\infty \gamma ^k r(s_{t+k}, a_{t+k}) \lambda^k  + \sum_{k=0}^\infty \lambda^k \gamma ^{k+1}v(s_{t+k+1}) - \sum_{k=0}^\infty \lambda^{k+1}\gamma^{k+1} v(s_{t+k+1}) \vert \mathcal{F}_k \bigg ] \\
+&amp; = \mathbb{E}^\pi \bigg [ \sum_{k=0}^\infty \gamma ^k r(s_{t+k}, a_{t+k}) \lambda^k  + \sum_{k=0}^\infty \lambda^k \gamma ^{k+1}v(s_{t+k+1}) - \sum_{k=0}^\infty \lambda^{k}\gamma^{k} v(s_{t+k}) \vert \mathcal{F}_k \bigg ] + v(s_k) \\
+&amp; = \mathbb{E}^\pi \bigg [ \sum_{k=0}^\infty(\lambda \gamma)^k \Big [ r(s_{t+k}, a_{t+k}) + \gamma v(s_{t+k+1}) -v(s_{t+k}) \Big ] | \mathcal{F}_t   \bigg ] + v(s_k) \\
+&amp; = \mathbb{E}^\pi \bigg [ \sum_{k=t}^\infty (\lambda \gamma)^{k-t} \Big [ r(s_k, a_k) + \gamma v(s_{k+1}) - v(s_k) \Big ] | \mathcal{F}_t \bigg ] + v(s_k)\\
+&amp; = \mathbb{E}^\pi \bigg [ \sum_{k=t}^\infty (\lambda \gamma)^{k-t} d_k | \mathcal{F}_t \bigg ] + v(s_k)\\
+\end{aligned}\]
+
+<p>Finally, our long-journey of algebra leads us to conclude that</p>
+
+\[\mathbb{E}^\pi \bigg [ \sum_{k=t}^\infty (\lambda \gamma)^{k-t} d_k | \mathcal{F}_t  \bigg ] =0\]
+
+<p>where</p>
+
+\[d_k : = r(s_k, \pi(s_k) ) + \gamma v(s_{k+1}) - v(s_k)\]
+
+<p>This is important, since we <strong>require the noise $w_k$ to satisfy the zero-mean (bias) condition</strong>.</p>
+
+<p>Thus, we can apply the <strong>Robbins-Monro</strong> stochastic approximation algorithm with step size $\alpha$.</p>
+
+\[v(s_t) \leftarrow (1-\alpha)v(s_t) + \alpha \bigg ( \sum_{k=t}^\infty (\lambda \gamma) ^{k-t} d_k + v(s_t) \bigg )\]
+
+<h3 id="tdlambda-algorithm">TD($\lambda$) Algorithm</h3>
+
+<ol>
+  <li>
+    <p>For a control policy $\pi$,</p>
+  </li>
+  <li>
+    <p>Initialize $v=0$</p>
+  </li>
+  <li>
+    <p>Using the trainsition data ${s_t, a_t, s_{t+1}, r_t ) }$, update $v(s_t)$.</p>
+
+\[v(s_t) \leftarrow v(s_t) + \alpha_t \sum_{k=t}^\infty (\lambda \gamma) ^{k-t}d_t\]
+  </li>
+</ol>
+
+<h2 id="remarks-on-tdlambda">Remarks on TD($\lambda$)</h2>
+
+<h3 id="extreme-cases">Extreme Cases</h3>
+
+<ul>
+  <li>
+    <p>When $\lambda=0$, this corresponds to TD(0), only considering single sample for every iteration.</p>
+
+\[v(s_t) \leftarrow v(s_t) + \alpha [ r_t + \gamma v(s_{t+1}) - v(s_t) ]\]
+  </li>
+  <li>
+    <p>When $\lambda=1$, this corresponds to Monte Carlo Method, (for instance, by setting $t=0$)</p>
+
+\[v(s_0) \leftarrow v(s_0) + \sum_{k=0}^\infty \gamma^k d_k\]
+  </li>
+</ul>
+
+<h3 id="bias-variance-tradeoff">Bias-Variance Tradeoff</h3>
+
+<p class="gray_no_border">Suppose that we have a Markov chain, where two states 1 and 2 are adjacent such that $p_{12} &gt;0$ and $p_{21} =0$. 2번 state로 한번 들어가면 다시는 1번 state로 돌아오지 못한다.</p>
+
+<p>TD(1), the Monte-Carlo method, will try to use $c(1,m)$, the cumulative reward in the $m$-th trajectory starting from state 1 to estimate $v^\pi(1)$. Meanwhile, this $c(1,m)$ is an unbiased estimate of $v^\pi(1)$.</p>
+
+<p>On the other hand, TD(0) uses the information $v^\pi(2)$ very efficiently while reducing the noise from the samples of $r_t$.</p>
+
+<p>We can see that</p>
+
+<ul>
+  <li>Big $\lambda$ : small bias, large variance</li>
+  <li>Small $\lambda$ : large bias, small variance</li>
+</ul>
+
+<h2 id="convergence-of-tdlambda">Convergence of TD($\lambda$)</h2>
+
+<h3 id="theorem">Theorem</h3>
+
+<p><code class="language-plaintext info highlighter-rouge">Theorem</code> Suppose that each state is visited infinitely often and that</p>
+
+\[\sum_{t=0}^\infty \alpha_t = +\infty, \ \ \ \sum_{t=0}^\infty \alpha_t^2 &lt;+\infty\]
+
+<p>Then, for each $ s\in S$, the value $v(s)$ generated by TD($\lambda$) given a policy $\pi$ converges to $v^\pi(s)$, with probability 1.</p>
+
+<p><code class="language-plaintext success highlighter-rouge">Proof</code></p>
 
 </div><section class="article__sharing d-print-none"></section><br/>
   
@@ -471,7 +623,7 @@ where the step size is given by</p>
       })();
   </script>
 
-  <div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-04-20T00:00:00+09:00"><!-- start custom article footer snippet -->
+  <div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-04-21T00:00:00+09:00"><!-- start custom article footer snippet -->
 
 <!-- end custom article footer snippet -->
 <div class="article__license"><div class="license">
@@ -482,7 +634,7 @@ where the step size is given by</p>
     </p>
   </div></div><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </footer>
-<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2021/04/20/logic-flow.html">[Personal Note] Logic Flow </a></div><div class="next"><span>NEXT</span><a href="/2021/04/20/scrl-6.html">[RL Theory] Policy Iteration</a></div></div></div>
+<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2021/04/20/scrl-9.html">[RL Theory] Stochastic Approximation</a></div><div class="next"><span>NEXT</span><a href="/2021/04/21/scrl-11.html">[RL Theory] Q-learning</a></div></div></div>
 
 </div>
 

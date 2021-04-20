@@ -1,5 +1,358 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-04-20T23:09:34+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Younghyo Park</title><subtitle>Your Site Description
-</subtitle><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><entry><title type="html">[RL Theory] Linear Programming Approach</title><link href="http://localhost:4000/2021/04/20/scrl-7.html" rel="alternate" type="text/html" title="[RL Theory] Linear Programming Approach" /><published>2021-04-20T00:00:00+09:00</published><updated>2021-04-20T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/20/scrl-7</id><content type="html" xml:base="http://localhost:4000/2021/04/20/scrl-7.html">&lt;h2 id=&quot;iteration-based-vs-optimization-based&quot;&gt;Iteration based vs Optimization based&lt;/h2&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-04-21T02:33:55+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Younghyo Park</title><subtitle>Your Site Description
+</subtitle><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><entry><title type="html">[RL Theory] Q-learning</title><link href="http://localhost:4000/2021/04/21/scrl-11.html" rel="alternate" type="text/html" title="[RL Theory] Q-learning" /><published>2021-04-21T00:00:00+09:00</published><updated>2021-04-21T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/21/scrl-11</id><content type="html" xml:base="http://localhost:4000/2021/04/21/scrl-11.html"></content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Lecture-Note" /><category term="Theory/Survey" /><summary type="html"></summary></entry><entry><title type="html">[RL Theory] Temporal Difference Learning</title><link href="http://localhost:4000/2021/04/21/scrl-10.html" rel="alternate" type="text/html" title="[RL Theory] Temporal Difference Learning" /><published>2021-04-21T00:00:00+09:00</published><updated>2021-04-21T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/21/scrl-10</id><content type="html" xml:base="http://localhost:4000/2021/04/21/scrl-10.html">&lt;h2 id=&quot;review--fixed-point-problems&quot;&gt;Review : Fixed Point Problems&lt;/h2&gt;
+
+&lt;h3 id=&quot;bellman-equations&quot;&gt;Bellman Equations&lt;/h3&gt;
+
+&lt;p&gt;Recall, that both policy evaluation and optimality equation is a fixed point problem.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Policy Evaluation&lt;/strong&gt;&lt;/p&gt;
+
+\[v = \mathcal{T}^\pi v\]
+
+    &lt;p&gt;or equivalently&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+\[v(s) = r(s, \pi(s)) + \gamma \sum_{s' \in S} p(s' \vert s, \pi(s) ) v(s')\]
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Optimality Equation&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+\[v = \mathcal{T}v\]
+
+&lt;p&gt;or equivalently&lt;/p&gt;
+
+\[v(s) = \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) v(s') \bigg ]\]
+
+&lt;p&gt;Thus, we need to solve a &lt;strong&gt;fixed-point problem in a model-free manner&lt;/strong&gt;. Today, we’ll try to &lt;strong&gt;evaluate a policy&lt;/strong&gt; in a model-free manner.&lt;/p&gt;
+
+&lt;h2 id=&quot;naive--monte-carlo-methods&quot;&gt;Naive : Monte Carlo Methods&lt;/h2&gt;
+
+&lt;h3 id=&quot;monte-carlo-approximation&quot;&gt;Monte Carlo Approximation&lt;/h3&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;Choose sufficiently large $T$ so that $\gamma^T$ is negligible.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Then, generate total $M$ state trajectories, each corresponding to $T+1$ number of states. For instance, $m$th trajectory will be&lt;/p&gt;
+
+\[\{s_t^{(m)} \}_{t=0}^T = \{s_0^{(m)}, s_1^{(m)}, \cdots, s_T^{(m)}\}\]
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Then, the total (discounted) cost incurred along this $m$th trajectory starting from $x_0$ is given by&lt;/p&gt;
+
+\[C^\pi (x_0, m) := \sum_{t=0}^{T-1} \gamma^t r\big (s_t ^{(m)}, \pi(s_t ^{(m)})\big )\]
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Finally, we approximate the value function for policy $\pi$.&lt;/p&gt;
+
+\[v^\pi(x_0 ) = \frac{1}{M} \sum_{m=1}^M c^\pi (x_0, m)\]
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;iterative-algorithm&quot;&gt;Iterative Algorithm&lt;/h3&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;Fix a control policy $\pi$ (the policy we want to evaluate) and an initial state $s$.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Initialize the value function $v(s) \leftarrow 0$&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Update the value as&lt;/p&gt;
+
+    &lt;p&gt;\(v(s) \leftarrow v(s) + \alpha_m (c_s (x,m) - v(s) ) , \ \ \ m=1, \cdots, M\)
+where the step size is given by&lt;/p&gt;
+
+\[\alpha_m = \frac{1}{M}\]
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p class=&quot;gray_no_border&quot;&gt;This is a model-free algorithm that can estimate the value function without model information, but it’s &lt;strong&gt;not an online algorithm&lt;/strong&gt;. (We need at least one trajectory with $T+1$ states to perform one step of iteration.)&lt;/p&gt;
+
+&lt;h2 id=&quot;temporal-difference-td-learning&quot;&gt;Temporal Difference (TD) Learning&lt;/h2&gt;
+
+&lt;h3 id=&quot;motivation&quot;&gt;Motivation&lt;/h3&gt;
+
+&lt;p&gt;우리가 원하는 것은 episode 별로, 다시 말해 여러 개의 state transition을 모아서 $v^\pi$를 update하는 것이 아니라, state transition 을 한번 얻을 때마다  $v^\pi$를 update 하는 것. What we want is to update the value function $v^\pi$ after a single state transition, not an entire episode! To do so, we first define &lt;strong&gt;transition data&lt;/strong&gt; under $\pi$.&lt;/p&gt;
+
+\[\{ (s_t, a_t, r_t, s_{t+1})\}\]
+
+&lt;h3 id=&quot;review--stochastic-approximation-algorithm&quot;&gt;Review : Stochastic Approximation Algorithm&lt;/h3&gt;
+
+&lt;p&gt;Previous article dealt with Stochastic Approximation algorithm, trying to solve the following equation&lt;/p&gt;
+
+\[Hx = x\]
+
+&lt;p&gt;by an iterative procedure&lt;/p&gt;
+
+\[x_{k+1}(i) = (1-\alpha_k (i) )x_k (i) + \alpha_k (i) [(Hx_k) (i) + w_k (i) ].\]
+
+&lt;p&gt;We know that this converges if the following conditions hold.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;$\sum_{k=0}^\infty \alpha_k (i) = +\infty$&lt;/li&gt;
+  &lt;li&gt;$\sum_{k=0}^\infty \alpha_k ^2 (i) &amp;lt;+\infty$&lt;/li&gt;
+  &lt;li&gt;$\mathbb{E}[ w_k (i) \ \vert \ \mathcal{F}_k ] =0$&lt;/li&gt;
+  &lt;li&gt;$\mathbb{E}[ w_k^2 (i) \ \vert \mathcal{F}_k ] \leq C_0 + C_1 |x_k |^2$&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;td0-stochastic-approximation-to-policy-evaluation&quot;&gt;TD(0): Stochastic Approximation to Policy Evaluation&lt;/h3&gt;
+
+&lt;p&gt;Recall, our policy evaluation equation is&lt;/p&gt;
+
+\[\begin{aligned}
+v^\pi (s_t) &amp;amp; = r(s_t,\pi(s_t)) + \gamma \sum_{s_{t+1}\in S} p(s_{t+1} \vert s_t,\pi(s_t)) v^\pi (s_{t+1})\\
+&amp;amp; = r(s_t,\pi(s_t)) + \gamma \ \mathbb{E}\Big [ v^\pi (s_{t+1}) \Big ]\\
+&amp;amp; = \mathbb{E} \Big [ r(s_t, \pi(s_t) ) + \gamma v^\pi (s_{t+1}) \Big ]
+\end{aligned}\]
+
+&lt;p&gt;and we are observing the transition (under policy $\pi$)&lt;/p&gt;
+
+\[s_t, \ \ \ a_t ( = \pi(s_t) ), \ \ \ s_{t+1}, \ \ \ r_t ( = r(s_t, \pi(s_t) )\]
+
+&lt;p&gt;Recall that the simpliest &lt;strong&gt;Robbins-Monro&lt;/strong&gt; stochastic approximation algorithm updates the value function using a single estimate&lt;/p&gt;
+
+\[v^\pi (s_t) \leftarrow (1-\alpha_t ) v^\pi (s_t ) + \alpha_t \Big [ r_t + \gamma v^\pi (s_{t+1}) \Big ]\]
+
+&lt;p&gt;which can be rewritten as&lt;/p&gt;
+
+\[v^\pi (s_t ) \leftarrow v^\pi (s_t) + \alpha_t \bigg [ r_t + \gamma v^\pi (s_{t+1}) - v^\pi (s_t) \bigg ]\]
+
+&lt;p&gt;We call the last term &lt;strong&gt;temporal difference&lt;/strong&gt;:&lt;/p&gt;
+
+\[\text{temporal difference} = d_t =  r_t + \gamma v^\pi (s_{t+1}) - v^\pi (s_t)\]
+
+&lt;p&gt;As you can see, this TD(0) algorithm updates the value function $v$ at state $s_t$ &lt;strong&gt;only at the time when our trajectory visits&lt;/strong&gt; the state $s_t$. Since we are not using an approximating function of value function $v^\pi$, we need a &lt;strong&gt;lookup table&lt;/strong&gt; of $v$.&lt;/p&gt;
+
+&lt;p&gt;At this point, one might wonder: &lt;strong&gt;Why TD(0)?&lt;/strong&gt; In fact, this is the lightest version of temporal difference learning, depending only on a single state transition ${s_t, a_t, s_{t+1}, r_t }$.&lt;/p&gt;
+
+&lt;h3 id=&quot;multi-step-generalization&quot;&gt;Multi-Step Generalization&lt;/h3&gt;
+
+&lt;p&gt;First of all, let’s consider &lt;strong&gt;multi-step Bellman equation&lt;/strong&gt;:&lt;/p&gt;
+
+\[v^\pi (s_t ) = \mathbb{E} ^\pi \bigg [ \sum_{k=0}^l \gamma ^k r(s_{t+k}, \pi(s_{t+k}) ) + \gamma ^{l+1}v^\pi (s_{t+l+1})\  \Big \vert \ \mathcal{F}_t \bigg ]\]
+
+&lt;p&gt;You can see that we are considering $(l+1)$ steps ahead, and leaving the steps after $t+l+1$ for the dynamic programming. Now, let’s consider a weighted average of the multistep Bellman equations:&lt;/p&gt;
+
+\[(1-\lambda) \sum_{l=0}^\infty \lambda^l v(s_t)  = v(s_t)\]
+
+&lt;p&gt;We can then play with some algebra:&lt;/p&gt;
+
+\[\begin{aligned}
+v(s_t) &amp;amp; = (1-\lambda) \sum_{l=0}^\infty \lambda^l v(s_t) \\
+&amp;amp; = (1-\lambda) \sum_{l=0}^\infty \lambda^l \mathbb{E}^\pi \bigg [ \sum_{k=0}^l \gamma ^k r(s_{t+k}, a_{t+k} ) + \gamma ^{l+1}v (s_{t+l+1}) \Big \vert \mathcal{F}_t \bigg ] \\
+&amp;amp; = (1-\lambda) \mathbb{E}^\pi \bigg [ \sum_{l=0}^\infty \lambda^l \sum_{k=0}^l \bigg ( \gamma ^k r(s_{t+k}, a_{t+k} ) \bigg )+ \sum_{l=0}^\infty \lambda^l \gamma ^{l+1}v (s_{t+l+1}) \Big \vert \mathcal{F}_t   \bigg] \\
+&amp;amp; = (1-\lambda)  \mathbb{E}^\pi \bigg [\sum_{l=0}^\infty \lambda^l  \sum_{k=0}^l \gamma ^k r(s_{t+k}, a_{t+k} ) + \sum_{l=0}^\infty  \lambda^l \gamma ^{l+1}v (s_{t+l+1}) \Big \vert \mathcal{F}_t \bigg ] \\
+\end{aligned}\]
+
+&lt;p&gt;At this point, let’s brake this up a bit.&lt;/p&gt;
+
+\[\begin{aligned}
+\sum_{l=0}^\infty \lambda ^l \sum_{k=0}^l \gamma^k r(s_{t+k}, a_{t+k}) &amp;amp; = r(s_t,a_t) + \lambda \big ( r(s_t, a_t) +  \gamma r(s_{t+1}, a_{t+1}) \big ) +  \\ &amp;amp; \ \ \ \ \ \ \ \ \ \ \ \ \ \  + \lambda^2 \big ( r(s_t, a_t) +  \gamma r(s_{t+1}, a_{t+1})+ \gamma^2 (s_{t+2}, a_{t+2}) \big ) + \cdots \\
+&amp;amp; = r(s_t, a_t) \sum_{l=0}^\infty  \lambda^l + \gamma r(s_{t+1}, a_{t+1}) \sum_{l=1}^\infty \lambda^l  + \gamma ^2 r(s_{t+2}, a_{t+2}) \sum_{l=2}^\infty \lambda^l + \cdots \\
+&amp;amp; = \sum_{k=0}^\infty \gamma^k r(s_{t+k}, a_{t+k})\sum_{l=k}^\infty \lambda^l 
+\end{aligned}\]
+
+&lt;p&gt;Let’s continue playing with some algebra:&lt;/p&gt;
+
+\[\begin{aligned}
+v(s_t) &amp;amp; = (1-\lambda)  \mathbb{E}^\pi \bigg [\sum_{l=0}^\infty \lambda^l  \sum_{k=0}^l \gamma ^k r(s_{t+k}, a_{t+k} ) + \sum_{l=0}^\infty  \lambda^l \gamma ^{l+1}v (s_{t+l+1}) \Big \vert \mathcal{F}_t \bigg ] \\
+&amp;amp; = (1-\lambda) \mathbb{E}^\pi \bigg [ \sum_{k=0}^\infty \gamma^k r(s_{t+k} , a_{t+k}) \sum_{l=k}^\infty \lambda^l   + \sum_{l=0}
+^\infty \lambda ^l \gamma ^{l+1} v(s_{t+l+1}) \ \vert \mathcal{F}_t \bigg ] \\
+&amp;amp; = \mathbb{E}^\pi \bigg [ \sum_{k=0}^\infty \gamma^k r(s_{t+k}, a_{t+k}) \sum_{l=k}^\infty (\lambda^l - \lambda^{l+1}) + \sum_{l=0}^\infty (\lambda^l - \lambda^{l+1}) \gamma ^{l+1} v(s_{t+l+1}) \vert \mathcal{F}_t \bigg ] \\
+&amp;amp; = \mathbb{E}^\pi \bigg [ \sum_{k=0}^\infty \gamma ^k r(s_{t+k}, a_{t+k}) \lambda^k  + \sum_{k=0}^\infty \lambda^k \gamma ^{k+1}v(s_{t+k+1}) - \sum_{k=0}^\infty \lambda^{k+1}\gamma^{k+1} v(s_{t+k+1}) \vert \mathcal{F}_k \bigg ] \\
+&amp;amp; = \mathbb{E}^\pi \bigg [ \sum_{k=0}^\infty \gamma ^k r(s_{t+k}, a_{t+k}) \lambda^k  + \sum_{k=0}^\infty \lambda^k \gamma ^{k+1}v(s_{t+k+1}) - \sum_{k=0}^\infty \lambda^{k}\gamma^{k} v(s_{t+k}) \vert \mathcal{F}_k \bigg ] + v(s_k) \\
+&amp;amp; = \mathbb{E}^\pi \bigg [ \sum_{k=0}^\infty(\lambda \gamma)^k \Big [ r(s_{t+k}, a_{t+k}) + \gamma v(s_{t+k+1}) -v(s_{t+k}) \Big ] | \mathcal{F}_t   \bigg ] + v(s_k) \\
+&amp;amp; = \mathbb{E}^\pi \bigg [ \sum_{k=t}^\infty (\lambda \gamma)^{k-t} \Big [ r(s_k, a_k) + \gamma v(s_{k+1}) - v(s_k) \Big ] | \mathcal{F}_t \bigg ] + v(s_k)\\
+&amp;amp; = \mathbb{E}^\pi \bigg [ \sum_{k=t}^\infty (\lambda \gamma)^{k-t} d_k | \mathcal{F}_t \bigg ] + v(s_k)\\
+\end{aligned}\]
+
+&lt;p&gt;Finally, our long-journey of algebra leads us to conclude that&lt;/p&gt;
+
+\[\mathbb{E}^\pi \bigg [ \sum_{k=t}^\infty (\lambda \gamma)^{k-t} d_k | \mathcal{F}_t  \bigg ] =0\]
+
+&lt;p&gt;where&lt;/p&gt;
+
+\[d_k : = r(s_k, \pi(s_k) ) + \gamma v(s_{k+1}) - v(s_k)\]
+
+&lt;p&gt;This is important, since we &lt;strong&gt;require the noise $w_k$ to satisfy the zero-mean (bias) condition&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;Thus, we can apply the &lt;strong&gt;Robbins-Monro&lt;/strong&gt; stochastic approximation algorithm with step size $\alpha$.&lt;/p&gt;
+
+\[v(s_t) \leftarrow (1-\alpha)v(s_t) + \alpha \bigg ( \sum_{k=t}^\infty (\lambda \gamma) ^{k-t} d_k + v(s_t) \bigg )\]
+
+&lt;h3 id=&quot;tdlambda-algorithm&quot;&gt;TD($\lambda$) Algorithm&lt;/h3&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;For a control policy $\pi$,&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Initialize $v=0$&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Using the trainsition data ${s_t, a_t, s_{t+1}, r_t ) }$, update $v(s_t)$.&lt;/p&gt;
+
+\[v(s_t) \leftarrow v(s_t) + \alpha_t \sum_{k=t}^\infty (\lambda \gamma) ^{k-t}d_t\]
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;remarks-on-tdlambda&quot;&gt;Remarks on TD($\lambda$)&lt;/h2&gt;
+
+&lt;h3 id=&quot;extreme-cases&quot;&gt;Extreme Cases&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;When $\lambda=0$, this corresponds to TD(0), only considering single sample for every iteration.&lt;/p&gt;
+
+\[v(s_t) \leftarrow v(s_t) + \alpha [ r_t + \gamma v(s_{t+1}) - v(s_t) ]\]
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;When $\lambda=1$, this corresponds to Monte Carlo Method, (for instance, by setting $t=0$)&lt;/p&gt;
+
+\[v(s_0) \leftarrow v(s_0) + \sum_{k=0}^\infty \gamma^k d_k\]
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;bias-variance-tradeoff&quot;&gt;Bias-Variance Tradeoff&lt;/h3&gt;
+
+&lt;p class=&quot;gray_no_border&quot;&gt;Suppose that we have a Markov chain, where two states 1 and 2 are adjacent such that $p_{12} &amp;gt;0$ and $p_{21} =0$. 2번 state로 한번 들어가면 다시는 1번 state로 돌아오지 못한다.&lt;/p&gt;
+
+&lt;p&gt;TD(1), the Monte-Carlo method, will try to use $c(1,m)$, the cumulative reward in the $m$-th trajectory starting from state 1 to estimate $v^\pi(1)$. Meanwhile, this $c(1,m)$ is an unbiased estimate of $v^\pi(1)$.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, TD(0) uses the information $v^\pi(2)$ very efficiently while reducing the noise from the samples of $r_t$.&lt;/p&gt;
+
+&lt;p&gt;We can see that&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Big $\lambda$ : small bias, large variance&lt;/li&gt;
+  &lt;li&gt;Small $\lambda$ : large bias, small variance&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;convergence-of-tdlambda&quot;&gt;Convergence of TD($\lambda$)&lt;/h2&gt;
+
+&lt;h3 id=&quot;theorem&quot;&gt;Theorem&lt;/h3&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext info highlighter-rouge&quot;&gt;Theorem&lt;/code&gt; Suppose that each state is visited infinitely often and that&lt;/p&gt;
+
+\[\sum_{t=0}^\infty \alpha_t = +\infty, \ \ \ \sum_{t=0}^\infty \alpha_t^2 &amp;lt;+\infty\]
+
+&lt;p&gt;Then, for each $ s\in S$, the value $v(s)$ generated by TD($\lambda$) given a policy $\pi$ converges to $v^\pi(s)$, with probability 1.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext success highlighter-rouge&quot;&gt;Proof&lt;/code&gt;&lt;/p&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Lecture-Note" /><category term="Theory/Survey" /><summary type="html">Review : Fixed Point Problems Bellman Equations Recall, that both policy evaluation and optimality equation is a fixed point problem. Policy Evaluation \[v = \mathcal{T}^\pi v\] or equivalently \[v(s) = r(s, \pi(s)) + \gamma \sum_{s' \in S} p(s' \vert s, \pi(s) ) v(s')\] Optimality Equation \[v = \mathcal{T}v\] or equivalently \[v(s) = \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) v(s') \bigg ]\] Thus, we need to solve a fixed-point problem in a model-free manner. Today, we’ll try to evaluate a policy in a model-free manner. Naive : Monte Carlo Methods Monte Carlo Approximation Choose sufficiently large $T$ so that $\gamma^T$ is negligible. Then, generate total $M$ state trajectories, each corresponding to $T+1$ number of states. For instance, $m$th trajectory will be \[\{s_t^{(m)} \}_{t=0}^T = \{s_0^{(m)}, s_1^{(m)}, \cdots, s_T^{(m)}\}\] Then, the total (discounted) cost incurred along this $m$th trajectory starting from $x_0$ is given by \[C^\pi (x_0, m) := \sum_{t=0}^{T-1} \gamma^t r\big (s_t ^{(m)}, \pi(s_t ^{(m)})\big )\] Finally, we approximate the value function for policy $\pi$. \[v^\pi(x_0 ) = \frac{1}{M} \sum_{m=1}^M c^\pi (x_0, m)\] Iterative Algorithm Fix a control policy $\pi$ (the policy we want to evaluate) and an initial state $s$. Initialize the value function $v(s) \leftarrow 0$ Update the value as \(v(s) \leftarrow v(s) + \alpha_m (c_s (x,m) - v(s) ) , \ \ \ m=1, \cdots, M\) where the step size is given by \[\alpha_m = \frac{1}{M}\] This is a model-free algorithm that can estimate the value function without model information, but it’s not an online algorithm. (We need at least one trajectory with $T+1$ states to perform one step of iteration.) Temporal Difference (TD) Learning Motivation 우리가 원하는 것은 episode 별로, 다시 말해 여러 개의 state transition을 모아서 $v^\pi$를 update하는 것이 아니라, state transition 을 한번 얻을 때마다 $v^\pi$를 update 하는 것. What we want is to update the value function $v^\pi$ after a single state transition, not an entire episode! To do so, we first define transition data under $\pi$. \[\{ (s_t, a_t, r_t, s_{t+1})\}\] Review : Stochastic Approximation Algorithm Previous article dealt with Stochastic Approximation algorithm, trying to solve the following equation \[Hx = x\] by an iterative procedure \[x_{k+1}(i) = (1-\alpha_k (i) )x_k (i) + \alpha_k (i) [(Hx_k) (i) + w_k (i) ].\] We know that this converges if the following conditions hold. $\sum_{k=0}^\infty \alpha_k (i) = +\infty$ $\sum_{k=0}^\infty \alpha_k ^2 (i) &amp;lt;+\infty$ $\mathbb{E}[ w_k (i) \ \vert \ \mathcal{F}_k ] =0$ $\mathbb{E}[ w_k^2 (i) \ \vert \mathcal{F}_k ] \leq C_0 + C_1 |x_k |^2$ TD(0): Stochastic Approximation to Policy Evaluation Recall, our policy evaluation equation is \[\begin{aligned} v^\pi (s_t) &amp;amp; = r(s_t,\pi(s_t)) + \gamma \sum_{s_{t+1}\in S} p(s_{t+1} \vert s_t,\pi(s_t)) v^\pi (s_{t+1})\\ &amp;amp; = r(s_t,\pi(s_t)) + \gamma \ \mathbb{E}\Big [ v^\pi (s_{t+1}) \Big ]\\ &amp;amp; = \mathbb{E} \Big [ r(s_t, \pi(s_t) ) + \gamma v^\pi (s_{t+1}) \Big ] \end{aligned}\] and we are observing the transition (under policy $\pi$) \[s_t, \ \ \ a_t ( = \pi(s_t) ), \ \ \ s_{t+1}, \ \ \ r_t ( = r(s_t, \pi(s_t) )\] Recall that the simpliest Robbins-Monro stochastic approximation algorithm updates the value function using a single estimate \[v^\pi (s_t) \leftarrow (1-\alpha_t ) v^\pi (s_t ) + \alpha_t \Big [ r_t + \gamma v^\pi (s_{t+1}) \Big ]\] which can be rewritten as \[v^\pi (s_t ) \leftarrow v^\pi (s_t) + \alpha_t \bigg [ r_t + \gamma v^\pi (s_{t+1}) - v^\pi (s_t) \bigg ]\] We call the last term temporal difference: \[\text{temporal difference} = d_t = r_t + \gamma v^\pi (s_{t+1}) - v^\pi (s_t)\] As you can see, this TD(0) algorithm updates the value function $v$ at state $s_t$ only at the time when our trajectory visits the state $s_t$. Since we are not using an approximating function of value function $v^\pi$, we need a lookup table of $v$. At this point, one might wonder: Why TD(0)? In fact, this is the lightest version of temporal difference learning, depending only on a single state transition ${s_t, a_t, s_{t+1}, r_t }$. Multi-Step Generalization First of all, let’s consider multi-step Bellman equation: \[v^\pi (s_t ) = \mathbb{E} ^\pi \bigg [ \sum_{k=0}^l \gamma ^k r(s_{t+k}, \pi(s_{t+k}) ) + \gamma ^{l+1}v^\pi (s_{t+l+1})\ \Big \vert \ \mathcal{F}_t \bigg ]\] You can see that we are considering $(l+1)$ steps ahead, and leaving the steps after $t+l+1$ for the dynamic programming. Now, let’s consider a weighted average of the multistep Bellman equations: \[(1-\lambda) \sum_{l=0}^\infty \lambda^l v(s_t) = v(s_t)\] We can then play with some algebra: \[\begin{aligned} v(s_t) &amp;amp; = (1-\lambda) \sum_{l=0}^\infty \lambda^l v(s_t) \\ &amp;amp; = (1-\lambda) \sum_{l=0}^\infty \lambda^l \mathbb{E}^\pi \bigg [ \sum_{k=0}^l \gamma ^k r(s_{t+k}, a_{t+k} ) + \gamma ^{l+1}v (s_{t+l+1}) \Big \vert \mathcal{F}_t \bigg ] \\ &amp;amp; = (1-\lambda) \mathbb{E}^\pi \bigg [ \sum_{l=0}^\infty \lambda^l \sum_{k=0}^l \bigg ( \gamma ^k r(s_{t+k}, a_{t+k} ) \bigg )+ \sum_{l=0}^\infty \lambda^l \gamma ^{l+1}v (s_{t+l+1}) \Big \vert \mathcal{F}_t \bigg] \\ &amp;amp; = (1-\lambda) \mathbb{E}^\pi \bigg [\sum_{l=0}^\infty \lambda^l \sum_{k=0}^l \gamma ^k r(s_{t+k}, a_{t+k} ) + \sum_{l=0}^\infty \lambda^l \gamma ^{l+1}v (s_{t+l+1}) \Big \vert \mathcal{F}_t \bigg ] \\ \end{aligned}\] At this point, let’s brake this up a bit. \[\begin{aligned} \sum_{l=0}^\infty \lambda ^l \sum_{k=0}^l \gamma^k r(s_{t+k}, a_{t+k}) &amp;amp; = r(s_t,a_t) + \lambda \big ( r(s_t, a_t) + \gamma r(s_{t+1}, a_{t+1}) \big ) + \\ &amp;amp; \ \ \ \ \ \ \ \ \ \ \ \ \ \ + \lambda^2 \big ( r(s_t, a_t) + \gamma r(s_{t+1}, a_{t+1})+ \gamma^2 (s_{t+2}, a_{t+2}) \big ) + \cdots \\ &amp;amp; = r(s_t, a_t) \sum_{l=0}^\infty \lambda^l + \gamma r(s_{t+1}, a_{t+1}) \sum_{l=1}^\infty \lambda^l + \gamma ^2 r(s_{t+2}, a_{t+2}) \sum_{l=2}^\infty \lambda^l + \cdots \\ &amp;amp; = \sum_{k=0}^\infty \gamma^k r(s_{t+k}, a_{t+k})\sum_{l=k}^\infty \lambda^l \end{aligned}\] Let’s continue playing with some algebra: \[\begin{aligned} v(s_t) &amp;amp; = (1-\lambda) \mathbb{E}^\pi \bigg [\sum_{l=0}^\infty \lambda^l \sum_{k=0}^l \gamma ^k r(s_{t+k}, a_{t+k} ) + \sum_{l=0}^\infty \lambda^l \gamma ^{l+1}v (s_{t+l+1}) \Big \vert \mathcal{F}_t \bigg ] \\ &amp;amp; = (1-\lambda) \mathbb{E}^\pi \bigg [ \sum_{k=0}^\infty \gamma^k r(s_{t+k} , a_{t+k}) \sum_{l=k}^\infty \lambda^l + \sum_{l=0} ^\infty \lambda ^l \gamma ^{l+1} v(s_{t+l+1}) \ \vert \mathcal{F}_t \bigg ] \\ &amp;amp; = \mathbb{E}^\pi \bigg [ \sum_{k=0}^\infty \gamma^k r(s_{t+k}, a_{t+k}) \sum_{l=k}^\infty (\lambda^l - \lambda^{l+1}) + \sum_{l=0}^\infty (\lambda^l - \lambda^{l+1}) \gamma ^{l+1} v(s_{t+l+1}) \vert \mathcal{F}_t \bigg ] \\ &amp;amp; = \mathbb{E}^\pi \bigg [ \sum_{k=0}^\infty \gamma ^k r(s_{t+k}, a_{t+k}) \lambda^k + \sum_{k=0}^\infty \lambda^k \gamma ^{k+1}v(s_{t+k+1}) - \sum_{k=0}^\infty \lambda^{k+1}\gamma^{k+1} v(s_{t+k+1}) \vert \mathcal{F}_k \bigg ] \\ &amp;amp; = \mathbb{E}^\pi \bigg [ \sum_{k=0}^\infty \gamma ^k r(s_{t+k}, a_{t+k}) \lambda^k + \sum_{k=0}^\infty \lambda^k \gamma ^{k+1}v(s_{t+k+1}) - \sum_{k=0}^\infty \lambda^{k}\gamma^{k} v(s_{t+k}) \vert \mathcal{F}_k \bigg ] + v(s_k) \\ &amp;amp; = \mathbb{E}^\pi \bigg [ \sum_{k=0}^\infty(\lambda \gamma)^k \Big [ r(s_{t+k}, a_{t+k}) + \gamma v(s_{t+k+1}) -v(s_{t+k}) \Big ] | \mathcal{F}_t \bigg ] + v(s_k) \\ &amp;amp; = \mathbb{E}^\pi \bigg [ \sum_{k=t}^\infty (\lambda \gamma)^{k-t} \Big [ r(s_k, a_k) + \gamma v(s_{k+1}) - v(s_k) \Big ] | \mathcal{F}_t \bigg ] + v(s_k)\\ &amp;amp; = \mathbb{E}^\pi \bigg [ \sum_{k=t}^\infty (\lambda \gamma)^{k-t} d_k | \mathcal{F}_t \bigg ] + v(s_k)\\ \end{aligned}\] Finally, our long-journey of algebra leads us to conclude that \[\mathbb{E}^\pi \bigg [ \sum_{k=t}^\infty (\lambda \gamma)^{k-t} d_k | \mathcal{F}_t \bigg ] =0\] where \[d_k : = r(s_k, \pi(s_k) ) + \gamma v(s_{k+1}) - v(s_k)\] This is important, since we require the noise $w_k$ to satisfy the zero-mean (bias) condition. Thus, we can apply the Robbins-Monro stochastic approximation algorithm with step size $\alpha$. \[v(s_t) \leftarrow (1-\alpha)v(s_t) + \alpha \bigg ( \sum_{k=t}^\infty (\lambda \gamma) ^{k-t} d_k + v(s_t) \bigg )\] TD($\lambda$) Algorithm For a control policy $\pi$, Initialize $v=0$ Using the trainsition data ${s_t, a_t, s_{t+1}, r_t ) }$, update $v(s_t)$. \[v(s_t) \leftarrow v(s_t) + \alpha_t \sum_{k=t}^\infty (\lambda \gamma) ^{k-t}d_t\] Remarks on TD($\lambda$) Extreme Cases When $\lambda=0$, this corresponds to TD(0), only considering single sample for every iteration. \[v(s_t) \leftarrow v(s_t) + \alpha [ r_t + \gamma v(s_{t+1}) - v(s_t) ]\] When $\lambda=1$, this corresponds to Monte Carlo Method, (for instance, by setting $t=0$) \[v(s_0) \leftarrow v(s_0) + \sum_{k=0}^\infty \gamma^k d_k\] Bias-Variance Tradeoff Suppose that we have a Markov chain, where two states 1 and 2 are adjacent such that $p_{12} &amp;gt;0$ and $p_{21} =0$. 2번 state로 한번 들어가면 다시는 1번 state로 돌아오지 못한다. TD(1), the Monte-Carlo method, will try to use $c(1,m)$, the cumulative reward in the $m$-th trajectory starting from state 1 to estimate $v^\pi(1)$. Meanwhile, this $c(1,m)$ is an unbiased estimate of $v^\pi(1)$. On the other hand, TD(0) uses the information $v^\pi(2)$ very efficiently while reducing the noise from the samples of $r_t$. We can see that Big $\lambda$ : small bias, large variance Small $\lambda$ : large bias, small variance Convergence of TD($\lambda$) Theorem Theorem Suppose that each state is visited infinitely often and that \[\sum_{t=0}^\infty \alpha_t = +\infty, \ \ \ \sum_{t=0}^\infty \alpha_t^2 &amp;lt;+\infty\] Then, for each $ s\in S$, the value $v(s)$ generated by TD($\lambda$) given a policy $\pi$ converges to $v^\pi(s)$, with probability 1. Proof</summary></entry><entry><title type="html">[RL Theory] Q-function</title><link href="http://localhost:4000/2021/04/20/scrl-8.html" rel="alternate" type="text/html" title="[RL Theory] Q-function" /><published>2021-04-20T00:00:00+09:00</published><updated>2021-04-20T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/20/scrl-8</id><content type="html" xml:base="http://localhost:4000/2021/04/20/scrl-8.html">&lt;h2 id=&quot;state-action-value-functions&quot;&gt;State-Action Value Functions&lt;/h2&gt;
+
+&lt;p&gt;In this post, we’re going to define an important concept that is widely used in both MDP and RL.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext info highlighter-rouge&quot;&gt;Definition&lt;/code&gt;
+The optimal Q-function $Q^\star(s,a)$ is the maximum expected return starting from state $s$, taking action $a$:&lt;/p&gt;
+
+\[Q^\star(s,a) := \max_\pi Q^\pi (s,a) = \max_\pi \mathbb{E} ^\pi \bigg [ \sum_{t=0}^\infty \gamma^t r(s_t, a_t) \ \vert \ s_0 = s, a_0 =a \bigg ]\]
+
+&lt;p&gt;By definition we have&lt;/p&gt;
+
+\[v^\star(s) = \max_{a\in A} Q^\star(s,a)\]
+
+&lt;h3 id=&quot;bellman-equation-for-q-functions&quot;&gt;Bellman Equation for Q-functions&lt;/h3&gt;
+
+\[\begin{aligned}
+Q^\star(s,a) &amp;amp; = r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s, a) v^\star(s')\\
+&amp;amp; = r(s,a) + \gamma \sum_{s'\in S} p(s' \vert s,a) \max_{a'\in A} Q^\star (s',a')
+\end{aligned}\]
+
+&lt;p&gt;We can then define the Bellman operator $\mathcal{T}$ for Q-functions&lt;/p&gt;
+
+\[(\mathcal{T}Q)(s,a) := r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) \max_{a'\in A} Q^\star(s',a')\]
+
+&lt;p&gt;Then, it is a &lt;strong&gt;monotone contraction&lt;/strong&gt; mapping.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext success highlighter-rouge&quot;&gt;Monotone Proof&lt;/code&gt;
+Prove that the Bellman operator is monotone, i.e.,&lt;/p&gt;
+
+\[\mathcal{T}Q \leq \mathcal{T}Q' \ \ \  \forall Q,Q' \in  \mathbb{R}^{n\times m} \text{ s.t. }Q \leq Q'.\]
+
+&lt;p&gt;Define $a^\star_{Q’}(s)= \arg \max_a Q’(s,a)$ and $a^\star_{Q}(s)= \arg \max_a Q(s,a)$&lt;/p&gt;
+
+\[\begin{aligned}
+        	(\mathcal{T}Q')(s,a) &amp;amp; = r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a)\max_{a'\in A}Q'(s',a')\\
+        	&amp;amp; = r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a)Q'(s',a_{Q'}^\star(s'))\\
+        	&amp;amp; \geq r(s,a) + \gamma \sum_{s' \in S}p(s'|s,a) Q'(s',a_Q^\star(s'))\\
+        	&amp;amp; \geq r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a) Q(s',a_Q^\star(s')) \\
+        	&amp;amp; = r(s,a)+ \gamma \sum_{s'\in S}p(s'|s,a) \max_{a'\in A}Q(s',a')\\
+        	&amp;amp; = (\mathcal{T}Q)(s,a) \ \ \ \forall (s,a) \in (S\times A)
+        \end{aligned}\]
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext success highlighter-rouge&quot;&gt;Contraction Proof&lt;/code&gt; Prove that the Bellman operator is a $\gamma$-contraction mapping with respect to $| \cdot |_\infty$, i.e.,&lt;/p&gt;
+
+\[\|\mathcal{T}Q- \mathcal{T}Q'\|_\infty \leq \gamma \|Q- Q'\|_\infty \ \ \ \forall Q, Q' \in \mathbb{R}^{n\times m}.\]
+
+&lt;p&gt;Recall that sup-norm of matrix $\mathbf{A}\in \mathbb{R}^{n\times m}$ is defined as&lt;/p&gt;
+
+\[\|\mathbf{A}\|_\infty = \max_{\substack{1\leq i\leq n\\ 1 \leq j \leq m}} |\mathbf{A}_{ij}|.\]
+
+&lt;p&gt;Applying (14) to (13), we have&lt;/p&gt;
+
+\[\begin{aligned}
+			\|\mathcal{T}Q-\mathcal{T}Q'\|_\infty &amp;amp;= \max_{(s,a) \in (S\times A)} \Big |(\mathcal{T}Q)(s,a) - (\mathcal{T}Q')(s,a) \Big|\\
+			&amp;amp; = \max_{s,a} \Big | \gamma \sum_{s'\in S} p(s'|s,a)\max_{a'\in A}Q(s',a')- \gamma \sum_{s'\in S}p(s'|s,a)\max_{a'\in A}Q'(s',a') \Big |\\
+			&amp;amp; = \gamma \max_{s,a} \Big | \sum_{s'\in S}p(s'|s,a) \big [ \max_{a'\in A} Q(s',a')- \max_{a'\in A} Q'(s',a')\big ] \Big |\\
+			&amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \Big | \max_{a'\in A} Q(s',a') - \max_{a'\in A}Q'(s',a') \Big | \\
+			&amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_{a'\in A} \Big |Q(s',a')-Q'(s',a') \Big | \ \ \ \because \text{inequality }(6)\\
+			&amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_{(s',a')\in (S\times A)} \Big | Q(s',a') -Q'(s',a')\Big | \\
+			&amp;amp; = \gamma \max_{(s',a')\in (S\times A)} \Big | Q(s',a')-Q'(s',a') \Big |\\
+			&amp;amp; = \gamma \|Q-Q'\|_\infty
+		\end{aligned}\]
+
+&lt;h3 id=&quot;lp-formulation&quot;&gt;LP-Formulation&lt;/h3&gt;
+
+&lt;p&gt;We can also solve the Q-function based on optimization principle&lt;/p&gt;
+
+\[\begin{aligned}
+\min_{Q\in\mathbb{R}^{n\times m}} &amp;amp; \ \ \ \sum_{s,a} c(s,a) Q(s,a) \\
+\text{s.t.} &amp;amp; \ \ \ Q \geq \mathcal{T} Q
+\end{aligned}\]
+
+&lt;p&gt;which can be also formulated as Linear Program.&lt;/p&gt;
+
+\[\begin{aligned}
+\min_{Q\in\mathbb{R}^{n\times m}} &amp;amp; \ \ \ \sum_{s,a} c(s,a) Q(s,a) \\
+\text{s.t.} &amp;amp; \ \ \ Q(s,a) \geq r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) Q(s', a') \ \ \forall (s,a,a')
+\end{aligned}\]
+
+&lt;p&gt;However, this LP is inefficient! (number of constraints $n\times m^2$ and optimization variable $n\times m$.&lt;/p&gt;
+
+&lt;h3 id=&quot;policy-iteration-using-q-functions&quot;&gt;Policy Iteration using Q-functions&lt;/h3&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Policy Evaluation&lt;/strong&gt;&lt;/p&gt;
+
+    &lt;p&gt;Given a policy $\pi$, we can compute $Q^\pi$ by solving&lt;/p&gt;
+
+\[\begin{aligned}
+\min_{Q\in\mathbb{R}^{n\times m}} &amp;amp; \ \ \ \sum_{s,a} c(s,a) Q(s,a) \\
+\text{s.t.} &amp;amp; \ \ \ Q(s,a) \geq r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,\pi(s)) Q(s', \pi(s')) \ \ \forall (s,a)
+\end{aligned}\]
+
+    &lt;p&gt;which its number of constraints and optimization varible dimension is identical ($n\times m$).&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Policy Improvement&lt;/strong&gt;&lt;/p&gt;
+
+    &lt;p&gt;Then, we update the policy by&lt;/p&gt;
+
+\[\pi(s) \in \arg \max_{a\in A}Q^\pi (s,a)\]
+
+    &lt;p&gt;Meanwhile, it is worth noting that this policy improvement step doesn’t require any sort of model informations (transition probability, reward function or so)&lt;/p&gt;
+
+    &lt;p&gt;$\rightarrow$ &lt;strong&gt;Q-functions are frequently used for model-free approach!&lt;/strong&gt;&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Lecture-Note" /><category term="Theory/Survey" /><summary type="html">State-Action Value Functions In this post, we’re going to define an important concept that is widely used in both MDP and RL. Definition The optimal Q-function $Q^\star(s,a)$ is the maximum expected return starting from state $s$, taking action $a$: \[Q^\star(s,a) := \max_\pi Q^\pi (s,a) = \max_\pi \mathbb{E} ^\pi \bigg [ \sum_{t=0}^\infty \gamma^t r(s_t, a_t) \ \vert \ s_0 = s, a_0 =a \bigg ]\] By definition we have \[v^\star(s) = \max_{a\in A} Q^\star(s,a)\] Bellman Equation for Q-functions \[\begin{aligned} Q^\star(s,a) &amp;amp; = r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s, a) v^\star(s')\\ &amp;amp; = r(s,a) + \gamma \sum_{s'\in S} p(s' \vert s,a) \max_{a'\in A} Q^\star (s',a') \end{aligned}\] We can then define the Bellman operator $\mathcal{T}$ for Q-functions \[(\mathcal{T}Q)(s,a) := r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) \max_{a'\in A} Q^\star(s',a')\] Then, it is a monotone contraction mapping. Monotone Proof Prove that the Bellman operator is monotone, i.e., \[\mathcal{T}Q \leq \mathcal{T}Q' \ \ \ \forall Q,Q' \in \mathbb{R}^{n\times m} \text{ s.t. }Q \leq Q'.\] Define $a^\star_{Q’}(s)= \arg \max_a Q’(s,a)$ and $a^\star_{Q}(s)= \arg \max_a Q(s,a)$ \[\begin{aligned} (\mathcal{T}Q')(s,a) &amp;amp; = r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a)\max_{a'\in A}Q'(s',a')\\ &amp;amp; = r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a)Q'(s',a_{Q'}^\star(s'))\\ &amp;amp; \geq r(s,a) + \gamma \sum_{s' \in S}p(s'|s,a) Q'(s',a_Q^\star(s'))\\ &amp;amp; \geq r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a) Q(s',a_Q^\star(s')) \\ &amp;amp; = r(s,a)+ \gamma \sum_{s'\in S}p(s'|s,a) \max_{a'\in A}Q(s',a')\\ &amp;amp; = (\mathcal{T}Q)(s,a) \ \ \ \forall (s,a) \in (S\times A) \end{aligned}\] Contraction Proof Prove that the Bellman operator is a $\gamma$-contraction mapping with respect to $| \cdot |_\infty$, i.e., \[\|\mathcal{T}Q- \mathcal{T}Q'\|_\infty \leq \gamma \|Q- Q'\|_\infty \ \ \ \forall Q, Q' \in \mathbb{R}^{n\times m}.\] Recall that sup-norm of matrix $\mathbf{A}\in \mathbb{R}^{n\times m}$ is defined as \[\|\mathbf{A}\|_\infty = \max_{\substack{1\leq i\leq n\\ 1 \leq j \leq m}} |\mathbf{A}_{ij}|.\] Applying (14) to (13), we have \[\begin{aligned} \|\mathcal{T}Q-\mathcal{T}Q'\|_\infty &amp;amp;= \max_{(s,a) \in (S\times A)} \Big |(\mathcal{T}Q)(s,a) - (\mathcal{T}Q')(s,a) \Big|\\ &amp;amp; = \max_{s,a} \Big | \gamma \sum_{s'\in S} p(s'|s,a)\max_{a'\in A}Q(s',a')- \gamma \sum_{s'\in S}p(s'|s,a)\max_{a'\in A}Q'(s',a') \Big |\\ &amp;amp; = \gamma \max_{s,a} \Big | \sum_{s'\in S}p(s'|s,a) \big [ \max_{a'\in A} Q(s',a')- \max_{a'\in A} Q'(s',a')\big ] \Big |\\ &amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \Big | \max_{a'\in A} Q(s',a') - \max_{a'\in A}Q'(s',a') \Big | \\ &amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_{a'\in A} \Big |Q(s',a')-Q'(s',a') \Big | \ \ \ \because \text{inequality }(6)\\ &amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_{(s',a')\in (S\times A)} \Big | Q(s',a') -Q'(s',a')\Big | \\ &amp;amp; = \gamma \max_{(s',a')\in (S\times A)} \Big | Q(s',a')-Q'(s',a') \Big |\\ &amp;amp; = \gamma \|Q-Q'\|_\infty \end{aligned}\] LP-Formulation We can also solve the Q-function based on optimization principle \[\begin{aligned} \min_{Q\in\mathbb{R}^{n\times m}} &amp;amp; \ \ \ \sum_{s,a} c(s,a) Q(s,a) \\ \text{s.t.} &amp;amp; \ \ \ Q \geq \mathcal{T} Q \end{aligned}\] which can be also formulated as Linear Program. \[\begin{aligned} \min_{Q\in\mathbb{R}^{n\times m}} &amp;amp; \ \ \ \sum_{s,a} c(s,a) Q(s,a) \\ \text{s.t.} &amp;amp; \ \ \ Q(s,a) \geq r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) Q(s', a') \ \ \forall (s,a,a') \end{aligned}\] However, this LP is inefficient! (number of constraints $n\times m^2$ and optimization variable $n\times m$. Policy Iteration using Q-functions Policy Evaluation Given a policy $\pi$, we can compute $Q^\pi$ by solving \[\begin{aligned} \min_{Q\in\mathbb{R}^{n\times m}} &amp;amp; \ \ \ \sum_{s,a} c(s,a) Q(s,a) \\ \text{s.t.} &amp;amp; \ \ \ Q(s,a) \geq r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,\pi(s)) Q(s', \pi(s')) \ \ \forall (s,a) \end{aligned}\] which its number of constraints and optimization varible dimension is identical ($n\times m$). Policy Improvement Then, we update the policy by \[\pi(s) \in \arg \max_{a\in A}Q^\pi (s,a)\] Meanwhile, it is worth noting that this policy improvement step doesn’t require any sort of model informations (transition probability, reward function or so) $\rightarrow$ Q-functions are frequently used for model-free approach!</summary></entry><entry><title type="html">[RL Theory] Linear Programming Approach</title><link href="http://localhost:4000/2021/04/20/scrl-7.html" rel="alternate" type="text/html" title="[RL Theory] Linear Programming Approach" /><published>2021-04-20T00:00:00+09:00</published><updated>2021-04-20T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/20/scrl-7</id><content type="html" xml:base="http://localhost:4000/2021/04/20/scrl-7.html">&lt;h2 id=&quot;iteration-based-vs-optimization-based&quot;&gt;Iteration based vs Optimization based&lt;/h2&gt;
 
 &lt;p&gt;Recall that the Bellman operator is given by&lt;/p&gt;
 
@@ -229,208 +582,7 @@
 
 &lt;h2 id=&quot;vi-vs-pi&quot;&gt;VI vs PI&lt;/h2&gt;
 
-&lt;p&gt;VI is simpler, but PI is often faster!&lt;/p&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Lecture-Note" /><category term="Theory/Survey" /><summary type="html">Policy Iteration Idea of Policy Iteration So far, our algorithm updated everything only in the value space. After we obtained the optimal value function $v^\star$, we switched over to the policy space, and obtained $\pi^\star$. This can be considered somewhat inefficient: we might want to use some information about the policy as well, during the value function updating procedure. Policy Iteration iteratively updates both value functions and policies. Policy Iteration Algorithm Initialize $\pi_0$ as an arbitrary deterministic stationary policy. Repeat policy evaluation : compute the value function corresponding to the policy $\pi_k$! \[v^{\pi_k} = \mathcal{T}^{\pi_k} v^{\pi_k}\] policy improvement : update the policy by taking \[\pi_{k+1} = \arg \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s'\in S} p(s' \vert s,a) v^{\pi_k }(s') \bigg ]\] Then the sequence of policies ${\pi_0 , \pi_1, \pi_2, \cdots, \pi_k}$ converges to an optimal policy $\pi^\star$. This works: Monotonic Improvement One might ask, does this really work? That question can be answered if we prove the following Lemma. [Lemma] Let ${\pi_k}$ be the sequences of policies obtained by policy iteration. Then, we have \[v^{\pi_{k+1}} \geq v^{\pi_k}\ \ \ \ \forall k\] Note that this is an element-wise inequality! \[v^{\pi_{k+1}}(s) \geq v^{\pi_k}(s)\ \ \ \ \forall k,s\] [Proof] First, the policy evaluation step gives us the solution of \[v^{\pi_k} = \mathcal{T}^{\pi_k }v^{\pi_k}\] Next, the policy improvement step tries to update the policy $\pi_k$ by solving \[\pi_{k+1} = \arg \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s'\in S} p(s' \vert s,a) v^{\pi_k }(s') \bigg ]\] Thus, the policy improvement step is in fact the same as an optimal Bellman operator, taking the argmax over action space. \[\mathcal{T}^{\pi_{k+1}}v^{\pi_k } = \mathcal{T}v^{\pi_k }\] Now, the definition (optimality) of Bellman operator gives us that \[\mathcal{T}^{\pi_{k+1}}v^{\pi_k } = \mathcal{T}v^{\pi_k } \geq \mathcal{T}^{\pi_k }v^{\pi_k}\] Combining the equation from the policy evaluation step, we have \[\mathcal{T}^{\pi_{k+1}}v^{\pi_k } \geq \mathcal{T}^{\pi_k }v^{\pi_k} = v^{\pi_k}\] If we apply this inequality recursively, we have \[v^{\pi_k } \leq \big ( \mathcal{T}^{\pi_{k+1}}\big ) ^n v^{\pi_k }\ \ \ \ \forall n\] Knowing that $\mathcal{T^{\pi}}$ is a contraction mapping, if we think of $n\rightarrow \infty$, we can say that the RHS goes to the fixed point of $\mathcal{T}^{\pi_{k+1}}$, which is \[v^{\pi_k } \leq v^{\pi_{k+1}}\] Thus, the policy is improved monotonically, as we repeat the policy iteration. Convergence of Policy Iteration We now know that policy iteration monotonically improves the policy, thus monotonically increases the value function. Now, we have to prove that it eventually converges to the optimal value function! Monotone Convergence Theorem Let ${x_k}$ be a monotonically non-decreasing, bounded sequence of real vectors. Then, the sequence has a finite limit! We’re going to use this widely-used theorem to prove our point! Recall that our value function is bounded, since we have a finite state-action space. Proof of Convergence To start with, our reward function is bounded for some constant $M$, since our state-action spaces $S$ and $A$ are finite. \[|r(s,a) | \leq M\] Thus, our value function has to be bounded above! \[|v^\pi (s)| = \bigg \vert \sum_{t=0}^\infty \gamma^t r(s_t, a_t ) \bigg \vert \leq \bigg \vert \sum_{t=0}^\infty \gamma^t |M| \bigg \vert \leq \frac{1}{1-\gamma}|M|\] By the previous lemma, $v^{\pi_k} \leq v^{\pi_{k+1}}$ for all $k$. Then, by the monotone convergence theorem, there exists $\bar{v}$ such that \[\lim_{k\rightarrow \infty} v^{\pi_k } = \bar{v}\] Then, the preceding policy evaluation and improvement step policy improvement : $\bar{v} \rightarrow \bar{\pi}$ policy evaluation : $\bar{\pi} \rightarrow v^{\bar{\pi}}$ implies that \[v^{\bar{\pi}} = \mathcal{T}^{\bar{\pi}}v^{\bar{\pi}} = \mathcal{T} v^{\bar{\pi}}\] thus, $\bar{v} = v^\star$. VI vs PI VI is simpler, but PI is often faster!</summary></entry><entry><title type="html">[RL Theory] Temporal Difference Learning</title><link href="http://localhost:4000/2021/04/20/scrl-10.html" rel="alternate" type="text/html" title="[RL Theory] Temporal Difference Learning" /><published>2021-04-20T00:00:00+09:00</published><updated>2021-04-20T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/20/scrl-10</id><content type="html" xml:base="http://localhost:4000/2021/04/20/scrl-10.html">&lt;h2 id=&quot;review--fixed-point-problems&quot;&gt;Review : Fixed Point Problems&lt;/h2&gt;
-
-&lt;h3 id=&quot;bellman-equations&quot;&gt;Bellman Equations&lt;/h3&gt;
-
-&lt;p&gt;Recall, that both policy evaluation and optimality equation is a fixed point problem.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;strong&gt;Policy Evaluation&lt;/strong&gt;&lt;/p&gt;
-
-\[v = \mathcal{T}^\pi v\]
-
-    &lt;p&gt;or equivalently&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-\[v(s) = r(s, \pi(s)) + \gamma \sum_{s' \in S} p(s' \vert s, \pi(s) ) v(s')\]
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;Optimality Equation&lt;/strong&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-\[v = \mathcal{T}v\]
-
-&lt;p&gt;or equivalently&lt;/p&gt;
-
-\[v(s) = \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) v(s') \bigg ]\]
-
-&lt;p&gt;Thus, we need to solve a &lt;strong&gt;fixed-point problem in a model-free manner&lt;/strong&gt;. Today, we’ll try to &lt;strong&gt;evaluate a policy&lt;/strong&gt; in a model-free manner.&lt;/p&gt;
-
-&lt;h2 id=&quot;naive--monte-carlo-methods&quot;&gt;Naive : Monte Carlo Methods&lt;/h2&gt;
-
-&lt;h3 id=&quot;monte-carlo-approximation&quot;&gt;Monte Carlo Approximation&lt;/h3&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;
-    &lt;p&gt;Choose sufficiently large $T$ so that $\gamma^T$ is negligible.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Then, generate total $M$ state trajectories, each corresponding to $T+1$ number of states. For instance, $m$th trajectory will be&lt;/p&gt;
-
-\[\{s_t^{(m)} \}_{t=0}^T = \{s_0^{(m)}, s_1^{(m)}, \cdots, s_T^{(m)}\}\]
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Then, the total (discounted) cost incurred along this $m$th trajectory starting from $x_0$ is given by&lt;/p&gt;
-
-\[C^\pi (x_0, m) := \sum_{t=0}^{T-1} \gamma^t r\big (s_t ^{(m)}, \pi(s_t ^{(m)})\big )\]
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Finally, we approximate the value function for policy $\pi$.&lt;/p&gt;
-
-\[v^\pi(x_0 ) = \frac{1}{M} \sum_{m=1}^M c^\pi (x_0, m)\]
-  &lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h3 id=&quot;iterative-algorithm&quot;&gt;Iterative Algorithm&lt;/h3&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;
-    &lt;p&gt;Fix a control policy $\pi$ (the policy we want to evaluate) and an initial state $s$.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Initialize the value function $v(s) \leftarrow 0$&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Update the value as&lt;/p&gt;
-
-    &lt;p&gt;\(v(s) \leftarrow v(s) + \alpha_m (c_s (x,m) - v(s) ) , \ \ \ m=1, \cdots, M\)
-where the step size is given by&lt;/p&gt;
-
-\[\alpha_m = \frac{1}{M}\]
-  &lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p class=&quot;gray_no_border&quot;&gt;This is a model-free algorithm that can estimate the value function without model information, but it’s &lt;strong&gt;not an online algorithm&lt;/strong&gt;. (We need at least one trajectory with $T+1$ states to perform one step of iteration.)&lt;/p&gt;
-
-&lt;h2 id=&quot;temporal-difference-td-learning&quot;&gt;Temporal Difference (TD) Learning&lt;/h2&gt;
-
-&lt;h3 id=&quot;motivation&quot;&gt;Motivation&lt;/h3&gt;
-
-&lt;p&gt;우리가 원하는 것은 episode 별로, 다시 말해 여러 개의 state transition을 모아서 $v^\pi$를 update하는 것이 아니라, state transition 을 한번 얻을 때마다  $v^\pi$를 update 하는 것. What we want is to update the value function $v^\pi$ after a single state transition, not an entire episode! To do so, we first define &lt;strong&gt;transition data&lt;/strong&gt; under $\pi$.&lt;/p&gt;
-
-\[\{ (s_t, a_t, r_t, s_{t+1})\}\]
-
-&lt;h3 id=&quot;review--stochastic-approximation-algorithm&quot;&gt;Review : Stochastic Approximation Algorithm&lt;/h3&gt;
-
-&lt;p&gt;Previous article dealt with Stochastic Approximation algorithm, trying to solve the following equation&lt;/p&gt;
-
-\[Hx = x\]
-
-&lt;p&gt;by an iterative procedure&lt;/p&gt;
-
-\[x_{k+1}(i) = (1-\alpha_k (i) )x_k (i) + \alpha_k (i) [(Hx_k) (i) + w_k (i) ].\]
-
-&lt;p&gt;We know that&lt;/p&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Lecture-Note" /><category term="Theory/Survey" /><summary type="html">Review : Fixed Point Problems Bellman Equations Recall, that both policy evaluation and optimality equation is a fixed point problem. Policy Evaluation \[v = \mathcal{T}^\pi v\] or equivalently \[v(s) = r(s, \pi(s)) + \gamma \sum_{s' \in S} p(s' \vert s, \pi(s) ) v(s')\] Optimality Equation \[v = \mathcal{T}v\] or equivalently \[v(s) = \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) v(s') \bigg ]\] Thus, we need to solve a fixed-point problem in a model-free manner. Today, we’ll try to evaluate a policy in a model-free manner. Naive : Monte Carlo Methods Monte Carlo Approximation Choose sufficiently large $T$ so that $\gamma^T$ is negligible. Then, generate total $M$ state trajectories, each corresponding to $T+1$ number of states. For instance, $m$th trajectory will be \[\{s_t^{(m)} \}_{t=0}^T = \{s_0^{(m)}, s_1^{(m)}, \cdots, s_T^{(m)}\}\] Then, the total (discounted) cost incurred along this $m$th trajectory starting from $x_0$ is given by \[C^\pi (x_0, m) := \sum_{t=0}^{T-1} \gamma^t r\big (s_t ^{(m)}, \pi(s_t ^{(m)})\big )\] Finally, we approximate the value function for policy $\pi$. \[v^\pi(x_0 ) = \frac{1}{M} \sum_{m=1}^M c^\pi (x_0, m)\] Iterative Algorithm Fix a control policy $\pi$ (the policy we want to evaluate) and an initial state $s$. Initialize the value function $v(s) \leftarrow 0$ Update the value as \(v(s) \leftarrow v(s) + \alpha_m (c_s (x,m) - v(s) ) , \ \ \ m=1, \cdots, M\) where the step size is given by \[\alpha_m = \frac{1}{M}\] This is a model-free algorithm that can estimate the value function without model information, but it’s not an online algorithm. (We need at least one trajectory with $T+1$ states to perform one step of iteration.) Temporal Difference (TD) Learning Motivation 우리가 원하는 것은 episode 별로, 다시 말해 여러 개의 state transition을 모아서 $v^\pi$를 update하는 것이 아니라, state transition 을 한번 얻을 때마다 $v^\pi$를 update 하는 것. What we want is to update the value function $v^\pi$ after a single state transition, not an entire episode! To do so, we first define transition data under $\pi$. \[\{ (s_t, a_t, r_t, s_{t+1})\}\] Review : Stochastic Approximation Algorithm Previous article dealt with Stochastic Approximation algorithm, trying to solve the following equation \[Hx = x\] by an iterative procedure \[x_{k+1}(i) = (1-\alpha_k (i) )x_k (i) + \alpha_k (i) [(Hx_k) (i) + w_k (i) ].\] We know that</summary></entry><entry><title type="html">[Personal Note] Logic Flow</title><link href="http://localhost:4000/2021/04/20/logic-flow.html" rel="alternate" type="text/html" title="[Personal Note] Logic Flow" /><published>2021-04-20T00:00:00+09:00</published><updated>2021-04-20T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/20/logic-flow</id><content type="html" xml:base="http://localhost:4000/2021/04/20/logic-flow.html">&lt;p&gt;##&lt;/p&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Personal-Note" /><summary type="html">##</summary></entry><entry><title type="html">[RL Theory] Q-function</title><link href="http://localhost:4000/2021/04/20/scrl-8.html" rel="alternate" type="text/html" title="[RL Theory] Q-function" /><published>2021-04-20T00:00:00+09:00</published><updated>2021-04-20T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/20/scrl-8</id><content type="html" xml:base="http://localhost:4000/2021/04/20/scrl-8.html">&lt;h2 id=&quot;state-action-value-functions&quot;&gt;State-Action Value Functions&lt;/h2&gt;
-
-&lt;p&gt;In this post, we’re going to define an important concept that is widely used in both MDP and RL.&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext info highlighter-rouge&quot;&gt;Definition&lt;/code&gt;
-The optimal Q-function $Q^\star(s,a)$ is the maximum expected return starting from state $s$, taking action $a$:&lt;/p&gt;
-
-\[Q^\star(s,a) := \max_\pi Q^\pi (s,a) = \max_\pi \mathbb{E} ^\pi \bigg [ \sum_{t=0}^\infty \gamma^t r(s_t, a_t) \ \vert \ s_0 = s, a_0 =a \bigg ]\]
-
-&lt;p&gt;By definition we have&lt;/p&gt;
-
-\[v^\star(s) = \max_{a\in A} Q^\star(s,a)\]
-
-&lt;h3 id=&quot;bellman-equation-for-q-functions&quot;&gt;Bellman Equation for Q-functions&lt;/h3&gt;
-
-\[\begin{aligned}
-Q^\star(s,a) &amp;amp; = r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s, a) v^\star(s')\\
-&amp;amp; = r(s,a) + \gamma \sum_{s'\in S} p(s' \vert s,a) \max_{a'\in A} Q^\star (s',a')
-\end{aligned}\]
-
-&lt;p&gt;We can then define the Bellman operator $\mathcal{T}$ for Q-functions&lt;/p&gt;
-
-\[(\mathcal{T}Q)(s,a) := r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) \max_{a'\in A} Q^\star(s',a')\]
-
-&lt;p&gt;Then, it is a &lt;strong&gt;monotone contraction&lt;/strong&gt; mapping.&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext success highlighter-rouge&quot;&gt;Monotone Proof&lt;/code&gt;
-Prove that the Bellman operator is monotone, i.e.,&lt;/p&gt;
-
-\[\mathcal{T}Q \leq \mathcal{T}Q' \ \ \  \forall Q,Q' \in  \mathbb{R}^{n\times m} \text{ s.t. }Q \leq Q'.\]
-
-&lt;p&gt;Define $a^\star_{Q’}(s)= \arg \max_a Q’(s,a)$ and $a^\star_{Q}(s)= \arg \max_a Q(s,a)$&lt;/p&gt;
-
-\[\begin{aligned}
-        	(\mathcal{T}Q')(s,a) &amp;amp; = r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a)\max_{a'\in A}Q'(s',a')\\
-        	&amp;amp; = r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a)Q'(s',a_{Q'}^\star(s'))\\
-        	&amp;amp; \geq r(s,a) + \gamma \sum_{s' \in S}p(s'|s,a) Q'(s',a_Q^\star(s'))\\
-        	&amp;amp; \geq r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a) Q(s',a_Q^\star(s')) \\
-        	&amp;amp; = r(s,a)+ \gamma \sum_{s'\in S}p(s'|s,a) \max_{a'\in A}Q(s',a')\\
-        	&amp;amp; = (\mathcal{T}Q)(s,a) \ \ \ \forall (s,a) \in (S\times A)
-        \end{aligned}\]
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext success highlighter-rouge&quot;&gt;Contraction Proof&lt;/code&gt; Prove that the Bellman operator is a $\gamma$-contraction mapping with respect to $| \cdot |_\infty$, i.e.,&lt;/p&gt;
-
-\[\|\mathcal{T}Q- \mathcal{T}Q'\|_\infty \leq \gamma \|Q- Q'\|_\infty \ \ \ \forall Q, Q' \in \mathbb{R}^{n\times m}.\]
-
-&lt;p&gt;Recall that sup-norm of matrix $\mathbf{A}\in \mathbb{R}^{n\times m}$ is defined as&lt;/p&gt;
-
-\[\|\mathbf{A}\|_\infty = \max_{\substack{1\leq i\leq n\\ 1 \leq j \leq m}} |\mathbf{A}_{ij}|.\]
-
-&lt;p&gt;Applying (14) to (13), we have&lt;/p&gt;
-
-\[\begin{aligned}
-			\|\mathcal{T}Q-\mathcal{T}Q'\|_\infty &amp;amp;= \max_{(s,a) \in (S\times A)} \Big |(\mathcal{T}Q)(s,a) - (\mathcal{T}Q')(s,a) \Big|\\
-			&amp;amp; = \max_{s,a} \Big | \gamma \sum_{s'\in S} p(s'|s,a)\max_{a'\in A}Q(s',a')- \gamma \sum_{s'\in S}p(s'|s,a)\max_{a'\in A}Q'(s',a') \Big |\\
-			&amp;amp; = \gamma \max_{s,a} \Big | \sum_{s'\in S}p(s'|s,a) \big [ \max_{a'\in A} Q(s',a')- \max_{a'\in A} Q'(s',a')\big ] \Big |\\
-			&amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \Big | \max_{a'\in A} Q(s',a') - \max_{a'\in A}Q'(s',a') \Big | \\
-			&amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_{a'\in A} \Big |Q(s',a')-Q'(s',a') \Big | \ \ \ \because \text{inequality }(6)\\
-			&amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_{(s',a')\in (S\times A)} \Big | Q(s',a') -Q'(s',a')\Big | \\
-			&amp;amp; = \gamma \max_{(s',a')\in (S\times A)} \Big | Q(s',a')-Q'(s',a') \Big |\\
-			&amp;amp; = \gamma \|Q-Q'\|_\infty
-		\end{aligned}\]
-
-&lt;h3 id=&quot;lp-formulation&quot;&gt;LP-Formulation&lt;/h3&gt;
-
-&lt;p&gt;We can also solve the Q-function based on optimization principle&lt;/p&gt;
-
-\[\begin{aligned}
-\min_{Q\in\mathbb{R}^{n\times m}} &amp;amp; \ \ \ \sum_{s,a} c(s,a) Q(s,a) \\
-\text{s.t.} &amp;amp; \ \ \ Q \geq \mathcal{T} Q
-\end{aligned}\]
-
-&lt;p&gt;which can be also formulated as Linear Program.&lt;/p&gt;
-
-\[\begin{aligned}
-\min_{Q\in\mathbb{R}^{n\times m}} &amp;amp; \ \ \ \sum_{s,a} c(s,a) Q(s,a) \\
-\text{s.t.} &amp;amp; \ \ \ Q(s,a) \geq r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) Q(s', a') \ \ \forall (s,a,a')
-\end{aligned}\]
-
-&lt;p&gt;However, this LP is inefficient! (number of constraints $n\times m^2$ and optimization variable $n\times m$.&lt;/p&gt;
-
-&lt;h3 id=&quot;policy-iteration-using-q-functions&quot;&gt;Policy Iteration using Q-functions&lt;/h3&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;strong&gt;Policy Evaluation&lt;/strong&gt;&lt;/p&gt;
-
-    &lt;p&gt;Given a policy $\pi$, we can compute $Q^\pi$ by solving&lt;/p&gt;
-
-\[\begin{aligned}
-\min_{Q\in\mathbb{R}^{n\times m}} &amp;amp; \ \ \ \sum_{s,a} c(s,a) Q(s,a) \\
-\text{s.t.} &amp;amp; \ \ \ Q(s,a) \geq r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,\pi(s)) Q(s', \pi(s')) \ \ \forall (s,a)
-\end{aligned}\]
-
-    &lt;p&gt;which its number of constraints and optimization varible dimension is identical ($n\times m$).&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;strong&gt;Policy Improvement&lt;/strong&gt;&lt;/p&gt;
-
-    &lt;p&gt;Then, we update the policy by&lt;/p&gt;
-
-\[\pi(s) \in \arg \max_{a\in A}Q^\pi (s,a)\]
-
-    &lt;p&gt;Meanwhile, it is worth noting that this policy improvement step doesn’t require any sort of model informations (transition probability, reward function or so)&lt;/p&gt;
-
-    &lt;p&gt;$\rightarrow$ &lt;strong&gt;Q-functions are frequently used for model-free approach!&lt;/strong&gt;&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Lecture-Note" /><category term="Theory/Survey" /><summary type="html">State-Action Value Functions In this post, we’re going to define an important concept that is widely used in both MDP and RL. Definition The optimal Q-function $Q^\star(s,a)$ is the maximum expected return starting from state $s$, taking action $a$: \[Q^\star(s,a) := \max_\pi Q^\pi (s,a) = \max_\pi \mathbb{E} ^\pi \bigg [ \sum_{t=0}^\infty \gamma^t r(s_t, a_t) \ \vert \ s_0 = s, a_0 =a \bigg ]\] By definition we have \[v^\star(s) = \max_{a\in A} Q^\star(s,a)\] Bellman Equation for Q-functions \[\begin{aligned} Q^\star(s,a) &amp;amp; = r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s, a) v^\star(s')\\ &amp;amp; = r(s,a) + \gamma \sum_{s'\in S} p(s' \vert s,a) \max_{a'\in A} Q^\star (s',a') \end{aligned}\] We can then define the Bellman operator $\mathcal{T}$ for Q-functions \[(\mathcal{T}Q)(s,a) := r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) \max_{a'\in A} Q^\star(s',a')\] Then, it is a monotone contraction mapping. Monotone Proof Prove that the Bellman operator is monotone, i.e., \[\mathcal{T}Q \leq \mathcal{T}Q' \ \ \ \forall Q,Q' \in \mathbb{R}^{n\times m} \text{ s.t. }Q \leq Q'.\] Define $a^\star_{Q’}(s)= \arg \max_a Q’(s,a)$ and $a^\star_{Q}(s)= \arg \max_a Q(s,a)$ \[\begin{aligned} (\mathcal{T}Q')(s,a) &amp;amp; = r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a)\max_{a'\in A}Q'(s',a')\\ &amp;amp; = r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a)Q'(s',a_{Q'}^\star(s'))\\ &amp;amp; \geq r(s,a) + \gamma \sum_{s' \in S}p(s'|s,a) Q'(s',a_Q^\star(s'))\\ &amp;amp; \geq r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a) Q(s',a_Q^\star(s')) \\ &amp;amp; = r(s,a)+ \gamma \sum_{s'\in S}p(s'|s,a) \max_{a'\in A}Q(s',a')\\ &amp;amp; = (\mathcal{T}Q)(s,a) \ \ \ \forall (s,a) \in (S\times A) \end{aligned}\] Contraction Proof Prove that the Bellman operator is a $\gamma$-contraction mapping with respect to $| \cdot |_\infty$, i.e., \[\|\mathcal{T}Q- \mathcal{T}Q'\|_\infty \leq \gamma \|Q- Q'\|_\infty \ \ \ \forall Q, Q' \in \mathbb{R}^{n\times m}.\] Recall that sup-norm of matrix $\mathbf{A}\in \mathbb{R}^{n\times m}$ is defined as \[\|\mathbf{A}\|_\infty = \max_{\substack{1\leq i\leq n\\ 1 \leq j \leq m}} |\mathbf{A}_{ij}|.\] Applying (14) to (13), we have \[\begin{aligned} \|\mathcal{T}Q-\mathcal{T}Q'\|_\infty &amp;amp;= \max_{(s,a) \in (S\times A)} \Big |(\mathcal{T}Q)(s,a) - (\mathcal{T}Q')(s,a) \Big|\\ &amp;amp; = \max_{s,a} \Big | \gamma \sum_{s'\in S} p(s'|s,a)\max_{a'\in A}Q(s',a')- \gamma \sum_{s'\in S}p(s'|s,a)\max_{a'\in A}Q'(s',a') \Big |\\ &amp;amp; = \gamma \max_{s,a} \Big | \sum_{s'\in S}p(s'|s,a) \big [ \max_{a'\in A} Q(s',a')- \max_{a'\in A} Q'(s',a')\big ] \Big |\\ &amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \Big | \max_{a'\in A} Q(s',a') - \max_{a'\in A}Q'(s',a') \Big | \\ &amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_{a'\in A} \Big |Q(s',a')-Q'(s',a') \Big | \ \ \ \because \text{inequality }(6)\\ &amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_{(s',a')\in (S\times A)} \Big | Q(s',a') -Q'(s',a')\Big | \\ &amp;amp; = \gamma \max_{(s',a')\in (S\times A)} \Big | Q(s',a')-Q'(s',a') \Big |\\ &amp;amp; = \gamma \|Q-Q'\|_\infty \end{aligned}\] LP-Formulation We can also solve the Q-function based on optimization principle \[\begin{aligned} \min_{Q\in\mathbb{R}^{n\times m}} &amp;amp; \ \ \ \sum_{s,a} c(s,a) Q(s,a) \\ \text{s.t.} &amp;amp; \ \ \ Q \geq \mathcal{T} Q \end{aligned}\] which can be also formulated as Linear Program. \[\begin{aligned} \min_{Q\in\mathbb{R}^{n\times m}} &amp;amp; \ \ \ \sum_{s,a} c(s,a) Q(s,a) \\ \text{s.t.} &amp;amp; \ \ \ Q(s,a) \geq r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) Q(s', a') \ \ \forall (s,a,a') \end{aligned}\] However, this LP is inefficient! (number of constraints $n\times m^2$ and optimization variable $n\times m$. Policy Iteration using Q-functions Policy Evaluation Given a policy $\pi$, we can compute $Q^\pi$ by solving \[\begin{aligned} \min_{Q\in\mathbb{R}^{n\times m}} &amp;amp; \ \ \ \sum_{s,a} c(s,a) Q(s,a) \\ \text{s.t.} &amp;amp; \ \ \ Q(s,a) \geq r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,\pi(s)) Q(s', \pi(s')) \ \ \forall (s,a) \end{aligned}\] which its number of constraints and optimization varible dimension is identical ($n\times m$). Policy Improvement Then, we update the policy by \[\pi(s) \in \arg \max_{a\in A}Q^\pi (s,a)\] Meanwhile, it is worth noting that this policy improvement step doesn’t require any sort of model informations (transition probability, reward function or so) $\rightarrow$ Q-functions are frequently used for model-free approach!</summary></entry><entry><title type="html">[RL Theory] Stochastic Approximation</title><link href="http://localhost:4000/2021/04/20/scrl-9.html" rel="alternate" type="text/html" title="[RL Theory] Stochastic Approximation" /><published>2021-04-20T00:00:00+09:00</published><updated>2021-04-20T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/20/scrl-9</id><content type="html" xml:base="http://localhost:4000/2021/04/20/scrl-9.html">&lt;h2 id=&quot;review-mdp-problem&quot;&gt;Review: MDP Problem&lt;/h2&gt;
+&lt;p&gt;VI is simpler, but PI is often faster!&lt;/p&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Lecture-Note" /><category term="Theory/Survey" /><summary type="html">Policy Iteration Idea of Policy Iteration So far, our algorithm updated everything only in the value space. After we obtained the optimal value function $v^\star$, we switched over to the policy space, and obtained $\pi^\star$. This can be considered somewhat inefficient: we might want to use some information about the policy as well, during the value function updating procedure. Policy Iteration iteratively updates both value functions and policies. Policy Iteration Algorithm Initialize $\pi_0$ as an arbitrary deterministic stationary policy. Repeat policy evaluation : compute the value function corresponding to the policy $\pi_k$! \[v^{\pi_k} = \mathcal{T}^{\pi_k} v^{\pi_k}\] policy improvement : update the policy by taking \[\pi_{k+1} = \arg \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s'\in S} p(s' \vert s,a) v^{\pi_k }(s') \bigg ]\] Then the sequence of policies ${\pi_0 , \pi_1, \pi_2, \cdots, \pi_k}$ converges to an optimal policy $\pi^\star$. This works: Monotonic Improvement One might ask, does this really work? That question can be answered if we prove the following Lemma. [Lemma] Let ${\pi_k}$ be the sequences of policies obtained by policy iteration. Then, we have \[v^{\pi_{k+1}} \geq v^{\pi_k}\ \ \ \ \forall k\] Note that this is an element-wise inequality! \[v^{\pi_{k+1}}(s) \geq v^{\pi_k}(s)\ \ \ \ \forall k,s\] [Proof] First, the policy evaluation step gives us the solution of \[v^{\pi_k} = \mathcal{T}^{\pi_k }v^{\pi_k}\] Next, the policy improvement step tries to update the policy $\pi_k$ by solving \[\pi_{k+1} = \arg \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s'\in S} p(s' \vert s,a) v^{\pi_k }(s') \bigg ]\] Thus, the policy improvement step is in fact the same as an optimal Bellman operator, taking the argmax over action space. \[\mathcal{T}^{\pi_{k+1}}v^{\pi_k } = \mathcal{T}v^{\pi_k }\] Now, the definition (optimality) of Bellman operator gives us that \[\mathcal{T}^{\pi_{k+1}}v^{\pi_k } = \mathcal{T}v^{\pi_k } \geq \mathcal{T}^{\pi_k }v^{\pi_k}\] Combining the equation from the policy evaluation step, we have \[\mathcal{T}^{\pi_{k+1}}v^{\pi_k } \geq \mathcal{T}^{\pi_k }v^{\pi_k} = v^{\pi_k}\] If we apply this inequality recursively, we have \[v^{\pi_k } \leq \big ( \mathcal{T}^{\pi_{k+1}}\big ) ^n v^{\pi_k }\ \ \ \ \forall n\] Knowing that $\mathcal{T^{\pi}}$ is a contraction mapping, if we think of $n\rightarrow \infty$, we can say that the RHS goes to the fixed point of $\mathcal{T}^{\pi_{k+1}}$, which is \[v^{\pi_k } \leq v^{\pi_{k+1}}\] Thus, the policy is improved monotonically, as we repeat the policy iteration. Convergence of Policy Iteration We now know that policy iteration monotonically improves the policy, thus monotonically increases the value function. Now, we have to prove that it eventually converges to the optimal value function! Monotone Convergence Theorem Let ${x_k}$ be a monotonically non-decreasing, bounded sequence of real vectors. Then, the sequence has a finite limit! We’re going to use this widely-used theorem to prove our point! Recall that our value function is bounded, since we have a finite state-action space. Proof of Convergence To start with, our reward function is bounded for some constant $M$, since our state-action spaces $S$ and $A$ are finite. \[|r(s,a) | \leq M\] Thus, our value function has to be bounded above! \[|v^\pi (s)| = \bigg \vert \sum_{t=0}^\infty \gamma^t r(s_t, a_t ) \bigg \vert \leq \bigg \vert \sum_{t=0}^\infty \gamma^t |M| \bigg \vert \leq \frac{1}{1-\gamma}|M|\] By the previous lemma, $v^{\pi_k} \leq v^{\pi_{k+1}}$ for all $k$. Then, by the monotone convergence theorem, there exists $\bar{v}$ such that \[\lim_{k\rightarrow \infty} v^{\pi_k } = \bar{v}\] Then, the preceding policy evaluation and improvement step policy improvement : $\bar{v} \rightarrow \bar{\pi}$ policy evaluation : $\bar{\pi} \rightarrow v^{\bar{\pi}}$ implies that \[v^{\bar{\pi}} = \mathcal{T}^{\bar{\pi}}v^{\bar{\pi}} = \mathcal{T} v^{\bar{\pi}}\] thus, $\bar{v} = v^\star$. VI vs PI VI is simpler, but PI is often faster!</summary></entry><entry><title type="html">[Personal Note] Logic Flow</title><link href="http://localhost:4000/2021/04/20/logic-flow.html" rel="alternate" type="text/html" title="[Personal Note] Logic Flow" /><published>2021-04-20T00:00:00+09:00</published><updated>2021-04-20T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/20/logic-flow</id><content type="html" xml:base="http://localhost:4000/2021/04/20/logic-flow.html">&lt;p&gt;##&lt;/p&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Personal-Note" /><summary type="html">##</summary></entry><entry><title type="html">[RL Theory] Stochastic Approximation</title><link href="http://localhost:4000/2021/04/20/scrl-9.html" rel="alternate" type="text/html" title="[RL Theory] Stochastic Approximation" /><published>2021-04-20T00:00:00+09:00</published><updated>2021-04-20T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/20/scrl-9</id><content type="html" xml:base="http://localhost:4000/2021/04/20/scrl-9.html">&lt;h2 id=&quot;review-mdp-problem&quot;&gt;Review: MDP Problem&lt;/h2&gt;
 
 &lt;h3 id=&quot;bellman-equations&quot;&gt;Bellman Equations&lt;/h3&gt;
 
@@ -619,7 +771,300 @@ x_{k+1}(i) &amp;amp; = (1-\alpha_k (i) ) x_k (i) + \alpha_k (i) [(Hx_k) (i) + w_
 
 &lt;p&gt;&lt;code class=&quot;language-plaintext info highlighter-rouge&quot;&gt;Theorem&lt;/code&gt; Suppose that all three assumptions hold. If the sequence $x_k$ generated by the stochastic approximation algorithm is bounded with probability 1, then $x_k$ converges to $x^\star$ with probability 1.&lt;/p&gt;
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext success highlighter-rouge&quot;&gt;proof&lt;/code&gt;&lt;/p&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Lecture-Note" /><category term="Theory/Survey" /><summary type="html">Review: MDP Problem Bellman Equations Recall, that both policy evaluation and optimality equation is a fixed point problem. Policy Evaluation \[v = \mathcal{T}^\pi v\] or equivalently \[v(s) = r(s, \pi(s)) + \gamma \sum_{s' \in S} p(s' \vert s, \pi(s) ) v(s')\] Optimality Equation \[v = \mathcal{T}v\] or equivalently \[v(s) = \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) v(s') \bigg ]\] Thus, we need to solve a fixed-point problem in a model-free manner. Fixed Point Problem Consider the following system of equations: \[Hx = x\] where $ H: \mathbb{R}^n \rightarrow \mathbb{R}^n $. We may want to use a deterministic iterative algorithm, \[x_{k+1} := Hx_k\] or its variant with a small stepsize $\alpha_k \in (0,1)$. \[x_{k+1} := (1-\alpha_k ) x_k + \alpha_k Hx_k\] Stochastic Approximation What if $H$ is not completely known? Even in the case when $H$ is not completely known, or $Hx_k$ itself cannot be calculated easily, we might still have access to a random observation $s_k$ \[s_k = Hx_k + w_k\] along with the information about the random noise $w_k$. In this case, we might try to iteratively update the equation using this observation! \[\begin{aligned} x_{k+1} &amp;amp; = (1-\alpha_k) x_k + \alpha_k s_k \\ &amp;amp; = (1-\alpha_k) + \alpha_k (Hx_k + w_k) \end{aligned}\] Stochastic Approximation Algorithm Stochastic approximation algorithm starts from this point! \[x_{k+1} = (1-\alpha_k) x_k + \alpha_k (Hx_k + w_k )\] where $s_k = Hx_k +w_k$ can be available using sample data. It is known that, under certain conditions, the error between $s_k$ and $Hx_k$ can be neglected at the end. This is the key idea of stochastic approximation! Robbins-Monro Algorithm For instance, let’s consider the policy evaluation equation \[\begin{aligned} v^\pi &amp;amp; = \mathcal{T}^\pi v^\pi\\ &amp;amp; = r(s,\pi(s) ) + \gamma \sum_{s' \in S} p (s' \vert s, a) v(s') \ \end{aligned}\] This can be expressed by the following form \[x = \mathbb{E} [ f(x, \xi) ]\] where $\xi$ is a random variable. Let’s say we have a sample of $\xi$, ${\hat{\xi}_1, \hat{\xi}_2, \cdots, \hat{\xi}_N}$. Then, we might use an empirical mean to to estimate $\mathbb{E}[f(x,\xi)]$ in the iterative algorithm. \[x_{k+1} := (1-\alpha_k) x_k + \alpha_k \frac{1}{N} \sum_{i=1}^N f(x, \hat{\xi}_i )\] However, this can be extremely inefficient when $N$ becomes large. Thus, we might want to use a simplified version: using a single sample $\hat{\xi}_i$ in each update. \[x_{k+1} := (1-\alpha_k) x_k + \alpha_k f(x_k , \hat{\xi}_k )\] This is called the Robbins-Monro algorithm. This is one of the special case of stochastic approximation method, with zero mean $w_k$. Algorithm The stochastic approximation algorithm for $Hx=x$ can be written as \[\begin{aligned} x_{k+1}(i) &amp;amp; = (1-\alpha_k (i) ) x_k (i) + \alpha_k (i) [(Hx_k) (i) + w_k (i) ]\\ &amp;amp; = x_k (i) + \alpha_k (i) [ (Hx_k) (i) + w_k (i) - x_k (i) ] \end{aligned}\] Thus, the step direction is $(Hx_k) (i) - x_k (i) + w_k (i)$. Also, we need to carefully choose the stepsize. Stepsize Analysis Let’s first assume that our noise term $w_k (i)$ has variance $\sigma^2$. We may also assume that $w_k$ is independent of $x_k$. Attempt 1: Constant Stepsize What if we use a constant step size of $\alpha_k (i) = \alpha$? The variance of $x_{k+1}(i)$ will be greater than (or equal to) $\alpha^2 \sigma^2 $. Thus, $x_k$ might possibly reach near the neighborhood of $x^\star$, but just randomly move around it, without conerging it to $x^\star$. Therfore, the effect of noise term will not be diminished at end. Attempt 2: Stepsize Decreasing so quickly Now, let’s consider the case where the stepsize decreases so quickly that both \[\sum_{k}^\infty \alpha_k (i) &amp;lt; +\infty\] and \[(Hx_k)(i) + w_k (i) - x_k (i) &amp;lt; +\infty\] are bounded. Then, \[|x_k(i) - x_0 (i) | \leq \sum_{\tau=0}^{k-1} | x_{\tau+1}(i) - x_\tau (i) | = \sum_{\tau=0}^{k-1}\alpha_\tau (i) |(Hx_\tau ) (i) - x_\tau (i) + w_\tau (i) |\] we can see that $x_k(i)$ can never escape a fixed boundary around $x_0 (i)$. Thus, if $x_0$ is placed outside hte neighborhood of $x^\star$, $x_k$ can never reach at $x^\star$. Thus, the noise must be large enough to explore the entire space of $H$. Condition on Stepsizes Assumptions For each $i$, the following conditions hold with probability 1. \[\sum_{k=0}^\infty \alpha_k (i) = +\infty\\ \sum_{k=0}^\infty \alpha_k^2 (i) &amp;lt;+\infty\] Condition on Noise Define the history \[\mathcal{F}_k:= \{ x_0, \cdots, x_k, w_0, \cdots, w_{k-1}, \alpha_0, \cdots, \alpha_k \}\] Assumptions For each $i$, the following conditions hold: \[\mathbb{E}[w_k (i) \ \vert \ \mathcal{F}_k ] =0\\ \mathbb{E}[w_k^2 (i) \ \vert \ \mathcal{F}_k ] \leq C_0 + C_1 \|x_k \|^2\] for some costant $C_0, C_1$. Convergence Theorem Convergence under contraction property Theorem If both of the assumptions hold and $H$ is a contraction mapping, $x_k$ converges to the fixed point $x^\star$ of $H$, with probability 1. proof Convergence under monotonicity Assumptions Suppose that mapping $H$ satisfies the following conditions: $H$ is monotone There exists a unique vector $x^\star$ such that $Hx^\star = x^\star$. Let $\mathbf{1}$ be the vector with all components equal to 1. Then, \(Hx - \eta \mathbf{1} \leq H(x- \eta \mathbf{1}) \leq H(x+ \eta \mathbf{1}) \leq Hx + \eta \mathbf{1}\) Theorem Suppose that all three assumptions hold. If the sequence $x_k$ generated by the stochastic approximation algorithm is bounded with probability 1, then $x_k$ converges to $x^\star$ with probability 1. proof</summary></entry><entry><title type="html">[RL Theory] Finite Horizon MDP (1)</title><link href="http://localhost:4000/2021/04/19/scrl-3.html" rel="alternate" type="text/html" title="[RL Theory] Finite Horizon MDP (1)" /><published>2021-04-19T00:00:00+09:00</published><updated>2021-04-19T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/19/scrl-3</id><content type="html" xml:base="http://localhost:4000/2021/04/19/scrl-3.html">&lt;h2 id=&quot;finite-horizon-mdp&quot;&gt;Finite-Horizon MDP&lt;/h2&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext success highlighter-rouge&quot;&gt;proof&lt;/code&gt;&lt;/p&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Lecture-Note" /><category term="Theory/Survey" /><summary type="html">Review: MDP Problem Bellman Equations Recall, that both policy evaluation and optimality equation is a fixed point problem. Policy Evaluation \[v = \mathcal{T}^\pi v\] or equivalently \[v(s) = r(s, \pi(s)) + \gamma \sum_{s' \in S} p(s' \vert s, \pi(s) ) v(s')\] Optimality Equation \[v = \mathcal{T}v\] or equivalently \[v(s) = \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) v(s') \bigg ]\] Thus, we need to solve a fixed-point problem in a model-free manner. Fixed Point Problem Consider the following system of equations: \[Hx = x\] where $ H: \mathbb{R}^n \rightarrow \mathbb{R}^n $. We may want to use a deterministic iterative algorithm, \[x_{k+1} := Hx_k\] or its variant with a small stepsize $\alpha_k \in (0,1)$. \[x_{k+1} := (1-\alpha_k ) x_k + \alpha_k Hx_k\] Stochastic Approximation What if $H$ is not completely known? Even in the case when $H$ is not completely known, or $Hx_k$ itself cannot be calculated easily, we might still have access to a random observation $s_k$ \[s_k = Hx_k + w_k\] along with the information about the random noise $w_k$. In this case, we might try to iteratively update the equation using this observation! \[\begin{aligned} x_{k+1} &amp;amp; = (1-\alpha_k) x_k + \alpha_k s_k \\ &amp;amp; = (1-\alpha_k) + \alpha_k (Hx_k + w_k) \end{aligned}\] Stochastic Approximation Algorithm Stochastic approximation algorithm starts from this point! \[x_{k+1} = (1-\alpha_k) x_k + \alpha_k (Hx_k + w_k )\] where $s_k = Hx_k +w_k$ can be available using sample data. It is known that, under certain conditions, the error between $s_k$ and $Hx_k$ can be neglected at the end. This is the key idea of stochastic approximation! Robbins-Monro Algorithm For instance, let’s consider the policy evaluation equation \[\begin{aligned} v^\pi &amp;amp; = \mathcal{T}^\pi v^\pi\\ &amp;amp; = r(s,\pi(s) ) + \gamma \sum_{s' \in S} p (s' \vert s, a) v(s') \ \end{aligned}\] This can be expressed by the following form \[x = \mathbb{E} [ f(x, \xi) ]\] where $\xi$ is a random variable. Let’s say we have a sample of $\xi$, ${\hat{\xi}_1, \hat{\xi}_2, \cdots, \hat{\xi}_N}$. Then, we might use an empirical mean to to estimate $\mathbb{E}[f(x,\xi)]$ in the iterative algorithm. \[x_{k+1} := (1-\alpha_k) x_k + \alpha_k \frac{1}{N} \sum_{i=1}^N f(x, \hat{\xi}_i )\] However, this can be extremely inefficient when $N$ becomes large. Thus, we might want to use a simplified version: using a single sample $\hat{\xi}_i$ in each update. \[x_{k+1} := (1-\alpha_k) x_k + \alpha_k f(x_k , \hat{\xi}_k )\] This is called the Robbins-Monro algorithm. This is one of the special case of stochastic approximation method, with zero mean $w_k$. Algorithm The stochastic approximation algorithm for $Hx=x$ can be written as \[\begin{aligned} x_{k+1}(i) &amp;amp; = (1-\alpha_k (i) ) x_k (i) + \alpha_k (i) [(Hx_k) (i) + w_k (i) ]\\ &amp;amp; = x_k (i) + \alpha_k (i) [ (Hx_k) (i) + w_k (i) - x_k (i) ] \end{aligned}\] Thus, the step direction is $(Hx_k) (i) - x_k (i) + w_k (i)$. Also, we need to carefully choose the stepsize. Stepsize Analysis Let’s first assume that our noise term $w_k (i)$ has variance $\sigma^2$. We may also assume that $w_k$ is independent of $x_k$. Attempt 1: Constant Stepsize What if we use a constant step size of $\alpha_k (i) = \alpha$? The variance of $x_{k+1}(i)$ will be greater than (or equal to) $\alpha^2 \sigma^2 $. Thus, $x_k$ might possibly reach near the neighborhood of $x^\star$, but just randomly move around it, without conerging it to $x^\star$. Therfore, the effect of noise term will not be diminished at end. Attempt 2: Stepsize Decreasing so quickly Now, let’s consider the case where the stepsize decreases so quickly that both \[\sum_{k}^\infty \alpha_k (i) &amp;lt; +\infty\] and \[(Hx_k)(i) + w_k (i) - x_k (i) &amp;lt; +\infty\] are bounded. Then, \[|x_k(i) - x_0 (i) | \leq \sum_{\tau=0}^{k-1} | x_{\tau+1}(i) - x_\tau (i) | = \sum_{\tau=0}^{k-1}\alpha_\tau (i) |(Hx_\tau ) (i) - x_\tau (i) + w_\tau (i) |\] we can see that $x_k(i)$ can never escape a fixed boundary around $x_0 (i)$. Thus, if $x_0$ is placed outside hte neighborhood of $x^\star$, $x_k$ can never reach at $x^\star$. Thus, the noise must be large enough to explore the entire space of $H$. Condition on Stepsizes Assumptions For each $i$, the following conditions hold with probability 1. \[\sum_{k=0}^\infty \alpha_k (i) = +\infty\\ \sum_{k=0}^\infty \alpha_k^2 (i) &amp;lt;+\infty\] Condition on Noise Define the history \[\mathcal{F}_k:= \{ x_0, \cdots, x_k, w_0, \cdots, w_{k-1}, \alpha_0, \cdots, \alpha_k \}\] Assumptions For each $i$, the following conditions hold: \[\mathbb{E}[w_k (i) \ \vert \ \mathcal{F}_k ] =0\\ \mathbb{E}[w_k^2 (i) \ \vert \ \mathcal{F}_k ] \leq C_0 + C_1 \|x_k \|^2\] for some costant $C_0, C_1$. Convergence Theorem Convergence under contraction property Theorem If both of the assumptions hold and $H$ is a contraction mapping, $x_k$ converges to the fixed point $x^\star$ of $H$, with probability 1. proof Convergence under monotonicity Assumptions Suppose that mapping $H$ satisfies the following conditions: $H$ is monotone There exists a unique vector $x^\star$ such that $Hx^\star = x^\star$. Let $\mathbf{1}$ be the vector with all components equal to 1. Then, \(Hx - \eta \mathbf{1} \leq H(x- \eta \mathbf{1}) \leq H(x+ \eta \mathbf{1}) \leq Hx + \eta \mathbf{1}\) Theorem Suppose that all three assumptions hold. If the sequence $x_k$ generated by the stochastic approximation algorithm is bounded with probability 1, then $x_k$ converges to $x^\star$ with probability 1. proof</summary></entry><entry><title type="html">[RL Theory] Infinite Horizon MDP, Value Iteration</title><link href="http://localhost:4000/2021/04/19/scrl-5.html" rel="alternate" type="text/html" title="[RL Theory] Infinite Horizon MDP, Value Iteration" /><published>2021-04-19T00:00:00+09:00</published><updated>2021-04-19T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/19/scrl-5</id><content type="html" xml:base="http://localhost:4000/2021/04/19/scrl-5.html">&lt;h2 id=&quot;infinite-horizon-discounted-mdp&quot;&gt;Infinite Horizon Discounted MDP&lt;/h2&gt;
+&lt;h3 id=&quot;assumptions&quot;&gt;Assumptions&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Stationary rewards and transition probabilities:
+  $r(s,a)$ and $p(s’ \vert s,a)$ doesn’t change over time.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Finite state and action sets&lt;/p&gt;
+
+    &lt;p&gt;$\rightarrow$ this implies that $r(s,a)$ is bounded! There exists a constant $M$ such that&lt;/p&gt;
+
+\[|r(s,a)|&amp;lt;M \ \ \forall s \in S, \ \ \forall a \in A.\]
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Stationary Policy : policy doesn’t change over time!&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;policy-evaluation&quot;&gt;Policy Evaluation&lt;/h3&gt;
+
+&lt;p&gt;We need to evaluate&lt;/p&gt;
+
+\[\mathbb{E}^\pi \bigg [ \sum_{t=0}^\infty \gamma^t r(s_t, a_t) \bigg ]\]
+
+&lt;p&gt;given a policy $\pi$.&lt;/p&gt;
+
+&lt;h3 id=&quot;value-function&quot;&gt;Value Function&lt;/h3&gt;
+
+&lt;p&gt;To do so, we define a &lt;strong&gt;value function&lt;/strong&gt;, which is the expected return starting from state $s$ under executing the policy $\pi$.&lt;/p&gt;
+
+\[v^\pi (s) := \mathbb{E}^\pi \bigg [ \sum_{\tau = t}^\infty \gamma^{\tau -t} r(s_\tau , a_\tau) \ \vert \ s_t = s \bigg ]\]
+
+&lt;p&gt;Using this value function, we decompose the value function into two parts. (1) immediate reward + (2) discounted value of next state.&lt;/p&gt;
+
+\[v^\pi (s) = \mathbb{E}^\pi [ r(s_t, a_t) + \gamma v^\pi (s_{t+1})  \ \vert \ s_t =s ]\]
+
+&lt;p&gt;This can be expressed as&lt;/p&gt;
+
+\[v^\pi (s) = \sum_{a\in A} \pi (a \vert s) \bigg [ r(s, a) + \sum_{s'\in S} p(s' \vert s, a) v^\pi (s') \bigg ]\]
+
+&lt;h3 id=&quot;vector-form&quot;&gt;Vector Form&lt;/h3&gt;
+
+&lt;p&gt;Recall, that we assumed finite state space and action space. Then,&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;$v^\pi := (v^\pi(s_1),\cdots, v^\pi(s_n)) \in \mathbb{R}^n $&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;$R^\pi := (r(s_1, \pi(s_1), \cdots, r(s_n, \pi(s_n)) \in \mathbb{R}^n$ if deterministic&lt;/p&gt;
+
+    &lt;p&gt;$ R^\pi := (\sum_{a\in A}\pi(a \vert s_1)r(s_1, a), \cdots, \sum_{a\in A}\pi(a \vert s_n)r(s_n, a)) \in \mathbb{R}^n $ if stochastic&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Transition probability matrix&lt;/p&gt;
+
+    &lt;center&gt;&lt;img src=&quot;https://tva1.sinaimg.cn/large/008eGmZEgy1gpp5klgl9bj318a0emgo0.jpg&quot; alt=&quot;image-20210419175247441&quot; style=&quot;zoom:30%;&quot; /&gt;&lt;/center&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Then, the policy evaluation can be expressed as&lt;/p&gt;
+
+\[v^\pi = R^\pi + \gamma P^\pi v^\pi\]
+
+&lt;h3 id=&quot;eigenvalues-of-transition-probability-matrix&quot;&gt;Eigenvalues of Transition Probability Matrix&lt;/h3&gt;
+
+&lt;p&gt;Note that stochastic matrix has an eigenvalue of 1: let A as a $n\times n$ stochastic matrix. Then,&lt;/p&gt;
+
+\[A \begin{bmatrix}1\\1\\ \vdots \\1 \end{bmatrix} = \begin{bmatrix} \sum_i{a_{1i}}\\ \sum_i{a_{2i}}\\ \vdots \\ \sum_i{a_{ni}} \end{bmatrix} =  \begin{bmatrix}1\\1\\ \vdots \\1 \end{bmatrix}\]
+
+&lt;p&gt;which shows that $A$ has an eigenvalue of 1.&lt;/p&gt;
+
+&lt;p&gt;Now, we are going to claim that &lt;strong&gt;other eigenvalues does not exceed 1.&lt;/strong&gt; To do so, let’s assume that $Ax = \lambda x$ for some $\lambda &amp;gt;1 $.&lt;/p&gt;
+
+&lt;p&gt;Knowing that the row-sum of $A$ is 1, we can interpret each component of $Ax$ as the convex combination of $x$ components, thus cannot exceed the maximum value of $x_{\max}$. However, since $\lambda&amp;gt;1$, at least one element of $\lambda x$ will be greater than $x_\max$.&lt;/p&gt;
+
+&lt;p&gt;Thus, we can conclude that $\lambda &amp;gt;1$ is not possible. &lt;strong&gt;Eigenvalues of $P^\pi$&lt;/strong&gt; &lt;strong&gt;are less than or equal to 1.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;unique-solution-of-policy-evaluation-equation&quot;&gt;Unique solution of Policy Evaluation Equation&lt;/h3&gt;
+
+&lt;p&gt;Now, we can prove that the policy evaluation equation has a unique solution.&lt;/p&gt;
+
+\[v^\pi = R^\pi + \gamma P^\pi v^\pi\]
+
+&lt;p&gt;This is because,&lt;/p&gt;
+
+\[(I-\gamma P^\pi ) v^\pi =R^\pi\]
+
+&lt;p&gt;$I-\gamma P^\pi$ has an eigenvalue greater than zero, and thus invertible.&lt;/p&gt;
+
+&lt;p&gt;Than, the unique soluition is given by&lt;/p&gt;
+
+&lt;p&gt;\(v^\pi = (I- \gamma P^\pi )^{-1} R^\pi\)
+&lt;strong&gt;However, this method is inefficient when the problem gets larger.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;policy-evaluation--value-iteration&quot;&gt;Policy Evaluation : Value Iteration&lt;/h2&gt;
+
+&lt;h3 id=&quot;definition&quot;&gt;Definition&lt;/h3&gt;
+
+&lt;p&gt;Define the operator $\mathcal{T} : \mathbb{R} \rightarrow \mathbb{R}$&lt;/p&gt;
+
+\[\mathcal{T}^\pi v := R^\pi + \gamma P^\pi\]
+
+&lt;p&gt;In a non-vector form,&lt;/p&gt;
+
+\[\mathcal{T}^\pi v(s) = \sum_{a \in A} \pi(a\vert s) \bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s, a) v(s') \bigg ]\]
+
+&lt;p&gt;Then, the policy evaluation equation can be expressed as&lt;/p&gt;
+
+\[\mathcal{T}^\pi v^\pi  = v^\pi\]
+
+&lt;p&gt;which is a fixed point problem.&lt;/p&gt;
+
+&lt;h3 id=&quot;contraction-property&quot;&gt;Contraction Property&lt;/h3&gt;
+
+&lt;p&gt;We should prove that the operator $\mathcal{T}$ is a $\gamma$-contraction with respect to $| \cdot |_\infty$ for any stationary policy $\pi$.&lt;/p&gt;
+
+&lt;h3 id=&quot;banach-fixed-point-theorem&quot;&gt;Banach Fixed Point Theorem&lt;/h3&gt;
+
+&lt;p&gt;If $\mathcal{T}$ is a contraction mapping, then&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;$\mathcal{T}$ admits a unique fixed point $v^\star \in \mathbb{R}^n$.&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Meanwhile, $v^\star$ can be found by value iteration!&lt;/p&gt;
+
+\[v_{k+1} := \mathcal{T}v_k\]
+
+    &lt;p&gt;which leads to $v_k \rightarrow v^\star$.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;value-iteration-algorithm&quot;&gt;Value Iteration Algorithm&lt;/h3&gt;
+
+&lt;p&gt;For a stationary policy $\pi$,&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;initialize $v_0$ as an arbitrary vector in $\mathbb{R}^n$.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Repeat until convergence:&lt;/p&gt;
+
+\[v_{k+1} := \mathcal{T}^\pi v_k\]
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;optimal-policy--value-function&quot;&gt;Optimal Policy / Value Function&lt;/h2&gt;
+
+&lt;h3 id=&quot;optimal-value-function&quot;&gt;Optimal Value Function&lt;/h3&gt;
+
+&lt;p&gt;We have to find an optimal policy that maximizes the expected cumulative reward!&lt;/p&gt;
+
+\[\max_{\pi \in \Pi} \mathbb{E}^\pi \bigg [ \sum_{t=0}^\infty \gamma^t r(s_t, a_t) \bigg ]\]
+
+&lt;p&gt;Thus, we are going to define an &lt;strong&gt;optimal value function&lt;/strong&gt;&lt;/p&gt;
+
+\[v^\star (s) :=\max_{\pi \in \Pi} \bigg [ \sum_{\tau=t}^\infty \gamma^{\tau -t}r(s_\tau, a_\tau ) \big \vert s_t = s \bigg ]\]
+
+&lt;p&gt;Recall that &lt;strong&gt;value function&lt;/strong&gt; we previously defined doesn’t have the $\max_{\pi \in \Pi}$ term at front.&lt;/p&gt;
+
+&lt;h3 id=&quot;bellman-operator&quot;&gt;Bellman Operator&lt;/h3&gt;
+
+&lt;p&gt;Defining the Bellman operator $\mathcal{T} : \mathbb{R}^n \rightarrow  \mathbb{R}^n$ by&lt;/p&gt;
+
+\[\mathcal{T}v: = \sup_{\pi \in \Pi} \{ R^\pi + \gamma P^\pi v \}\\
+\mathcal{T}v(s):= \sup_{\pi} \sum_{a\in A} \pi(a \vert s) \bigg [ r(s,a) + \gamma \sum_{s'\in S}p(s' \vert s,a) v(s') \bigg ]\]
+
+&lt;p&gt;Note that we can rewrite the Bellman equation, replacing the $\sup_\pi$ term with $\max_{a\in A}$ term.&lt;/p&gt;
+
+\[(\mathcal{T}v)(s):= \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s'\in S} p(s' \vert s,a) v(s') \bigg ]\]
+
+&lt;p&gt;&lt;strong&gt;Why?&lt;/strong&gt; since $A$ is a finite action set, the supremum over possible policies $\pi$ is achieved when the policy is designed as&lt;/p&gt;
+
+\[\pi( a \vert s) = \begin{cases}
+1 &amp;amp; \ \ \ \text{if } a= a^\star\\
+0 &amp;amp; \ \ \ \text{otherwise}
+\end{cases}\]
+
+&lt;p&gt;while&lt;/p&gt;
+
+\[a^\star \in \arg \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s'\in S}p(s' \vert s,a) v(s') \bigg ]\]
+
+&lt;h3 id=&quot;contraction-property-of-bellman-operator&quot;&gt;Contraction Property of Bellman Operator&lt;/h3&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;(optimal) Bellman operator is a monotone mapping&lt;/p&gt;
+
+    &lt;p&gt;Assume $v \leq v’$, and let $a^\star_{v}$ be the maximizing-action corresponding to $v$, and $a^\star_{v’}$ be the maximizing-action corresponding to $v’$. 
+ \(\begin{aligned}
+               (\mathcal{T}v')(s) &amp;amp; = \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s'|s,a)v'(s') \bigg ]\\
+               &amp;amp; = r(s,a^\star_{v'})+ \gamma \sum_{s' \in S} p(s'|s,a^\star_{v'})v'(s')\\
+               &amp;amp; \geq r(s,a^\star_{v}) + \gamma \sum_{s'\in S} p(s'|s,a^\star_{v})v'(s')\\
+               &amp;amp; \geq r(s,a^\star_{v}) + \gamma \sum_{s'\in S} p(s'|s,a_v^\star)v(s') \ \ \ \because v'(s) \geq v(s), \  \forall s\\
+               &amp;amp; = (\mathcal{T}v)(s) \ \ \ \forall s \in S
+             \end{aligned}\)&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;(optimal) Bellman operator is a $\gamma$-contraction mapping&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Recall that infinity norm of a vector $x \in \mathbb{R}^n$ is defined as&lt;/p&gt;
+
+\[\|\mathbf{x}\|_\infty = \max_i |\mathbf{x}_i|.\]
+
+&lt;p&gt;Also, consider the following statement&lt;/p&gt;
+
+\[| \max_z f(z) - \max_z h(z) | \leq \max_z |f(z)-h(z)|\]
+
+&lt;p&gt;which can be easily proved by the following:&lt;/p&gt;
+
+\[\begin{aligned}
+\max_z f(z) - \max_z h(z) &amp;amp; = f(z^\star) - \max_z h(z)\\
+&amp;amp; \leq f(z^\star) - h(z^\star) \\ 
+&amp;amp; \leq \max_z |f(z) - h(z)|\\
+\end{aligned}\]
+
+\[\begin{aligned}
+  \max_z f(z) - \max_z h(z) &amp;amp; = \max_z f(z) - h(z^\star)\\
+  &amp;amp; \geq f(z^\star) - h(z^\star) \\ 
+  &amp;amp; \geq - \max_z |f(z) - h(z)|
+  \end{aligned}\]
+
+&lt;p&gt;Applying this to operator $\mathcal{T}$, we have:&lt;/p&gt;
+
+\[\begin{aligned}
+  \|\mathcal{T}v-\mathcal{T}v' \|_\infty &amp;amp; = \max_s \Big [ (\mathcal{T}v)(s) - (\mathcal{T}v')(s) \Big ]\\
+  &amp;amp; = \max_s \bigg [ \max_a \Big [r(s,a)+\gamma \sum_{s' \in S}p(s'|s,a)v(s)\Big ] -
+  \max_a \Big [r(s,a)+\gamma \sum_{s' \in S}p(s'|s,a)v'(s)\Big ]  \bigg ]  &amp;amp; \\
+  &amp;amp; \leq  \max_s \bigg [ \max_a \Big |\gamma \sum_{s'\in S}p(s'|s,a)[v(s)-v'(s)] \Big | \bigg ]  \ \ \ \ \ \because \text{inequality (6)}\\
+  &amp;amp; = \max_{s,a} \Big |\gamma \sum_{s'\in S}p(s'|s,a)[v(s)-v'(s)] \Big |  \\
+  &amp;amp; \leq  \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a)\  \big |v(s)-v'(s)\big | &amp;amp; \\ 
+  &amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_s |v(s)-v'(s)| &amp;amp; \\
+  &amp;amp; =  \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \|v-v'\| \ \ \ \ \  \because \text{definition (5)}\\
+  &amp;amp; = \gamma \|v-v'\|_\infty
+  \end{aligned}\]
+
+&lt;p&gt;**Thus, bellman equation has a unique solution, which is the optimal value function $v^\star$. **&lt;/p&gt;
+
+&lt;h3 id=&quot;additional-properties&quot;&gt;Additional Properties&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;[Proposition]&lt;/strong&gt; This proposition can be used to prove that, if $\mathcal{T}v = v$, then $v= v^\star$.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;If $v\geq \mathcal{T}v $, then $v \geq v^\star$.&lt;/li&gt;
+  &lt;li&gt;If $v \leq \mathcal{T}v $, then $v \leq v^\star$.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;[proof]&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Let’s first prove the first one. (the other one can be proved by the exact same way)&lt;/p&gt;
+
+&lt;p&gt;First, fix an arbitrary policy $\pi$. Since $\mathcal{T}$ selects the supremum over all policies,&lt;/p&gt;
+
+\[\mathcal{T}v \geq \mathcal{T}^\pi v\]
+
+&lt;p&gt;Thus,&lt;/p&gt;
+
+\[v \geq \mathcal{T}v \geq \mathcal{T}^\pi v  = R^\pi + \gamma P^\pi v  \geq R^\pi + \gamma P^\pi (R^\pi + \gamma P^\pi v) \geq \cdots \geq \sum_{t=0}^{n-1} (\gamma P^\pi ) ^t R^\pi + (\gamma P^\pi )^n v\]
+
+&lt;p&gt;Letting $n\rightarrow \infty$, we can say that&lt;/p&gt;
+
+\[v \geq \sum_{t=0}^\infty (\gamma P^\pi )^t R^\pi  = v^\pi\]
+
+&lt;p&gt;since $0&amp;lt;\gamma&amp;lt;1$ and the eigenvalue of $P^\pi$ doesn’t exceed 1.&lt;/p&gt;
+
+&lt;p&gt;Taking the supremum of both sides with respect to $\pi$, we have&lt;/p&gt;
+
+\[v \geq v^\star\]
+
+&lt;h3 id=&quot;existence-of-optimal-policies&quot;&gt;Existence of Optimal Policies&lt;/h3&gt;
+
+&lt;p&gt;What we did so far is the procedure of finding the &lt;strong&gt;optimal value function&lt;/strong&gt;. Meanwhile, we do not (yet) know whether there is a policy that makes us to achieve that &lt;strong&gt;optimal value function&lt;/strong&gt; that we obtained by solving the optimal Bellman equation.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;[Theorem]&lt;/strong&gt; If $S$ and $A$ are finite sets, then there exists an optimal policy, which is &lt;strong&gt;deterministic and stationary&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;[proof]&lt;/strong&gt; If we construct a deterministic, stationary policy by&lt;/p&gt;
+
+\[\pi^\star(s) \in \arg\max _{a\in A}\bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) v^\star(s') \bigg ]\]
+
+&lt;p&gt;this is an optimal policy that gives us the optimal value function $v^\star$. To prove this, try evaluating the policy $\pi^\star$ by solving&lt;/p&gt;
+
+\[\mathcal{T}^{\pi^\star} v = v\]
+
+&lt;p&gt;Knowing that $\pi^\star$ is defined by taking the argmax action,&lt;/p&gt;
+
+\[\mathcal{T}^{\pi^\star} = \mathcal{T}\]
+
+&lt;p&gt;Thus,&lt;/p&gt;
+
+\[\mathcal{T}^{\pi^\star} v = \mathcal{T}v = \mathcal{v}\]
+
+&lt;p&gt;which means that $v= v^\star$.&lt;/p&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Lecture-Note" /><category term="Theory/Survey" /><summary type="html">Infinite Horizon Discounted MDP Assumptions Stationary rewards and transition probabilities: $r(s,a)$ and $p(s’ \vert s,a)$ doesn’t change over time. Finite state and action sets $\rightarrow$ this implies that $r(s,a)$ is bounded! There exists a constant $M$ such that \[|r(s,a)|&amp;lt;M \ \ \forall s \in S, \ \ \forall a \in A.\] Stationary Policy : policy doesn’t change over time! Policy Evaluation We need to evaluate \[\mathbb{E}^\pi \bigg [ \sum_{t=0}^\infty \gamma^t r(s_t, a_t) \bigg ]\] given a policy $\pi$. Value Function To do so, we define a value function, which is the expected return starting from state $s$ under executing the policy $\pi$. \[v^\pi (s) := \mathbb{E}^\pi \bigg [ \sum_{\tau = t}^\infty \gamma^{\tau -t} r(s_\tau , a_\tau) \ \vert \ s_t = s \bigg ]\] Using this value function, we decompose the value function into two parts. (1) immediate reward + (2) discounted value of next state. \[v^\pi (s) = \mathbb{E}^\pi [ r(s_t, a_t) + \gamma v^\pi (s_{t+1}) \ \vert \ s_t =s ]\] This can be expressed as \[v^\pi (s) = \sum_{a\in A} \pi (a \vert s) \bigg [ r(s, a) + \sum_{s'\in S} p(s' \vert s, a) v^\pi (s') \bigg ]\] Vector Form Recall, that we assumed finite state space and action space. Then, $v^\pi := (v^\pi(s_1),\cdots, v^\pi(s_n)) \in \mathbb{R}^n $ $R^\pi := (r(s_1, \pi(s_1), \cdots, r(s_n, \pi(s_n)) \in \mathbb{R}^n$ if deterministic $ R^\pi := (\sum_{a\in A}\pi(a \vert s_1)r(s_1, a), \cdots, \sum_{a\in A}\pi(a \vert s_n)r(s_n, a)) \in \mathbb{R}^n $ if stochastic Transition probability matrix Then, the policy evaluation can be expressed as \[v^\pi = R^\pi + \gamma P^\pi v^\pi\] Eigenvalues of Transition Probability Matrix Note that stochastic matrix has an eigenvalue of 1: let A as a $n\times n$ stochastic matrix. Then, \[A \begin{bmatrix}1\\1\\ \vdots \\1 \end{bmatrix} = \begin{bmatrix} \sum_i{a_{1i}}\\ \sum_i{a_{2i}}\\ \vdots \\ \sum_i{a_{ni}} \end{bmatrix} = \begin{bmatrix}1\\1\\ \vdots \\1 \end{bmatrix}\] which shows that $A$ has an eigenvalue of 1. Now, we are going to claim that other eigenvalues does not exceed 1. To do so, let’s assume that $Ax = \lambda x$ for some $\lambda &amp;gt;1 $. Knowing that the row-sum of $A$ is 1, we can interpret each component of $Ax$ as the convex combination of $x$ components, thus cannot exceed the maximum value of $x_{\max}$. However, since $\lambda&amp;gt;1$, at least one element of $\lambda x$ will be greater than $x_\max$. Thus, we can conclude that $\lambda &amp;gt;1$ is not possible. Eigenvalues of $P^\pi$ are less than or equal to 1. Unique solution of Policy Evaluation Equation Now, we can prove that the policy evaluation equation has a unique solution. \[v^\pi = R^\pi + \gamma P^\pi v^\pi\] This is because, \[(I-\gamma P^\pi ) v^\pi =R^\pi\] $I-\gamma P^\pi$ has an eigenvalue greater than zero, and thus invertible. Than, the unique soluition is given by \(v^\pi = (I- \gamma P^\pi )^{-1} R^\pi\) However, this method is inefficient when the problem gets larger. Policy Evaluation : Value Iteration Definition Define the operator $\mathcal{T} : \mathbb{R} \rightarrow \mathbb{R}$ \[\mathcal{T}^\pi v := R^\pi + \gamma P^\pi\] In a non-vector form, \[\mathcal{T}^\pi v(s) = \sum_{a \in A} \pi(a\vert s) \bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s, a) v(s') \bigg ]\] Then, the policy evaluation equation can be expressed as \[\mathcal{T}^\pi v^\pi = v^\pi\] which is a fixed point problem. Contraction Property We should prove that the operator $\mathcal{T}$ is a $\gamma$-contraction with respect to $| \cdot |_\infty$ for any stationary policy $\pi$. Banach Fixed Point Theorem If $\mathcal{T}$ is a contraction mapping, then $\mathcal{T}$ admits a unique fixed point $v^\star \in \mathbb{R}^n$. Meanwhile, $v^\star$ can be found by value iteration! \[v_{k+1} := \mathcal{T}v_k\] which leads to $v_k \rightarrow v^\star$. Value Iteration Algorithm For a stationary policy $\pi$, initialize $v_0$ as an arbitrary vector in $\mathbb{R}^n$. Repeat until convergence: \[v_{k+1} := \mathcal{T}^\pi v_k\] Optimal Policy / Value Function Optimal Value Function We have to find an optimal policy that maximizes the expected cumulative reward! \[\max_{\pi \in \Pi} \mathbb{E}^\pi \bigg [ \sum_{t=0}^\infty \gamma^t r(s_t, a_t) \bigg ]\] Thus, we are going to define an optimal value function \[v^\star (s) :=\max_{\pi \in \Pi} \bigg [ \sum_{\tau=t}^\infty \gamma^{\tau -t}r(s_\tau, a_\tau ) \big \vert s_t = s \bigg ]\] Recall that value function we previously defined doesn’t have the $\max_{\pi \in \Pi}$ term at front. Bellman Operator Defining the Bellman operator $\mathcal{T} : \mathbb{R}^n \rightarrow \mathbb{R}^n$ by \[\mathcal{T}v: = \sup_{\pi \in \Pi} \{ R^\pi + \gamma P^\pi v \}\\ \mathcal{T}v(s):= \sup_{\pi} \sum_{a\in A} \pi(a \vert s) \bigg [ r(s,a) + \gamma \sum_{s'\in S}p(s' \vert s,a) v(s') \bigg ]\] Note that we can rewrite the Bellman equation, replacing the $\sup_\pi$ term with $\max_{a\in A}$ term. \[(\mathcal{T}v)(s):= \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s'\in S} p(s' \vert s,a) v(s') \bigg ]\] Why? since $A$ is a finite action set, the supremum over possible policies $\pi$ is achieved when the policy is designed as \[\pi( a \vert s) = \begin{cases} 1 &amp;amp; \ \ \ \text{if } a= a^\star\\ 0 &amp;amp; \ \ \ \text{otherwise} \end{cases}\] while \[a^\star \in \arg \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s'\in S}p(s' \vert s,a) v(s') \bigg ]\] Contraction Property of Bellman Operator (optimal) Bellman operator is a monotone mapping Assume $v \leq v’$, and let $a^\star_{v}$ be the maximizing-action corresponding to $v$, and $a^\star_{v’}$ be the maximizing-action corresponding to $v’$. \(\begin{aligned} (\mathcal{T}v')(s) &amp;amp; = \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s'|s,a)v'(s') \bigg ]\\ &amp;amp; = r(s,a^\star_{v'})+ \gamma \sum_{s' \in S} p(s'|s,a^\star_{v'})v'(s')\\ &amp;amp; \geq r(s,a^\star_{v}) + \gamma \sum_{s'\in S} p(s'|s,a^\star_{v})v'(s')\\ &amp;amp; \geq r(s,a^\star_{v}) + \gamma \sum_{s'\in S} p(s'|s,a_v^\star)v(s') \ \ \ \because v'(s) \geq v(s), \ \forall s\\ &amp;amp; = (\mathcal{T}v)(s) \ \ \ \forall s \in S \end{aligned}\) (optimal) Bellman operator is a $\gamma$-contraction mapping Recall that infinity norm of a vector $x \in \mathbb{R}^n$ is defined as \[\|\mathbf{x}\|_\infty = \max_i |\mathbf{x}_i|.\] Also, consider the following statement \[| \max_z f(z) - \max_z h(z) | \leq \max_z |f(z)-h(z)|\] which can be easily proved by the following: \[\begin{aligned} \max_z f(z) - \max_z h(z) &amp;amp; = f(z^\star) - \max_z h(z)\\ &amp;amp; \leq f(z^\star) - h(z^\star) \\ &amp;amp; \leq \max_z |f(z) - h(z)|\\ \end{aligned}\] \[\begin{aligned} \max_z f(z) - \max_z h(z) &amp;amp; = \max_z f(z) - h(z^\star)\\ &amp;amp; \geq f(z^\star) - h(z^\star) \\ &amp;amp; \geq - \max_z |f(z) - h(z)| \end{aligned}\] Applying this to operator $\mathcal{T}$, we have: \[\begin{aligned} \|\mathcal{T}v-\mathcal{T}v' \|_\infty &amp;amp; = \max_s \Big [ (\mathcal{T}v)(s) - (\mathcal{T}v')(s) \Big ]\\ &amp;amp; = \max_s \bigg [ \max_a \Big [r(s,a)+\gamma \sum_{s' \in S}p(s'|s,a)v(s)\Big ] - \max_a \Big [r(s,a)+\gamma \sum_{s' \in S}p(s'|s,a)v'(s)\Big ] \bigg ] &amp;amp; \\ &amp;amp; \leq \max_s \bigg [ \max_a \Big |\gamma \sum_{s'\in S}p(s'|s,a)[v(s)-v'(s)] \Big | \bigg ] \ \ \ \ \ \because \text{inequality (6)}\\ &amp;amp; = \max_{s,a} \Big |\gamma \sum_{s'\in S}p(s'|s,a)[v(s)-v'(s)] \Big | \\ &amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a)\ \big |v(s)-v'(s)\big | &amp;amp; \\ &amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_s |v(s)-v'(s)| &amp;amp; \\ &amp;amp; = \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \|v-v'\| \ \ \ \ \ \because \text{definition (5)}\\ &amp;amp; = \gamma \|v-v'\|_\infty \end{aligned}\] **Thus, bellman equation has a unique solution, which is the optimal value function $v^\star$. ** Additional Properties [Proposition] This proposition can be used to prove that, if $\mathcal{T}v = v$, then $v= v^\star$. If $v\geq \mathcal{T}v $, then $v \geq v^\star$. If $v \leq \mathcal{T}v $, then $v \leq v^\star$. [proof] Let’s first prove the first one. (the other one can be proved by the exact same way) First, fix an arbitrary policy $\pi$. Since $\mathcal{T}$ selects the supremum over all policies, \[\mathcal{T}v \geq \mathcal{T}^\pi v\] Thus, \[v \geq \mathcal{T}v \geq \mathcal{T}^\pi v = R^\pi + \gamma P^\pi v \geq R^\pi + \gamma P^\pi (R^\pi + \gamma P^\pi v) \geq \cdots \geq \sum_{t=0}^{n-1} (\gamma P^\pi ) ^t R^\pi + (\gamma P^\pi )^n v\] Letting $n\rightarrow \infty$, we can say that \[v \geq \sum_{t=0}^\infty (\gamma P^\pi )^t R^\pi = v^\pi\] since $0&amp;lt;\gamma&amp;lt;1$ and the eigenvalue of $P^\pi$ doesn’t exceed 1. Taking the supremum of both sides with respect to $\pi$, we have \[v \geq v^\star\] Existence of Optimal Policies What we did so far is the procedure of finding the optimal value function. Meanwhile, we do not (yet) know whether there is a policy that makes us to achieve that optimal value function that we obtained by solving the optimal Bellman equation. [Theorem] If $S$ and $A$ are finite sets, then there exists an optimal policy, which is deterministic and stationary. [proof] If we construct a deterministic, stationary policy by \[\pi^\star(s) \in \arg\max _{a\in A}\bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) v^\star(s') \bigg ]\] this is an optimal policy that gives us the optimal value function $v^\star$. To prove this, try evaluating the policy $\pi^\star$ by solving \[\mathcal{T}^{\pi^\star} v = v\] Knowing that $\pi^\star$ is defined by taking the argmax action, \[\mathcal{T}^{\pi^\star} = \mathcal{T}\] Thus, \[\mathcal{T}^{\pi^\star} v = \mathcal{T}v = \mathcal{v}\] which means that $v= v^\star$.</summary></entry><entry><title type="html">[RL Theory] Finite Horizon MDP (1)</title><link href="http://localhost:4000/2021/04/19/scrl-3.html" rel="alternate" type="text/html" title="[RL Theory] Finite Horizon MDP (1)" /><published>2021-04-19T00:00:00+09:00</published><updated>2021-04-19T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/19/scrl-3</id><content type="html" xml:base="http://localhost:4000/2021/04/19/scrl-3.html">&lt;h2 id=&quot;finite-horizon-mdp&quot;&gt;Finite-Horizon MDP&lt;/h2&gt;
 
 &lt;h3 id=&quot;problem-definition&quot;&gt;Problem Definition&lt;/h3&gt;
 
@@ -839,140 +1284,4 @@ g(\tilde{\lambda}, \tilde{\nu}) &amp;amp; = L(\tilde{x}, \tilde{\lambda}, \tilde
   &lt;li&gt;
     &lt;p&gt;Optimization Theory and Applications, SNU EE 2021, Insoon Yang&lt;/p&gt;
   &lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Optimization" /><category term="Lecture-Note" /><summary type="html">Characterizing the Optimality How should we characterize the conditions for optimality? What are the necessary and sufficient conditions for \[x: \text{primal feasible point}\\ (\lambda, \nu) : \text{dual feasible point}\] to be optimal? Complementary slackness Suppose that strong duality holds, and (somehow) the primal and dual optimal values are attained. \[x^\star : \text{primal optimal point}\\ (\lambda^\star, \nu^\star) : \text{dual optimal point}\] We then have \[\begin{aligned} p^\star = f_0(x^\star) &amp;amp; = g(\lambda^\star , \nu^\star) = d^\star \ \ \ \because \text{strong duality}\\ &amp;amp; = \inf_x \ \bigg ( f_0 (x) + \sum_{i=1}^m \lambda^\star _i f_i (x) + \sum_{i=1}^p \nu_i^\star h_i (x) \bigg ) \ \ \ (=L(x,\lambda^\star, \nu^\star) )\\ &amp;amp; \leq f_0 (x^\star) + \sum_{i=1}^n \lambda_i ^\star f_i (x^\star) + \sum_{i=1}^p \nu_i^\star h_i (x^\star) \ \ \ (=L(x^\star, \lambda^\star, \nu^\star ))\\ &amp;amp; \leq f_0 (x^\star) \ \ \ (\because x^\star \text{ is feasible}) \end{aligned}\] which implies that the inequality above should hold with equality. Thus, we can say that \[\sum_{i=1}^n \lambda_i ^\star f_i (x^\star) =0\] and considering that $\lambda_i ^\star f_i (x^\star) \leq 0$ for all $i$, we can finally deduce the complementary slackness condition. \[\lambda_i ^\star f_i (x^\star ) =0 \ \ \ i = 1, \cdots, m\] This complementary slackness can be expressed as two cases: \[\lambda_i ^\star &amp;gt;0 \ \ \ \implies \ \ \ f_i (x^\star) =0\] or, equivalently, \[f_i (x^\star) &amp;lt;0 \ \ \ \implies \ \ \ \lambda_i ^\star =0\] Unless the $i$th constraint is active at the optimum, the $i$th optimal Lagrange multiplier is zero. If dual optimal point is given If dual optimal point is given, you can easily get the primal optimal point by \[x^\star = \arg \min _x L(x,\lambda^\star, \nu^\star)\] KKT Optimality Conditions Before beginning Assume that $f_0, \cdots, f_m, h_1, \cdots, h_p$ are differentiable. (open domains) No assumptions about the convexity (yet) KKT Conditions for Nonconvex Problems First, assume that $x^\star, (\lambda^\star, \nu^\star)$ is the primal and dual optimal points with zero duality gap. Then we know that $x^\star$ minimizes the Lagrangian $L(x,\lambda^\star, \nu^\star)$ with respect to $x$. Thus, the gradient must vanish at $x^\star$ . \[\nabla f_0 (x^\star) + \sum_{i=1}^m \lambda_i ^\star \nabla f_i (x^\star) + \sum_{i=1}^p \nu_i ^\star \nabla h_i (x^\star) =0\] **Note that this is a necessary condition (not sufficient) for optimality, since the functions are not convex in this case. ** Thus, we have the following necessary conditions for optimality, called “Karush-Kuhn-Tucker (KKT)” conditions. Also, this condition requires a “strong duality” condition. KKT Conditions for Convex Problems When the primal problem is convex, we cany say something more. KKT conditions are also a sufficient condition for the points to be primal and dual optimal. Note that, KKT condition also implies zero duality gap. As long as the KKT conditions are satisfied for convex problems, we can gaurantee that those points are each primal and dual optimal points, with strong duality. Proving the KKT Condition First two conditions say that $\tilde{x}$ is feasible. Let’s then consider a mapping (convex mapping) \[x \rightarrow L(x,\tilde{\lambda}, \tilde{\nu}) = f_0 (x) + \sum_{i=1}^m \tilde{\lambda}_i f_i (x) + \sum_{i=1}^p \tilde{\nu}_i h_i (x)\] Since we know that above Lagrangian is convex, and first-order derivative condition holds (by the KKT) for $\tilde{x}$, we can conclude that \[\tilde{x} \in \arg \min _x L(x, \tilde{\lambda}, \tilde{\nu})\] Meanwhile, the dual optimal point \[\begin{aligned} g(\tilde{\lambda}, \tilde{\nu}) &amp;amp; = L(\tilde{x}, \tilde{\lambda}, \tilde{\nu})\\ &amp;amp; = f_0 (\tilde{x}) + \sum_i \tilde{\lambda}_i f_i (\tilde{x}) + \sum_i \tilde{\nu}_i h_i (\tilde{x}) \\ &amp;amp; = f_0 (\tilde{x}) \ \ \ (\because \text{ complementary slackness and feasibility}) \end{aligned}\] shows that there is no duality gap. Thus, $\tilde{x}, (\tilde{\lambda}, \tilde{\nu})$ are primal and dual optimal points. Solving the Primal problem via the Dual Suppose that strong duality holds, and an optimal dual is known. We assume that the minimizer of $L(x,\lambda^\star, \nu^\star)$ is unique. Then, we can say solution of $\min_x L(x,\lambda^\star, \nu^\star)$ is the primal optimal point. If it’s not primal feasible, then no primal point can exist. References S. Boyd, L.Vandenberghe, Convex Opimization, Cambridge University Press, 2004. http://stanford.edu/~boyd/cvxbook/ Optimization Theory and Applications, SNU EE 2021, Insoon Yang</summary></entry><entry><title type="html">[macOS Tips] App Specific New Tab/Window Preference</title><link href="http://localhost:4000/2021/04/19/mac-tips-1.html" rel="alternate" type="text/html" title="[macOS Tips] App Specific New Tab/Window Preference" /><published>2021-04-19T00:00:00+09:00</published><updated>2021-04-19T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/19/mac-tips-1</id><content type="html" xml:base="http://localhost:4000/2021/04/19/mac-tips-1.html">&lt;h2 id=&quot;problem&quot;&gt;Problem&lt;/h2&gt;
-
-&lt;p&gt;macOS allows you to change the &lt;strong&gt;prefer tabs&lt;/strong&gt; behavior in the settings &amp;gt; general panel.&lt;/p&gt;
-
-&lt;center&gt;&lt;img src=&quot;https://tva1.sinaimg.cn/large/008eGmZEgy1gpovmflpcsj30u00uuaos.jpg&quot; alt=&quot;image-20210419104545111&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/center&gt;
-
-&lt;p&gt;However, the option they give is quite black and white.&lt;/p&gt;
-
-&lt;center&gt;&lt;img src=&quot;https://tva1.sinaimg.cn/large/008eGmZEgy1gpovmuwpbyj30l404u0tr.jpg&quot; alt=&quot;image-20210419105216074&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/center&gt;
-
-&lt;p&gt;If you prefer &lt;strong&gt;new tabs&lt;/strong&gt; on &lt;em&gt;Preview&lt;/em&gt; , but prefer &lt;strong&gt;new windows&lt;/strong&gt; on &lt;em&gt;Finder&lt;/em&gt; or &lt;em&gt;Safari&lt;/em&gt;, there’s nothing you can do on the settings panel.&lt;/p&gt;
-
-&lt;h2 id=&quot;solution&quot;&gt;Solution&lt;/h2&gt;
-
-&lt;p&gt;In that case,&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;revert the prefer tabs setting to “never”&lt;/li&gt;
-  &lt;li&gt;execute the following code on Terminal, replacing the “Preview” app to whatever app you like to &lt;strong&gt;prefer tabs&lt;/strong&gt;.
-    &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; defaults write com.apple.Preview AppleWindowTabbingMode &lt;span class=&quot;nt&quot;&gt;-string&lt;/span&gt; always
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;If you want to revert the setting, execute:&lt;/p&gt;
-
-    &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;defaults delete com.apple.Preview AppleWindowTabbingMode
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="macOS-Tips" /><summary type="html">Problem macOS allows you to change the prefer tabs behavior in the settings &amp;gt; general panel. However, the option they give is quite black and white. If you prefer new tabs on Preview , but prefer new windows on Finder or Safari, there’s nothing you can do on the settings panel. Solution In that case, revert the prefer tabs setting to “never” execute the following code on Terminal, replacing the “Preview” app to whatever app you like to prefer tabs. defaults write com.apple.Preview AppleWindowTabbingMode -string always If you want to revert the setting, execute: defaults delete com.apple.Preview AppleWindowTabbingMode</summary></entry><entry><title type="html">[RL Theory] Finite Horizon MDP (2)</title><link href="http://localhost:4000/2021/04/19/scrl-4.html" rel="alternate" type="text/html" title="[RL Theory] Finite Horizon MDP (2)" /><published>2021-04-19T00:00:00+09:00</published><updated>2021-04-19T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/19/scrl-4</id><content type="html" xml:base="http://localhost:4000/2021/04/19/scrl-4.html">&lt;h2 id=&quot;optimal-policy-of-finite-horizon-mdp&quot;&gt;Optimal Policy of Finite-Horizon MDP&lt;/h2&gt;
-
-&lt;h3 id=&quot;deterministic-markov-policy&quot;&gt;Deterministic Markov Policy&lt;/h3&gt;
-
-&lt;p&gt;Define a deterministic Markov policy $\pi^\star$ by&lt;/p&gt;
-
-\[\pi_t^\star (s) \in \arg\max_{a\in A} \bigg (r_t (s,a) + \sum_{s'\in S} p(s' \vert s,a)v_{t+1}^\star (s') \bigg )\]
-
-&lt;h3 id=&quot;optimality-of-deterministic-markov-policy&quot;&gt;Optimality of Deterministic Markov Policy&lt;/h3&gt;
-
-&lt;p&gt;Assume that $S, A$ are finite sets. Then, the deterministic Markov policy defined above is an optimal policy.&lt;/p&gt;
-
-\[v_t^{\pi^\star} = v_t^\star\]
-
-&lt;p&gt;This means that, for finite MDPs, it suffice to &lt;strong&gt;consider only the deterministic Markov policies&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;h3 id=&quot;proving-the-optimality&quot;&gt;Proving the optimality&lt;/h3&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;
-    &lt;p&gt;By definition, we have $v_t^{\pi^\star} \leq v_t^\star$ for each $t$.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;We will use mathematical induction to show the opposite : $v_t^{\pi^\star} \geq v_t^\star$  for each $t$.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;First, for $t=T$, $v_T^{\pi^\star} = r_T = v_T^\star$&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Then, assume that $v_{t+1}^{\pi^\star} \geq v_{t+1}^\star$ . Then we have&lt;/p&gt;
-
-\[\sum_{s'\in S} p(s' \vert s, \pi_t^\star (s) ) v_{t+1}^{\pi^\star} (s') \geq \sum_{s'\in S} p(s' \vert s, \pi_t^\star (s) ) v_{t+1}^{\star} (s')\]
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Then, by the definitionof $\pi_t^\star$, we have&lt;/p&gt;
-
-\[r_t (s, \pi_t^\star(s)) + \sum_{s'\in S} p(s' \vert s, \pi_t^\star(s))v_{t+1}^\star (s') \geq r_t (s, a) + \sum_{s'\in S} p(s' \vert s, a)v_{t+1}^\star (s')\]
-
-    &lt;p&gt;for all $a\in A$.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Combining the two equalities, we have&lt;/p&gt;
-
-\[r(s,\pi_t^\star(s)) + \sum_{s'\in S} p(s' \vert s, \pi_t^\star(s))v_{t+1}^\star (s') \geq r_t (s, a) + \sum_{s'\in S} p(s' \vert s, a)v_{t+1}^\star (s')\]
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Taking the maximum for both sides with respect to $a$, we have&lt;/p&gt;
-
-\[v_t^{\pi^\star} (s) \geq v_t^\star (s)\]
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Therefore, $v_t^{\pi^\star} = v_t^\star$ .&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h2 id=&quot;dynamic-programming-backward-induction-algorithm&quot;&gt;Dynamic Programming (Backward Induction) Algorithm&lt;/h2&gt;
-
-&lt;h3 id=&quot;algorithm&quot;&gt;Algorithm&lt;/h3&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;
-    &lt;p&gt;Initialize $v_T^\star(s) = r_T (s)$&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;For $t=T-1 : -1 : 0$ , set&lt;/p&gt;
-
-\[v_t^\star (s) = \max _{a\in A} \bigg ( r_t (s,a) + \sum_{s'\in S} p(s' \vert s,a) v_{t+1}^\star (s') \bigg ) \\
-\pi_t^\star (s) = \arg \max_ {a\in A}\bigg ( r_t (s,a) + \sum_{s'\in S} p(s' \vert s,a) v_{t+1}^\star (s') \bigg )\]
-  &lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h2 id=&quot;extensions-to-continuous-control&quot;&gt;Extensions to Continuous Control&lt;/h2&gt;
-
-&lt;h3 id=&quot;problem-definition&quot;&gt;Problem Definition&lt;/h3&gt;
-
-&lt;p&gt;Define the system model&lt;/p&gt;
-
-\[s_{t+1}= f(s_t, a_t, w_t)\]
-
-&lt;p&gt;where the probability distribution of $w_t$ is knwon ($p_w(\cdot)$)&lt;/p&gt;
-
-&lt;p&gt;Then, the problem can be defined as&lt;/p&gt;
-
-\[\max_\pi \mathbb{E}^\pi \bigg [ \sum_{t=0}^{T-1} r(s_t, a_t) + r(s_T) \bigg ]\]
-
-&lt;h3 id=&quot;transition-probability&quot;&gt;Transition Probability&lt;/h3&gt;
-
-&lt;p&gt;We cannot define the transition probability just like we did in the discrete space.&lt;/p&gt;
-
-\[p(s' \vert s,a) = p_w (w) \mathbf{1}_{s'=f(s,a,w)}\]
-
-&lt;p&gt;where $\mathbf{1}$ is the indicator function, where&lt;/p&gt;
-
-\[\mathbf{1}_{\text{true}} = 1\\
-\mathbf{1}_{\text{false}} = 0\]
-
-&lt;h3 id=&quot;bellman-equation&quot;&gt;Bellman Equation&lt;/h3&gt;
-
-\[v_t(s) = \sup_{a\in A} \bigg [ r(s,a) + \int_{s'\in S} v_{t+1}(s') p(ds' \vert s,a) \bigg ]\]
-
-&lt;p&gt;Note that, there’s no $p_w$ term included in the equation above.&lt;/p&gt;
-
-\[v_t(s) = \sup_{a\in A} \bigg [ r(s,a) + \int_{w} v_{t+1}(f(s,a,w)) p_w(dw) \bigg ]\]
-
-&lt;h3 id=&quot;optimal-policy&quot;&gt;Optimal Policy&lt;/h3&gt;
-
-\[\pi_t^\star (s) \in \arg \max_{a\in A} \bigg [ r(s,a) + \int_w v_{t+1}(f(s,a,w))p_w (dw) \bigg ]\]
-
-&lt;p&gt;&lt;strong&gt;Existence of an optimal policy is not gauranteed!&lt;/strong&gt; We can rather find an $\epsilon-$ optimal policy.&lt;/p&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Lecture-Note" /><category term="Theory/Survey" /><summary type="html">Optimal Policy of Finite-Horizon MDP Deterministic Markov Policy Define a deterministic Markov policy $\pi^\star$ by \[\pi_t^\star (s) \in \arg\max_{a\in A} \bigg (r_t (s,a) + \sum_{s'\in S} p(s' \vert s,a)v_{t+1}^\star (s') \bigg )\] Optimality of Deterministic Markov Policy Assume that $S, A$ are finite sets. Then, the deterministic Markov policy defined above is an optimal policy. \[v_t^{\pi^\star} = v_t^\star\] This means that, for finite MDPs, it suffice to consider only the deterministic Markov policies. Proving the optimality By definition, we have $v_t^{\pi^\star} \leq v_t^\star$ for each $t$. We will use mathematical induction to show the opposite : $v_t^{\pi^\star} \geq v_t^\star$ for each $t$. First, for $t=T$, $v_T^{\pi^\star} = r_T = v_T^\star$ Then, assume that $v_{t+1}^{\pi^\star} \geq v_{t+1}^\star$ . Then we have \[\sum_{s'\in S} p(s' \vert s, \pi_t^\star (s) ) v_{t+1}^{\pi^\star} (s') \geq \sum_{s'\in S} p(s' \vert s, \pi_t^\star (s) ) v_{t+1}^{\star} (s')\] Then, by the definitionof $\pi_t^\star$, we have \[r_t (s, \pi_t^\star(s)) + \sum_{s'\in S} p(s' \vert s, \pi_t^\star(s))v_{t+1}^\star (s') \geq r_t (s, a) + \sum_{s'\in S} p(s' \vert s, a)v_{t+1}^\star (s')\] for all $a\in A$. Combining the two equalities, we have \[r(s,\pi_t^\star(s)) + \sum_{s'\in S} p(s' \vert s, \pi_t^\star(s))v_{t+1}^\star (s') \geq r_t (s, a) + \sum_{s'\in S} p(s' \vert s, a)v_{t+1}^\star (s')\] Taking the maximum for both sides with respect to $a$, we have \[v_t^{\pi^\star} (s) \geq v_t^\star (s)\] Therefore, $v_t^{\pi^\star} = v_t^\star$ . Dynamic Programming (Backward Induction) Algorithm Algorithm Initialize $v_T^\star(s) = r_T (s)$ For $t=T-1 : -1 : 0$ , set \[v_t^\star (s) = \max _{a\in A} \bigg ( r_t (s,a) + \sum_{s'\in S} p(s' \vert s,a) v_{t+1}^\star (s') \bigg ) \\ \pi_t^\star (s) = \arg \max_ {a\in A}\bigg ( r_t (s,a) + \sum_{s'\in S} p(s' \vert s,a) v_{t+1}^\star (s') \bigg )\] Extensions to Continuous Control Problem Definition Define the system model \[s_{t+1}= f(s_t, a_t, w_t)\] where the probability distribution of $w_t$ is knwon ($p_w(\cdot)$) Then, the problem can be defined as \[\max_\pi \mathbb{E}^\pi \bigg [ \sum_{t=0}^{T-1} r(s_t, a_t) + r(s_T) \bigg ]\] Transition Probability We cannot define the transition probability just like we did in the discrete space. \[p(s' \vert s,a) = p_w (w) \mathbf{1}_{s'=f(s,a,w)}\] where $\mathbf{1}$ is the indicator function, where \[\mathbf{1}_{\text{true}} = 1\\ \mathbf{1}_{\text{false}} = 0\] Bellman Equation \[v_t(s) = \sup_{a\in A} \bigg [ r(s,a) + \int_{s'\in S} v_{t+1}(s') p(ds' \vert s,a) \bigg ]\] Note that, there’s no $p_w$ term included in the equation above. \[v_t(s) = \sup_{a\in A} \bigg [ r(s,a) + \int_{w} v_{t+1}(f(s,a,w)) p_w(dw) \bigg ]\] Optimal Policy \[\pi_t^\star (s) \in \arg \max_{a\in A} \bigg [ r(s,a) + \int_w v_{t+1}(f(s,a,w))p_w (dw) \bigg ]\] Existence of an optimal policy is not gauranteed! We can rather find an $\epsilon-$ optimal policy.</summary></entry></feed>
+&lt;/ul&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Optimization" /><category term="Lecture-Note" /><summary type="html">Characterizing the Optimality How should we characterize the conditions for optimality? What are the necessary and sufficient conditions for \[x: \text{primal feasible point}\\ (\lambda, \nu) : \text{dual feasible point}\] to be optimal? Complementary slackness Suppose that strong duality holds, and (somehow) the primal and dual optimal values are attained. \[x^\star : \text{primal optimal point}\\ (\lambda^\star, \nu^\star) : \text{dual optimal point}\] We then have \[\begin{aligned} p^\star = f_0(x^\star) &amp;amp; = g(\lambda^\star , \nu^\star) = d^\star \ \ \ \because \text{strong duality}\\ &amp;amp; = \inf_x \ \bigg ( f_0 (x) + \sum_{i=1}^m \lambda^\star _i f_i (x) + \sum_{i=1}^p \nu_i^\star h_i (x) \bigg ) \ \ \ (=L(x,\lambda^\star, \nu^\star) )\\ &amp;amp; \leq f_0 (x^\star) + \sum_{i=1}^n \lambda_i ^\star f_i (x^\star) + \sum_{i=1}^p \nu_i^\star h_i (x^\star) \ \ \ (=L(x^\star, \lambda^\star, \nu^\star ))\\ &amp;amp; \leq f_0 (x^\star) \ \ \ (\because x^\star \text{ is feasible}) \end{aligned}\] which implies that the inequality above should hold with equality. Thus, we can say that \[\sum_{i=1}^n \lambda_i ^\star f_i (x^\star) =0\] and considering that $\lambda_i ^\star f_i (x^\star) \leq 0$ for all $i$, we can finally deduce the complementary slackness condition. \[\lambda_i ^\star f_i (x^\star ) =0 \ \ \ i = 1, \cdots, m\] This complementary slackness can be expressed as two cases: \[\lambda_i ^\star &amp;gt;0 \ \ \ \implies \ \ \ f_i (x^\star) =0\] or, equivalently, \[f_i (x^\star) &amp;lt;0 \ \ \ \implies \ \ \ \lambda_i ^\star =0\] Unless the $i$th constraint is active at the optimum, the $i$th optimal Lagrange multiplier is zero. If dual optimal point is given If dual optimal point is given, you can easily get the primal optimal point by \[x^\star = \arg \min _x L(x,\lambda^\star, \nu^\star)\] KKT Optimality Conditions Before beginning Assume that $f_0, \cdots, f_m, h_1, \cdots, h_p$ are differentiable. (open domains) No assumptions about the convexity (yet) KKT Conditions for Nonconvex Problems First, assume that $x^\star, (\lambda^\star, \nu^\star)$ is the primal and dual optimal points with zero duality gap. Then we know that $x^\star$ minimizes the Lagrangian $L(x,\lambda^\star, \nu^\star)$ with respect to $x$. Thus, the gradient must vanish at $x^\star$ . \[\nabla f_0 (x^\star) + \sum_{i=1}^m \lambda_i ^\star \nabla f_i (x^\star) + \sum_{i=1}^p \nu_i ^\star \nabla h_i (x^\star) =0\] **Note that this is a necessary condition (not sufficient) for optimality, since the functions are not convex in this case. ** Thus, we have the following necessary conditions for optimality, called “Karush-Kuhn-Tucker (KKT)” conditions. Also, this condition requires a “strong duality” condition. KKT Conditions for Convex Problems When the primal problem is convex, we cany say something more. KKT conditions are also a sufficient condition for the points to be primal and dual optimal. Note that, KKT condition also implies zero duality gap. As long as the KKT conditions are satisfied for convex problems, we can gaurantee that those points are each primal and dual optimal points, with strong duality. Proving the KKT Condition First two conditions say that $\tilde{x}$ is feasible. Let’s then consider a mapping (convex mapping) \[x \rightarrow L(x,\tilde{\lambda}, \tilde{\nu}) = f_0 (x) + \sum_{i=1}^m \tilde{\lambda}_i f_i (x) + \sum_{i=1}^p \tilde{\nu}_i h_i (x)\] Since we know that above Lagrangian is convex, and first-order derivative condition holds (by the KKT) for $\tilde{x}$, we can conclude that \[\tilde{x} \in \arg \min _x L(x, \tilde{\lambda}, \tilde{\nu})\] Meanwhile, the dual optimal point \[\begin{aligned} g(\tilde{\lambda}, \tilde{\nu}) &amp;amp; = L(\tilde{x}, \tilde{\lambda}, \tilde{\nu})\\ &amp;amp; = f_0 (\tilde{x}) + \sum_i \tilde{\lambda}_i f_i (\tilde{x}) + \sum_i \tilde{\nu}_i h_i (\tilde{x}) \\ &amp;amp; = f_0 (\tilde{x}) \ \ \ (\because \text{ complementary slackness and feasibility}) \end{aligned}\] shows that there is no duality gap. Thus, $\tilde{x}, (\tilde{\lambda}, \tilde{\nu})$ are primal and dual optimal points. Solving the Primal problem via the Dual Suppose that strong duality holds, and an optimal dual is known. We assume that the minimizer of $L(x,\lambda^\star, \nu^\star)$ is unique. Then, we can say solution of $\min_x L(x,\lambda^\star, \nu^\star)$ is the primal optimal point. If it’s not primal feasible, then no primal point can exist. References S. Boyd, L.Vandenberghe, Convex Opimization, Cambridge University Press, 2004. http://stanford.edu/~boyd/cvxbook/ Optimization Theory and Applications, SNU EE 2021, Insoon Yang</summary></entry></feed>

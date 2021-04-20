@@ -7,7 +7,7 @@ comment: false
 
 ### Fundamentals of Optimization 
 
-These are my notes from the lecture **[Convex Optimization and Applications]** from SNU EE, by Insoon Yang. 
+These are my notes for the lecture **[Convex Optimization and Applications]** from SNU EE, by Insoon Yang. 
 {:.gray}
 
 4. [Operations that preserve Convexity](./2021/04/18/opt-lecture-4-1.html)
