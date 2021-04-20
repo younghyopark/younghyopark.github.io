@@ -52,7 +52,7 @@ comment: false
           </div>
           <div class="card__content">
             <div class="card__header">
-              <h4>Machine Learning</h4>
+              <h4>Machine/Deep Learning</h4>
             </div>
           </div>
         </div>

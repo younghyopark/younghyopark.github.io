@@ -1507,6 +1507,8 @@ a > .item__header.disabled, a > .item__header:disabled, a.item__header.disabled,
 .article__content p.info { padding: 0.5rem 1rem; background-color: rgba(24, 144, 255, 0.1); border: 1px solid #1890ff; border-radius: 0.4rem; }
 .article__content p.warning { padding: 0.5rem 1rem; background-color: rgba(250, 140, 22, 0.1); border: 1px solid #fa8c16; border-radius: 0.4rem; }
 .article__content p.error { padding: 0.5rem 1rem; background-color: rgba(245, 34, 45, 0.1); border: 1px solid #f5222d; border-radius: 0.4rem; }
+.article__content p.gray { padding: 0.5rem 1rem; background-color: rgba(155, 155, 155, 0.1); border: 2px solid #9b9b9b; border-radius: 0.4rem; }
+.article__content p.gray_no_border { padding: 0.5rem 1rem; background-color: rgba(155, 155, 155, 0.1); border: 0.1px solid #9b9b9b; border-radius: 0.4rem; }
 
 .article__content code.success { color: #fff; background-color: #52c41a; }
 .article__content code.info { color: #fff; background-color: #1890ff; }
