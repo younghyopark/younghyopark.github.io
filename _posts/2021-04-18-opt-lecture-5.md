@@ -1,5 +1,5 @@
 ---
-title: "[Optimization] 5 - Typical Convex Optimization Problems"
+title: "[Optimization] Typical Convex Optimization Problems"
 tags: Optimization Lecture-Note
 permalink: "/notion_to_markdown/opt-lecture-5/"
 ---

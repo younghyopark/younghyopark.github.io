@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-04-20T19:52:17+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Younghyo Park</title><subtitle>Your Site Description
-</subtitle><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><entry><title type="html">[RL Theory] 8 - Q-function</title><link href="http://localhost:4000/2021/04/20/scrl-8.html" rel="alternate" type="text/html" title="[RL Theory] 8 - Q-function" /><published>2021-04-20T00:00:00+09:00</published><updated>2021-04-20T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/20/scrl-8</id><content type="html" xml:base="http://localhost:4000/2021/04/20/scrl-8.html">&lt;h2 id=&quot;state-action-value-functions&quot;&gt;State-Action Value Functions&lt;/h2&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-04-20T20:27:43+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Younghyo Park</title><subtitle>Your Site Description
+</subtitle><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><entry><title type="html">[RL Theory] Q-function</title><link href="http://localhost:4000/2021/04/20/scrl-8.html" rel="alternate" type="text/html" title="[RL Theory] Q-function" /><published>2021-04-20T00:00:00+09:00</published><updated>2021-04-20T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/20/scrl-8</id><content type="html" xml:base="http://localhost:4000/2021/04/20/scrl-8.html">&lt;h2 id=&quot;state-action-value-functions&quot;&gt;State-Action Value Functions&lt;/h2&gt;
 
 &lt;p&gt;In this post, we’re going to define an important concept that is widely used in both MDP and RL.&lt;/p&gt;
 
@@ -106,7 +106,116 @@ Prove that the Bellman operator is monotone, i.e.,&lt;/p&gt;
 
     &lt;p&gt;$\rightarrow$ &lt;strong&gt;Q-functions are frequently used for model-free approach!&lt;/strong&gt;&lt;/p&gt;
   &lt;/li&gt;
-&lt;/ol&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Lecture-Note" /><category term="Theory/Survey" /><summary type="html">State-Action Value Functions In this post, we’re going to define an important concept that is widely used in both MDP and RL. Definition The optimal Q-function $Q^\star(s,a)$ is the maximum expected return starting from state $s$, taking action $a$: \[Q^\star(s,a) := \max_\pi Q^\pi (s,a) = \max_\pi \mathbb{E} ^\pi \bigg [ \sum_{t=0}^\infty \gamma^t r(s_t, a_t) \ \vert \ s_0 = s, a_0 =a \bigg ]\] By definition we have \[v^\star(s) = \max_{a\in A} Q^\star(s,a)\] Bellman Equation for Q-functions \[\begin{aligned} Q^\star(s,a) &amp;amp; = r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s, a) v^\star(s')\\ &amp;amp; = r(s,a) + \gamma \sum_{s'\in S} p(s' \vert s,a) \max_{a'\in A} Q^\star (s',a') \end{aligned}\] We can then define the Bellman operator $\mathcal{T}$ for Q-functions \[(\mathcal{T}Q)(s,a) := r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) \max_{a'\in A} Q^\star(s',a')\] Then, it is a monotone contraction mapping. Monotone Proof Prove that the Bellman operator is monotone, i.e., \[\mathcal{T}Q \leq \mathcal{T}Q' \ \ \ \forall Q,Q' \in \mathbb{R}^{n\times m} \text{ s.t. }Q \leq Q'.\] Define $a^\star_{Q’}(s)= \arg \max_a Q’(s,a)$ and $a^\star_{Q}(s)= \arg \max_a Q(s,a)$ \[\begin{aligned} (\mathcal{T}Q')(s,a) &amp;amp; = r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a)\max_{a'\in A}Q'(s',a')\\ &amp;amp; = r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a)Q'(s',a_{Q'}^\star(s'))\\ &amp;amp; \geq r(s,a) + \gamma \sum_{s' \in S}p(s'|s,a) Q'(s',a_Q^\star(s'))\\ &amp;amp; \geq r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a) Q(s',a_Q^\star(s')) \\ &amp;amp; = r(s,a)+ \gamma \sum_{s'\in S}p(s'|s,a) \max_{a'\in A}Q(s',a')\\ &amp;amp; = (\mathcal{T}Q)(s,a) \ \ \ \forall (s,a) \in (S\times A) \end{aligned}\] Contraction Proof Prove that the Bellman operator is a $\gamma$-contraction mapping with respect to $| \cdot |_\infty$, i.e., \[\|\mathcal{T}Q- \mathcal{T}Q'\|_\infty \leq \gamma \|Q- Q'\|_\infty \ \ \ \forall Q, Q' \in \mathbb{R}^{n\times m}.\] Recall that sup-norm of matrix $\mathbf{A}\in \mathbb{R}^{n\times m}$ is defined as \[\|\mathbf{A}\|_\infty = \max_{\substack{1\leq i\leq n\\ 1 \leq j \leq m}} |\mathbf{A}_{ij}|.\] Applying (14) to (13), we have \[\begin{aligned} \|\mathcal{T}Q-\mathcal{T}Q'\|_\infty &amp;amp;= \max_{(s,a) \in (S\times A)} \Big |(\mathcal{T}Q)(s,a) - (\mathcal{T}Q')(s,a) \Big|\\ &amp;amp; = \max_{s,a} \Big | \gamma \sum_{s'\in S} p(s'|s,a)\max_{a'\in A}Q(s',a')- \gamma \sum_{s'\in S}p(s'|s,a)\max_{a'\in A}Q'(s',a') \Big |\\ &amp;amp; = \gamma \max_{s,a} \Big | \sum_{s'\in S}p(s'|s,a) \big [ \max_{a'\in A} Q(s',a')- \max_{a'\in A} Q'(s',a')\big ] \Big |\\ &amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \Big | \max_{a'\in A} Q(s',a') - \max_{a'\in A}Q'(s',a') \Big | \\ &amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_{a'\in A} \Big |Q(s',a')-Q'(s',a') \Big | \ \ \ \because \text{inequality }(6)\\ &amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_{(s',a')\in (S\times A)} \Big | Q(s',a') -Q'(s',a')\Big | \\ &amp;amp; = \gamma \max_{(s',a')\in (S\times A)} \Big | Q(s',a')-Q'(s',a') \Big |\\ &amp;amp; = \gamma \|Q-Q'\|_\infty \end{aligned}\] LP-Formulation We can also solve the Q-function based on optimization principle \[\begin{aligned} \min_{Q\in\mathbb{R}^{n\times m}} &amp;amp; \ \ \ \sum_{s,a} c(s,a) Q(s,a) \\ \text{s.t.} &amp;amp; \ \ \ Q \geq \mathcal{T} Q \end{aligned}\] which can be also formulated as Linear Program. \[\begin{aligned} \min_{Q\in\mathbb{R}^{n\times m}} &amp;amp; \ \ \ \sum_{s,a} c(s,a) Q(s,a) \\ \text{s.t.} &amp;amp; \ \ \ Q(s,a) \geq r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) Q(s', a') \ \ \forall (s,a,a') \end{aligned}\] However, this LP is inefficient! (number of constraints $n\times m^2$ and optimization variable $n\times m$. Policy Iteration using Q-functions Policy Evaluation Given a policy $\pi$, we can compute $Q^\pi$ by solving \[\begin{aligned} \min_{Q\in\mathbb{R}^{n\times m}} &amp;amp; \ \ \ \sum_{s,a} c(s,a) Q(s,a) \\ \text{s.t.} &amp;amp; \ \ \ Q(s,a) \geq r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,\pi(s)) Q(s', \pi(s')) \ \ \forall (s,a) \end{aligned}\] which its number of constraints and optimization varible dimension is identical ($n\times m$). Policy Improvement Then, we update the policy by \[\pi(s) \in \arg \max_{a\in A}Q^\pi (s,a)\] Meanwhile, it is worth noting that this policy improvement step doesn’t require any sort of model informations (transition probability, reward function or so) $\rightarrow$ Q-functions are frequently used for model-free approach!</summary></entry><entry><title type="html">[RL Theory] 6 - Policy Iteration</title><link href="http://localhost:4000/2021/04/20/scrl-6.html" rel="alternate" type="text/html" title="[RL Theory] 6 - Policy Iteration" /><published>2021-04-20T00:00:00+09:00</published><updated>2021-04-20T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/20/scrl-6</id><content type="html" xml:base="http://localhost:4000/2021/04/20/scrl-6.html">&lt;h2 id=&quot;policy-iteration&quot;&gt;Policy Iteration&lt;/h2&gt;
+&lt;/ol&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Lecture-Note" /><category term="Theory/Survey" /><summary type="html">State-Action Value Functions In this post, we’re going to define an important concept that is widely used in both MDP and RL. Definition The optimal Q-function $Q^\star(s,a)$ is the maximum expected return starting from state $s$, taking action $a$: \[Q^\star(s,a) := \max_\pi Q^\pi (s,a) = \max_\pi \mathbb{E} ^\pi \bigg [ \sum_{t=0}^\infty \gamma^t r(s_t, a_t) \ \vert \ s_0 = s, a_0 =a \bigg ]\] By definition we have \[v^\star(s) = \max_{a\in A} Q^\star(s,a)\] Bellman Equation for Q-functions \[\begin{aligned} Q^\star(s,a) &amp;amp; = r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s, a) v^\star(s')\\ &amp;amp; = r(s,a) + \gamma \sum_{s'\in S} p(s' \vert s,a) \max_{a'\in A} Q^\star (s',a') \end{aligned}\] We can then define the Bellman operator $\mathcal{T}$ for Q-functions \[(\mathcal{T}Q)(s,a) := r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) \max_{a'\in A} Q^\star(s',a')\] Then, it is a monotone contraction mapping. Monotone Proof Prove that the Bellman operator is monotone, i.e., \[\mathcal{T}Q \leq \mathcal{T}Q' \ \ \ \forall Q,Q' \in \mathbb{R}^{n\times m} \text{ s.t. }Q \leq Q'.\] Define $a^\star_{Q’}(s)= \arg \max_a Q’(s,a)$ and $a^\star_{Q}(s)= \arg \max_a Q(s,a)$ \[\begin{aligned} (\mathcal{T}Q')(s,a) &amp;amp; = r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a)\max_{a'\in A}Q'(s',a')\\ &amp;amp; = r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a)Q'(s',a_{Q'}^\star(s'))\\ &amp;amp; \geq r(s,a) + \gamma \sum_{s' \in S}p(s'|s,a) Q'(s',a_Q^\star(s'))\\ &amp;amp; \geq r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a) Q(s',a_Q^\star(s')) \\ &amp;amp; = r(s,a)+ \gamma \sum_{s'\in S}p(s'|s,a) \max_{a'\in A}Q(s',a')\\ &amp;amp; = (\mathcal{T}Q)(s,a) \ \ \ \forall (s,a) \in (S\times A) \end{aligned}\] Contraction Proof Prove that the Bellman operator is a $\gamma$-contraction mapping with respect to $| \cdot |_\infty$, i.e., \[\|\mathcal{T}Q- \mathcal{T}Q'\|_\infty \leq \gamma \|Q- Q'\|_\infty \ \ \ \forall Q, Q' \in \mathbb{R}^{n\times m}.\] Recall that sup-norm of matrix $\mathbf{A}\in \mathbb{R}^{n\times m}$ is defined as \[\|\mathbf{A}\|_\infty = \max_{\substack{1\leq i\leq n\\ 1 \leq j \leq m}} |\mathbf{A}_{ij}|.\] Applying (14) to (13), we have \[\begin{aligned} \|\mathcal{T}Q-\mathcal{T}Q'\|_\infty &amp;amp;= \max_{(s,a) \in (S\times A)} \Big |(\mathcal{T}Q)(s,a) - (\mathcal{T}Q')(s,a) \Big|\\ &amp;amp; = \max_{s,a} \Big | \gamma \sum_{s'\in S} p(s'|s,a)\max_{a'\in A}Q(s',a')- \gamma \sum_{s'\in S}p(s'|s,a)\max_{a'\in A}Q'(s',a') \Big |\\ &amp;amp; = \gamma \max_{s,a} \Big | \sum_{s'\in S}p(s'|s,a) \big [ \max_{a'\in A} Q(s',a')- \max_{a'\in A} Q'(s',a')\big ] \Big |\\ &amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \Big | \max_{a'\in A} Q(s',a') - \max_{a'\in A}Q'(s',a') \Big | \\ &amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_{a'\in A} \Big |Q(s',a')-Q'(s',a') \Big | \ \ \ \because \text{inequality }(6)\\ &amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_{(s',a')\in (S\times A)} \Big | Q(s',a') -Q'(s',a')\Big | \\ &amp;amp; = \gamma \max_{(s',a')\in (S\times A)} \Big | Q(s',a')-Q'(s',a') \Big |\\ &amp;amp; = \gamma \|Q-Q'\|_\infty \end{aligned}\] LP-Formulation We can also solve the Q-function based on optimization principle \[\begin{aligned} \min_{Q\in\mathbb{R}^{n\times m}} &amp;amp; \ \ \ \sum_{s,a} c(s,a) Q(s,a) \\ \text{s.t.} &amp;amp; \ \ \ Q \geq \mathcal{T} Q \end{aligned}\] which can be also formulated as Linear Program. \[\begin{aligned} \min_{Q\in\mathbb{R}^{n\times m}} &amp;amp; \ \ \ \sum_{s,a} c(s,a) Q(s,a) \\ \text{s.t.} &amp;amp; \ \ \ Q(s,a) \geq r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) Q(s', a') \ \ \forall (s,a,a') \end{aligned}\] However, this LP is inefficient! (number of constraints $n\times m^2$ and optimization variable $n\times m$. Policy Iteration using Q-functions Policy Evaluation Given a policy $\pi$, we can compute $Q^\pi$ by solving \[\begin{aligned} \min_{Q\in\mathbb{R}^{n\times m}} &amp;amp; \ \ \ \sum_{s,a} c(s,a) Q(s,a) \\ \text{s.t.} &amp;amp; \ \ \ Q(s,a) \geq r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,\pi(s)) Q(s', \pi(s')) \ \ \forall (s,a) \end{aligned}\] which its number of constraints and optimization varible dimension is identical ($n\times m$). Policy Improvement Then, we update the policy by \[\pi(s) \in \arg \max_{a\in A}Q^\pi (s,a)\] Meanwhile, it is worth noting that this policy improvement step doesn’t require any sort of model informations (transition probability, reward function or so) $\rightarrow$ Q-functions are frequently used for model-free approach!</summary></entry><entry><title type="html">[RL Theory] Linear Programming Approach</title><link href="http://localhost:4000/2021/04/20/scrl-7.html" rel="alternate" type="text/html" title="[RL Theory] Linear Programming Approach" /><published>2021-04-20T00:00:00+09:00</published><updated>2021-04-20T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/20/scrl-7</id><content type="html" xml:base="http://localhost:4000/2021/04/20/scrl-7.html">&lt;h2 id=&quot;iteration-based-vs-optimization-based&quot;&gt;Iteration based vs Optimization based&lt;/h2&gt;
+
+&lt;p&gt;Recall that the Bellman operator is given by&lt;/p&gt;
+
+\[(\mathcal{T}v) (s) := \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) v(s') \bigg ].\]
+
+&lt;p&gt;We tried to solve above Bellman equation by iteration-based methods.&lt;/p&gt;
+
+&lt;center&gt;&lt;img src=&quot;https://tva1.sinaimg.cn/large/008eGmZEgy1gpq7n4nn4yj30s008imz0.jpg&quot; alt=&quot;image-20210420155003180&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/center&gt;
+
+&lt;p&gt;In this section, we will try to solve the Bellman equation by Optimization-based method.&lt;/p&gt;
+
+&lt;h2 id=&quot;optimization-based-method&quot;&gt;Optimization Based Method&lt;/h2&gt;
+
+&lt;h3 id=&quot;problem-formulation&quot;&gt;Problem Formulation&lt;/h3&gt;
+
+&lt;p&gt;Instead of the iteration-based algorithm, we can obtain the value function by solving:&lt;/p&gt;
+
+\[\begin{aligned}
+\min_{v \in \mathbb{R}^n } &amp;amp; \ \ \ c^T v \\
+\text{s.t.} &amp;amp; \ \ \ v \geq \mathcal{T}v
+\end{aligned}\]
+
+&lt;p&gt;where the inequality holds entry-wise, and each entry of $c$ is positive.&lt;/p&gt;
+
+&lt;p class=&quot;info&quot;&gt;&lt;strong&gt;[Theorem]&lt;/strong&gt; The optimization problem above has a &lt;strong&gt;unique optimal solution&lt;/strong&gt;, which corresponds to the &lt;strong&gt;optimal value function&lt;/strong&gt; $v^\star$.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;[proof]&lt;/strong&gt; For feasible $v$, 
+\(v \geq \mathcal{T}v \geq \mathcal{T}^2 v \geq \cdots \geq \mathcal{T}^k v\)&lt;/p&gt;
+
+&lt;p&gt;Taking $k\rightarrow \infty$ for both sides, we have&lt;/p&gt;
+
+\[v \geq v^\star\]
+
+&lt;p&gt;Multiplying $c^T$ at both sides,  (since $c_i &amp;gt;0$ for all $i$)&lt;/p&gt;
+
+\[c^T v \geq c^T v^\star\]
+
+&lt;p&gt;we can see that $v^\star$ which satisfies $v^\star = \mathcal{T}v^\star$ makes the objective function $c^Tv$ the smallest. Thus, $v^\star$ is the optimal solution.&lt;/p&gt;
+
+&lt;p&gt;Now, we also want to show that this optimal solution $v^\star$ is unique. First, let’s assume that other solution $\hat{v}$ exists, and $\hat{v} \not = v^\star$.&lt;/p&gt;
+
+&lt;p&gt;Since $\hat{v}$ is an optimal solution, there should be some $i$ that satisfies&lt;/p&gt;
+
+\[\hat{v}(i) &amp;lt; v^\star (i) \ \ \ \exists i\]
+
+&lt;p&gt;or otherwise, $c^T v^\star = c^T \hat{v}$ cannot be satisfied ($c_i &amp;gt;0 $ for all $i$).&lt;/p&gt;
+
+&lt;p&gt;Meanwhile, $\hat{v}(i) \geq \mathcal{T}\hat{v}(i)$ holds for all $i$ since $\hat{v}$ is an optimal solution that satisfies the constraint. Applying this $k$ times and taking it to infinity, we have&lt;/p&gt;
+
+\[\hat{v}(i) \geq v^\star (i)  \ \ \ \forall i\]
+
+&lt;p&gt;This is in fact a contradiction!&lt;/p&gt;
+
+&lt;h3 id=&quot;linear-programming-formulation&quot;&gt;Linear Programming Formulation&lt;/h3&gt;
+
+&lt;p&gt;Note that the constraint $v\geq \mathcal{T}v$ is not a linear constraint. Fortunately, we can change it to a linear program.&lt;/p&gt;
+
+\[\begin{aligned}
+\min_{v \in \mathbb{R}^n } &amp;amp; \ \ \ c^T v \\
+\text{s.t.} &amp;amp; \ \ \ v(s)  \geq r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s, a) v(s')  \ \ \ \forall (s,a) \in S \times A
+\end{aligned}\]
+
+&lt;p&gt;Now, the dimension of optimization variable is $n$, but the number of constraints is $n\times m$.&lt;/p&gt;
+
+&lt;h3 id=&quot;evaluating-policy-via-lp&quot;&gt;Evaluating Policy via LP&lt;/h3&gt;
+
+&lt;p&gt;Given a policy $\pi$, consider&lt;/p&gt;
+
+\[\begin{aligned}
+\min_{v \in \mathbb{R}^n } &amp;amp; \ \ \ c^T v \\
+\text{s.t.} &amp;amp; \ \ \ v \geq \mathcal{T}^\pi v
+\end{aligned}\]
+
+&lt;p&gt;which its optimal solution is $v^\pi$.&lt;/p&gt;
+
+&lt;p&gt;This can also be formulated as an LP by:&lt;/p&gt;
+
+\[\begin{aligned}
+\min_{v \in \mathbb{R}^n } &amp;amp; \ \ \ c^T v \\
+\text{s.t.} &amp;amp; \ \ \ v(s)  \geq r(s,\pi(s)) + \gamma \sum_{s' \in S} p(s' \vert s, \pi(s)) v(s')  \ \ \ \forall s \in S
+\end{aligned}\]
+
+&lt;p&gt;In this case, the dimension of optimization variable and the number of constraints are both $n$.&lt;/p&gt;
+
+&lt;h2 id=&quot;dual-problem&quot;&gt;Dual Problem&lt;/h2&gt;
+
+&lt;h3 id=&quot;lagrangian&quot;&gt;Lagrangian&lt;/h3&gt;
+
+&lt;p&gt;Note that our constraint’s dimension is $n\times m$, thus its corresponding dual variable is a function of $(s,a)$.&lt;/p&gt;
+
+&lt;p&gt;First, define the Lagrangian.&lt;/p&gt;
+
+\[L(v, \lambda) = \sum_s c(s) v(s) + \sum_{s,a} \lambda (s,a) \bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) v(s') - v(s) \bigg ]\]
+
+&lt;h3 id=&quot;dual-function&quot;&gt;Dual Function&lt;/h3&gt;
+
+&lt;p&gt;Then, we have the dual function.&lt;/p&gt;
+
+\[g(\lambda) = \min_v L(v,\lambda) = \sum_{s,a} \lambda (s,a) r(s,a)\]
+
+&lt;p&gt;when&lt;/p&gt;
+
+\[c(s') + \gamma \sum_{s,a} \lambda(s,a) p(s' \vert s,a) - \sum_a \lambda (s', a) =0 \ \ \ \forall s' \in S\]
+
+&lt;h3 id=&quot;dual-problem-1&quot;&gt;Dual Problem&lt;/h3&gt;
+
+&lt;p&gt;We can then define our dual problem, which its duality gap is zero (it satisfies the slater’s condition)&lt;/p&gt;
+
+&lt;center&gt;&lt;img src=&quot;https://tva1.sinaimg.cn/large/008eGmZEgy1gpq9xl76evj30zk06wgme.jpg&quot; alt=&quot;image-20210420170917920&quot; style=&quot;zoom:35%;&quot; /&gt;&lt;/center&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Lecture-Note" /><category term="Theory/Survey" /><summary type="html">Iteration based vs Optimization based Recall that the Bellman operator is given by \[(\mathcal{T}v) (s) := \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) v(s') \bigg ].\] We tried to solve above Bellman equation by iteration-based methods. In this section, we will try to solve the Bellman equation by Optimization-based method. Optimization Based Method Problem Formulation Instead of the iteration-based algorithm, we can obtain the value function by solving: \[\begin{aligned} \min_{v \in \mathbb{R}^n } &amp;amp; \ \ \ c^T v \\ \text{s.t.} &amp;amp; \ \ \ v \geq \mathcal{T}v \end{aligned}\] where the inequality holds entry-wise, and each entry of $c$ is positive. [Theorem] The optimization problem above has a unique optimal solution, which corresponds to the optimal value function $v^\star$. [proof] For feasible $v$, \(v \geq \mathcal{T}v \geq \mathcal{T}^2 v \geq \cdots \geq \mathcal{T}^k v\) Taking $k\rightarrow \infty$ for both sides, we have \[v \geq v^\star\] Multiplying $c^T$ at both sides, (since $c_i &amp;gt;0$ for all $i$) \[c^T v \geq c^T v^\star\] we can see that $v^\star$ which satisfies $v^\star = \mathcal{T}v^\star$ makes the objective function $c^Tv$ the smallest. Thus, $v^\star$ is the optimal solution. Now, we also want to show that this optimal solution $v^\star$ is unique. First, let’s assume that other solution $\hat{v}$ exists, and $\hat{v} \not = v^\star$. Since $\hat{v}$ is an optimal solution, there should be some $i$ that satisfies \[\hat{v}(i) &amp;lt; v^\star (i) \ \ \ \exists i\] or otherwise, $c^T v^\star = c^T \hat{v}$ cannot be satisfied ($c_i &amp;gt;0 $ for all $i$). Meanwhile, $\hat{v}(i) \geq \mathcal{T}\hat{v}(i)$ holds for all $i$ since $\hat{v}$ is an optimal solution that satisfies the constraint. Applying this $k$ times and taking it to infinity, we have \[\hat{v}(i) \geq v^\star (i) \ \ \ \forall i\] This is in fact a contradiction! Linear Programming Formulation Note that the constraint $v\geq \mathcal{T}v$ is not a linear constraint. Fortunately, we can change it to a linear program. \[\begin{aligned} \min_{v \in \mathbb{R}^n } &amp;amp; \ \ \ c^T v \\ \text{s.t.} &amp;amp; \ \ \ v(s) \geq r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s, a) v(s') \ \ \ \forall (s,a) \in S \times A \end{aligned}\] Now, the dimension of optimization variable is $n$, but the number of constraints is $n\times m$. Evaluating Policy via LP Given a policy $\pi$, consider \[\begin{aligned} \min_{v \in \mathbb{R}^n } &amp;amp; \ \ \ c^T v \\ \text{s.t.} &amp;amp; \ \ \ v \geq \mathcal{T}^\pi v \end{aligned}\] which its optimal solution is $v^\pi$. This can also be formulated as an LP by: \[\begin{aligned} \min_{v \in \mathbb{R}^n } &amp;amp; \ \ \ c^T v \\ \text{s.t.} &amp;amp; \ \ \ v(s) \geq r(s,\pi(s)) + \gamma \sum_{s' \in S} p(s' \vert s, \pi(s)) v(s') \ \ \ \forall s \in S \end{aligned}\] In this case, the dimension of optimization variable and the number of constraints are both $n$. Dual Problem Lagrangian Note that our constraint’s dimension is $n\times m$, thus its corresponding dual variable is a function of $(s,a)$. First, define the Lagrangian. \[L(v, \lambda) = \sum_s c(s) v(s) + \sum_{s,a} \lambda (s,a) \bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) v(s') - v(s) \bigg ]\] Dual Function Then, we have the dual function. \[g(\lambda) = \min_v L(v,\lambda) = \sum_{s,a} \lambda (s,a) r(s,a)\] when \[c(s') + \gamma \sum_{s,a} \lambda(s,a) p(s' \vert s,a) - \sum_a \lambda (s', a) =0 \ \ \ \forall s' \in S\] Dual Problem We can then define our dual problem, which its duality gap is zero (it satisfies the slater’s condition)</summary></entry><entry><title type="html">[RL Theory] Policy Iteration</title><link href="http://localhost:4000/2021/04/20/scrl-6.html" rel="alternate" type="text/html" title="[RL Theory] Policy Iteration" /><published>2021-04-20T00:00:00+09:00</published><updated>2021-04-20T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/20/scrl-6</id><content type="html" xml:base="http://localhost:4000/2021/04/20/scrl-6.html">&lt;h2 id=&quot;policy-iteration&quot;&gt;Policy Iteration&lt;/h2&gt;
 &lt;h3 id=&quot;idea-of-policy-iteration&quot;&gt;Idea of Policy Iteration&lt;/h3&gt;
 
 &lt;p&gt;So far, our algorithm updated everything only in the &lt;strong&gt;value space&lt;/strong&gt;. After we obtained the optimal value function $v^\star$, we switched over to the policy space, and obtained $\pi^\star$.&lt;/p&gt;
@@ -227,116 +336,80 @@ Prove that the Bellman operator is monotone, i.e.,&lt;/p&gt;
 
 &lt;h2 id=&quot;vi-vs-pi&quot;&gt;VI vs PI&lt;/h2&gt;
 
-&lt;p&gt;VI is simpler, but PI is often faster!&lt;/p&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Lecture-Note" /><category term="Theory/Survey" /><summary type="html">Policy Iteration Idea of Policy Iteration So far, our algorithm updated everything only in the value space. After we obtained the optimal value function $v^\star$, we switched over to the policy space, and obtained $\pi^\star$. This can be considered somewhat inefficient: we might want to use some information about the policy as well, during the value function updating procedure. Policy Iteration iteratively updates both value functions and policies. Policy Iteration Algorithm Initialize $\pi_0$ as an arbitrary deterministic stationary policy. Repeat policy evaluation : compute the value function corresponding to the policy $\pi_k$! \[v^{\pi_k} = \mathcal{T}^{\pi_k} v^{\pi_k}\] policy improvement : update the policy by taking \[\pi_{k+1} = \arg \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s'\in S} p(s' \vert s,a) v^{\pi_k }(s') \bigg ]\] Then the sequence of policies ${\pi_0 , \pi_1, \pi_2, \cdots, \pi_k}$ converges to an optimal policy $\pi^\star$. This works: Monotonic Improvement One might ask, does this really work? That question can be answered if we prove the following Lemma. [Lemma] Let ${\pi_k}$ be the sequences of policies obtained by policy iteration. Then, we have \[v^{\pi_{k+1}} \geq v^{\pi_k}\ \ \ \ \forall k\] Note that this is an element-wise inequality! \[v^{\pi_{k+1}}(s) \geq v^{\pi_k}(s)\ \ \ \ \forall k,s\] [Proof] First, the policy evaluation step gives us the solution of \[v^{\pi_k} = \mathcal{T}^{\pi_k }v^{\pi_k}\] Next, the policy improvement step tries to update the policy $\pi_k$ by solving \[\pi_{k+1} = \arg \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s'\in S} p(s' \vert s,a) v^{\pi_k }(s') \bigg ]\] Thus, the policy improvement step is in fact the same as an optimal Bellman operator, taking the argmax over action space. \[\mathcal{T}^{\pi_{k+1}}v^{\pi_k } = \mathcal{T}v^{\pi_k }\] Now, the definition (optimality) of Bellman operator gives us that \[\mathcal{T}^{\pi_{k+1}}v^{\pi_k } = \mathcal{T}v^{\pi_k } \geq \mathcal{T}^{\pi_k }v^{\pi_k}\] Combining the equation from the policy evaluation step, we have \[\mathcal{T}^{\pi_{k+1}}v^{\pi_k } \geq \mathcal{T}^{\pi_k }v^{\pi_k} = v^{\pi_k}\] If we apply this inequality recursively, we have \[v^{\pi_k } \leq \big ( \mathcal{T}^{\pi_{k+1}}\big ) ^n v^{\pi_k }\ \ \ \ \forall n\] Knowing that $\mathcal{T^{\pi}}$ is a contraction mapping, if we think of $n\rightarrow \infty$, we can say that the RHS goes to the fixed point of $\mathcal{T}^{\pi_{k+1}}$, which is \[v^{\pi_k } \leq v^{\pi_{k+1}}\] Thus, the policy is improved monotonically, as we repeat the policy iteration. Convergence of Policy Iteration We now know that policy iteration monotonically improves the policy, thus monotonically increases the value function. Now, we have to prove that it eventually converges to the optimal value function! Monotone Convergence Theorem Let ${x_k}$ be a monotonically non-decreasing, bounded sequence of real vectors. Then, the sequence has a finite limit! We’re going to use this widely-used theorem to prove our point! Recall that our value function is bounded, since we have a finite state-action space. Proof of Convergence To start with, our reward function is bounded for some constant $M$, since our state-action spaces $S$ and $A$ are finite. \[|r(s,a) | \leq M\] Thus, our value function has to be bounded above! \[|v^\pi (s)| = \bigg \vert \sum_{t=0}^\infty \gamma^t r(s_t, a_t ) \bigg \vert \leq \bigg \vert \sum_{t=0}^\infty \gamma^t |M| \bigg \vert \leq \frac{1}{1-\gamma}|M|\] By the previous lemma, $v^{\pi_k} \leq v^{\pi_{k+1}}$ for all $k$. Then, by the monotone convergence theorem, there exists $\bar{v}$ such that \[\lim_{k\rightarrow \infty} v^{\pi_k } = \bar{v}\] Then, the preceding policy evaluation and improvement step policy improvement : $\bar{v} \rightarrow \bar{\pi}$ policy evaluation : $\bar{\pi} \rightarrow v^{\bar{\pi}}$ implies that \[v^{\bar{\pi}} = \mathcal{T}^{\bar{\pi}}v^{\bar{\pi}} = \mathcal{T} v^{\bar{\pi}}\] thus, $\bar{v} = v^\star$. VI vs PI VI is simpler, but PI is often faster!</summary></entry><entry><title type="html">[Personal Note] Logic Flow</title><link href="http://localhost:4000/2021/04/20/logic-flow.html" rel="alternate" type="text/html" title="[Personal Note] Logic Flow" /><published>2021-04-20T00:00:00+09:00</published><updated>2021-04-20T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/20/logic-flow</id><content type="html" xml:base="http://localhost:4000/2021/04/20/logic-flow.html">&lt;p&gt;##&lt;/p&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Personal-Note" /><summary type="html">##</summary></entry><entry><title type="html">[RL Theory] 7 - Linear Programming Approach</title><link href="http://localhost:4000/2021/04/20/scrl-7.html" rel="alternate" type="text/html" title="[RL Theory] 7 - Linear Programming Approach" /><published>2021-04-20T00:00:00+09:00</published><updated>2021-04-20T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/20/scrl-7</id><content type="html" xml:base="http://localhost:4000/2021/04/20/scrl-7.html">&lt;h2 id=&quot;iteration-based-vs-optimization-based&quot;&gt;Iteration based vs Optimization based&lt;/h2&gt;
+&lt;p&gt;VI is simpler, but PI is often faster!&lt;/p&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Lecture-Note" /><category term="Theory/Survey" /><summary type="html">Policy Iteration Idea of Policy Iteration So far, our algorithm updated everything only in the value space. After we obtained the optimal value function $v^\star$, we switched over to the policy space, and obtained $\pi^\star$. This can be considered somewhat inefficient: we might want to use some information about the policy as well, during the value function updating procedure. Policy Iteration iteratively updates both value functions and policies. Policy Iteration Algorithm Initialize $\pi_0$ as an arbitrary deterministic stationary policy. Repeat policy evaluation : compute the value function corresponding to the policy $\pi_k$! \[v^{\pi_k} = \mathcal{T}^{\pi_k} v^{\pi_k}\] policy improvement : update the policy by taking \[\pi_{k+1} = \arg \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s'\in S} p(s' \vert s,a) v^{\pi_k }(s') \bigg ]\] Then the sequence of policies ${\pi_0 , \pi_1, \pi_2, \cdots, \pi_k}$ converges to an optimal policy $\pi^\star$. This works: Monotonic Improvement One might ask, does this really work? That question can be answered if we prove the following Lemma. [Lemma] Let ${\pi_k}$ be the sequences of policies obtained by policy iteration. Then, we have \[v^{\pi_{k+1}} \geq v^{\pi_k}\ \ \ \ \forall k\] Note that this is an element-wise inequality! \[v^{\pi_{k+1}}(s) \geq v^{\pi_k}(s)\ \ \ \ \forall k,s\] [Proof] First, the policy evaluation step gives us the solution of \[v^{\pi_k} = \mathcal{T}^{\pi_k }v^{\pi_k}\] Next, the policy improvement step tries to update the policy $\pi_k$ by solving \[\pi_{k+1} = \arg \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s'\in S} p(s' \vert s,a) v^{\pi_k }(s') \bigg ]\] Thus, the policy improvement step is in fact the same as an optimal Bellman operator, taking the argmax over action space. \[\mathcal{T}^{\pi_{k+1}}v^{\pi_k } = \mathcal{T}v^{\pi_k }\] Now, the definition (optimality) of Bellman operator gives us that \[\mathcal{T}^{\pi_{k+1}}v^{\pi_k } = \mathcal{T}v^{\pi_k } \geq \mathcal{T}^{\pi_k }v^{\pi_k}\] Combining the equation from the policy evaluation step, we have \[\mathcal{T}^{\pi_{k+1}}v^{\pi_k } \geq \mathcal{T}^{\pi_k }v^{\pi_k} = v^{\pi_k}\] If we apply this inequality recursively, we have \[v^{\pi_k } \leq \big ( \mathcal{T}^{\pi_{k+1}}\big ) ^n v^{\pi_k }\ \ \ \ \forall n\] Knowing that $\mathcal{T^{\pi}}$ is a contraction mapping, if we think of $n\rightarrow \infty$, we can say that the RHS goes to the fixed point of $\mathcal{T}^{\pi_{k+1}}$, which is \[v^{\pi_k } \leq v^{\pi_{k+1}}\] Thus, the policy is improved monotonically, as we repeat the policy iteration. Convergence of Policy Iteration We now know that policy iteration monotonically improves the policy, thus monotonically increases the value function. Now, we have to prove that it eventually converges to the optimal value function! Monotone Convergence Theorem Let ${x_k}$ be a monotonically non-decreasing, bounded sequence of real vectors. Then, the sequence has a finite limit! We’re going to use this widely-used theorem to prove our point! Recall that our value function is bounded, since we have a finite state-action space. Proof of Convergence To start with, our reward function is bounded for some constant $M$, since our state-action spaces $S$ and $A$ are finite. \[|r(s,a) | \leq M\] Thus, our value function has to be bounded above! \[|v^\pi (s)| = \bigg \vert \sum_{t=0}^\infty \gamma^t r(s_t, a_t ) \bigg \vert \leq \bigg \vert \sum_{t=0}^\infty \gamma^t |M| \bigg \vert \leq \frac{1}{1-\gamma}|M|\] By the previous lemma, $v^{\pi_k} \leq v^{\pi_{k+1}}$ for all $k$. Then, by the monotone convergence theorem, there exists $\bar{v}$ such that \[\lim_{k\rightarrow \infty} v^{\pi_k } = \bar{v}\] Then, the preceding policy evaluation and improvement step policy improvement : $\bar{v} \rightarrow \bar{\pi}$ policy evaluation : $\bar{\pi} \rightarrow v^{\bar{\pi}}$ implies that \[v^{\bar{\pi}} = \mathcal{T}^{\bar{\pi}}v^{\bar{\pi}} = \mathcal{T} v^{\bar{\pi}}\] thus, $\bar{v} = v^\star$. VI vs PI VI is simpler, but PI is often faster!</summary></entry><entry><title type="html">[Personal Note] Logic Flow</title><link href="http://localhost:4000/2021/04/20/logic-flow.html" rel="alternate" type="text/html" title="[Personal Note] Logic Flow" /><published>2021-04-20T00:00:00+09:00</published><updated>2021-04-20T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/20/logic-flow</id><content type="html" xml:base="http://localhost:4000/2021/04/20/logic-flow.html">&lt;p&gt;##&lt;/p&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Personal-Note" /><summary type="html">##</summary></entry><entry><title type="html">[RL Theory] Stochastic Approximation</title><link href="http://localhost:4000/2021/04/20/scrl-9.html" rel="alternate" type="text/html" title="[RL Theory] Stochastic Approximation" /><published>2021-04-20T00:00:00+09:00</published><updated>2021-04-20T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/20/scrl-9</id><content type="html" xml:base="http://localhost:4000/2021/04/20/scrl-9.html">&lt;h2 id=&quot;review-mdp-problem&quot;&gt;Review: MDP Problem&lt;/h2&gt;
 
-&lt;p&gt;Recall that the Bellman operator is given by&lt;/p&gt;
+&lt;h3 id=&quot;bellman-equations&quot;&gt;Bellman Equations&lt;/h3&gt;
 
-\[(\mathcal{T}v) (s) := \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) v(s') \bigg ].\]
+&lt;p&gt;Recall, that both policy evaluation and optimality equation is a fixed point problem.&lt;/p&gt;
 
-&lt;p&gt;We tried to solve above Bellman equation by iteration-based methods.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Policy Evaluation&lt;/strong&gt;&lt;/p&gt;
 
-&lt;center&gt;&lt;img src=&quot;https://tva1.sinaimg.cn/large/008eGmZEgy1gpq7n4nn4yj30s008imz0.jpg&quot; alt=&quot;image-20210420155003180&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/center&gt;
+\[v = \mathcal{T}^\pi v\]
 
-&lt;p&gt;In this section, we will try to solve the Bellman equation by Optimization-based method.&lt;/p&gt;
+    &lt;p&gt;or equivalently&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;h2 id=&quot;optimization-based-method&quot;&gt;Optimization Based Method&lt;/h2&gt;
+\[v(s) = r(s, \pi(s)) + \gamma \sum_{s' \in S} p(s' \vert s, \pi(s) ) v(s')\]
 
-&lt;h3 id=&quot;problem-formulation&quot;&gt;Problem Formulation&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Optimality Equation&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;Instead of the iteration-based algorithm, we can obtain the value function by solving:&lt;/p&gt;
+\[v = \mathcal{T}v\]
 
-\[\begin{aligned}
-\min_{v \in \mathbb{R}^n } &amp;amp; \ \ \ c^T v \\
-\text{s.t.} &amp;amp; \ \ \ v \geq \mathcal{T}v
-\end{aligned}\]
+    &lt;p&gt;or equivalently&lt;/p&gt;
 
-&lt;p&gt;where the inequality holds entry-wise, and each entry of $c$ is positive.&lt;/p&gt;
+\[v(s) = \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) v(s') \bigg ]\]
+  &lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;p class=&quot;info&quot;&gt;&lt;strong&gt;[Theorem]&lt;/strong&gt; The optimization problem above has a &lt;strong&gt;unique optimal solution&lt;/strong&gt;, which corresponds to the &lt;strong&gt;optimal value function&lt;/strong&gt; $v^\star$.&lt;/p&gt;
+&lt;p&gt;Thus, we need to solve a &lt;strong&gt;fixed-point problem in a model-free manner&lt;/strong&gt;.&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;[proof]&lt;/strong&gt; For feasible $v$, 
-\(v \geq \mathcal{T}v \geq \mathcal{T}^2 v \geq \cdots \geq \mathcal{T}^k v\)&lt;/p&gt;
+&lt;h3 id=&quot;fixed-point-problem&quot;&gt;Fixed Point Problem&lt;/h3&gt;
 
-&lt;p&gt;Taking $k\rightarrow \infty$ for both sides, we have&lt;/p&gt;
+&lt;p&gt;Consider the following system of equations:&lt;/p&gt;
 
-\[v \geq v^\star\]
+\[Hx = x\]
 
-&lt;p&gt;Multiplying $c^T$ at both sides,  (since $c_i &amp;gt;0$ for all $i$)&lt;/p&gt;
+&lt;p&gt;where $ H: \mathbb{R}^n \rightarrow \mathbb{R}^n $.&lt;/p&gt;
 
-\[c^T v \geq c^T v^\star\]
+&lt;p&gt;We may want to use a deterministic iterative algorithm,&lt;/p&gt;
 
-&lt;p&gt;we can see that $v^\star$ which satisfies $v^\star = \mathcal{T}v^\star$ makes the objective function $c^Tv$ the smallest. Thus, $v^\star$ is the optimal solution.&lt;/p&gt;
+\[x_{k+1} := Hx_k\]
 
-&lt;p&gt;Now, we also want to show that this optimal solution $v^\star$ is unique. First, let’s assume that other solution $\hat{v}$ exists, and $\hat{v} \not = v^\star$.&lt;/p&gt;
+&lt;p&gt;or its variant with a small stepsize $\alpha_k \in (0,1)$.&lt;/p&gt;
 
-&lt;p&gt;Since $\hat{v}$ is an optimal solution, there should be some $i$ that satisfies&lt;/p&gt;
+\[x_{k+1} := (1-\alpha_k ) x_k + \alpha_k Hx_k\]
 
-\[\hat{v}(i) &amp;lt; v^\star (i) \ \ \ \exists i\]
+&lt;h2 id=&quot;stochastic-approximation&quot;&gt;Stochastic Approximation&lt;/h2&gt;
 
-&lt;p&gt;or otherwise, $c^T v^\star = c^T \hat{v}$ cannot be satisfied ($c_i &amp;gt;0 $ for all $i$).&lt;/p&gt;
+&lt;h3 id=&quot;what-if-h-is-not-completely-known&quot;&gt;What if $H$ is not completely known?&lt;/h3&gt;
 
-&lt;p&gt;Meanwhile, $\hat{v}(i) \geq \mathcal{T}\hat{v}(i)$ holds for all $i$ since $\hat{v}$ is an optimal solution that satisfies the constraint. Applying this $k$ times and taking it to infinity, we have&lt;/p&gt;
+&lt;p&gt;If $H$ is not completely known, or $Hx_k$ itself cannot be calculated easily, we might still have access to a random observation $s_k$&lt;/p&gt;
 
-\[\hat{v}(i) \geq v^\star (i)  \ \ \ \forall i\]
+\[s_k = Hx_k + w_k\]
 
-&lt;p&gt;This is in fact a contradiction!&lt;/p&gt;
+&lt;p&gt;along with the information about the random noise $w_k$.&lt;/p&gt;
 
-&lt;h3 id=&quot;linear-programming-formulation&quot;&gt;Linear Programming Formulation&lt;/h3&gt;
-
-&lt;p&gt;Note that the constraint $v\geq \mathcal{T}v$ is not a linear constraint. Fortunately, we can change it to a linear program.&lt;/p&gt;
-
-\[\begin{aligned}
-\min_{v \in \mathbb{R}^n } &amp;amp; \ \ \ c^T v \\
-\text{s.t.} &amp;amp; \ \ \ v(s)  \geq r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s, a) v(s')  \ \ \ \forall (s,a) \in S \times A
-\end{aligned}\]
-
-&lt;p&gt;Now, the dimension of optimization variable is $n$, but the number of constraints is $n\times m$.&lt;/p&gt;
-
-&lt;h3 id=&quot;evaluating-policy-via-lp&quot;&gt;Evaluating Policy via LP&lt;/h3&gt;
-
-&lt;p&gt;Given a policy $\pi$, consider&lt;/p&gt;
+&lt;p&gt;In this case, we might try to iteratively update the equation using this observation!&lt;/p&gt;
 
 \[\begin{aligned}
-\min_{v \in \mathbb{R}^n } &amp;amp; \ \ \ c^T v \\
-\text{s.t.} &amp;amp; \ \ \ v \geq \mathcal{T}^\pi v
+x_{k+1} &amp;amp; = (1-\alpha_k) x_k + \alpha_k s_k \\
+&amp;amp; = (1-\alpha_k) + \alpha_k (Hx_k + w_k)
 \end{aligned}\]
 
-&lt;p&gt;which its optimal solution is $v^\pi$.&lt;/p&gt;
+&lt;h3 id=&quot;stochastic-approximation-algorithm&quot;&gt;Stochastic Approximation Algorithm&lt;/h3&gt;
 
-&lt;p&gt;This can also be formulated as an LP by:&lt;/p&gt;
+&lt;p&gt;Stochastic approximation algorithm starts from this point!&lt;/p&gt;
 
-\[\begin{aligned}
-\min_{v \in \mathbb{R}^n } &amp;amp; \ \ \ c^T v \\
-\text{s.t.} &amp;amp; \ \ \ v(s)  \geq r(s,\pi(s)) + \gamma \sum_{s' \in S} p(s' \vert s, \pi(s)) v(s')  \ \ \ \forall s \in S
-\end{aligned}\]
+\[x_{k+1} = (1-\alpha_k) x_k + \alpha_k (Hx_k + w_k )\]
 
-&lt;p&gt;In this case, the dimension of optimization variable and the number of constraints are both $n$.&lt;/p&gt;
+&lt;p&gt;where $s_k = Hx_k +w_k$ can be available using sample data. It is known that, under certain conditions, the error between $s_k$ and $Hx_k$ can be neglected at the end. This is the key idea of stochastic approximation!&lt;/p&gt;
 
-&lt;h2 id=&quot;dual-problem&quot;&gt;Dual Problem&lt;/h2&gt;
-
-&lt;h3 id=&quot;lagrangian&quot;&gt;Lagrangian&lt;/h3&gt;
-
-&lt;p&gt;Note that our constraint’s dimension is $n\times m$, thus its corresponding dual variable is a function of $(s,a)$.&lt;/p&gt;
-
-&lt;p&gt;First, define the Lagrangian.&lt;/p&gt;
-
-\[L(v, \lambda) = \sum_s c(s) v(s) + \sum_{s,a} \lambda (s,a) \bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) v(s') - v(s) \bigg ]\]
-
-&lt;h3 id=&quot;dual-function&quot;&gt;Dual Function&lt;/h3&gt;
-
-&lt;p&gt;Then, we have the dual function.&lt;/p&gt;
-
-\[g(\lambda) = \min_v L(v,\lambda) = \sum_{s,a} \lambda (s,a) r(s,a)\]
-
-&lt;p&gt;when&lt;/p&gt;
-
-\[c(s') + \gamma \sum_{s,a} \lambda(s,a) p(s' \vert s,a) - \sum_a \lambda (s', a) =0 \ \ \ \forall s' \in S\]
-
-&lt;h3 id=&quot;dual-problem-1&quot;&gt;Dual Problem&lt;/h3&gt;
-
-&lt;p&gt;We can then define our dual problem, which its duality gap is zero (it satisfies the slater’s condition)&lt;/p&gt;
-
-&lt;center&gt;&lt;img src=&quot;https://tva1.sinaimg.cn/large/008eGmZEgy1gpq9xl76evj30zk06wgme.jpg&quot; alt=&quot;image-20210420170917920&quot; style=&quot;zoom:35%;&quot; /&gt;&lt;/center&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Lecture-Note" /><category term="Theory/Survey" /><summary type="html">Iteration based vs Optimization based Recall that the Bellman operator is given by \[(\mathcal{T}v) (s) := \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) v(s') \bigg ].\] We tried to solve above Bellman equation by iteration-based methods. In this section, we will try to solve the Bellman equation by Optimization-based method. Optimization Based Method Problem Formulation Instead of the iteration-based algorithm, we can obtain the value function by solving: \[\begin{aligned} \min_{v \in \mathbb{R}^n } &amp;amp; \ \ \ c^T v \\ \text{s.t.} &amp;amp; \ \ \ v \geq \mathcal{T}v \end{aligned}\] where the inequality holds entry-wise, and each entry of $c$ is positive. [Theorem] The optimization problem above has a unique optimal solution, which corresponds to the optimal value function $v^\star$. [proof] For feasible $v$, \(v \geq \mathcal{T}v \geq \mathcal{T}^2 v \geq \cdots \geq \mathcal{T}^k v\) Taking $k\rightarrow \infty$ for both sides, we have \[v \geq v^\star\] Multiplying $c^T$ at both sides, (since $c_i &amp;gt;0$ for all $i$) \[c^T v \geq c^T v^\star\] we can see that $v^\star$ which satisfies $v^\star = \mathcal{T}v^\star$ makes the objective function $c^Tv$ the smallest. Thus, $v^\star$ is the optimal solution. Now, we also want to show that this optimal solution $v^\star$ is unique. First, let’s assume that other solution $\hat{v}$ exists, and $\hat{v} \not = v^\star$. Since $\hat{v}$ is an optimal solution, there should be some $i$ that satisfies \[\hat{v}(i) &amp;lt; v^\star (i) \ \ \ \exists i\] or otherwise, $c^T v^\star = c^T \hat{v}$ cannot be satisfied ($c_i &amp;gt;0 $ for all $i$). Meanwhile, $\hat{v}(i) \geq \mathcal{T}\hat{v}(i)$ holds for all $i$ since $\hat{v}$ is an optimal solution that satisfies the constraint. Applying this $k$ times and taking it to infinity, we have \[\hat{v}(i) \geq v^\star (i) \ \ \ \forall i\] This is in fact a contradiction! Linear Programming Formulation Note that the constraint $v\geq \mathcal{T}v$ is not a linear constraint. Fortunately, we can change it to a linear program. \[\begin{aligned} \min_{v \in \mathbb{R}^n } &amp;amp; \ \ \ c^T v \\ \text{s.t.} &amp;amp; \ \ \ v(s) \geq r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s, a) v(s') \ \ \ \forall (s,a) \in S \times A \end{aligned}\] Now, the dimension of optimization variable is $n$, but the number of constraints is $n\times m$. Evaluating Policy via LP Given a policy $\pi$, consider \[\begin{aligned} \min_{v \in \mathbb{R}^n } &amp;amp; \ \ \ c^T v \\ \text{s.t.} &amp;amp; \ \ \ v \geq \mathcal{T}^\pi v \end{aligned}\] which its optimal solution is $v^\pi$. This can also be formulated as an LP by: \[\begin{aligned} \min_{v \in \mathbb{R}^n } &amp;amp; \ \ \ c^T v \\ \text{s.t.} &amp;amp; \ \ \ v(s) \geq r(s,\pi(s)) + \gamma \sum_{s' \in S} p(s' \vert s, \pi(s)) v(s') \ \ \ \forall s \in S \end{aligned}\] In this case, the dimension of optimization variable and the number of constraints are both $n$. Dual Problem Lagrangian Note that our constraint’s dimension is $n\times m$, thus its corresponding dual variable is a function of $(s,a)$. First, define the Lagrangian. \[L(v, \lambda) = \sum_s c(s) v(s) + \sum_{s,a} \lambda (s,a) \bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) v(s') - v(s) \bigg ]\] Dual Function Then, we have the dual function. \[g(\lambda) = \min_v L(v,\lambda) = \sum_{s,a} \lambda (s,a) r(s,a)\] when \[c(s') + \gamma \sum_{s,a} \lambda(s,a) p(s' \vert s,a) - \sum_a \lambda (s', a) =0 \ \ \ \forall s' \in S\] Dual Problem We can then define our dual problem, which its duality gap is zero (it satisfies the slater’s condition)</summary></entry><entry><title type="html">[RL Theory] 3 - Finite Horizon MDP (1)</title><link href="http://localhost:4000/2021/04/19/scrl-3.html" rel="alternate" type="text/html" title="[RL Theory] 3 - Finite Horizon MDP (1)" /><published>2021-04-19T00:00:00+09:00</published><updated>2021-04-19T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/19/scrl-3</id><content type="html" xml:base="http://localhost:4000/2021/04/19/scrl-3.html">&lt;h2 id=&quot;finite-horizon-mdp&quot;&gt;Finite-Horizon MDP&lt;/h2&gt;
+&lt;h2 id=&quot;application1--bellman-equation&quot;&gt;Application1 : Bellman Equation&lt;/h2&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Lecture-Note" /><category term="Theory/Survey" /><summary type="html">Review: MDP Problem Bellman Equations Recall, that both policy evaluation and optimality equation is a fixed point problem. Policy Evaluation \[v = \mathcal{T}^\pi v\] or equivalently \[v(s) = r(s, \pi(s)) + \gamma \sum_{s' \in S} p(s' \vert s, \pi(s) ) v(s')\] Optimality Equation \[v = \mathcal{T}v\] or equivalently \[v(s) = \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) v(s') \bigg ]\] Thus, we need to solve a fixed-point problem in a model-free manner. Fixed Point Problem Consider the following system of equations: \[Hx = x\] where $ H: \mathbb{R}^n \rightarrow \mathbb{R}^n $. We may want to use a deterministic iterative algorithm, \[x_{k+1} := Hx_k\] or its variant with a small stepsize $\alpha_k \in (0,1)$. \[x_{k+1} := (1-\alpha_k ) x_k + \alpha_k Hx_k\] Stochastic Approximation What if $H$ is not completely known? If $H$ is not completely known, or $Hx_k$ itself cannot be calculated easily, we might still have access to a random observation $s_k$ \[s_k = Hx_k + w_k\] along with the information about the random noise $w_k$. In this case, we might try to iteratively update the equation using this observation! \[\begin{aligned} x_{k+1} &amp;amp; = (1-\alpha_k) x_k + \alpha_k s_k \\ &amp;amp; = (1-\alpha_k) + \alpha_k (Hx_k + w_k) \end{aligned}\] Stochastic Approximation Algorithm Stochastic approximation algorithm starts from this point! \[x_{k+1} = (1-\alpha_k) x_k + \alpha_k (Hx_k + w_k )\] where $s_k = Hx_k +w_k$ can be available using sample data. It is known that, under certain conditions, the error between $s_k$ and $Hx_k$ can be neglected at the end. This is the key idea of stochastic approximation! Application1 : Bellman Equation</summary></entry><entry><title type="html">[RL Theory] Finite Horizon MDP (1)</title><link href="http://localhost:4000/2021/04/19/scrl-3.html" rel="alternate" type="text/html" title="[RL Theory] Finite Horizon MDP (1)" /><published>2021-04-19T00:00:00+09:00</published><updated>2021-04-19T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/19/scrl-3</id><content type="html" xml:base="http://localhost:4000/2021/04/19/scrl-3.html">&lt;h2 id=&quot;finite-horizon-mdp&quot;&gt;Finite-Horizon MDP&lt;/h2&gt;
 
 &lt;h3 id=&quot;problem-definition&quot;&gt;Problem Definition&lt;/h3&gt;
 
@@ -434,7 +507,7 @@ Prove that the Bellman operator is monotone, i.e.,&lt;/p&gt;
 
 &lt;p&gt;Since this inequality should hold for any Diract delta $\pi_t(\cdot \vert s)$,&lt;/p&gt;
 
-\[v_t ^\star (s) \geq \max_{a\in A} \bigg [r_t (s,a) + \sum_{s'\in S}p(s'|s,a)v_{t+1}^\star (s') \bigg ]\]</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Lecture-Note" /><category term="Theory/Survey" /><summary type="html">Finite-Horizon MDP Problem Definition Instead of $\gamma$, we set the length of the horizon as $T$. Thus, a finite-horizon MDP is a tuple $\langle T,S,A,P,R \rangle$, consisting of $T$ : length of horizon everything else is the same. Our goal is to find the optimal policy that maximizes the expected cumulative reward: \[\max_{\pi \in \Pi} \mathbb{E}^\pi \bigg [ \sum_{t=0}^{T-1} r_t (s_t, a_t) + r_T (s_T) \bigg ]\] Value Function For a give policy $\pi : = (\pi_0, \cdots, \pi_{T-1})$ consider evaluating \[\mathbb{E}^\pi \bigg [ \sum_{t=0}^{T-1} r_t (s_t, a_t) + r_T (S_T) \bigg ]\] To do so, let’s first define a value function $v_t ^\pi (s)$, which is a expected return starting from state $s$ under executing $\pi$: \[v_t ^\pi (s): = \mathbb{E}^\pi \bigg [ \sum_{\tau=t} ^{T-1} r_\tau (s_\tau, a_\tau) + r_T (s_T) |s_t =s \bigg ]\] Optimal Policy We are trying to find a policy $\pi^\star$ with the largest expected total reward, i.e., \[v_0 ^{\pi^\star} (s) \geq v_0 ^\pi (s) \ \ \forall s, \pi\] which is defined as an optimal policy. $\epsilon$-optimal policy In some models an optimal policy may not exist, so instead we seek an $\epsilon$-optimal policy \[v_0 ^{\pi_\epsilon ^\star}(s) + \epsilon &amp;gt; v_0 ^\pi (s)\ \ \ \forall s,\pi\] Optimal Value Function The optimal value function $v_t ^\star (s)$ is the maximum value function over all policies \[v_t ^\star (s) := \sup _{\pi \in \Pi} v_t ^\pi (s) =\sup_{\pi \in \Pi} \bigg [ \sum_{\tau=t}^{T-1}r_\tau(s_\tau, a_\tau) + r_T(s_T) | s_t = s \bigg ]\] $v_0 ^\star$ defines the best possible performance in MDP \[v_T^\star (s) = \sup_{\pi \in \Pi} \big [ r_T (s_T) \vert s_T = s \big ] = r_T(s)\] Finite-Horizon Policy Evaluation \[v_t ^\pi (s) = \mathbb{E}^\pi [r_t (s_t, a_t ) + v_{t+1}^\pi (s_{t+1}) |s_t =s ]\] which can be decomposed as \[v_t ^\pi (s) = r_t (s, \pi_t (s) ) + \sum_{s'\in S}p(s'|s,\pi_t (s))v_{t+1}^\pi (s') \ \ \ \leftarrow \text{deterministic case}\] \[v_t ^\pi (s) = \sum_{a\in A} \pi_t(a|s) \bigg (r_t(s, a ) + \sum_{s'\in S}p(s'|s,a)v_{t+1}^\pi (s')\bigg ) \ \ \ \leftarrow \text{stochastic case}\] To conduct an policy evaluation for all $t$, first initialize $v_T^\pi (s) :=r_T (s)$ Then, conduct a backward calculation using either of the equation above Bellman Equation for Finite-Horizon MDP Theorem The optimal value functions $v_t ^\star$ solve the following Bellman equation: \[v_t ^\star (s) = \max_a \bigg ( r_t (s,a) + \sum_{s'\in S} p(s'|s,a)v_{t+1}^\star (s') \bigg ) \ \ \ \forall s\in S\] with $v_T^\star (s) = r_T (s)$. Step 1 : $\leq$ By definition, \[\begin{aligned}v_t ^\star (s) &amp;amp;= \sup_{\pi \in \Pi} \mathbb{E}^\pi \bigg [r_t (s_t, a_t ) + \sum_{\tau=t+1}^{T-1}r_\tau (s_\tau, a_\tau) + r_T(s_T) | s_t=s \bigg ]\\ &amp;amp; =\sup_{\pi \in \Pi }\mathbb{E}^\pi \bigg [ r_t (s_t, a_t ) + \mathbb{E}^\pi \Big[\sum_{t+1}^{T-1} r_\tau (s_\tau, a_\tau)+r_T (s_T) |s_{t+1}\Big ]|s_t = s \bigg ] \\ &amp;amp; = \sup_{\pi \in \Pi} \mathbb{E}^\pi \Big [ r_t (s_t, a_t) +v_{t+1}^\pi (s_{t+1}) | s_t = s \Big ] \\ &amp;amp; \leq \sup_{\pi \in \Pi }\mathbb{E}^\pi \Big [ r_t (s_t, a_t) + v_{t+1}^\star (s_{t+1}) |s_t = s \Big ]\\ &amp;amp; = \max_{a\in A} \bigg [r_t (s,a) + \sum_{s'\in S}p(s'|s,a)v_{t+1}^\star (s') \bigg ] \end{aligned}\] Step 2 : $\geq$ On the other hand, for any $\pi$, \[\begin{aligned}v_t ^\star (s) \geq v_t ^\pi (s) &amp;amp;= \mathbb{E}^\pi \Big [ r_t (s_t, a_t) + \sum_{\tau =t+1}^{T-1} r_\tau (s_\tau , a_\tau )+ r_T (s_T )|s_t = s \Big ]\\ &amp;amp;=\mathbb{E}^\pi \Big [r_t (s_t, a_t ) +v_{t+1}^\pi (s_{t+1})|s_t = s \Big ] \\ &amp;amp;= \sum_{a\in A}\pi_t (a|s ) \Big [r_t (s,a) + \sum_{s'\in S} p(s'|s,a)v_{t+1}^\pi (s') \Big]\end{aligned}\] Since the inequality above holds for any $(\pi_{t+1}, \cdots, \pi_{T-1})$ \[\begin{aligned}v_t ^\star (s) &amp;amp; \geq \sum_{a\in A} \pi_t (a|s) \Big [r_t (s,a) + \sum_{s'\in S}p(s'|s,a) v_{t+1}^\star(s') \Big ] \end{aligned}\] (Note that we changed $v_{t+1}^\pi$ to $v_{t+1}^\star$) Since this inequality should hold for any Diract delta $\pi_t(\cdot \vert s)$, \[v_t ^\star (s) \geq \max_{a\in A} \bigg [r_t (s,a) + \sum_{s'\in S}p(s'|s,a)v_{t+1}^\star (s') \bigg ]\]</summary></entry><entry><title type="html">[Optimization] 7 - KKT Optimality Condition</title><link href="http://localhost:4000/notion_to_markdown/opt-lecture-7/" rel="alternate" type="text/html" title="[Optimization] 7 - KKT Optimality Condition" /><published>2021-04-19T00:00:00+09:00</published><updated>2021-04-19T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/opt-lecture-7</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/opt-lecture-7/">&lt;h2 id=&quot;characterizing-the-optimality&quot;&gt;Characterizing the Optimality&lt;/h2&gt;
+\[v_t ^\star (s) \geq \max_{a\in A} \bigg [r_t (s,a) + \sum_{s'\in S}p(s'|s,a)v_{t+1}^\star (s') \bigg ]\]</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Lecture-Note" /><category term="Theory/Survey" /><summary type="html">Finite-Horizon MDP Problem Definition Instead of $\gamma$, we set the length of the horizon as $T$. Thus, a finite-horizon MDP is a tuple $\langle T,S,A,P,R \rangle$, consisting of $T$ : length of horizon everything else is the same. Our goal is to find the optimal policy that maximizes the expected cumulative reward: \[\max_{\pi \in \Pi} \mathbb{E}^\pi \bigg [ \sum_{t=0}^{T-1} r_t (s_t, a_t) + r_T (s_T) \bigg ]\] Value Function For a give policy $\pi : = (\pi_0, \cdots, \pi_{T-1})$ consider evaluating \[\mathbb{E}^\pi \bigg [ \sum_{t=0}^{T-1} r_t (s_t, a_t) + r_T (S_T) \bigg ]\] To do so, let’s first define a value function $v_t ^\pi (s)$, which is a expected return starting from state $s$ under executing $\pi$: \[v_t ^\pi (s): = \mathbb{E}^\pi \bigg [ \sum_{\tau=t} ^{T-1} r_\tau (s_\tau, a_\tau) + r_T (s_T) |s_t =s \bigg ]\] Optimal Policy We are trying to find a policy $\pi^\star$ with the largest expected total reward, i.e., \[v_0 ^{\pi^\star} (s) \geq v_0 ^\pi (s) \ \ \forall s, \pi\] which is defined as an optimal policy. $\epsilon$-optimal policy In some models an optimal policy may not exist, so instead we seek an $\epsilon$-optimal policy \[v_0 ^{\pi_\epsilon ^\star}(s) + \epsilon &amp;gt; v_0 ^\pi (s)\ \ \ \forall s,\pi\] Optimal Value Function The optimal value function $v_t ^\star (s)$ is the maximum value function over all policies \[v_t ^\star (s) := \sup _{\pi \in \Pi} v_t ^\pi (s) =\sup_{\pi \in \Pi} \bigg [ \sum_{\tau=t}^{T-1}r_\tau(s_\tau, a_\tau) + r_T(s_T) | s_t = s \bigg ]\] $v_0 ^\star$ defines the best possible performance in MDP \[v_T^\star (s) = \sup_{\pi \in \Pi} \big [ r_T (s_T) \vert s_T = s \big ] = r_T(s)\] Finite-Horizon Policy Evaluation \[v_t ^\pi (s) = \mathbb{E}^\pi [r_t (s_t, a_t ) + v_{t+1}^\pi (s_{t+1}) |s_t =s ]\] which can be decomposed as \[v_t ^\pi (s) = r_t (s, \pi_t (s) ) + \sum_{s'\in S}p(s'|s,\pi_t (s))v_{t+1}^\pi (s') \ \ \ \leftarrow \text{deterministic case}\] \[v_t ^\pi (s) = \sum_{a\in A} \pi_t(a|s) \bigg (r_t(s, a ) + \sum_{s'\in S}p(s'|s,a)v_{t+1}^\pi (s')\bigg ) \ \ \ \leftarrow \text{stochastic case}\] To conduct an policy evaluation for all $t$, first initialize $v_T^\pi (s) :=r_T (s)$ Then, conduct a backward calculation using either of the equation above Bellman Equation for Finite-Horizon MDP Theorem The optimal value functions $v_t ^\star$ solve the following Bellman equation: \[v_t ^\star (s) = \max_a \bigg ( r_t (s,a) + \sum_{s'\in S} p(s'|s,a)v_{t+1}^\star (s') \bigg ) \ \ \ \forall s\in S\] with $v_T^\star (s) = r_T (s)$. Step 1 : $\leq$ By definition, \[\begin{aligned}v_t ^\star (s) &amp;amp;= \sup_{\pi \in \Pi} \mathbb{E}^\pi \bigg [r_t (s_t, a_t ) + \sum_{\tau=t+1}^{T-1}r_\tau (s_\tau, a_\tau) + r_T(s_T) | s_t=s \bigg ]\\ &amp;amp; =\sup_{\pi \in \Pi }\mathbb{E}^\pi \bigg [ r_t (s_t, a_t ) + \mathbb{E}^\pi \Big[\sum_{t+1}^{T-1} r_\tau (s_\tau, a_\tau)+r_T (s_T) |s_{t+1}\Big ]|s_t = s \bigg ] \\ &amp;amp; = \sup_{\pi \in \Pi} \mathbb{E}^\pi \Big [ r_t (s_t, a_t) +v_{t+1}^\pi (s_{t+1}) | s_t = s \Big ] \\ &amp;amp; \leq \sup_{\pi \in \Pi }\mathbb{E}^\pi \Big [ r_t (s_t, a_t) + v_{t+1}^\star (s_{t+1}) |s_t = s \Big ]\\ &amp;amp; = \max_{a\in A} \bigg [r_t (s,a) + \sum_{s'\in S}p(s'|s,a)v_{t+1}^\star (s') \bigg ] \end{aligned}\] Step 2 : $\geq$ On the other hand, for any $\pi$, \[\begin{aligned}v_t ^\star (s) \geq v_t ^\pi (s) &amp;amp;= \mathbb{E}^\pi \Big [ r_t (s_t, a_t) + \sum_{\tau =t+1}^{T-1} r_\tau (s_\tau , a_\tau )+ r_T (s_T )|s_t = s \Big ]\\ &amp;amp;=\mathbb{E}^\pi \Big [r_t (s_t, a_t ) +v_{t+1}^\pi (s_{t+1})|s_t = s \Big ] \\ &amp;amp;= \sum_{a\in A}\pi_t (a|s ) \Big [r_t (s,a) + \sum_{s'\in S} p(s'|s,a)v_{t+1}^\pi (s') \Big]\end{aligned}\] Since the inequality above holds for any $(\pi_{t+1}, \cdots, \pi_{T-1})$ \[\begin{aligned}v_t ^\star (s) &amp;amp; \geq \sum_{a\in A} \pi_t (a|s) \Big [r_t (s,a) + \sum_{s'\in S}p(s'|s,a) v_{t+1}^\star(s') \Big ] \end{aligned}\] (Note that we changed $v_{t+1}^\pi$ to $v_{t+1}^\star$) Since this inequality should hold for any Diract delta $\pi_t(\cdot \vert s)$, \[v_t ^\star (s) \geq \max_{a\in A} \bigg [r_t (s,a) + \sum_{s'\in S}p(s'|s,a)v_{t+1}^\star (s') \bigg ]\]</summary></entry><entry><title type="html">[Optimization] KKT Optimality Condition</title><link href="http://localhost:4000/notion_to_markdown/opt-lecture-7/" rel="alternate" type="text/html" title="[Optimization] KKT Optimality Condition" /><published>2021-04-19T00:00:00+09:00</published><updated>2021-04-19T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/opt-lecture-7</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/opt-lecture-7/">&lt;h2 id=&quot;characterizing-the-optimality&quot;&gt;Characterizing the Optimality&lt;/h2&gt;
 
 &lt;h3 id=&quot;how-should-we-characterize-the-conditions-for-optimality&quot;&gt;How should we characterize the conditions for optimality?&lt;/h3&gt;
 
@@ -584,7 +657,7 @@ g(\tilde{\lambda}, \tilde{\nu}) &amp;amp; = L(\tilde{x}, \tilde{\lambda}, \tilde
     &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;defaults delete com.apple.Preview AppleWindowTabbingMode
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
   &lt;/li&gt;
-&lt;/ol&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="macOS-Tips" /><summary type="html">Problem macOS allows you to change the prefer tabs behavior in the settings &amp;gt; general panel. However, the option they give is quite black and white. If you prefer new tabs on Preview , but prefer new windows on Finder or Safari, there’s nothing you can do on the settings panel. Solution In that case, revert the prefer tabs setting to “never” execute the following code on Terminal, replacing the “Preview” app to whatever app you like to prefer tabs. defaults write com.apple.Preview AppleWindowTabbingMode -string always If you want to revert the setting, execute: defaults delete com.apple.Preview AppleWindowTabbingMode</summary></entry><entry><title type="html">[RL Theory] 4 - Finite Horizon MDP (2)</title><link href="http://localhost:4000/2021/04/19/scrl-4.html" rel="alternate" type="text/html" title="[RL Theory] 4 - Finite Horizon MDP (2)" /><published>2021-04-19T00:00:00+09:00</published><updated>2021-04-19T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/19/scrl-4</id><content type="html" xml:base="http://localhost:4000/2021/04/19/scrl-4.html">&lt;h2 id=&quot;optimal-policy-of-finite-horizon-mdp&quot;&gt;Optimal Policy of Finite-Horizon MDP&lt;/h2&gt;
+&lt;/ol&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="macOS-Tips" /><summary type="html">Problem macOS allows you to change the prefer tabs behavior in the settings &amp;gt; general panel. However, the option they give is quite black and white. If you prefer new tabs on Preview , but prefer new windows on Finder or Safari, there’s nothing you can do on the settings panel. Solution In that case, revert the prefer tabs setting to “never” execute the following code on Terminal, replacing the “Preview” app to whatever app you like to prefer tabs. defaults write com.apple.Preview AppleWindowTabbingMode -string always If you want to revert the setting, execute: defaults delete com.apple.Preview AppleWindowTabbingMode</summary></entry><entry><title type="html">[RL Theory] Finite Horizon MDP (2)</title><link href="http://localhost:4000/2021/04/19/scrl-4.html" rel="alternate" type="text/html" title="[RL Theory] Finite Horizon MDP (2)" /><published>2021-04-19T00:00:00+09:00</published><updated>2021-04-19T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/19/scrl-4</id><content type="html" xml:base="http://localhost:4000/2021/04/19/scrl-4.html">&lt;h2 id=&quot;optimal-policy-of-finite-horizon-mdp&quot;&gt;Optimal Policy of Finite-Horizon MDP&lt;/h2&gt;
 
 &lt;h3 id=&quot;deterministic-markov-policy&quot;&gt;Deterministic Markov Policy&lt;/h3&gt;
 
@@ -692,7 +765,7 @@ g(\tilde{\lambda}, \tilde{\nu}) &amp;amp; = L(\tilde{x}, \tilde{\lambda}, \tilde
 
 \[\pi_t^\star (s) \in \arg \max_{a\in A} \bigg [ r(s,a) + \int_w v_{t+1}(f(s,a,w))p_w (dw) \bigg ]\]
 
-&lt;p&gt;&lt;strong&gt;Existence of an optimal policy is not gauranteed!&lt;/strong&gt; We can rather find an $\epsilon-$ optimal policy.&lt;/p&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Lecture-Note" /><category term="Theory/Survey" /><summary type="html">Optimal Policy of Finite-Horizon MDP Deterministic Markov Policy Define a deterministic Markov policy $\pi^\star$ by \[\pi_t^\star (s) \in \arg\max_{a\in A} \bigg (r_t (s,a) + \sum_{s'\in S} p(s' \vert s,a)v_{t+1}^\star (s') \bigg )\] Optimality of Deterministic Markov Policy Assume that $S, A$ are finite sets. Then, the deterministic Markov policy defined above is an optimal policy. \[v_t^{\pi^\star} = v_t^\star\] This means that, for finite MDPs, it suffice to consider only the deterministic Markov policies. Proving the optimality By definition, we have $v_t^{\pi^\star} \leq v_t^\star$ for each $t$. We will use mathematical induction to show the opposite : $v_t^{\pi^\star} \geq v_t^\star$ for each $t$. First, for $t=T$, $v_T^{\pi^\star} = r_T = v_T^\star$ Then, assume that $v_{t+1}^{\pi^\star} \geq v_{t+1}^\star$ . Then we have \[\sum_{s'\in S} p(s' \vert s, \pi_t^\star (s) ) v_{t+1}^{\pi^\star} (s') \geq \sum_{s'\in S} p(s' \vert s, \pi_t^\star (s) ) v_{t+1}^{\star} (s')\] Then, by the definitionof $\pi_t^\star$, we have \[r_t (s, \pi_t^\star(s)) + \sum_{s'\in S} p(s' \vert s, \pi_t^\star(s))v_{t+1}^\star (s') \geq r_t (s, a) + \sum_{s'\in S} p(s' \vert s, a)v_{t+1}^\star (s')\] for all $a\in A$. Combining the two equalities, we have \[r(s,\pi_t^\star(s)) + \sum_{s'\in S} p(s' \vert s, \pi_t^\star(s))v_{t+1}^\star (s') \geq r_t (s, a) + \sum_{s'\in S} p(s' \vert s, a)v_{t+1}^\star (s')\] Taking the maximum for both sides with respect to $a$, we have \[v_t^{\pi^\star} (s) \geq v_t^\star (s)\] Therefore, $v_t^{\pi^\star} = v_t^\star$ . Dynamic Programming (Backward Induction) Algorithm Algorithm Initialize $v_T^\star(s) = r_T (s)$ For $t=T-1 : -1 : 0$ , set \[v_t^\star (s) = \max _{a\in A} \bigg ( r_t (s,a) + \sum_{s'\in S} p(s' \vert s,a) v_{t+1}^\star (s') \bigg ) \\ \pi_t^\star (s) = \arg \max_ {a\in A}\bigg ( r_t (s,a) + \sum_{s'\in S} p(s' \vert s,a) v_{t+1}^\star (s') \bigg )\] Extensions to Continuous Control Problem Definition Define the system model \[s_{t+1}= f(s_t, a_t, w_t)\] where the probability distribution of $w_t$ is knwon ($p_w(\cdot)$) Then, the problem can be defined as \[\max_\pi \mathbb{E}^\pi \bigg [ \sum_{t=0}^{T-1} r(s_t, a_t) + r(s_T) \bigg ]\] Transition Probability We cannot define the transition probability just like we did in the discrete space. \[p(s' \vert s,a) = p_w (w) \mathbf{1}_{s'=f(s,a,w)}\] where $\mathbf{1}$ is the indicator function, where \[\mathbf{1}_{\text{true}} = 1\\ \mathbf{1}_{\text{false}} = 0\] Bellman Equation \[v_t(s) = \sup_{a\in A} \bigg [ r(s,a) + \int_{s'\in S} v_{t+1}(s') p(ds' \vert s,a) \bigg ]\] Note that, there’s no $p_w$ term included in the equation above. \[v_t(s) = \sup_{a\in A} \bigg [ r(s,a) + \int_{w} v_{t+1}(f(s,a,w)) p_w(dw) \bigg ]\] Optimal Policy \[\pi_t^\star (s) \in \arg \max_{a\in A} \bigg [ r(s,a) + \int_w v_{t+1}(f(s,a,w))p_w (dw) \bigg ]\] Existence of an optimal policy is not gauranteed! We can rather find an $\epsilon-$ optimal policy.</summary></entry><entry><title type="html">[RL Theory] 5 - Infinite Horizon MDP, Value Iteration</title><link href="http://localhost:4000/2021/04/19/scrl-5.html" rel="alternate" type="text/html" title="[RL Theory] 5 - Infinite Horizon MDP, Value Iteration" /><published>2021-04-19T00:00:00+09:00</published><updated>2021-04-19T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/19/scrl-5</id><content type="html" xml:base="http://localhost:4000/2021/04/19/scrl-5.html">&lt;h2 id=&quot;infinite-horizon-discounted-mdp&quot;&gt;Infinite Horizon Discounted MDP&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Existence of an optimal policy is not gauranteed!&lt;/strong&gt; We can rather find an $\epsilon-$ optimal policy.&lt;/p&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Lecture-Note" /><category term="Theory/Survey" /><summary type="html">Optimal Policy of Finite-Horizon MDP Deterministic Markov Policy Define a deterministic Markov policy $\pi^\star$ by \[\pi_t^\star (s) \in \arg\max_{a\in A} \bigg (r_t (s,a) + \sum_{s'\in S} p(s' \vert s,a)v_{t+1}^\star (s') \bigg )\] Optimality of Deterministic Markov Policy Assume that $S, A$ are finite sets. Then, the deterministic Markov policy defined above is an optimal policy. \[v_t^{\pi^\star} = v_t^\star\] This means that, for finite MDPs, it suffice to consider only the deterministic Markov policies. Proving the optimality By definition, we have $v_t^{\pi^\star} \leq v_t^\star$ for each $t$. We will use mathematical induction to show the opposite : $v_t^{\pi^\star} \geq v_t^\star$ for each $t$. First, for $t=T$, $v_T^{\pi^\star} = r_T = v_T^\star$ Then, assume that $v_{t+1}^{\pi^\star} \geq v_{t+1}^\star$ . Then we have \[\sum_{s'\in S} p(s' \vert s, \pi_t^\star (s) ) v_{t+1}^{\pi^\star} (s') \geq \sum_{s'\in S} p(s' \vert s, \pi_t^\star (s) ) v_{t+1}^{\star} (s')\] Then, by the definitionof $\pi_t^\star$, we have \[r_t (s, \pi_t^\star(s)) + \sum_{s'\in S} p(s' \vert s, \pi_t^\star(s))v_{t+1}^\star (s') \geq r_t (s, a) + \sum_{s'\in S} p(s' \vert s, a)v_{t+1}^\star (s')\] for all $a\in A$. Combining the two equalities, we have \[r(s,\pi_t^\star(s)) + \sum_{s'\in S} p(s' \vert s, \pi_t^\star(s))v_{t+1}^\star (s') \geq r_t (s, a) + \sum_{s'\in S} p(s' \vert s, a)v_{t+1}^\star (s')\] Taking the maximum for both sides with respect to $a$, we have \[v_t^{\pi^\star} (s) \geq v_t^\star (s)\] Therefore, $v_t^{\pi^\star} = v_t^\star$ . Dynamic Programming (Backward Induction) Algorithm Algorithm Initialize $v_T^\star(s) = r_T (s)$ For $t=T-1 : -1 : 0$ , set \[v_t^\star (s) = \max _{a\in A} \bigg ( r_t (s,a) + \sum_{s'\in S} p(s' \vert s,a) v_{t+1}^\star (s') \bigg ) \\ \pi_t^\star (s) = \arg \max_ {a\in A}\bigg ( r_t (s,a) + \sum_{s'\in S} p(s' \vert s,a) v_{t+1}^\star (s') \bigg )\] Extensions to Continuous Control Problem Definition Define the system model \[s_{t+1}= f(s_t, a_t, w_t)\] where the probability distribution of $w_t$ is knwon ($p_w(\cdot)$) Then, the problem can be defined as \[\max_\pi \mathbb{E}^\pi \bigg [ \sum_{t=0}^{T-1} r(s_t, a_t) + r(s_T) \bigg ]\] Transition Probability We cannot define the transition probability just like we did in the discrete space. \[p(s' \vert s,a) = p_w (w) \mathbf{1}_{s'=f(s,a,w)}\] where $\mathbf{1}$ is the indicator function, where \[\mathbf{1}_{\text{true}} = 1\\ \mathbf{1}_{\text{false}} = 0\] Bellman Equation \[v_t(s) = \sup_{a\in A} \bigg [ r(s,a) + \int_{s'\in S} v_{t+1}(s') p(ds' \vert s,a) \bigg ]\] Note that, there’s no $p_w$ term included in the equation above. \[v_t(s) = \sup_{a\in A} \bigg [ r(s,a) + \int_{w} v_{t+1}(f(s,a,w)) p_w(dw) \bigg ]\] Optimal Policy \[\pi_t^\star (s) \in \arg \max_{a\in A} \bigg [ r(s,a) + \int_w v_{t+1}(f(s,a,w))p_w (dw) \bigg ]\] Existence of an optimal policy is not gauranteed! We can rather find an $\epsilon-$ optimal policy.</summary></entry><entry><title type="html">[RL Theory] Infinite Horizon MDP, Value Iteration</title><link href="http://localhost:4000/2021/04/19/scrl-5.html" rel="alternate" type="text/html" title="[RL Theory] Infinite Horizon MDP, Value Iteration" /><published>2021-04-19T00:00:00+09:00</published><updated>2021-04-19T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/19/scrl-5</id><content type="html" xml:base="http://localhost:4000/2021/04/19/scrl-5.html">&lt;h2 id=&quot;infinite-horizon-discounted-mdp&quot;&gt;Infinite Horizon Discounted MDP&lt;/h2&gt;
 &lt;h3 id=&quot;assumptions&quot;&gt;Assumptions&lt;/h3&gt;
 &lt;ul&gt;
   &lt;li&gt;
@@ -985,343 +1058,4 @@ g(\tilde{\lambda}, \tilde{\nu}) &amp;amp; = L(\tilde{x}, \tilde{\lambda}, \tilde
 
 \[\mathcal{T}^{\pi^\star} v = \mathcal{T}v = \mathcal{v}\]
 
-&lt;p&gt;which means that $v= v^\star$.&lt;/p&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Lecture-Note" /><category term="Theory/Survey" /><summary type="html">Infinite Horizon Discounted MDP Assumptions Stationary rewards and transition probabilities: $r(s,a)$ and $p(s’ \vert s,a)$ doesn’t change over time. Finite state and action sets $\rightarrow$ this implies that $r(s,a)$ is bounded! There exists a constant $M$ such that \[|r(s,a)|&amp;lt;M \ \ \forall s \in S, \ \ \forall a \in A.\] Stationary Policy : policy doesn’t change over time! Policy Evaluation We need to evaluate \[\mathbb{E}^\pi \bigg [ \sum_{t=0}^\infty \gamma^t r(s_t, a_t) \bigg ]\] given a policy $\pi$. Value Function To do so, we define a value function, which is the expected return starting from state $s$ under executing the policy $\pi$. \[v^\pi (s) := \mathbb{E}^\pi \bigg [ \sum_{\tau = t}^\infty \gamma^{\tau -t} r(s_\tau , a_\tau) \ \vert \ s_t = s \bigg ]\] Using this value function, we decompose the value function into two parts. (1) immediate reward + (2) discounted value of next state. \[v^\pi (s) = \mathbb{E}^\pi [ r(s_t, a_t) + \gamma v^\pi (s_{t+1}) \ \vert \ s_t =s ]\] This can be expressed as \[v^\pi (s) = \sum_{a\in A} \pi (a \vert s) \bigg [ r(s, a) + \sum_{s'\in S} p(s' \vert s, a) v^\pi (s') \bigg ]\] Vector Form Recall, that we assumed finite state space and action space. Then, $v^\pi := (v^\pi(s_1),\cdots, v^\pi(s_n)) \in \mathbb{R}^n $ $R^\pi := (r(s_1, \pi(s_1), \cdots, r(s_n, \pi(s_n)) \in \mathbb{R}^n$ if deterministic $ R^\pi := (\sum_{a\in A}\pi(a \vert s_1)r(s_1, a), \cdots, \sum_{a\in A}\pi(a \vert s_n)r(s_n, a)) \in \mathbb{R}^n $ if stochastic Transition probability matrix Then, the policy evaluation can be expressed as \[v^\pi = R^\pi + \gamma P^\pi v^\pi\] Eigenvalues of Transition Probability Matrix Note that stochastic matrix has an eigenvalue of 1: let A as a $n\times n$ stochastic matrix. Then, \[A \begin{bmatrix}1\\1\\ \vdots \\1 \end{bmatrix} = \begin{bmatrix} \sum_i{a_{1i}}\\ \sum_i{a_{2i}}\\ \vdots \\ \sum_i{a_{ni}} \end{bmatrix} = \begin{bmatrix}1\\1\\ \vdots \\1 \end{bmatrix}\] which shows that $A$ has an eigenvalue of 1. Now, we are going to claim that other eigenvalues does not exceed 1. To do so, let’s assume that $Ax = \lambda x$ for some $\lambda &amp;gt;1 $. Knowing that the row-sum of $A$ is 1, we can interpret each component of $Ax$ as the convex combination of $x$ components, thus cannot exceed the maximum value of $x_{\max}$. However, since $\lambda&amp;gt;1$, at least one element of $\lambda x$ will be greater than $x_\max$. Thus, we can conclude that $\lambda &amp;gt;1$ is not possible. Eigenvalues of $P^\pi$ are less than or equal to 1. Unique solution of Policy Evaluation Equation Now, we can prove that the policy evaluation equation has a unique solution. \[v^\pi = R^\pi + \gamma P^\pi v^\pi\] This is because, \[(I-\gamma P^\pi ) v^\pi =R^\pi\] $I-\gamma P^\pi$ has an eigenvalue greater than zero, and thus invertible. Than, the unique soluition is given by \(v^\pi = (I- \gamma P^\pi )^{-1} R^\pi\) However, this method is inefficient when the problem gets larger. Policy Evaluation : Value Iteration Definition Define the operator $\mathcal{T} : \mathbb{R} \rightarrow \mathbb{R}$ \[\mathcal{T}^\pi v := R^\pi + \gamma P^\pi\] In a non-vector form, \[\mathcal{T}^\pi v(s) = \sum_{a \in A} \pi(a\vert s) \bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s, a) v(s') \bigg ]\] Then, the policy evaluation equation can be expressed as \[\mathcal{T}^\pi v^\pi = v^\pi\] which is a fixed point problem. Contraction Property We should prove that the operator $\mathcal{T}$ is a $\gamma$-contraction with respect to $| \cdot |_\infty$ for any stationary policy $\pi$. Banach Fixed Point Theorem If $\mathcal{T}$ is a contraction mapping, then $\mathcal{T}$ admits a unique fixed point $v^\star \in \mathbb{R}^n$. Meanwhile, $v^\star$ can be found by value iteration! \[v_{k+1} := \mathcal{T}v_k\] which leads to $v_k \rightarrow v^\star$. Value Iteration Algorithm For a stationary policy $\pi$, initialize $v_0$ as an arbitrary vector in $\mathbb{R}^n$. Repeat until convergence: \[v_{k+1} := \mathcal{T}^\pi v_k\] Optimal Policy / Value Function Optimal Value Function We have to find an optimal policy that maximizes the expected cumulative reward! \[\max_{\pi \in \Pi} \mathbb{E}^\pi \bigg [ \sum_{t=0}^\infty \gamma^t r(s_t, a_t) \bigg ]\] Thus, we are going to define an optimal value function \[v^\star (s) :=\max_{\pi \in \Pi} \bigg [ \sum_{\tau=t}^\infty \gamma^{\tau -t}r(s_\tau, a_\tau ) \big \vert s_t = s \bigg ]\] Recall that value function we previously defined doesn’t have the $\max_{\pi \in \Pi}$ term at front. Bellman Operator Defining the Bellman operator $\mathcal{T} : \mathbb{R}^n \rightarrow \mathbb{R}^n$ by \[\mathcal{T}v: = \sup_{\pi \in \Pi} \{ R^\pi + \gamma P^\pi v \}\\ \mathcal{T}v(s):= \sup_{\pi} \sum_{a\in A} \pi(a \vert s) \bigg [ r(s,a) + \gamma \sum_{s'\in S}p(s' \vert s,a) v(s') \bigg ]\] Note that we can rewrite the Bellman equation, replacing the $\sup_\pi$ term with $\max_{a\in A}$ term. \[(\mathcal{T}v)(s):= \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s'\in S} p(s' \vert s,a) v(s') \bigg ]\] Why? since $A$ is a finite action set, the supremum over possible policies $\pi$ is achieved when the policy is designed as \[\pi( a \vert s) = \begin{cases} 1 &amp;amp; \ \ \ \text{if } a= a^\star\\ 0 &amp;amp; \ \ \ \text{otherwise} \end{cases}\] while \[a^\star \in \arg \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s'\in S}p(s' \vert s,a) v(s') \bigg ]\] Contraction Property of Bellman Operator (optimal) Bellman operator is a monotone mapping Assume $v \leq v’$, and let $a^\star_{v}$ be the maximizing-action corresponding to $v$, and $a^\star_{v’}$ be the maximizing-action corresponding to $v’$. \(\begin{aligned} (\mathcal{T}v')(s) &amp;amp; = \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s'|s,a)v'(s') \bigg ]\\ &amp;amp; = r(s,a^\star_{v'})+ \gamma \sum_{s' \in S} p(s'|s,a^\star_{v'})v'(s')\\ &amp;amp; \geq r(s,a^\star_{v}) + \gamma \sum_{s'\in S} p(s'|s,a^\star_{v})v'(s')\\ &amp;amp; \geq r(s,a^\star_{v}) + \gamma \sum_{s'\in S} p(s'|s,a_v^\star)v(s') \ \ \ \because v'(s) \geq v(s), \ \forall s\\ &amp;amp; = (\mathcal{T}v)(s) \ \ \ \forall s \in S \end{aligned}\) (optimal) Bellman operator is a $\gamma$-contraction mapping Recall that infinity norm of a vector $x \in \mathbb{R}^n$ is defined as \[\|\mathbf{x}\|_\infty = \max_i |\mathbf{x}_i|.\] Also, consider the following statement \[| \max_z f(z) - \max_z h(z) | \leq \max_z |f(z)-h(z)|\] which can be easily proved by the following: \[\begin{aligned} \max_z f(z) - \max_z h(z) &amp;amp; = f(z^\star) - \max_z h(z)\\ &amp;amp; \leq f(z^\star) - h(z^\star) \\ &amp;amp; \leq \max_z |f(z) - h(z)|\\ \end{aligned}\] \[\begin{aligned} \max_z f(z) - \max_z h(z) &amp;amp; = \max_z f(z) - h(z^\star)\\ &amp;amp; \geq f(z^\star) - h(z^\star) \\ &amp;amp; \geq - \max_z |f(z) - h(z)| \end{aligned}\] Applying this to operator $\mathcal{T}$, we have: \[\begin{aligned} \|\mathcal{T}v-\mathcal{T}v' \|_\infty &amp;amp; = \max_s \Big [ (\mathcal{T}v)(s) - (\mathcal{T}v')(s) \Big ]\\ &amp;amp; = \max_s \bigg [ \max_a \Big [r(s,a)+\gamma \sum_{s' \in S}p(s'|s,a)v(s)\Big ] - \max_a \Big [r(s,a)+\gamma \sum_{s' \in S}p(s'|s,a)v'(s)\Big ] \bigg ] &amp;amp; \\ &amp;amp; \leq \max_s \bigg [ \max_a \Big |\gamma \sum_{s'\in S}p(s'|s,a)[v(s)-v'(s)] \Big | \bigg ] \ \ \ \ \ \because \text{inequality (6)}\\ &amp;amp; = \max_{s,a} \Big |\gamma \sum_{s'\in S}p(s'|s,a)[v(s)-v'(s)] \Big | \\ &amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a)\ \big |v(s)-v'(s)\big | &amp;amp; \\ &amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_s |v(s)-v'(s)| &amp;amp; \\ &amp;amp; = \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \|v-v'\| \ \ \ \ \ \because \text{definition (5)}\\ &amp;amp; = \gamma \|v-v'\|_\infty \end{aligned}\] **Thus, bellman equation has a unique solution, which is the optimal value function $v^\star$. ** Additional Properties [Proposition] This proposition can be used to prove that, if $\mathcal{T}v = v$, then $v= v^\star$. If $v\geq \mathcal{T}v $, then $v \geq v^\star$. If $v \leq \mathcal{T}v $, then $v \leq v^\star$. [proof] Let’s first prove the first one. (the other one can be proved by the exact same way) First, fix an arbitrary policy $\pi$. Since $\mathcal{T}$ selects the supremum over all policies, \[\mathcal{T}v \geq \mathcal{T}^\pi v\] Thus, \[v \geq \mathcal{T}v \geq \mathcal{T}^\pi v = R^\pi + \gamma P^\pi v \geq R^\pi + \gamma P^\pi (R^\pi + \gamma P^\pi v) \geq \cdots \geq \sum_{t=0}^{n-1} (\gamma P^\pi ) ^t R^\pi + (\gamma P^\pi )^n v\] Letting $n\rightarrow \infty$, we can say that \[v \geq \sum_{t=0}^\infty (\gamma P^\pi )^t R^\pi = v^\pi\] since $0&amp;lt;\gamma&amp;lt;1$ and the eigenvalue of $P^\pi$ doesn’t exceed 1. Taking the supremum of both sides with respect to $\pi$, we have \[v \geq v^\star\] Existence of Optimal Policies What we did so far is the procedure of finding the optimal value function. Meanwhile, we do not (yet) know whether there is a policy that makes us to achieve that optimal value function that we obtained by solving the optimal Bellman equation. [Theorem] If $S$ and $A$ are finite sets, then there exists an optimal policy, which is deterministic and stationary. [proof] If we construct a deterministic, stationary policy by \[\pi^\star(s) \in \arg\max _{a\in A}\bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) v^\star(s') \bigg ]\] this is an optimal policy that gives us the optimal value function $v^\star$. To prove this, try evaluating the policy $\pi^\star$ by solving \[\mathcal{T}^{\pi^\star} v = v\] Knowing that $\pi^\star$ is defined by taking the argmax action, \[\mathcal{T}^{\pi^\star} = \mathcal{T}\] Thus, \[\mathcal{T}^{\pi^\star} v = \mathcal{T}v = \mathcal{v}\] which means that $v= v^\star$.</summary></entry><entry><title type="html">[Optimization] 6 - Lagrange Duality, Slater’s Condition</title><link href="http://localhost:4000/notion_to_markdown/opt-lecture-6/" rel="alternate" type="text/html" title="[Optimization] 6 - Lagrange Duality, Slater’s Condition" /><published>2021-04-18T00:00:00+09:00</published><updated>2021-04-18T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/opt-lecture-6</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/opt-lecture-6/">&lt;h2 id=&quot;lagrangian&quot;&gt;Lagrangian&lt;/h2&gt;
-
-&lt;p&gt;Consider an optimization problem&lt;/p&gt;
-
-\[\begin{aligned} \min &amp;amp; \ \ \ f_0 (x) \\ \text{s.t} &amp;amp; \ \ \ f_i (x) \leq 0, \ \ \  i= 1, \cdots, m \\ &amp;amp; \ \ \ h_i (x) =0, \ \ \ i=1, \cdots, p \end{aligned}\]
-
-&lt;p&gt;Now, take the constraint into account by &lt;strong&gt;augmenting the objective function with a weighted sum of the constraint functions&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;p&gt;Lagrangian $L: \mathbb{R}^n \times \mathbb{R}^m \times \mathbb{R}^p \rightarrow \mathbb{R}$ defined by&lt;/p&gt;
-
-\[L(x,\lambda, \nu) := f_0 (x) + \sum_{i=1}^n \lambda_i f_i (x) + \sum_{i=1}^p \nu_i h_i (x)\]
-
-&lt;p&gt;where $\lambda_i$ is the Lagrange multiplier associated with the inequality constraints, and $\nu_i$ is the Lagrange multipler associated with equality constraints. We call $\lambda, \nu$ as &lt;strong&gt;dual variables&lt;/strong&gt; or Lagrange multiplier vectors.&lt;/p&gt;
-
-&lt;h2 id=&quot;lagrange-dual&quot;&gt;Lagrange Dual&lt;/h2&gt;
-
-&lt;p&gt;Define Lagrange dual function $g: \mathbb{R}^m \times \mathbb{R}^n \rightarrow \mathbb{R}$&lt;/p&gt;
-
-\[g(\lambda, \nu) := \inf_{x\in \mathbb{R}^n } L(x,\lambda, \nu) = \inf_{x\in \mathbb{R}^n } \bigg [ f_0 (x) + \sum_{i=1}^n \lambda_i f_i (x) + \sum_{i=1}^p \nu_i h_i (x) \bigg ]\]
-
-&lt;p&gt;Note that this dual function is &lt;strong&gt;concave&lt;/strong&gt; in $(\lambda, \nu)$, even when the original problem is non-convex.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;[proof]&lt;/strong&gt; Lagrangian is affine in $(\lambda, \nu)$. Thus, $g(\lambda, \nu)$ can be construed as a pointwise infimum of affine function.&lt;/p&gt;
-
-&lt;h3 id=&quot;lagrange-dual-lower-bounds-the-optimal-value&quot;&gt;Lagrange Dual Lower bounds the Optimal Value&lt;/h3&gt;
-
-&lt;p&gt;&lt;strong&gt;[Proposition]&lt;/strong&gt; For any $\lambda \geq 0$ and any $\nu$,&lt;/p&gt;
-
-\[g(\lambda, \nu) \leq p^\star\]
-
-&lt;p&gt;&lt;strong&gt;[proof]&lt;/strong&gt; Fix an arbitrary feasible $\tilde{x}$. Then,&lt;/p&gt;
-
-\[f_i (\tilde{x}) \leq 0 \\
-h_i (\tilde{x}) =0\]
-
-&lt;p&gt;Now, fix an arbitrary $\lambda \geq 0 $ and $\nu$. We have&lt;/p&gt;
-
-\[\sum \lambda_i f_i (\tilde{x})  + \sum \nu_i h_i (\tilde{x}) \leq 0\]
-
-&lt;p&gt;Thus,&lt;/p&gt;
-
-&lt;p&gt;\(L(\tilde{x}, \lambda, \nu) = f_o (\tilde{x}) +\sum \lambda_i f_i (\tilde{x})  + \sum \nu_i h_i (\tilde{x}) \leq f_o(\tilde{x}) \leq p^\star\)
-for all feasibe $\tilde{x}$.&lt;/p&gt;
-
-&lt;h3 id=&quot;lagrange-dual-problem&quot;&gt;Lagrange Dual Problem&lt;/h3&gt;
-
-\[\begin{aligned}
-\max &amp;amp; \ \ \ g(\lambda,\nu)\\
-\text{s.t.} &amp;amp; \ \ \ \lambda \geq 0 
-\end{aligned}\]
-
-&lt;p&gt;We have to maximize the Lagrange Dual (to at least get closer to the original optimal value $p^\star$).&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;A pair $(\lambda, \nu)$ is called &lt;strong&gt;dual-feasible&lt;/strong&gt; if&lt;/p&gt;
-
-\[\lambda \geq 0 , \ \ \ g(\lambda, \nu) &amp;gt;-\infty\]
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;This dual problem is always a convex optimization problem, even when the original problem is non-convex. (Recall that $g(\lambda, \nu)$ was concave function)&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;ex-dual-of-standard-form-lp&quot;&gt;[Ex] Dual of standard form LP&lt;/h3&gt;
-
-\[\begin{aligned}
-\min &amp;amp; \ \ \ c^Tx \\
-\text{s.t.} &amp;amp; \ \ \ Ax=b \\
-&amp;amp; \ \ \ x\geq 0
-\end{aligned}\]
-
-&lt;p&gt;&lt;strong&gt;[solution]&lt;/strong&gt; First get the Lagrangian&lt;/p&gt;
-
-\[\begin{aligned}
-L(x,\lambda, \nu) &amp;amp;= c^T x+ \nu^T (Ax-b) + \lambda ^T (-x)\\
-&amp;amp; = (c+A^T \nu -\lambda)^T x -\nu^T b
-\end{aligned}\]
-
-&lt;p&gt;Now, minimize the Lagrangian with respect to $x$.&lt;/p&gt;
-
-\[g(\lambda, \nu) = \inf_x L(x,\lambda, \nu) = 
-\begin{cases} 
--\nu^Tb &amp;amp; \ \ \ \text{if } c+A^T \nu - \lambda =0\\
--\infty &amp;amp; \ \ \ \text{otherwise}
-\end{cases}\]
-
-&lt;p&gt;Thus, the dual problem is&lt;/p&gt;
-
-\[\begin{aligned}
-\max &amp;amp; \ \ \ -\nu^T b \\
-\text{s.t.} &amp;amp; \ \ \ c+ A^T \nu - \lambda =0 \\
-&amp;amp; \ \ \ \lambda \geq 0
-\end{aligned}\]
-
-&lt;h3 id=&quot;ex-dual-of-inequality-form-lp&quot;&gt;[Ex] Dual of inequality form LP&lt;/h3&gt;
-
-&lt;p&gt;Same procedure, we get&lt;/p&gt;
-
-\[\begin{aligned}
-\max &amp;amp; \ \ \ -b^T \lambda \\
-\text{s.t.} &amp;amp; \ \ \ c+ A^T \lambda  =0 \\
-&amp;amp; \ \ \ \lambda \geq 0
-\end{aligned}\]
-
-&lt;h2 id=&quot;interpreting-the-lagrangian-dual&quot;&gt;Interpreting the Lagrangian Dual&lt;/h2&gt;
-
-&lt;h3 id=&quot;linear-approximation&quot;&gt;Linear Approximation&lt;/h3&gt;
-
-&lt;p&gt;We can rewrite the original problem (1) as&lt;/p&gt;
-
-\[\min \ \ f_0 (x) + \sum_{i=1}^n I_- (f_i (x))  + \sum_{i=1}^p  I_0 (h_i (x))\]
-
-&lt;p&gt;where $I_- : \mathbb{R} \rightarrow \mathbb{R}$ is a penalty function for positive reals (blue line in below figure)&lt;/p&gt;
-
-\[I_- (u) := \begin{cases}
-0 &amp;amp; \ \ \ \text{if } u \leq 0 \\
-+\infty &amp;amp; \ \ \ \text {if } u&amp;gt;0
-\end{cases}\]
-
-&lt;p&gt;Similarly, $I_0 : \mathbb{R} \rightarrow \mathbb{R}$ is a penalty function for nonzero values.&lt;/p&gt;
-
-\[I_0 (u) := \begin{cases}
-0 &amp;amp; \ \ \ \text{if } u = 0 \\
-+\infty &amp;amp; \ \ \ \text {if } u\not =0
-\end{cases}\]
-
-&lt;p&gt;Now, let’s relax the function a bit.&lt;/p&gt;
-
-&lt;center&gt;&lt;img src=&quot;image-20210418201908558.png&quot; alt=&quot;image-20210418201908558&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/center&gt;
-
-&lt;center&gt;&lt;img src=&quot;image-20210418202115363.png&quot; alt=&quot;image-20210418202115363&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/center&gt;
-
-&lt;p&gt;Replace $I_-(u)$ with the linear function $\lambda_i u$ where $\lambda_i \geq 0$, and function $I_0 (u)$ with $\nu_i u$. We then have a Lagrangian.&lt;/p&gt;
-
-&lt;p&gt;Thus, the linear penalty function introduced here is the &lt;strong&gt;underestimator&lt;/strong&gt; of the original penalty function. Thus, it seems quite obvious that dual function has to yield a lower bound on the optimal value of the primal problem.&lt;/p&gt;
-
-&lt;h3 id=&quot;geometric-interpretation&quot;&gt;Geometric Interpretation&lt;/h3&gt;
-
-&lt;p&gt;Consider the following set of values&lt;/p&gt;
-
-\[\mathcal{G}:= \{ (f_1(x), \cdots, f_m(x), h_1(x), \cdots, h_p(x), f_0 (x)) \}\in \mathbb{R}^m \times \mathbb{R}^p \times \mathbb{R}\]
-
-&lt;p&gt;Now, the optimal value of the primal problem can be expressed as&lt;/p&gt;
-
-\[p^\star = \inf \{ p \ \vert \ (u,v,t) \in \mathcal{G}, \ u\leq 0 , v=0\}\]
-
-&lt;p&gt;Meanwhile, the dual function can be expressed as&lt;/p&gt;
-
-\[g(\lambda, \nu) = \inf \{ (\lambda, \nu, 1)^T (u,v,t) \ \vert \ (u,v,t) \in \mathcal{G}\}\]
-
-&lt;p&gt;Suppose $\lambda \geq 0$. Then, if $u\leq 0$ and $v=0$,&lt;/p&gt;
-
-\[t \geq (\lambda , \nu, 1)^T (u,v,t)\]
-
-&lt;p&gt;Therfore,&lt;/p&gt;
-
-\[\begin{aligned}
-p^\star &amp;amp;= \inf \ \{ t \ \vert \ (u,v,t) \in \mathcal{G}, u\leq 0, v=0\}\\
-&amp;amp; \geq \inf \ \{ (\lambda , \nu, 1)^T (u,v,t) \ \vert \ (u,v,t) \in \mathcal{G}, u\leq 0, v=0\}\\
-&amp;amp; \geq \inf \ \{ (\lambda , \nu, 1)^T (u,v,t) \ \vert \ (u,v,t) \in \mathcal{G}\} = g(\lambda, \nu) \\
-\end{aligned}\]
-
-&lt;center&gt;&lt;img src=&quot;image-20210418203400472.png&quot; alt=&quot;image-20210418203400472&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/center&gt;
-
-&lt;center&gt;&lt;img src=&quot;image-20210418203616032.png&quot; alt=&quot;image-20210418203616032&quot; style=&quot;zoom:35%;&quot; /&gt;&lt;/center&gt;
-
-&lt;h2 id=&quot;strong-duality&quot;&gt;Strong Duality&lt;/h2&gt;
-
-&lt;h3 id=&quot;weak-duality&quot;&gt;Weak Duality&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;$p^\star$ = optimal value of the primal problem&lt;/li&gt;
-  &lt;li&gt;$d^\star$ = optimal value of the dual problem&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Then, “weak duality” holds, regardless of the convexity of the primal problem.&lt;/p&gt;
-
-\[d^\star \leq p^\star\]
-
-&lt;p&gt;and $p^\star - d^\star$ is called the &lt;strong&gt;duality gap&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;h3 id=&quot;strong-duality-1&quot;&gt;Strong Duality&lt;/h3&gt;
-
-&lt;p&gt;We say strong duality holds if&lt;/p&gt;
-
-\[p^\star = d^\star\]
-
-&lt;p&gt;&lt;strong&gt;Note that strong duality generally does not hold&lt;/strong&gt;. However, under certain condition, strong duality holds.&lt;/p&gt;
-
-&lt;h3 id=&quot;slaters-condition&quot;&gt;Slater’s condition&lt;/h3&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;&lt;strong&gt;[Theorem]&lt;/strong&gt; Strong duality holds for a convex optimization problem if Slater’s condition holds. Slater’s condition means that, there exists $x$ such that 
-\(f_i (x) &amp;lt;0 , \ \ \ i=1, \cdots, m, \ \ \ Ax= b\)
-(In other words, slater’s condition states that the point should satisfy the inequality condition &lt;strong&gt;strictly&lt;/strong&gt;.)&lt;/p&gt;
-
-&lt;p&gt;However, if some of its inequality constraint is &lt;strong&gt;affine&lt;/strong&gt;, such inequality constraints does not have to hold strictly. If $f_1, \cdots, f_k$ are affine, then strong duality holds if there exists $x$ such that&lt;/p&gt;
-
-\[f_i (x) \leq 0, \ \ \ i=1, \cdots, k, \ \ f_i (x) &amp;lt;0 , \ \ i= k+1, \cdots, m, \ \ Ax=b\]
-
-&lt;hr /&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;We can see that, for LP, &lt;strong&gt;slater’s condition&lt;/strong&gt; is achieved when $x$ is feasible.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;proving-the-slaters-theorem&quot;&gt;Proving the Slater’s Theorem&lt;/h2&gt;
-
-&lt;h3 id=&quot;lets-prove&quot;&gt;Let’s Prove…&lt;/h3&gt;
-
-&lt;p&gt;Consider the convex optimization problem&lt;/p&gt;
-
-\[\begin{aligned} \min &amp;amp; \ \ \ f_0 (x) \\ \text{s.t} &amp;amp; \ \ \ f_i (x) \leq 0, \ \ \  i= 1, \cdots, m \\ &amp;amp; \ \ \ Ax=b \end{aligned}\]
-
-&lt;p&gt;where $\tilde{x}$ satisfies the Slater’s condition. In other words,&lt;/p&gt;
-
-\[f_i (\tilde{x}) &amp;lt;0, \ \ i=1,\cdots, m, \ \text{and } A\tilde{x}=b\]
-
-&lt;p&gt;To simplify the proof, assume the primal optimal value $p^\star$ is finite, and $\text{rank }A = p$.&lt;/p&gt;
-
-&lt;p&gt;Let’s first define two sets $\mathcal{A, B}$.&lt;/p&gt;
-
-\[\mathcal{A}:= \{(u,v,t) \ \vert \ \exists x \in \mathcal{D} \text{ s.t.} f_i (x)\leq u_i, h_i (x) =v_i , f_0 (x)\leq t\}\\
-\mathcal{B} := \{(0,0,s) \in \mathbb{R}^m \times \mathbb{R}^p \times \mathbb{R} \ \vert \ s&amp;lt;p^\star \}\]
-
-&lt;h3 id=&quot;separating-hyperplane-theorem&quot;&gt;Separating Hyperplane Theorem&lt;/h3&gt;
-
-&lt;p&gt;&lt;strong&gt;[Theorem]&lt;/strong&gt; Suppose $C$ and $D$ are nonempty disjoint convex sets. Then there exist $a\not =0$ and $b$ such that
-\(a^Tx \leq b \ \ \ \forall x \in C\\
-a^Tx \geq b \ \ \ \forall x \in D\)&lt;/p&gt;
-
-&lt;center&gt;&lt;img src=&quot;image-20210418205855515.png&quot; alt=&quot;image-20210418205855515&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/center&gt;
-
-&lt;p&gt;We call that a &lt;strong&gt;separating hyperplane&lt;/strong&gt; for $C$ and $D$.&lt;/p&gt;
-
-&lt;h3 id=&quot;step1--claim-mathcalacap-mathcalb-varnothing&quot;&gt;Step1 : Claim $\mathcal{A}\cap \mathcal{B} =\varnothing$&lt;/h3&gt;
-
-&lt;p&gt;Suppose $\exists (u,v,t) \in \mathcal{A \cap B}$ . Since $(u,v,t)\in \mathcal{B}$, we have&lt;/p&gt;
-
-\[u=0, \ \ v=0,\ \ t&amp;lt;p^\star\]
-
-&lt;p&gt;Meanwhile, since $(u,v,t) \in \mathcal{A}$, there exists $x$ such that&lt;/p&gt;
-
-\[f_i (x) \leq u =0, \ \ h_i (x)=v=0 , \ \ \ f_0 (x) \leq t &amp;lt;p^\star\]
-
-&lt;p&gt;This is contradictory, since we assumed that $p^\star$ is the optimal value of the primal problem.&lt;/p&gt;
-
-&lt;h3 id=&quot;step-2--use-the-separting-hyperplane-theorem&quot;&gt;Step 2 : Use the Separting Hyperplane Theorem&lt;/h3&gt;
-
-&lt;p&gt;By the separating hyperplane theorem, there exists $(\tilde{\lambda}, \tilde{\nu}, \mu)\not =0$ and $\alpha$ such that&lt;/p&gt;
-
-\[\tilde{\lambda}^T u + \tilde{\nu}v + \mu t \geq \alpha  \ \ \ \forall (u,v,t) \in \mathcal{A}\\
-\tilde{\lambda}^T u + \tilde{\nu}v + \mu t \leq \alpha  \ \ \ \forall (u,v,t) \in \mathcal{B}\\\]
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;Note that, for $(u,v,t)\in \mathcal{A}$,  $u$ and $t$ is unbounded upwards. Thus, to make the first condition feasible, we can deduce that $\tilde{\lambda} \geq 0$ and $\mu \geq 0$. (otherwise, $\tilde{\lambda}^T u + \mu t$ will be unbounded below)&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Also, the second condition implies that&lt;/p&gt;
-
-\[\mu t \leq \alpha \ \ \ \forall t &amp;lt;p^\star\]
-
-    &lt;p&gt;which also implies&lt;/p&gt;
-
-\[\mu p^\star \leq \alpha\]
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Combining with the first condition for $u_i = f_i (x), v_i = h_i (x) = Ax-b, t= f_0 (x)$&lt;/p&gt;
-
-\[\sum_{i=1}^n \tilde{\lambda}_i f_i (x) + \tilde{\nu}^T(Ax-b)+ \mu f_0 (x) \geq \alpha \geq \mu p^\star \label{28}\]
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;step-3--suppose-that-mu0&quot;&gt;Step 3 : Suppose that $\mu&amp;gt;0$&lt;/h3&gt;
-
-&lt;p&gt;Divide equation ($\ref{28}$) with $\mu$. Then, we obtain&lt;/p&gt;
-
-\[L(x,\tilde{\lambda}/\mu, \tilde{\nu}/\mu) \geq p^\star\]
-
-&lt;p&gt;Minimizing the Lagrangian over $x$, we have&lt;/p&gt;
-
-\[g(\lambda, \nu)\geq p^\star\]
-
-&lt;p&gt;Meanwhile, the weak-duality still holds.&lt;/p&gt;
-
-\[g(\lambda, \nu) \leq p^\star\]
-
-&lt;p&gt;Thus,&lt;/p&gt;
-
-\[g(\lambda, \nu) = p^\star\]
-
-&lt;p&gt;the strong duality holds.&lt;/p&gt;
-
-&lt;h3 id=&quot;step-4--what-if-mu0&quot;&gt;Step 4 : What if $\mu=0$?&lt;/h3&gt;
-
-&lt;p&gt;Now, assume $\mu =0$. We then have&lt;/p&gt;
-
-\[\sum_{i=1}^n \tilde{\lambda}_i f_i (x) + \tilde{\nu}^T(Ax-b) \geq \alpha \geq \mu p^\star =0\]
-
-&lt;p&gt;Applying this to $\tilde{x}$ that satisfies the Slater’s condition, ($A\tilde{x}-b =0$ and $f_i (\tilde{x}) &amp;lt; 0$)&lt;/p&gt;
-
-\[\sum_{i=1}^n \tilde{\lambda}_i f_i (\tilde{x}) \geq 0\]
-
-&lt;p&gt;Since $f_i (\tilde{x}) &amp;lt;0$ and $\tilde{\lambda}_i \geq 0$, above inequality can only hold when&lt;/p&gt;
-
-\[\tilde{\lambda}=0\]
-
-&lt;p&gt;Since the separating hyperplane requires $(\tilde{\lambda}, \tilde{\nu},\mu)$ to be nonzero, the remaining nonzero item $\tilde{\nu}\not=0$.&lt;/p&gt;
-
-&lt;p&gt;Then, equation (29) can be rewritten as&lt;/p&gt;
-
-\[\tilde{\nu}^T(Ax-b)\geq 0 \ \ \ \forall x\]
-
-&lt;p&gt;while for $\tilde{x}$,&lt;/p&gt;
-
-\[\tilde{\nu}^T (A\tilde{x}-b)=0\]
-
-&lt;p&gt;However, since $A^T \tilde{\nu} \not =0$, there is always an $x$ that satisfies&lt;/p&gt;
-
-\[\tilde{\nu}^T (Ax-b) &amp;lt;0\]
-
-&lt;p&gt;This is a contradiction! Thus, $\mu &amp;gt;0$.&lt;/p&gt;
-
-&lt;h3 id=&quot;geometric-idea-behind-the-proof&quot;&gt;Geometric Idea behind the Proof&lt;/h3&gt;
-
-&lt;center&gt;&lt;img src=&quot;image-20210418213553709.png&quot; alt=&quot;image-20210418213553709&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/center&gt;
-
-&lt;h2 id=&quot;references&quot;&gt;References&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;S. Boyd, L.Vandenberghe, Convex Opimization, Cambridge University Press, 2004. &lt;a href=&quot;http://stanford.edu/~boyd/cvxbook/&quot;&gt;http://stanford.edu/~boyd/cvxbook/&lt;/a&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Optimization Theory and Applications, SNU EE 2021, Insoon Yang&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Optimization" /><category term="Lecture-Note" /><summary type="html">Lagrangian Consider an optimization problem \[\begin{aligned} \min &amp;amp; \ \ \ f_0 (x) \\ \text{s.t} &amp;amp; \ \ \ f_i (x) \leq 0, \ \ \ i= 1, \cdots, m \\ &amp;amp; \ \ \ h_i (x) =0, \ \ \ i=1, \cdots, p \end{aligned}\] Now, take the constraint into account by augmenting the objective function with a weighted sum of the constraint functions. Lagrangian $L: \mathbb{R}^n \times \mathbb{R}^m \times \mathbb{R}^p \rightarrow \mathbb{R}$ defined by \[L(x,\lambda, \nu) := f_0 (x) + \sum_{i=1}^n \lambda_i f_i (x) + \sum_{i=1}^p \nu_i h_i (x)\] where $\lambda_i$ is the Lagrange multiplier associated with the inequality constraints, and $\nu_i$ is the Lagrange multipler associated with equality constraints. We call $\lambda, \nu$ as dual variables or Lagrange multiplier vectors. Lagrange Dual Define Lagrange dual function $g: \mathbb{R}^m \times \mathbb{R}^n \rightarrow \mathbb{R}$ \[g(\lambda, \nu) := \inf_{x\in \mathbb{R}^n } L(x,\lambda, \nu) = \inf_{x\in \mathbb{R}^n } \bigg [ f_0 (x) + \sum_{i=1}^n \lambda_i f_i (x) + \sum_{i=1}^p \nu_i h_i (x) \bigg ]\] Note that this dual function is concave in $(\lambda, \nu)$, even when the original problem is non-convex. [proof] Lagrangian is affine in $(\lambda, \nu)$. Thus, $g(\lambda, \nu)$ can be construed as a pointwise infimum of affine function. Lagrange Dual Lower bounds the Optimal Value [Proposition] For any $\lambda \geq 0$ and any $\nu$, \[g(\lambda, \nu) \leq p^\star\] [proof] Fix an arbitrary feasible $\tilde{x}$. Then, \[f_i (\tilde{x}) \leq 0 \\ h_i (\tilde{x}) =0\] Now, fix an arbitrary $\lambda \geq 0 $ and $\nu$. We have \[\sum \lambda_i f_i (\tilde{x}) + \sum \nu_i h_i (\tilde{x}) \leq 0\] Thus, \(L(\tilde{x}, \lambda, \nu) = f_o (\tilde{x}) +\sum \lambda_i f_i (\tilde{x}) + \sum \nu_i h_i (\tilde{x}) \leq f_o(\tilde{x}) \leq p^\star\) for all feasibe $\tilde{x}$. Lagrange Dual Problem \[\begin{aligned} \max &amp;amp; \ \ \ g(\lambda,\nu)\\ \text{s.t.} &amp;amp; \ \ \ \lambda \geq 0 \end{aligned}\] We have to maximize the Lagrange Dual (to at least get closer to the original optimal value $p^\star$). A pair $(\lambda, \nu)$ is called dual-feasible if \[\lambda \geq 0 , \ \ \ g(\lambda, \nu) &amp;gt;-\infty\] This dual problem is always a convex optimization problem, even when the original problem is non-convex. (Recall that $g(\lambda, \nu)$ was concave function) [Ex] Dual of standard form LP \[\begin{aligned} \min &amp;amp; \ \ \ c^Tx \\ \text{s.t.} &amp;amp; \ \ \ Ax=b \\ &amp;amp; \ \ \ x\geq 0 \end{aligned}\] [solution] First get the Lagrangian \[\begin{aligned} L(x,\lambda, \nu) &amp;amp;= c^T x+ \nu^T (Ax-b) + \lambda ^T (-x)\\ &amp;amp; = (c+A^T \nu -\lambda)^T x -\nu^T b \end{aligned}\] Now, minimize the Lagrangian with respect to $x$. \[g(\lambda, \nu) = \inf_x L(x,\lambda, \nu) = \begin{cases} -\nu^Tb &amp;amp; \ \ \ \text{if } c+A^T \nu - \lambda =0\\ -\infty &amp;amp; \ \ \ \text{otherwise} \end{cases}\] Thus, the dual problem is \[\begin{aligned} \max &amp;amp; \ \ \ -\nu^T b \\ \text{s.t.} &amp;amp; \ \ \ c+ A^T \nu - \lambda =0 \\ &amp;amp; \ \ \ \lambda \geq 0 \end{aligned}\] [Ex] Dual of inequality form LP Same procedure, we get \[\begin{aligned} \max &amp;amp; \ \ \ -b^T \lambda \\ \text{s.t.} &amp;amp; \ \ \ c+ A^T \lambda =0 \\ &amp;amp; \ \ \ \lambda \geq 0 \end{aligned}\] Interpreting the Lagrangian Dual Linear Approximation We can rewrite the original problem (1) as \[\min \ \ f_0 (x) + \sum_{i=1}^n I_- (f_i (x)) + \sum_{i=1}^p I_0 (h_i (x))\] where $I_- : \mathbb{R} \rightarrow \mathbb{R}$ is a penalty function for positive reals (blue line in below figure) \[I_- (u) := \begin{cases} 0 &amp;amp; \ \ \ \text{if } u \leq 0 \\ +\infty &amp;amp; \ \ \ \text {if } u&amp;gt;0 \end{cases}\] Similarly, $I_0 : \mathbb{R} \rightarrow \mathbb{R}$ is a penalty function for nonzero values. \[I_0 (u) := \begin{cases} 0 &amp;amp; \ \ \ \text{if } u = 0 \\ +\infty &amp;amp; \ \ \ \text {if } u\not =0 \end{cases}\] Now, let’s relax the function a bit. Replace $I_-(u)$ with the linear function $\lambda_i u$ where $\lambda_i \geq 0$, and function $I_0 (u)$ with $\nu_i u$. We then have a Lagrangian. Thus, the linear penalty function introduced here is the underestimator of the original penalty function. Thus, it seems quite obvious that dual function has to yield a lower bound on the optimal value of the primal problem. Geometric Interpretation Consider the following set of values \[\mathcal{G}:= \{ (f_1(x), \cdots, f_m(x), h_1(x), \cdots, h_p(x), f_0 (x)) \}\in \mathbb{R}^m \times \mathbb{R}^p \times \mathbb{R}\] Now, the optimal value of the primal problem can be expressed as \[p^\star = \inf \{ p \ \vert \ (u,v,t) \in \mathcal{G}, \ u\leq 0 , v=0\}\] Meanwhile, the dual function can be expressed as \[g(\lambda, \nu) = \inf \{ (\lambda, \nu, 1)^T (u,v,t) \ \vert \ (u,v,t) \in \mathcal{G}\}\] Suppose $\lambda \geq 0$. Then, if $u\leq 0$ and $v=0$, \[t \geq (\lambda , \nu, 1)^T (u,v,t)\] Therfore, \[\begin{aligned} p^\star &amp;amp;= \inf \ \{ t \ \vert \ (u,v,t) \in \mathcal{G}, u\leq 0, v=0\}\\ &amp;amp; \geq \inf \ \{ (\lambda , \nu, 1)^T (u,v,t) \ \vert \ (u,v,t) \in \mathcal{G}, u\leq 0, v=0\}\\ &amp;amp; \geq \inf \ \{ (\lambda , \nu, 1)^T (u,v,t) \ \vert \ (u,v,t) \in \mathcal{G}\} = g(\lambda, \nu) \\ \end{aligned}\] Strong Duality Weak Duality $p^\star$ = optimal value of the primal problem $d^\star$ = optimal value of the dual problem Then, “weak duality” holds, regardless of the convexity of the primal problem. \[d^\star \leq p^\star\] and $p^\star - d^\star$ is called the duality gap. Strong Duality We say strong duality holds if \[p^\star = d^\star\] Note that strong duality generally does not hold. However, under certain condition, strong duality holds. Slater’s condition [Theorem] Strong duality holds for a convex optimization problem if Slater’s condition holds. Slater’s condition means that, there exists $x$ such that \(f_i (x) &amp;lt;0 , \ \ \ i=1, \cdots, m, \ \ \ Ax= b\) (In other words, slater’s condition states that the point should satisfy the inequality condition strictly.) However, if some of its inequality constraint is affine, such inequality constraints does not have to hold strictly. If $f_1, \cdots, f_k$ are affine, then strong duality holds if there exists $x$ such that \[f_i (x) \leq 0, \ \ \ i=1, \cdots, k, \ \ f_i (x) &amp;lt;0 , \ \ i= k+1, \cdots, m, \ \ Ax=b\] We can see that, for LP, slater’s condition is achieved when $x$ is feasible. Proving the Slater’s Theorem Let’s Prove… Consider the convex optimization problem \[\begin{aligned} \min &amp;amp; \ \ \ f_0 (x) \\ \text{s.t} &amp;amp; \ \ \ f_i (x) \leq 0, \ \ \ i= 1, \cdots, m \\ &amp;amp; \ \ \ Ax=b \end{aligned}\] where $\tilde{x}$ satisfies the Slater’s condition. In other words, \[f_i (\tilde{x}) &amp;lt;0, \ \ i=1,\cdots, m, \ \text{and } A\tilde{x}=b\] To simplify the proof, assume the primal optimal value $p^\star$ is finite, and $\text{rank }A = p$. Let’s first define two sets $\mathcal{A, B}$. \[\mathcal{A}:= \{(u,v,t) \ \vert \ \exists x \in \mathcal{D} \text{ s.t.} f_i (x)\leq u_i, h_i (x) =v_i , f_0 (x)\leq t\}\\ \mathcal{B} := \{(0,0,s) \in \mathbb{R}^m \times \mathbb{R}^p \times \mathbb{R} \ \vert \ s&amp;lt;p^\star \}\] Separating Hyperplane Theorem [Theorem] Suppose $C$ and $D$ are nonempty disjoint convex sets. Then there exist $a\not =0$ and $b$ such that \(a^Tx \leq b \ \ \ \forall x \in C\\ a^Tx \geq b \ \ \ \forall x \in D\) We call that a separating hyperplane for $C$ and $D$. Step1 : Claim $\mathcal{A}\cap \mathcal{B} =\varnothing$ Suppose $\exists (u,v,t) \in \mathcal{A \cap B}$ . Since $(u,v,t)\in \mathcal{B}$, we have \[u=0, \ \ v=0,\ \ t&amp;lt;p^\star\] Meanwhile, since $(u,v,t) \in \mathcal{A}$, there exists $x$ such that \[f_i (x) \leq u =0, \ \ h_i (x)=v=0 , \ \ \ f_0 (x) \leq t &amp;lt;p^\star\] This is contradictory, since we assumed that $p^\star$ is the optimal value of the primal problem. Step 2 : Use the Separting Hyperplane Theorem By the separating hyperplane theorem, there exists $(\tilde{\lambda}, \tilde{\nu}, \mu)\not =0$ and $\alpha$ such that \[\tilde{\lambda}^T u + \tilde{\nu}v + \mu t \geq \alpha \ \ \ \forall (u,v,t) \in \mathcal{A}\\ \tilde{\lambda}^T u + \tilde{\nu}v + \mu t \leq \alpha \ \ \ \forall (u,v,t) \in \mathcal{B}\\\] Note that, for $(u,v,t)\in \mathcal{A}$, $u$ and $t$ is unbounded upwards. Thus, to make the first condition feasible, we can deduce that $\tilde{\lambda} \geq 0$ and $\mu \geq 0$. (otherwise, $\tilde{\lambda}^T u + \mu t$ will be unbounded below) Also, the second condition implies that \[\mu t \leq \alpha \ \ \ \forall t &amp;lt;p^\star\] which also implies \[\mu p^\star \leq \alpha\] Combining with the first condition for $u_i = f_i (x), v_i = h_i (x) = Ax-b, t= f_0 (x)$ \[\sum_{i=1}^n \tilde{\lambda}_i f_i (x) + \tilde{\nu}^T(Ax-b)+ \mu f_0 (x) \geq \alpha \geq \mu p^\star \label{28}\] Step 3 : Suppose that $\mu&amp;gt;0$ Divide equation ($\ref{28}$) with $\mu$. Then, we obtain \[L(x,\tilde{\lambda}/\mu, \tilde{\nu}/\mu) \geq p^\star\] Minimizing the Lagrangian over $x$, we have \[g(\lambda, \nu)\geq p^\star\] Meanwhile, the weak-duality still holds. \[g(\lambda, \nu) \leq p^\star\] Thus, \[g(\lambda, \nu) = p^\star\] the strong duality holds. Step 4 : What if $\mu=0$? Now, assume $\mu =0$. We then have \[\sum_{i=1}^n \tilde{\lambda}_i f_i (x) + \tilde{\nu}^T(Ax-b) \geq \alpha \geq \mu p^\star =0\] Applying this to $\tilde{x}$ that satisfies the Slater’s condition, ($A\tilde{x}-b =0$ and $f_i (\tilde{x}) &amp;lt; 0$) \[\sum_{i=1}^n \tilde{\lambda}_i f_i (\tilde{x}) \geq 0\] Since $f_i (\tilde{x}) &amp;lt;0$ and $\tilde{\lambda}_i \geq 0$, above inequality can only hold when \[\tilde{\lambda}=0\] Since the separating hyperplane requires $(\tilde{\lambda}, \tilde{\nu},\mu)$ to be nonzero, the remaining nonzero item $\tilde{\nu}\not=0$. Then, equation (29) can be rewritten as \[\tilde{\nu}^T(Ax-b)\geq 0 \ \ \ \forall x\] while for $\tilde{x}$, \[\tilde{\nu}^T (A\tilde{x}-b)=0\] However, since $A^T \tilde{\nu} \not =0$, there is always an $x$ that satisfies \[\tilde{\nu}^T (Ax-b) &amp;lt;0\] This is a contradiction! Thus, $\mu &amp;gt;0$. Geometric Idea behind the Proof References S. Boyd, L.Vandenberghe, Convex Opimization, Cambridge University Press, 2004. http://stanford.edu/~boyd/cvxbook/ Optimization Theory and Applications, SNU EE 2021, Insoon Yang</summary></entry></feed>
+&lt;p&gt;which means that $v= v^\star$.&lt;/p&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Lecture-Note" /><category term="Theory/Survey" /><summary type="html">Infinite Horizon Discounted MDP Assumptions Stationary rewards and transition probabilities: $r(s,a)$ and $p(s’ \vert s,a)$ doesn’t change over time. Finite state and action sets $\rightarrow$ this implies that $r(s,a)$ is bounded! There exists a constant $M$ such that \[|r(s,a)|&amp;lt;M \ \ \forall s \in S, \ \ \forall a \in A.\] Stationary Policy : policy doesn’t change over time! Policy Evaluation We need to evaluate \[\mathbb{E}^\pi \bigg [ \sum_{t=0}^\infty \gamma^t r(s_t, a_t) \bigg ]\] given a policy $\pi$. Value Function To do so, we define a value function, which is the expected return starting from state $s$ under executing the policy $\pi$. \[v^\pi (s) := \mathbb{E}^\pi \bigg [ \sum_{\tau = t}^\infty \gamma^{\tau -t} r(s_\tau , a_\tau) \ \vert \ s_t = s \bigg ]\] Using this value function, we decompose the value function into two parts. (1) immediate reward + (2) discounted value of next state. \[v^\pi (s) = \mathbb{E}^\pi [ r(s_t, a_t) + \gamma v^\pi (s_{t+1}) \ \vert \ s_t =s ]\] This can be expressed as \[v^\pi (s) = \sum_{a\in A} \pi (a \vert s) \bigg [ r(s, a) + \sum_{s'\in S} p(s' \vert s, a) v^\pi (s') \bigg ]\] Vector Form Recall, that we assumed finite state space and action space. Then, $v^\pi := (v^\pi(s_1),\cdots, v^\pi(s_n)) \in \mathbb{R}^n $ $R^\pi := (r(s_1, \pi(s_1), \cdots, r(s_n, \pi(s_n)) \in \mathbb{R}^n$ if deterministic $ R^\pi := (\sum_{a\in A}\pi(a \vert s_1)r(s_1, a), \cdots, \sum_{a\in A}\pi(a \vert s_n)r(s_n, a)) \in \mathbb{R}^n $ if stochastic Transition probability matrix Then, the policy evaluation can be expressed as \[v^\pi = R^\pi + \gamma P^\pi v^\pi\] Eigenvalues of Transition Probability Matrix Note that stochastic matrix has an eigenvalue of 1: let A as a $n\times n$ stochastic matrix. Then, \[A \begin{bmatrix}1\\1\\ \vdots \\1 \end{bmatrix} = \begin{bmatrix} \sum_i{a_{1i}}\\ \sum_i{a_{2i}}\\ \vdots \\ \sum_i{a_{ni}} \end{bmatrix} = \begin{bmatrix}1\\1\\ \vdots \\1 \end{bmatrix}\] which shows that $A$ has an eigenvalue of 1. Now, we are going to claim that other eigenvalues does not exceed 1. To do so, let’s assume that $Ax = \lambda x$ for some $\lambda &amp;gt;1 $. Knowing that the row-sum of $A$ is 1, we can interpret each component of $Ax$ as the convex combination of $x$ components, thus cannot exceed the maximum value of $x_{\max}$. However, since $\lambda&amp;gt;1$, at least one element of $\lambda x$ will be greater than $x_\max$. Thus, we can conclude that $\lambda &amp;gt;1$ is not possible. Eigenvalues of $P^\pi$ are less than or equal to 1. Unique solution of Policy Evaluation Equation Now, we can prove that the policy evaluation equation has a unique solution. \[v^\pi = R^\pi + \gamma P^\pi v^\pi\] This is because, \[(I-\gamma P^\pi ) v^\pi =R^\pi\] $I-\gamma P^\pi$ has an eigenvalue greater than zero, and thus invertible. Than, the unique soluition is given by \(v^\pi = (I- \gamma P^\pi )^{-1} R^\pi\) However, this method is inefficient when the problem gets larger. Policy Evaluation : Value Iteration Definition Define the operator $\mathcal{T} : \mathbb{R} \rightarrow \mathbb{R}$ \[\mathcal{T}^\pi v := R^\pi + \gamma P^\pi\] In a non-vector form, \[\mathcal{T}^\pi v(s) = \sum_{a \in A} \pi(a\vert s) \bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s, a) v(s') \bigg ]\] Then, the policy evaluation equation can be expressed as \[\mathcal{T}^\pi v^\pi = v^\pi\] which is a fixed point problem. Contraction Property We should prove that the operator $\mathcal{T}$ is a $\gamma$-contraction with respect to $| \cdot |_\infty$ for any stationary policy $\pi$. Banach Fixed Point Theorem If $\mathcal{T}$ is a contraction mapping, then $\mathcal{T}$ admits a unique fixed point $v^\star \in \mathbb{R}^n$. Meanwhile, $v^\star$ can be found by value iteration! \[v_{k+1} := \mathcal{T}v_k\] which leads to $v_k \rightarrow v^\star$. Value Iteration Algorithm For a stationary policy $\pi$, initialize $v_0$ as an arbitrary vector in $\mathbb{R}^n$. Repeat until convergence: \[v_{k+1} := \mathcal{T}^\pi v_k\] Optimal Policy / Value Function Optimal Value Function We have to find an optimal policy that maximizes the expected cumulative reward! \[\max_{\pi \in \Pi} \mathbb{E}^\pi \bigg [ \sum_{t=0}^\infty \gamma^t r(s_t, a_t) \bigg ]\] Thus, we are going to define an optimal value function \[v^\star (s) :=\max_{\pi \in \Pi} \bigg [ \sum_{\tau=t}^\infty \gamma^{\tau -t}r(s_\tau, a_\tau ) \big \vert s_t = s \bigg ]\] Recall that value function we previously defined doesn’t have the $\max_{\pi \in \Pi}$ term at front. Bellman Operator Defining the Bellman operator $\mathcal{T} : \mathbb{R}^n \rightarrow \mathbb{R}^n$ by \[\mathcal{T}v: = \sup_{\pi \in \Pi} \{ R^\pi + \gamma P^\pi v \}\\ \mathcal{T}v(s):= \sup_{\pi} \sum_{a\in A} \pi(a \vert s) \bigg [ r(s,a) + \gamma \sum_{s'\in S}p(s' \vert s,a) v(s') \bigg ]\] Note that we can rewrite the Bellman equation, replacing the $\sup_\pi$ term with $\max_{a\in A}$ term. \[(\mathcal{T}v)(s):= \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s'\in S} p(s' \vert s,a) v(s') \bigg ]\] Why? since $A$ is a finite action set, the supremum over possible policies $\pi$ is achieved when the policy is designed as \[\pi( a \vert s) = \begin{cases} 1 &amp;amp; \ \ \ \text{if } a= a^\star\\ 0 &amp;amp; \ \ \ \text{otherwise} \end{cases}\] while \[a^\star \in \arg \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s'\in S}p(s' \vert s,a) v(s') \bigg ]\] Contraction Property of Bellman Operator (optimal) Bellman operator is a monotone mapping Assume $v \leq v’$, and let $a^\star_{v}$ be the maximizing-action corresponding to $v$, and $a^\star_{v’}$ be the maximizing-action corresponding to $v’$. \(\begin{aligned} (\mathcal{T}v')(s) &amp;amp; = \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s'|s,a)v'(s') \bigg ]\\ &amp;amp; = r(s,a^\star_{v'})+ \gamma \sum_{s' \in S} p(s'|s,a^\star_{v'})v'(s')\\ &amp;amp; \geq r(s,a^\star_{v}) + \gamma \sum_{s'\in S} p(s'|s,a^\star_{v})v'(s')\\ &amp;amp; \geq r(s,a^\star_{v}) + \gamma \sum_{s'\in S} p(s'|s,a_v^\star)v(s') \ \ \ \because v'(s) \geq v(s), \ \forall s\\ &amp;amp; = (\mathcal{T}v)(s) \ \ \ \forall s \in S \end{aligned}\) (optimal) Bellman operator is a $\gamma$-contraction mapping Recall that infinity norm of a vector $x \in \mathbb{R}^n$ is defined as \[\|\mathbf{x}\|_\infty = \max_i |\mathbf{x}_i|.\] Also, consider the following statement \[| \max_z f(z) - \max_z h(z) | \leq \max_z |f(z)-h(z)|\] which can be easily proved by the following: \[\begin{aligned} \max_z f(z) - \max_z h(z) &amp;amp; = f(z^\star) - \max_z h(z)\\ &amp;amp; \leq f(z^\star) - h(z^\star) \\ &amp;amp; \leq \max_z |f(z) - h(z)|\\ \end{aligned}\] \[\begin{aligned} \max_z f(z) - \max_z h(z) &amp;amp; = \max_z f(z) - h(z^\star)\\ &amp;amp; \geq f(z^\star) - h(z^\star) \\ &amp;amp; \geq - \max_z |f(z) - h(z)| \end{aligned}\] Applying this to operator $\mathcal{T}$, we have: \[\begin{aligned} \|\mathcal{T}v-\mathcal{T}v' \|_\infty &amp;amp; = \max_s \Big [ (\mathcal{T}v)(s) - (\mathcal{T}v')(s) \Big ]\\ &amp;amp; = \max_s \bigg [ \max_a \Big [r(s,a)+\gamma \sum_{s' \in S}p(s'|s,a)v(s)\Big ] - \max_a \Big [r(s,a)+\gamma \sum_{s' \in S}p(s'|s,a)v'(s)\Big ] \bigg ] &amp;amp; \\ &amp;amp; \leq \max_s \bigg [ \max_a \Big |\gamma \sum_{s'\in S}p(s'|s,a)[v(s)-v'(s)] \Big | \bigg ] \ \ \ \ \ \because \text{inequality (6)}\\ &amp;amp; = \max_{s,a} \Big |\gamma \sum_{s'\in S}p(s'|s,a)[v(s)-v'(s)] \Big | \\ &amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a)\ \big |v(s)-v'(s)\big | &amp;amp; \\ &amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_s |v(s)-v'(s)| &amp;amp; \\ &amp;amp; = \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \|v-v'\| \ \ \ \ \ \because \text{definition (5)}\\ &amp;amp; = \gamma \|v-v'\|_\infty \end{aligned}\] **Thus, bellman equation has a unique solution, which is the optimal value function $v^\star$. ** Additional Properties [Proposition] This proposition can be used to prove that, if $\mathcal{T}v = v$, then $v= v^\star$. If $v\geq \mathcal{T}v $, then $v \geq v^\star$. If $v \leq \mathcal{T}v $, then $v \leq v^\star$. [proof] Let’s first prove the first one. (the other one can be proved by the exact same way) First, fix an arbitrary policy $\pi$. Since $\mathcal{T}$ selects the supremum over all policies, \[\mathcal{T}v \geq \mathcal{T}^\pi v\] Thus, \[v \geq \mathcal{T}v \geq \mathcal{T}^\pi v = R^\pi + \gamma P^\pi v \geq R^\pi + \gamma P^\pi (R^\pi + \gamma P^\pi v) \geq \cdots \geq \sum_{t=0}^{n-1} (\gamma P^\pi ) ^t R^\pi + (\gamma P^\pi )^n v\] Letting $n\rightarrow \infty$, we can say that \[v \geq \sum_{t=0}^\infty (\gamma P^\pi )^t R^\pi = v^\pi\] since $0&amp;lt;\gamma&amp;lt;1$ and the eigenvalue of $P^\pi$ doesn’t exceed 1. Taking the supremum of both sides with respect to $\pi$, we have \[v \geq v^\star\] Existence of Optimal Policies What we did so far is the procedure of finding the optimal value function. Meanwhile, we do not (yet) know whether there is a policy that makes us to achieve that optimal value function that we obtained by solving the optimal Bellman equation. [Theorem] If $S$ and $A$ are finite sets, then there exists an optimal policy, which is deterministic and stationary. [proof] If we construct a deterministic, stationary policy by \[\pi^\star(s) \in \arg\max _{a\in A}\bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) v^\star(s') \bigg ]\] this is an optimal policy that gives us the optimal value function $v^\star$. To prove this, try evaluating the policy $\pi^\star$ by solving \[\mathcal{T}^{\pi^\star} v = v\] Knowing that $\pi^\star$ is defined by taking the argmax action, \[\mathcal{T}^{\pi^\star} = \mathcal{T}\] Thus, \[\mathcal{T}^{\pi^\star} v = \mathcal{T}v = \mathcal{v}\] which means that $v= v^\star$.</summary></entry></feed>

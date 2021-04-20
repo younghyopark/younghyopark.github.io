@@ -5,7 +5,7 @@ show_title: true
 comment: false
 ---
 
-### Lecture Notes 
+### Fundamentals of Optimization 
 
 These are my notes from the lecture **[Convex Optimization and Applications]** from SNU EE, by Insoon Yang. 
 {:.info}
