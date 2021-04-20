@@ -1,11 +1,10 @@
 <!DOCTYPE html><html lang="en">
   <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>About - Younghyo Park</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[RL Theory] 8 - Q-function - Younghyo Park</title>
 
-<meta name="description" content="Your Site Description
-">
-<link rel="canonical" href="http://localhost:4000/study.html"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
+<meta name="description" content="State-Action Value FunctionsIn this post, we’re going to define an important concept that is widely used in both MDP and RL.DefinitionThe optimal Q-function ...">
+<link rel="canonical" href="http://localhost:4000/2021/04/20/scrl-8.html"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
 <!--<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
 
 <meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
@@ -264,7 +263,7 @@
 </head>
   <body>
     <div class="root" data-is-touch="false">
-      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport cell cell--auto">
+      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport has-aside cell cell--auto">
 
       <div class="page__main-inner"><div class="page__header d-print-none"><header class="header"><div class="main">
       <div class="header__title">
@@ -326,111 +325,95 @@ fill="#000000" stroke="none">
 </svg>
 <a title="Your Site Description
 " href="/">Younghyo Park</a></div><button class="button button--secondary button--circle search-button js-search-toggle"><i class="fas fa-search"></i></button></div><nav class="navigation">
-        <ul><li class="navigation__item"><a href="/about.html">About</a></li><li class="navigation__item"><a href="/projects.html">Projects</a></li><li class="navigation__item navigation__item--active"><a href="/study.html">Study</a></li><li class="navigation__item"><a href="/archive.html">Archive</a></li><li><button class="button button--secondary button--circle search-button js-search-toggle"><i class="fas fa-search"></i></button></li></ul>
+        <ul><li class="navigation__item"><a href="/about.html">About</a></li><li class="navigation__item"><a href="/projects.html">Projects</a></li><li class="navigation__item"><a href="/study.html">Study</a></li><li class="navigation__item"><a href="/archive.html">Archive</a></li><li><button class="button button--secondary button--circle search-button js-search-toggle"><i class="fas fa-search"></i></button></li></ul>
       </nav></div>
   </header>
 </div><div class="page__content"><div class ="main"><div class="grid grid--reverse">
 
-              <div class="col-aside d-print-none js-col-aside"></div>
+              <div class="col-aside d-print-none js-col-aside"><aside class="page__aside js-page-aside"><div class="toc-aside js-toc-root"></div>
+</aside></div>
 
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
 <!-- end custom main top snippet -->
-<article itemscope itemtype="http://schema.org/Article"><header style="display:none;"><h1>About</h1></header><meta itemprop="headline" content="About"><meta itemprop="author" content="Younghyo Park"/><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
+<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[RL Theory] 8 - Q-function</h1></header><span class="split-space">&nbsp;</span>
+          <a class="edit-on-github"
+            title="Edit on Github"
+            href="https://github.com/younghyopark/younghyopark.github.io/tree/main/_posts/2021-04-20-scrl-8.md">
+            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[RL Theory] 8 - Q-function"><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
+            </li><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
+            </li><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Theory%2FSurvey">Theory/Survey</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 20, 2021</span>
+            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-20T00:00:00+09:00">
+    <meta itemprop="keywords" content="Reinforcement-Learning,Lecture-Note,Theory/Survey"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
 
 <!-- end custom article top snippet -->
-<div class="article__content" itemprop="articleBody"><p><br /></p>
+<div class="article__content" itemprop="articleBody"><h2 id="state-action-value-functions">State-Action Value Functions</h2>
 
-<div style="width: 100%;">
-    <a href="./optimization">
-    <div style="width: 50%; height: 300px; float: left;"> 
-        <center>
-        <div class="card">
-          <div class="card__image">
-            <img class="image" src="./optimization-logo.png" />
-          </div>
-          <div class="card__content">
-            <div class="card__header">
-              <h4>Optimization</h4>
-            </div>
-          </div>
-        </div>
-        </center>
-    </div></a>
-    <a href="./rl-summary">
-    <div style="margin-left: 50%; height: 300px; "> 
-        <center>
-        <div class="card">
-          <div class="card__image">
-            <img class="image" src="./rl-logo.png" />
-          </div>
-          <div class="card__content">
-            <div class="card__header">
-              <h4>Reinforcement Learning</h4>
-            </div>
-          </div>
-        </div>
-        </center>
-    </div></a>
-</div>
+<p>In this post, we’re going to define an important concept that is widely used in both MDP and RL.</p>
 
-<p><br /></p>
+<p><code class="language-plaintext info highlighter-rouge">Definition</code>
+The optimal Q-function $Q^\star(s,a)$ is the maximum expected return starting from state $s$, taking action $a$:</p>
 
-<div style="width: 100%;">
-    <a href="./ml-summary">
-    <div style="width: 50%; height: 300px; float: left;"> 
-        <center>
-        <div class="card">
-          <div class="card__image">
-            <img class="image" src="./ml-logo.png" />
-          </div>
-          <div class="card__content">
-            <div class="card__header">
-              <h4>Machine Learning</h4>
-            </div>
-          </div>
-        </div>
-        </center>
-    </div></a>
-    <a href="./control-summary">
-    <div style="margin-left: 50%; height: 300px; "> 
-        <center>
-        <div class="card">
-          <div class="card__image">
-            <img class="image" src="./control-logo.png" />
-          </div>
-          <div class="card__content">
-            <div class="card__header">
-              <h4>Control Theory</h4>
-            </div>
-          </div>
-        </div>
-        </center>
-    </div></a>
-</div>
+\[Q^\star(s,a) := \max_\pi Q^\pi (s,a) = \max_\pi \mathbb{E} ^\pi \bigg [ \sum_{t=0}^\infty \gamma^t r(s_t, a_t) \ \vert \ s_0 = s, a_0 =a \bigg ]\]
 
-<p><br /></p>
+<p>By definition we have</p>
 
-<!-- ### Optimization
-- [Convex Optimization and Applications - Lecture Summary (2021 SNU EE)](./optimization)
+\[v^\star(s) = \max_{a\in A} Q^\star(s,a)\]
 
-### Reinforcement Learning
-- [Stochastic Control and Reinforcement Learning - Lecture Summary (2021 SNU EE)](./rl-summary)
+<h3 id="bellman-equation-for-q-functions">Bellman Equation for Q-functions</h3>
 
-### Machine Learning
-- [Pattern Recognition and Machine Learning - Self Study](./prml)
+\[\begin{aligned}
+Q^\star(s,a) &amp; = r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s, a) v^\star(s')\\
+&amp; = r(s,a) + \gamma \sum_{s'\in S} p(s' \vert s,a) \max_{a'\in A} Q^\star (s',a')
+\end{aligned}\]
 
-### Computer Vision
-- [Computer Vision - Lecture Summary (2020 SNU EE)](./computer-vision)
+<p>We can then define the Bellman operator $\mathcal{T}$ for Q-functions</p>
 
-### Control
-- [Control - Lecture Summary (2020 SNU ME)](./computer-vision) -->
-</div><div class="d-print-none"><footer class="article__footer"><!-- start custom article footer snippet -->
+<p>\((\mathcal{T}Q)(s,a) := r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) \max_{a'\in A} Q^\star(s',a')\)
+Then, it is a monotone contraction mapping.</p>
+
+<h3 id="lp-formulation">LP-Formulation</h3>
+
+<p>We can also change this as a Linear Program as well.</p>
+
+</div><section class="article__sharing d-print-none"></section><div id="disqus_thread"></div>
+  <script>
+      /**
+      *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+      *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+      /*
+      var disqus_config = function () {
+      this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+      };
+      */
+      (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://younghyopark-github-io.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+      })();
+  </script>
+
+  <div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-04-20T00:00:00+09:00"><!-- start custom article footer snippet -->
 
 <!-- end custom article footer snippet -->
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<div class="article__license"><div class="license">
+    <p>This work is licensed under a <a itemprop="license" rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">Attribution-NonCommercial 4.0 International</a> license.
+      <a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">
+        <img alt="Attribution-NonCommercial 4.0 International" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" />
+      </a>
+    </p>
+  </div></div><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </footer>
-</div>
+<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2021/04/20/scrl-7.html">[RL Theory] 7 - Linear Programming Approach</a></div></div></div>
 
 </div>
 
@@ -459,7 +442,7 @@ fill="#000000" stroke="none">
   });
 })();
 </script>
-</div></article><!-- start custom main bottom snippet -->
+</div><section class="page__comments d-print-none"></section></article><!-- start custom main bottom snippet -->
 
 <!-- end custom main bottom snippet -->
 </div>
@@ -1006,6 +989,68 @@ window.Lazyload.js([SOURCES.jquery, PAHTS.search_js], function() {
 /*(function () {
 
 })();*/
+</script><script>
+  /* toc must before affix, since affix need to konw toc' height. */(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  var TOC_SELECTOR = window.TEXT_VARIABLES.site.toc.selectors;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window);
+    var $articleContent = $('.js-article-content');
+    var $tocRoot = $('.js-toc-root'), $col2 = $('.js-col-aside');
+    var toc;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+    var hasToc = $articleContent.find(TOC_SELECTOR).length > 0;
+
+    function disabled() {
+      return $col2.css('display') === 'none' || !hasToc;
+    }
+
+    tocDisabled = disabled();
+
+    toc = $tocRoot.toc({
+      selectors: TOC_SELECTOR,
+      container: $articleContent,
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      tocDisabled = disabled();
+      toc && toc.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+  });
+})();
+(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window), $pageFooter = $('.js-page-footer');
+    var $pageAside = $('.js-page-aside');
+    var affix;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+
+    affix = $pageAside.affix({
+      offsetBottom: $pageFooter.outerHeight(),
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      scroll: hasSidebar ? $('.js-page-main').children() : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      affix && affix.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+    window.pageAsideAffix = affix;
+  });
+})();
 </script><script>
   window.Lazyload.js(['https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js', 'https://cdn.bootcss.com/Chart.js/2.7.2/Chart.bundle.min.js'], function() {
     var $canvas = null, $this = null, _ctx = null, _text = '';

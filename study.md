@@ -5,7 +5,79 @@ show_title: false
 comment: false
 ---
 
-### Optimization
+<br/>
+
+<div style="width: 100%;">
+    <a href="./optimization">
+    <div style="width: 50%; height: 300px; float: left;"> 
+        <center>
+        <div class="card">
+          <div class="card__image">
+            <img class="image" src="./optimization-logo.png"/>
+          </div>
+          <div class="card__content">
+            <div class="card__header">
+              <h4>Optimization</h4>
+            </div>
+          </div>
+        </div>
+        </center>
+    </div></a>
+    <a href="./rl-summary">
+    <div style="margin-left: 50%; height: 300px; "> 
+        <center>
+        <div class="card">
+          <div class="card__image">
+            <img class="image" src="./rl-logo.png"/>
+          </div>
+          <div class="card__content">
+            <div class="card__header">
+              <h4>Reinforcement Learning</h4>
+            </div>
+          </div>
+        </div>
+        </center>
+    </div></a>
+</div>
+
+<br/>
+
+<div style="width: 100%;">
+    <a href="./ml-summary">
+    <div style="width: 50%; height: 300px; float: left;"> 
+        <center>
+        <div class="card">
+          <div class="card__image">
+            <img class="image" src="./ml-logo.png"/>
+          </div>
+          <div class="card__content">
+            <div class="card__header">
+              <h4>Machine Learning</h4>
+            </div>
+          </div>
+        </div>
+        </center>
+    </div></a>
+    <a href="./control-summary">
+    <div style="margin-left: 50%; height: 300px; "> 
+        <center>
+        <div class="card">
+          <div class="card__image">
+            <img class="image" src="./control-logo.png"/>
+          </div>
+          <div class="card__content">
+            <div class="card__header">
+              <h4>Control Theory</h4>
+            </div>
+          </div>
+        </div>
+        </center>
+    </div></a>
+</div>
+
+<br/>
+
+<!-- ### Optimization
 - [Convex Optimization and Applications - Lecture Summary (2021 SNU EE)](./optimization)
 
 ### Reinforcement Learning
@@ -18,4 +90,4 @@ comment: false
 - [Computer Vision - Lecture Summary (2020 SNU EE)](./computer-vision)
 
 ### Control
-- [Control - Lecture Summary (2020 SNU ME)](./computer-vision)
+- [Control - Lecture Summary (2020 SNU ME)](./computer-vision) -->

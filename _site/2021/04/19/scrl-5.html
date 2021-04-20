@@ -471,42 +471,6 @@ fill="#000000" stroke="none">
 
 <p>We should prove that the operator $\mathcal{T}$ is a $\gamma$-contraction with respect to $| \cdot |_\infty$ for any stationary policy $\pi$.</p>
 
-<p>Recall that infinity norm of a vector $x \in \mathbb{R}^n$ is defined as</p>
-
-\[\|\mathbf{x}\|_\infty = \max_i |\mathbf{x}_i|.\]
-
-<p>Also, consider the following statement</p>
-
-\[| \max_z f(z) - \max_z h(z) | \leq \max_z |f(z)-h(z)|\]
-
-<p>which can be easily proved by the following:</p>
-
-\[\begin{aligned}
-        		\max_z f(z) - \max_z h(z) &amp; = f(z^\star) - \max_z h(z)\\
-        		&amp; \leq f(z^\star) - h(z^\star) \\ 
-        		&amp; \leq \max_z |f(z) - h(z)|\\
-\end{aligned}\]
-
-\[\begin{aligned}
-\max_z f(z) - \max_z h(z) &amp; = \max_z f(z) - h(z^\star)\\
-        		&amp; \geq f(z^\star) - h(z^\star) \\ 
-        		&amp; \geq - \max_z |f(z) - h(z)|
-\end{aligned}\]
-
-<p>Applying this to operator $\mathcal{T}$, we have:</p>
-
-\[\begin{aligned}
-        	\|\mathcal{T}v-\mathcal{T}v' \|_\infty &amp; = \max_s \Big [ (\mathcal{T}v)(s) - (\mathcal{T}v')(s) \Big ]\\
-        	 &amp; = \max_s \bigg [ \max_a \Big [r(s,a)+\gamma \sum_{s' \in S}p(s'|s,a)v(s)\Big ] -
-        	  \max_a \Big [r(s,a)+\gamma \sum_{s' \in S}p(s'|s,a)v'(s)\Big ]  \bigg ]  &amp; \\
-        	 &amp; \leq  \max_s \bigg [ \max_a \Big |\gamma \sum_{s'\in S}p(s'|s,a)[v(s)-v'(s)] \Big | \bigg ]  \ \ \ \ \ \because \text{inequality (6)}\\
-        	 &amp; = \max_{s,a} \Big |\gamma \sum_{s'\in S}p(s'|s,a)[v(s)-v'(s)] \Big |  \\
-        	 &amp; \leq  \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a)\  \big |v(s)-v'(s)\big | &amp; \\ 
-        	 &amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_s |v(s)-v'(s)| &amp; \\
-        	 &amp; =  \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \|v-v'\| \ \ \ \ \  \because \text{definition (5)}\\
-        	 &amp; = \gamma \|v-v'\|_\infty
-        \end{aligned}\]
-
 <h3 id="banach-fixed-point-theorem">Banach Fixed Point Theorem</h3>
 
 <p>If $\mathcal{T}$ is a contraction mapping, then</p>
@@ -578,42 +542,55 @@ fill="#000000" stroke="none">
   <li>
     <p>(optimal) Bellman operator is a monotone mapping</p>
 
-\[\mathcal{T}v \leq \mathcal{T}v' \ \ \ \forall v, v' \in \mathbb{R}^n  \ \ \ \text{s.t} \ \ v\leq v'\]
-
-    <p><strong>[proof]</strong> Define $a^\star_{Q’}(s)= \arg \max_a Q’(s,a)$ and $a^\star_{Q}(s)= \arg \max_a Q(s,a)$</p>
-
-\[\begin{aligned}
-     	(\mathcal{T}Q')(s,a) &amp; = r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a)\max_{a'\in A}Q'(s',a')\\
-     	&amp; = r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a)Q'(s',a_{Q'}^\star(s'))\\
-     	&amp; \geq r(s,a) + \gamma \sum_{s' \in S}p(s'|s,a) Q'(s',a_Q^\star(s'))\\
-     	&amp; \geq r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a) Q(s',a_Q^\star(s')) \\
-     	&amp; = r(s,a)+ \gamma \sum_{s'\in S}p(s'|s,a) \max_{a'\in A}Q(s',a')\\
-     	&amp; = (\mathcal{T}Q)(s,a) \ \ \ \forall (s,a) \in (S\times A)
-     \end{aligned}\]
+    <p>Assume $v \leq v’$, and let $a^\star_{v}$ be the maximizing-action corresponding to $v$, and $a^\star_{v’}$ be the maximizing-action corresponding to $v’$. 
+ \(\begin{aligned}
+               (\mathcal{T}v')(s) &amp; = \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s'|s,a)v'(s') \bigg ]\\
+               &amp; = r(s,a^\star_{v'})+ \gamma \sum_{s' \in S} p(s'|s,a^\star_{v'})v'(s')\\
+               &amp; \geq r(s,a^\star_{v}) + \gamma \sum_{s'\in S} p(s'|s,a^\star_{v})v'(s')\\
+               &amp; \geq r(s,a^\star_{v}) + \gamma \sum_{s'\in S} p(s'|s,a_v^\star)v(s') \ \ \ \because v'(s) \geq v(s), \  \forall s\\
+               &amp; = (\mathcal{T}v)(s) \ \ \ \forall s \in S
+             \end{aligned}\)</p>
   </li>
   <li>
     <p>(optimal) Bellman operator is a $\gamma$-contraction mapping</p>
-
-\[\| \mathcal{T} v- \mathcal{T}v' \|_\infty \leq \gamma \| v- v' \| _\infty\]
-
-    <p><strong>[proof]</strong> Recall that sup-norm of matrix $\mathbf{A}\in \mathbb{R}^{n\times m}$ is defined as</p>
-
-\[\|\mathbf{A}\|_\infty = \max_{\substack{1\leq i\leq n\\ 1 \leq j \leq m}} |\mathbf{A}_{ij}|.\]
-
-    <p>Applying (14) to (13), we have</p>
-
-\[\begin{aligned}
-       \|\mathcal{T}Q-\mathcal{T}Q'\|_\infty &amp;= \max_{(s,a) \in (S\times A)} \Big |(\mathcal{T}Q)(s,a) - (\mathcal{T}Q')(s,a) \Big|\\
-       &amp; = \max_{s,a} \Big | \gamma \sum_{s'\in S} p(s'|s,a)\max_{a'\in A}Q(s',a')- \gamma \sum_{s'\in S}p(s'|s,a)\max_{a'\in A}Q'(s',a') \Big |\\
-       &amp; = \gamma \max_{s,a} \Big | \sum_{s'\in S}p(s'|s,a) \big [ \max_{a'\in A} Q(s',a')- \max_{a'\in A} Q'(s',a')\big ] \Big |\\
-       &amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \Big | \max_{a'\in A} Q(s',a') - \max_{a'\in A}Q'(s',a') \Big | \\
-       &amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_{a'\in A} \Big |Q(s',a')-Q'(s',a') \Big | \ \ \ \because \text{inequality }(6)\\
-       &amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_{(s',a')\in (S\times A)} \Big | Q(s',a') -Q'(s',a')\Big | \\
-       &amp; = \gamma \max_{(s',a')\in (S\times A)} \Big | Q(s',a')-Q'(s',a') \Big |\\
-       &amp; = \gamma \|Q-Q'\|_\infty
-     \end{aligned}\]
   </li>
 </ol>
+
+<p>Recall that infinity norm of a vector $x \in \mathbb{R}^n$ is defined as</p>
+
+\[\|\mathbf{x}\|_\infty = \max_i |\mathbf{x}_i|.\]
+
+<p>Also, consider the following statement</p>
+
+\[| \max_z f(z) - \max_z h(z) | \leq \max_z |f(z)-h(z)|\]
+
+<p>which can be easily proved by the following:</p>
+
+\[\begin{aligned}
+\max_z f(z) - \max_z h(z) &amp; = f(z^\star) - \max_z h(z)\\
+&amp; \leq f(z^\star) - h(z^\star) \\ 
+&amp; \leq \max_z |f(z) - h(z)|\\
+\end{aligned}\]
+
+\[\begin{aligned}
+  \max_z f(z) - \max_z h(z) &amp; = \max_z f(z) - h(z^\star)\\
+  &amp; \geq f(z^\star) - h(z^\star) \\ 
+  &amp; \geq - \max_z |f(z) - h(z)|
+  \end{aligned}\]
+
+<p>Applying this to operator $\mathcal{T}$, we have:</p>
+
+\[\begin{aligned}
+  \|\mathcal{T}v-\mathcal{T}v' \|_\infty &amp; = \max_s \Big [ (\mathcal{T}v)(s) - (\mathcal{T}v')(s) \Big ]\\
+  &amp; = \max_s \bigg [ \max_a \Big [r(s,a)+\gamma \sum_{s' \in S}p(s'|s,a)v(s)\Big ] -
+  \max_a \Big [r(s,a)+\gamma \sum_{s' \in S}p(s'|s,a)v'(s)\Big ]  \bigg ]  &amp; \\
+  &amp; \leq  \max_s \bigg [ \max_a \Big |\gamma \sum_{s'\in S}p(s'|s,a)[v(s)-v'(s)] \Big | \bigg ]  \ \ \ \ \ \because \text{inequality (6)}\\
+  &amp; = \max_{s,a} \Big |\gamma \sum_{s'\in S}p(s'|s,a)[v(s)-v'(s)] \Big |  \\
+  &amp; \leq  \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a)\  \big |v(s)-v'(s)\big | &amp; \\ 
+  &amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_s |v(s)-v'(s)| &amp; \\
+  &amp; =  \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \|v-v'\| \ \ \ \ \  \because \text{definition (5)}\\
+  &amp; = \gamma \|v-v'\|_\infty
+  \end{aligned}\]
 
 <p>**Thus, bellman equation has a unique solution, which is the optimal value function $v^\star$. **</p>
 
