@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-04-20T12:42:51+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Younghyo Park</title><subtitle>Your Site Description
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-04-20T14:10:22+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Younghyo Park</title><subtitle>Your Site Description
 </subtitle><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><entry><title type="html">[Personal Note] Logic Flow</title><link href="http://localhost:4000/2021/04/20/logic-flow.html" rel="alternate" type="text/html" title="[Personal Note] Logic Flow" /><published>2021-04-20T00:00:00+09:00</published><updated>2021-04-20T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/20/logic-flow</id><content type="html" xml:base="http://localhost:4000/2021/04/20/logic-flow.html">&lt;p&gt;##&lt;/p&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Personal-Note" /><summary type="html">##</summary></entry><entry><title type="html">[RL Theory] 4 - Finite Horizon MDP (2)</title><link href="http://localhost:4000/2021/04/19/scrl-4.html" rel="alternate" type="text/html" title="[RL Theory] 4 - Finite Horizon MDP (2)" /><published>2021-04-19T00:00:00+09:00</published><updated>2021-04-19T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/19/scrl-4</id><content type="html" xml:base="http://localhost:4000/2021/04/19/scrl-4.html">&lt;h2 id=&quot;optimal-policy-of-finite-horizon-mdp&quot;&gt;Optimal Policy of Finite-Horizon MDP&lt;/h2&gt;
 
 &lt;h3 id=&quot;deterministic-markov-policy&quot;&gt;Deterministic Markov Policy&lt;/h3&gt;
@@ -537,7 +537,141 @@ g(\tilde{\lambda}, \tilde{\nu}) &amp;amp; = L(\tilde{x}, \tilde{\lambda}, \tilde
   &lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;h2 id=&quot;optimal-value-function&quot;&gt;Optimal Value Function&lt;/h2&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Lecture-Note" /><category term="Theory/Survey" /><summary type="html">Infinite Horizon Discounted MDP Assumptions Stationary rewards and transition probabilities: $r(s,a)$ and $p(s’ \vert s,a)$ doesn’t change over time. Finite state and action sets $\rightarrow$ this implies that $r(s,a)$ is bounded! There exists a constant $M$ such that \[|r(s,a)|&amp;lt;M \ \ \forall s \in S, \ \ \forall a \in A.\] Stationary Policy : policy doesn’t change over time! Policy Evaluation We need to evaluate \[\mathbb{E}^\pi \bigg [ \sum_{t=0}^\infty \gamma^t r(s_t, a_t) \bigg ]\] given a policy $\pi$. Value Function To do so, we define a value function, which is the expected return starting from state $s$ under executing the policy $\pi$. \[v^\pi (s) := \mathbb{E}^\pi \bigg [ \sum_{\tau = t}^\infty \gamma^{\tau -t} r(s_\tau , a_\tau) \ \vert \ s_t = s \bigg ]\] Using this value function, we decompose the value function into two parts. (1) immediate reward + (2) discounted value of next state. \[v^\pi (s) = \mathbb{E}^\pi [ r(s_t, a_t) + \gamma v^\pi (s_{t+1}) \ \vert \ s_t =s ]\] This can be expressed as \[v^\pi (s) = \sum_{a\in A} \pi (a \vert s) \bigg [ r(s, a) + \sum_{s'\in S} p(s' \vert s, a) v^\pi (s') \bigg ]\] Vector Form Recall, that we assumed finite state space and action space. Then, $v^\pi := (v^\pi(s_1),\cdots, v^\pi(s_n)) \in \mathbb{R}^n $ $R^\pi := (r(s_1, \pi(s_1), \cdots, r(s_n, \pi(s_n)) \in \mathbb{R}^n$ if deterministic $ R^\pi := (\sum_{a\in A}\pi(a \vert s_1)r(s_1, a), \cdots, \sum_{a\in A}\pi(a \vert s_n)r(s_n, a)) \in \mathbb{R}^n $ if stochastic Transition probability matrix Then, the policy evaluation can be expressed as \[v^\pi = R^\pi + \gamma P^\pi v^\pi\] Eigenvalues of Transition Probability Matrix Note that stochastic matrix has an eigenvalue of 1: let A as a $n\times n$ stochastic matrix. Then, \[A \begin{bmatrix}1\\1\\ \vdots \\1 \end{bmatrix} = \begin{bmatrix} \sum_i{a_{1i}}\\ \sum_i{a_{2i}}\\ \vdots \\ \sum_i{a_{ni}} \end{bmatrix} = \begin{bmatrix}1\\1\\ \vdots \\1 \end{bmatrix}\] which shows that $A$ has an eigenvalue of 1. Now, we are going to claim that other eigenvalues does not exceed 1. To do so, let’s assume that $Ax = \lambda x$ for some $\lambda &amp;gt;1 $. Knowing that the row-sum of $A$ is 1, we can interpret each component of $Ax$ as the convex combination of $x$ components, thus cannot exceed the maximum value of $x_{\max}$. However, since $\lambda&amp;gt;1$, at least one element of $\lambda x$ will be greater than $x_\max$. Thus, we can conclude that $\lambda &amp;gt;1$ is not possible. Eigenvalues of $P^\pi$ are less than or equal to 1. Unique solution of Policy Evaluation Equation Now, we can prove that the policy evaluation equation has a unique solution. \[v^\pi = R^\pi + \gamma P^\pi v^\pi\] This is because, \[(I-\gamma P^\pi ) v^\pi =R^\pi\] $I-\gamma P^\pi$ has an eigenvalue greater than zero, and thus invertible. Than, the unique soluition is given by \(v^\pi = (I- \gamma P^\pi )^{-1} R^\pi\) However, this method is inefficient when the problem gets larger. Policy Evaluation : Value Iteration Definition Define the operator $\mathcal{T} : \mathbb{R} \rightarrow \mathbb{R}$ \[\mathcal{T}^\pi v := R^\pi + \gamma P^\pi\] In a non-vector form, \[\mathcal{T}^\pi v(s) = \sum_{a \in A} \pi(a\vert s) \bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s, a) v(s') \bigg ]\] Then, the policy evaluation equation can be expressed as \[\mathcal{T}^\pi v^\pi = v^\pi\] which is a fixed point problem. Contraction Property We should prove that the operator $\mathcal{T}$ is a $\gamma$-contraction with respect to $| \cdot |_\infty$ for any stationary policy $\pi$. Recall that infinity norm of a vector $x \in \mathbb{R}^n$ is defined as \[\|\mathbf{x}\|_\infty = \max_i |\mathbf{x}_i|.\] Also, consider the following statement \[| \max_z f(z) - \max_z h(z) | \leq \max_z |f(z)-h(z)|\] which can be easily proved by the following: \[\begin{aligned} \max_z f(z) - \max_z h(z) &amp;amp; = f(z^\star) - \max_z h(z)\\ &amp;amp; \leq f(z^\star) - h(z^\star) \\ &amp;amp; \leq \max_z |f(z) - h(z)|\\ \end{aligned}\] \[\begin{aligned} \max_z f(z) - \max_z h(z) &amp;amp; = \max_z f(z) - h(z^\star)\\ &amp;amp; \geq f(z^\star) - h(z^\star) \\ &amp;amp; \geq - \max_z |f(z) - h(z)| \end{aligned}\] Applying this to operator $\mathcal{T}$, we have: \[\begin{aligned} \|\mathcal{T}v-\mathcal{T}v' \|_\infty &amp;amp; = \max_s \Big [ (\mathcal{T}v)(s) - (\mathcal{T}v')(s) \Big ]\\ &amp;amp; = \max_s \bigg [ \max_a \Big [r(s,a)+\gamma \sum_{s' \in S}p(s'|s,a)v(s)\Big ] - \max_a \Big [r(s,a)+\gamma \sum_{s' \in S}p(s'|s,a)v'(s)\Big ] \bigg ] &amp;amp; \\ &amp;amp; \leq \max_s \bigg [ \max_a \Big |\gamma \sum_{s'\in S}p(s'|s,a)[v(s)-v'(s)] \Big | \bigg ] \ \ \ \ \ \because \text{inequality (6)}\\ &amp;amp; = \max_{s,a} \Big |\gamma \sum_{s'\in S}p(s'|s,a)[v(s)-v'(s)] \Big | \\ &amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a)\ \big |v(s)-v'(s)\big | &amp;amp; \\ &amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_s |v(s)-v'(s)| &amp;amp; \\ &amp;amp; = \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \|v-v'\| \ \ \ \ \ \because \text{definition (5)}\\ &amp;amp; = \gamma \|v-v'\|_\infty \end{aligned}\] Banach Fixed Point Theorem If $\mathcal{T}$ is a contraction mapping, then $\mathcal{T}$ admits a unique fixed point $v^\star \in \mathbb{R}^n$. Meanwhile, $v^\star$ can be found by value iteration! \[v_{k+1} := \mathcal{T}v_k\] which leads to $v_k \rightarrow v^\star$. Value Iteration Algorithm For a stationary policy $\pi$, initialize $v_0$ as an arbitrary vector in $\mathbb{R}^n$. Repeat until convergence: \[v_{k+1} := \mathcal{T}^\pi v_k\] Optimal Value Function</summary></entry><entry><title type="html">[Optimization] 6 - Lagrange Duality, Slater’s Condition</title><link href="http://localhost:4000/notion_to_markdown/opt-lecture-6/" rel="alternate" type="text/html" title="[Optimization] 6 - Lagrange Duality, Slater’s Condition" /><published>2021-04-18T00:00:00+09:00</published><updated>2021-04-18T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/opt-lecture-6</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/opt-lecture-6/">&lt;h2 id=&quot;lagrangian&quot;&gt;Lagrangian&lt;/h2&gt;
+&lt;h2 id=&quot;optimal-policy--value-function&quot;&gt;Optimal Policy / Value Function&lt;/h2&gt;
+
+&lt;h3 id=&quot;optimal-value-function&quot;&gt;Optimal Value Function&lt;/h3&gt;
+
+&lt;p&gt;We have to find an optimal policy that maximizes the expected cumulative reward!&lt;/p&gt;
+
+\[\max_{\pi \in \Pi} \mathbb{E}^\pi \bigg [ \sum_{t=0}^\infty \gamma^t r(s_t, a_t) \bigg ]\]
+
+&lt;p&gt;Thus, we are going to define an &lt;strong&gt;optimal value function&lt;/strong&gt;&lt;/p&gt;
+
+\[v^\star (s) :=\max_{\pi \in \Pi} \bigg [ \sum_{\tau=t}^\infty \gamma^{\tau -t}r(s_\tau, a_\tau ) \big \vert s_t = s \bigg ]\]
+
+&lt;p&gt;Recall that &lt;strong&gt;value function&lt;/strong&gt; we previously defined doesn’t have the $\max_{\pi \in \Pi}$ term at front.&lt;/p&gt;
+
+&lt;h3 id=&quot;bellman-operator&quot;&gt;Bellman Operator&lt;/h3&gt;
+
+&lt;p&gt;Defining the Bellman operator $\mathcal{T} : \mathbb{R}^n \rightarrow  \mathbb{R}^n$ by&lt;/p&gt;
+
+\[\mathcal{T}v: = \sup_{\pi \in \Pi} \{ R^\pi + \gamma P^\pi v \}\\
+\mathcal{T}v(s):= \sup_{\pi} \sum_{a\in A} \pi(a \vert s) \bigg [ r(s,a) + \gamma \sum_{s'\in S}p(s' \vert s,a) v(s') \bigg ]\]
+
+&lt;p&gt;Note that we can rewrite the Bellman equation, replacing the $\sup_\pi$ term with $\max_{a\in A}$ term.&lt;/p&gt;
+
+\[(\mathcal{T}v)(s):= \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s'\in S} p(s' \vert s,a) v(s') \bigg ]\]
+
+&lt;p&gt;&lt;strong&gt;Why?&lt;/strong&gt; since $A$ is a finite action set, the supremum over possible policies $\pi$ is achieved when the policy is designed as&lt;/p&gt;
+
+\[\pi( a \vert s) = \begin{cases}
+1 &amp;amp; \ \ \ \text{if } a= a^\star\\
+0 &amp;amp; \ \ \ \text{otherwise}
+\end{cases}\]
+
+&lt;p&gt;while&lt;/p&gt;
+
+\[a^\star \in \arg \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s'\in S}p(s' \vert s,a) v(s') \bigg ]\]
+
+&lt;h3 id=&quot;contraction-property-of-bellman-operator&quot;&gt;Contraction Property of Bellman Operator&lt;/h3&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;(optimal) Bellman operator is a monotone mapping&lt;/p&gt;
+
+\[\mathcal{T}v \leq \mathcal{T}v' \ \ \ \forall v, v' \in \mathbb{R}^n  \ \ \ \text{s.t} \ \ v\leq v'\]
+
+    &lt;p&gt;&lt;strong&gt;[proof]&lt;/strong&gt; Define $a^\star_{Q’}(s)= \arg \max_a Q’(s,a)$ and $a^\star_{Q}(s)= \arg \max_a Q(s,a)$&lt;/p&gt;
+
+\[\begin{aligned}
+     	(\mathcal{T}Q')(s,a) &amp;amp; = r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a)\max_{a'\in A}Q'(s',a')\\
+     	&amp;amp; = r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a)Q'(s',a_{Q'}^\star(s'))\\
+     	&amp;amp; \geq r(s,a) + \gamma \sum_{s' \in S}p(s'|s,a) Q'(s',a_Q^\star(s'))\\
+     	&amp;amp; \geq r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a) Q(s',a_Q^\star(s')) \\
+     	&amp;amp; = r(s,a)+ \gamma \sum_{s'\in S}p(s'|s,a) \max_{a'\in A}Q(s',a')\\
+     	&amp;amp; = (\mathcal{T}Q)(s,a) \ \ \ \forall (s,a) \in (S\times A)
+     \end{aligned}\]
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;(optimal) Bellman operator is a $\gamma$-contraction mapping&lt;/p&gt;
+
+\[\| \mathcal{T} v- \mathcal{T}v' \|_\infty \leq \gamma \| v- v' \| _\infty\]
+
+    &lt;p&gt;&lt;strong&gt;[proof]&lt;/strong&gt; Recall that sup-norm of matrix $\mathbf{A}\in \mathbb{R}^{n\times m}$ is defined as&lt;/p&gt;
+
+\[\|\mathbf{A}\|_\infty = \max_{\substack{1\leq i\leq n\\ 1 \leq j \leq m}} |\mathbf{A}_{ij}|.\]
+
+    &lt;p&gt;Applying (14) to (13), we have&lt;/p&gt;
+
+\[\begin{aligned}
+       \|\mathcal{T}Q-\mathcal{T}Q'\|_\infty &amp;amp;= \max_{(s,a) \in (S\times A)} \Big |(\mathcal{T}Q)(s,a) - (\mathcal{T}Q')(s,a) \Big|\\
+       &amp;amp; = \max_{s,a} \Big | \gamma \sum_{s'\in S} p(s'|s,a)\max_{a'\in A}Q(s',a')- \gamma \sum_{s'\in S}p(s'|s,a)\max_{a'\in A}Q'(s',a') \Big |\\
+       &amp;amp; = \gamma \max_{s,a} \Big | \sum_{s'\in S}p(s'|s,a) \big [ \max_{a'\in A} Q(s',a')- \max_{a'\in A} Q'(s',a')\big ] \Big |\\
+       &amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \Big | \max_{a'\in A} Q(s',a') - \max_{a'\in A}Q'(s',a') \Big | \\
+       &amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_{a'\in A} \Big |Q(s',a')-Q'(s',a') \Big | \ \ \ \because \text{inequality }(6)\\
+       &amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_{(s',a')\in (S\times A)} \Big | Q(s',a') -Q'(s',a')\Big | \\
+       &amp;amp; = \gamma \max_{(s',a')\in (S\times A)} \Big | Q(s',a')-Q'(s',a') \Big |\\
+       &amp;amp; = \gamma \|Q-Q'\|_\infty
+     \end{aligned}\]
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;**Thus, bellman equation has a unique solution, which is the optimal value function $v^\star$. **&lt;/p&gt;
+
+&lt;h3 id=&quot;additional-properties&quot;&gt;Additional Properties&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;[Proposition]&lt;/strong&gt; This proposition can be used to prove that, if $\mathcal{T}v = v$, then $v= v^\star$.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;If $v\geq \mathcal{T}v $, then $v \geq v^\star$.&lt;/li&gt;
+  &lt;li&gt;If $v \leq \mathcal{T}v $, then $v \leq v^\star$.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;[proof]&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Let’s first prove the first one. (the other one can be proved by the exact same way)&lt;/p&gt;
+
+&lt;p&gt;First, fix an arbitrary policy $\pi$. Since $\mathcal{T}$ selects the supremum over all policies,&lt;/p&gt;
+
+\[\mathcal{T}v \geq \mathcal{T}^\pi v\]
+
+&lt;p&gt;Thus,&lt;/p&gt;
+
+\[v \geq \mathcal{T}v \geq \mathcal{T}^\pi v  = R^\pi + \gamma P^\pi v  \geq R^\pi + \gamma P^\pi (R^\pi + \gamma P^\pi v) \geq \cdots \geq \sum_{t=0}^{n-1} (\gamma P^\pi ) ^t R^\pi + (\gamma P^\pi )^n v\]
+
+&lt;p&gt;Letting $n\rightarrow \infty$, we can say that&lt;/p&gt;
+
+\[v \geq \sum_{t=0}^\infty (\gamma P^\pi )^t R^\pi  = v^\pi\]
+
+&lt;p&gt;since $0&amp;lt;\gamma&amp;lt;1$ and the eigenvalue of $P^\pi$ doesn’t exceed 1.&lt;/p&gt;
+
+&lt;p&gt;Taking the supremum of both sides with respect to $\pi$, we have&lt;/p&gt;
+
+\[v \geq v^\star\]
+
+&lt;h3 id=&quot;existence-of-optimal-policies&quot;&gt;Existence of Optimal Policies&lt;/h3&gt;
+
+&lt;p&gt;What we did so far is the procedure of finding the &lt;strong&gt;optimal value function&lt;/strong&gt;. Meanwhile, we do not (yet) know whether there is a policy that makes us to achieve that &lt;strong&gt;optimal value function&lt;/strong&gt; that we obtained by solving the optimal Bellman equation.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;[Theorem]&lt;/strong&gt; If $S$ and $A$ are finite sets, then there exists an optimal policy, which is &lt;strong&gt;deterministic and stationary&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;[proof]&lt;/strong&gt; If we construct a deterministic, stationary policy by&lt;/p&gt;
+
+\[\pi^\star(s) \in \arg\max _{a\in A}\bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) v^\star(s') \bigg ]\]
+
+&lt;p&gt;this is an optimal policy that gives us the optimal value function $v^\star$. To prove this, try evaluating the policy $\pi^\star$ by solving&lt;/p&gt;
+
+\[\mathcal{T}^{\pi^\star} v = v\]
+
+&lt;p&gt;Knowing that $\pi^\star$ is defined by taking the argmax action,&lt;/p&gt;
+
+\[\mathcal{T}^{\pi^\star} = \mathcal{T}\]
+
+&lt;p&gt;Thus,&lt;/p&gt;
+
+\[\mathcal{T}^{\pi^\star} v = \mathcal{T}v = \mathcal{v}\]
+
+&lt;p&gt;which means that $v= v^\star$.&lt;/p&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Lecture-Note" /><category term="Theory/Survey" /><summary type="html">Infinite Horizon Discounted MDP Assumptions Stationary rewards and transition probabilities: $r(s,a)$ and $p(s’ \vert s,a)$ doesn’t change over time. Finite state and action sets $\rightarrow$ this implies that $r(s,a)$ is bounded! There exists a constant $M$ such that \[|r(s,a)|&amp;lt;M \ \ \forall s \in S, \ \ \forall a \in A.\] Stationary Policy : policy doesn’t change over time! Policy Evaluation We need to evaluate \[\mathbb{E}^\pi \bigg [ \sum_{t=0}^\infty \gamma^t r(s_t, a_t) \bigg ]\] given a policy $\pi$. Value Function To do so, we define a value function, which is the expected return starting from state $s$ under executing the policy $\pi$. \[v^\pi (s) := \mathbb{E}^\pi \bigg [ \sum_{\tau = t}^\infty \gamma^{\tau -t} r(s_\tau , a_\tau) \ \vert \ s_t = s \bigg ]\] Using this value function, we decompose the value function into two parts. (1) immediate reward + (2) discounted value of next state. \[v^\pi (s) = \mathbb{E}^\pi [ r(s_t, a_t) + \gamma v^\pi (s_{t+1}) \ \vert \ s_t =s ]\] This can be expressed as \[v^\pi (s) = \sum_{a\in A} \pi (a \vert s) \bigg [ r(s, a) + \sum_{s'\in S} p(s' \vert s, a) v^\pi (s') \bigg ]\] Vector Form Recall, that we assumed finite state space and action space. Then, $v^\pi := (v^\pi(s_1),\cdots, v^\pi(s_n)) \in \mathbb{R}^n $ $R^\pi := (r(s_1, \pi(s_1), \cdots, r(s_n, \pi(s_n)) \in \mathbb{R}^n$ if deterministic $ R^\pi := (\sum_{a\in A}\pi(a \vert s_1)r(s_1, a), \cdots, \sum_{a\in A}\pi(a \vert s_n)r(s_n, a)) \in \mathbb{R}^n $ if stochastic Transition probability matrix Then, the policy evaluation can be expressed as \[v^\pi = R^\pi + \gamma P^\pi v^\pi\] Eigenvalues of Transition Probability Matrix Note that stochastic matrix has an eigenvalue of 1: let A as a $n\times n$ stochastic matrix. Then, \[A \begin{bmatrix}1\\1\\ \vdots \\1 \end{bmatrix} = \begin{bmatrix} \sum_i{a_{1i}}\\ \sum_i{a_{2i}}\\ \vdots \\ \sum_i{a_{ni}} \end{bmatrix} = \begin{bmatrix}1\\1\\ \vdots \\1 \end{bmatrix}\] which shows that $A$ has an eigenvalue of 1. Now, we are going to claim that other eigenvalues does not exceed 1. To do so, let’s assume that $Ax = \lambda x$ for some $\lambda &amp;gt;1 $. Knowing that the row-sum of $A$ is 1, we can interpret each component of $Ax$ as the convex combination of $x$ components, thus cannot exceed the maximum value of $x_{\max}$. However, since $\lambda&amp;gt;1$, at least one element of $\lambda x$ will be greater than $x_\max$. Thus, we can conclude that $\lambda &amp;gt;1$ is not possible. Eigenvalues of $P^\pi$ are less than or equal to 1. Unique solution of Policy Evaluation Equation Now, we can prove that the policy evaluation equation has a unique solution. \[v^\pi = R^\pi + \gamma P^\pi v^\pi\] This is because, \[(I-\gamma P^\pi ) v^\pi =R^\pi\] $I-\gamma P^\pi$ has an eigenvalue greater than zero, and thus invertible. Than, the unique soluition is given by \(v^\pi = (I- \gamma P^\pi )^{-1} R^\pi\) However, this method is inefficient when the problem gets larger. Policy Evaluation : Value Iteration Definition Define the operator $\mathcal{T} : \mathbb{R} \rightarrow \mathbb{R}$ \[\mathcal{T}^\pi v := R^\pi + \gamma P^\pi\] In a non-vector form, \[\mathcal{T}^\pi v(s) = \sum_{a \in A} \pi(a\vert s) \bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s, a) v(s') \bigg ]\] Then, the policy evaluation equation can be expressed as \[\mathcal{T}^\pi v^\pi = v^\pi\] which is a fixed point problem. Contraction Property We should prove that the operator $\mathcal{T}$ is a $\gamma$-contraction with respect to $| \cdot |_\infty$ for any stationary policy $\pi$. Recall that infinity norm of a vector $x \in \mathbb{R}^n$ is defined as \[\|\mathbf{x}\|_\infty = \max_i |\mathbf{x}_i|.\] Also, consider the following statement \[| \max_z f(z) - \max_z h(z) | \leq \max_z |f(z)-h(z)|\] which can be easily proved by the following: \[\begin{aligned} \max_z f(z) - \max_z h(z) &amp;amp; = f(z^\star) - \max_z h(z)\\ &amp;amp; \leq f(z^\star) - h(z^\star) \\ &amp;amp; \leq \max_z |f(z) - h(z)|\\ \end{aligned}\] \[\begin{aligned} \max_z f(z) - \max_z h(z) &amp;amp; = \max_z f(z) - h(z^\star)\\ &amp;amp; \geq f(z^\star) - h(z^\star) \\ &amp;amp; \geq - \max_z |f(z) - h(z)| \end{aligned}\] Applying this to operator $\mathcal{T}$, we have: \[\begin{aligned} \|\mathcal{T}v-\mathcal{T}v' \|_\infty &amp;amp; = \max_s \Big [ (\mathcal{T}v)(s) - (\mathcal{T}v')(s) \Big ]\\ &amp;amp; = \max_s \bigg [ \max_a \Big [r(s,a)+\gamma \sum_{s' \in S}p(s'|s,a)v(s)\Big ] - \max_a \Big [r(s,a)+\gamma \sum_{s' \in S}p(s'|s,a)v'(s)\Big ] \bigg ] &amp;amp; \\ &amp;amp; \leq \max_s \bigg [ \max_a \Big |\gamma \sum_{s'\in S}p(s'|s,a)[v(s)-v'(s)] \Big | \bigg ] \ \ \ \ \ \because \text{inequality (6)}\\ &amp;amp; = \max_{s,a} \Big |\gamma \sum_{s'\in S}p(s'|s,a)[v(s)-v'(s)] \Big | \\ &amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a)\ \big |v(s)-v'(s)\big | &amp;amp; \\ &amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_s |v(s)-v'(s)| &amp;amp; \\ &amp;amp; = \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \|v-v'\| \ \ \ \ \ \because \text{definition (5)}\\ &amp;amp; = \gamma \|v-v'\|_\infty \end{aligned}\] Banach Fixed Point Theorem If $\mathcal{T}$ is a contraction mapping, then $\mathcal{T}$ admits a unique fixed point $v^\star \in \mathbb{R}^n$. Meanwhile, $v^\star$ can be found by value iteration! \[v_{k+1} := \mathcal{T}v_k\] which leads to $v_k \rightarrow v^\star$. Value Iteration Algorithm For a stationary policy $\pi$, initialize $v_0$ as an arbitrary vector in $\mathbb{R}^n$. Repeat until convergence: \[v_{k+1} := \mathcal{T}^\pi v_k\] Optimal Policy / Value Function Optimal Value Function We have to find an optimal policy that maximizes the expected cumulative reward! \[\max_{\pi \in \Pi} \mathbb{E}^\pi \bigg [ \sum_{t=0}^\infty \gamma^t r(s_t, a_t) \bigg ]\] Thus, we are going to define an optimal value function \[v^\star (s) :=\max_{\pi \in \Pi} \bigg [ \sum_{\tau=t}^\infty \gamma^{\tau -t}r(s_\tau, a_\tau ) \big \vert s_t = s \bigg ]\] Recall that value function we previously defined doesn’t have the $\max_{\pi \in \Pi}$ term at front. Bellman Operator Defining the Bellman operator $\mathcal{T} : \mathbb{R}^n \rightarrow \mathbb{R}^n$ by \[\mathcal{T}v: = \sup_{\pi \in \Pi} \{ R^\pi + \gamma P^\pi v \}\\ \mathcal{T}v(s):= \sup_{\pi} \sum_{a\in A} \pi(a \vert s) \bigg [ r(s,a) + \gamma \sum_{s'\in S}p(s' \vert s,a) v(s') \bigg ]\] Note that we can rewrite the Bellman equation, replacing the $\sup_\pi$ term with $\max_{a\in A}$ term. \[(\mathcal{T}v)(s):= \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s'\in S} p(s' \vert s,a) v(s') \bigg ]\] Why? since $A$ is a finite action set, the supremum over possible policies $\pi$ is achieved when the policy is designed as \[\pi( a \vert s) = \begin{cases} 1 &amp;amp; \ \ \ \text{if } a= a^\star\\ 0 &amp;amp; \ \ \ \text{otherwise} \end{cases}\] while \[a^\star \in \arg \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s'\in S}p(s' \vert s,a) v(s') \bigg ]\] Contraction Property of Bellman Operator (optimal) Bellman operator is a monotone mapping \[\mathcal{T}v \leq \mathcal{T}v' \ \ \ \forall v, v' \in \mathbb{R}^n \ \ \ \text{s.t} \ \ v\leq v'\] [proof] Define $a^\star_{Q’}(s)= \arg \max_a Q’(s,a)$ and $a^\star_{Q}(s)= \arg \max_a Q(s,a)$ \[\begin{aligned} (\mathcal{T}Q')(s,a) &amp;amp; = r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a)\max_{a'\in A}Q'(s',a')\\ &amp;amp; = r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a)Q'(s',a_{Q'}^\star(s'))\\ &amp;amp; \geq r(s,a) + \gamma \sum_{s' \in S}p(s'|s,a) Q'(s',a_Q^\star(s'))\\ &amp;amp; \geq r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a) Q(s',a_Q^\star(s')) \\ &amp;amp; = r(s,a)+ \gamma \sum_{s'\in S}p(s'|s,a) \max_{a'\in A}Q(s',a')\\ &amp;amp; = (\mathcal{T}Q)(s,a) \ \ \ \forall (s,a) \in (S\times A) \end{aligned}\] (optimal) Bellman operator is a $\gamma$-contraction mapping \[\| \mathcal{T} v- \mathcal{T}v' \|_\infty \leq \gamma \| v- v' \| _\infty\] [proof] Recall that sup-norm of matrix $\mathbf{A}\in \mathbb{R}^{n\times m}$ is defined as \[\|\mathbf{A}\|_\infty = \max_{\substack{1\leq i\leq n\\ 1 \leq j \leq m}} |\mathbf{A}_{ij}|.\] Applying (14) to (13), we have \[\begin{aligned} \|\mathcal{T}Q-\mathcal{T}Q'\|_\infty &amp;amp;= \max_{(s,a) \in (S\times A)} \Big |(\mathcal{T}Q)(s,a) - (\mathcal{T}Q')(s,a) \Big|\\ &amp;amp; = \max_{s,a} \Big | \gamma \sum_{s'\in S} p(s'|s,a)\max_{a'\in A}Q(s',a')- \gamma \sum_{s'\in S}p(s'|s,a)\max_{a'\in A}Q'(s',a') \Big |\\ &amp;amp; = \gamma \max_{s,a} \Big | \sum_{s'\in S}p(s'|s,a) \big [ \max_{a'\in A} Q(s',a')- \max_{a'\in A} Q'(s',a')\big ] \Big |\\ &amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \Big | \max_{a'\in A} Q(s',a') - \max_{a'\in A}Q'(s',a') \Big | \\ &amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_{a'\in A} \Big |Q(s',a')-Q'(s',a') \Big | \ \ \ \because \text{inequality }(6)\\ &amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_{(s',a')\in (S\times A)} \Big | Q(s',a') -Q'(s',a')\Big | \\ &amp;amp; = \gamma \max_{(s',a')\in (S\times A)} \Big | Q(s',a')-Q'(s',a') \Big |\\ &amp;amp; = \gamma \|Q-Q'\|_\infty \end{aligned}\] **Thus, bellman equation has a unique solution, which is the optimal value function $v^\star$. ** Additional Properties [Proposition] This proposition can be used to prove that, if $\mathcal{T}v = v$, then $v= v^\star$. If $v\geq \mathcal{T}v $, then $v \geq v^\star$. If $v \leq \mathcal{T}v $, then $v \leq v^\star$. [proof] Let’s first prove the first one. (the other one can be proved by the exact same way) First, fix an arbitrary policy $\pi$. Since $\mathcal{T}$ selects the supremum over all policies, \[\mathcal{T}v \geq \mathcal{T}^\pi v\] Thus, \[v \geq \mathcal{T}v \geq \mathcal{T}^\pi v = R^\pi + \gamma P^\pi v \geq R^\pi + \gamma P^\pi (R^\pi + \gamma P^\pi v) \geq \cdots \geq \sum_{t=0}^{n-1} (\gamma P^\pi ) ^t R^\pi + (\gamma P^\pi )^n v\] Letting $n\rightarrow \infty$, we can say that \[v \geq \sum_{t=0}^\infty (\gamma P^\pi )^t R^\pi = v^\pi\] since $0&amp;lt;\gamma&amp;lt;1$ and the eigenvalue of $P^\pi$ doesn’t exceed 1. Taking the supremum of both sides with respect to $\pi$, we have \[v \geq v^\star\] Existence of Optimal Policies What we did so far is the procedure of finding the optimal value function. Meanwhile, we do not (yet) know whether there is a policy that makes us to achieve that optimal value function that we obtained by solving the optimal Bellman equation. [Theorem] If $S$ and $A$ are finite sets, then there exists an optimal policy, which is deterministic and stationary. [proof] If we construct a deterministic, stationary policy by \[\pi^\star(s) \in \arg\max _{a\in A}\bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) v^\star(s') \bigg ]\] this is an optimal policy that gives us the optimal value function $v^\star$. To prove this, try evaluating the policy $\pi^\star$ by solving \[\mathcal{T}^{\pi^\star} v = v\] Knowing that $\pi^\star$ is defined by taking the argmax action, \[\mathcal{T}^{\pi^\star} = \mathcal{T}\] Thus, \[\mathcal{T}^{\pi^\star} v = \mathcal{T}v = \mathcal{v}\] which means that $v= v^\star$.</summary></entry><entry><title type="html">[Optimization] 6 - Lagrange Duality, Slater’s Condition</title><link href="http://localhost:4000/notion_to_markdown/opt-lecture-6/" rel="alternate" type="text/html" title="[Optimization] 6 - Lagrange Duality, Slater’s Condition" /><published>2021-04-18T00:00:00+09:00</published><updated>2021-04-18T00:00:00+09:00</updated><id>http://localhost:4000/notion_to_markdown/opt-lecture-6</id><content type="html" xml:base="http://localhost:4000/notion_to_markdown/opt-lecture-6/">&lt;h2 id=&quot;lagrangian&quot;&gt;Lagrangian&lt;/h2&gt;
 
 &lt;p&gt;Consider an optimization problem&lt;/p&gt;
 

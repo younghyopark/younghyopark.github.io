@@ -536,7 +536,141 @@ fill="#000000" stroke="none">
   </li>
 </ol>
 
-<h2 id="optimal-value-function">Optimal Value Function</h2>
+<h2 id="optimal-policy--value-function">Optimal Policy / Value Function</h2>
+
+<h3 id="optimal-value-function">Optimal Value Function</h3>
+
+<p>We have to find an optimal policy that maximizes the expected cumulative reward!</p>
+
+\[\max_{\pi \in \Pi} \mathbb{E}^\pi \bigg [ \sum_{t=0}^\infty \gamma^t r(s_t, a_t) \bigg ]\]
+
+<p>Thus, we are going to define an <strong>optimal value function</strong></p>
+
+\[v^\star (s) :=\max_{\pi \in \Pi} \bigg [ \sum_{\tau=t}^\infty \gamma^{\tau -t}r(s_\tau, a_\tau ) \big \vert s_t = s \bigg ]\]
+
+<p>Recall that <strong>value function</strong> we previously defined doesn’t have the $\max_{\pi \in \Pi}$ term at front.</p>
+
+<h3 id="bellman-operator">Bellman Operator</h3>
+
+<p>Defining the Bellman operator $\mathcal{T} : \mathbb{R}^n \rightarrow  \mathbb{R}^n$ by</p>
+
+\[\mathcal{T}v: = \sup_{\pi \in \Pi} \{ R^\pi + \gamma P^\pi v \}\\
+\mathcal{T}v(s):= \sup_{\pi} \sum_{a\in A} \pi(a \vert s) \bigg [ r(s,a) + \gamma \sum_{s'\in S}p(s' \vert s,a) v(s') \bigg ]\]
+
+<p>Note that we can rewrite the Bellman equation, replacing the $\sup_\pi$ term with $\max_{a\in A}$ term.</p>
+
+\[(\mathcal{T}v)(s):= \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s'\in S} p(s' \vert s,a) v(s') \bigg ]\]
+
+<p><strong>Why?</strong> since $A$ is a finite action set, the supremum over possible policies $\pi$ is achieved when the policy is designed as</p>
+
+\[\pi( a \vert s) = \begin{cases}
+1 &amp; \ \ \ \text{if } a= a^\star\\
+0 &amp; \ \ \ \text{otherwise}
+\end{cases}\]
+
+<p>while</p>
+
+\[a^\star \in \arg \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s'\in S}p(s' \vert s,a) v(s') \bigg ]\]
+
+<h3 id="contraction-property-of-bellman-operator">Contraction Property of Bellman Operator</h3>
+
+<ol>
+  <li>
+    <p>(optimal) Bellman operator is a monotone mapping</p>
+
+\[\mathcal{T}v \leq \mathcal{T}v' \ \ \ \forall v, v' \in \mathbb{R}^n  \ \ \ \text{s.t} \ \ v\leq v'\]
+
+    <p><strong>[proof]</strong> Define $a^\star_{Q’}(s)= \arg \max_a Q’(s,a)$ and $a^\star_{Q}(s)= \arg \max_a Q(s,a)$</p>
+
+\[\begin{aligned}
+     	(\mathcal{T}Q')(s,a) &amp; = r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a)\max_{a'\in A}Q'(s',a')\\
+     	&amp; = r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a)Q'(s',a_{Q'}^\star(s'))\\
+     	&amp; \geq r(s,a) + \gamma \sum_{s' \in S}p(s'|s,a) Q'(s',a_Q^\star(s'))\\
+     	&amp; \geq r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a) Q(s',a_Q^\star(s')) \\
+     	&amp; = r(s,a)+ \gamma \sum_{s'\in S}p(s'|s,a) \max_{a'\in A}Q(s',a')\\
+     	&amp; = (\mathcal{T}Q)(s,a) \ \ \ \forall (s,a) \in (S\times A)
+     \end{aligned}\]
+  </li>
+  <li>
+    <p>(optimal) Bellman operator is a $\gamma$-contraction mapping</p>
+
+\[\| \mathcal{T} v- \mathcal{T}v' \|_\infty \leq \gamma \| v- v' \| _\infty\]
+
+    <p><strong>[proof]</strong> Recall that sup-norm of matrix $\mathbf{A}\in \mathbb{R}^{n\times m}$ is defined as</p>
+
+\[\|\mathbf{A}\|_\infty = \max_{\substack{1\leq i\leq n\\ 1 \leq j \leq m}} |\mathbf{A}_{ij}|.\]
+
+    <p>Applying (14) to (13), we have</p>
+
+\[\begin{aligned}
+       \|\mathcal{T}Q-\mathcal{T}Q'\|_\infty &amp;= \max_{(s,a) \in (S\times A)} \Big |(\mathcal{T}Q)(s,a) - (\mathcal{T}Q')(s,a) \Big|\\
+       &amp; = \max_{s,a} \Big | \gamma \sum_{s'\in S} p(s'|s,a)\max_{a'\in A}Q(s',a')- \gamma \sum_{s'\in S}p(s'|s,a)\max_{a'\in A}Q'(s',a') \Big |\\
+       &amp; = \gamma \max_{s,a} \Big | \sum_{s'\in S}p(s'|s,a) \big [ \max_{a'\in A} Q(s',a')- \max_{a'\in A} Q'(s',a')\big ] \Big |\\
+       &amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \Big | \max_{a'\in A} Q(s',a') - \max_{a'\in A}Q'(s',a') \Big | \\
+       &amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_{a'\in A} \Big |Q(s',a')-Q'(s',a') \Big | \ \ \ \because \text{inequality }(6)\\
+       &amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_{(s',a')\in (S\times A)} \Big | Q(s',a') -Q'(s',a')\Big | \\
+       &amp; = \gamma \max_{(s',a')\in (S\times A)} \Big | Q(s',a')-Q'(s',a') \Big |\\
+       &amp; = \gamma \|Q-Q'\|_\infty
+     \end{aligned}\]
+  </li>
+</ol>
+
+<p>**Thus, bellman equation has a unique solution, which is the optimal value function $v^\star$. **</p>
+
+<h3 id="additional-properties">Additional Properties</h3>
+
+<p><strong>[Proposition]</strong> This proposition can be used to prove that, if $\mathcal{T}v = v$, then $v= v^\star$.</p>
+
+<ul>
+  <li>If $v\geq \mathcal{T}v $, then $v \geq v^\star$.</li>
+  <li>If $v \leq \mathcal{T}v $, then $v \leq v^\star$.</li>
+</ul>
+
+<p><strong>[proof]</strong></p>
+
+<p>Let’s first prove the first one. (the other one can be proved by the exact same way)</p>
+
+<p>First, fix an arbitrary policy $\pi$. Since $\mathcal{T}$ selects the supremum over all policies,</p>
+
+\[\mathcal{T}v \geq \mathcal{T}^\pi v\]
+
+<p>Thus,</p>
+
+\[v \geq \mathcal{T}v \geq \mathcal{T}^\pi v  = R^\pi + \gamma P^\pi v  \geq R^\pi + \gamma P^\pi (R^\pi + \gamma P^\pi v) \geq \cdots \geq \sum_{t=0}^{n-1} (\gamma P^\pi ) ^t R^\pi + (\gamma P^\pi )^n v\]
+
+<p>Letting $n\rightarrow \infty$, we can say that</p>
+
+\[v \geq \sum_{t=0}^\infty (\gamma P^\pi )^t R^\pi  = v^\pi\]
+
+<p>since $0&lt;\gamma&lt;1$ and the eigenvalue of $P^\pi$ doesn’t exceed 1.</p>
+
+<p>Taking the supremum of both sides with respect to $\pi$, we have</p>
+
+\[v \geq v^\star\]
+
+<h3 id="existence-of-optimal-policies">Existence of Optimal Policies</h3>
+
+<p>What we did so far is the procedure of finding the <strong>optimal value function</strong>. Meanwhile, we do not (yet) know whether there is a policy that makes us to achieve that <strong>optimal value function</strong> that we obtained by solving the optimal Bellman equation.</p>
+
+<p><strong>[Theorem]</strong> If $S$ and $A$ are finite sets, then there exists an optimal policy, which is <strong>deterministic and stationary</strong>.</p>
+
+<p><strong>[proof]</strong> If we construct a deterministic, stationary policy by</p>
+
+\[\pi^\star(s) \in \arg\max _{a\in A}\bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) v^\star(s') \bigg ]\]
+
+<p>this is an optimal policy that gives us the optimal value function $v^\star$. To prove this, try evaluating the policy $\pi^\star$ by solving</p>
+
+\[\mathcal{T}^{\pi^\star} v = v\]
+
+<p>Knowing that $\pi^\star$ is defined by taking the argmax action,</p>
+
+\[\mathcal{T}^{\pi^\star} = \mathcal{T}\]
+
+<p>Thus,</p>
+
+\[\mathcal{T}^{\pi^\star} v = \mathcal{T}v = \mathcal{v}\]
+
+<p>which means that $v= v^\star$.</p>
 
 </div><section class="article__sharing d-print-none"></section><div id="disqus_thread"></div>
   <script>
