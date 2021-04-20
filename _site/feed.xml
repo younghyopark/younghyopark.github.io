@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-04-20T19:31:09+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Younghyo Park</title><subtitle>Your Site Description
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-04-20T19:52:17+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Younghyo Park</title><subtitle>Your Site Description
 </subtitle><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><entry><title type="html">[RL Theory] 8 - Q-function</title><link href="http://localhost:4000/2021/04/20/scrl-8.html" rel="alternate" type="text/html" title="[RL Theory] 8 - Q-function" /><published>2021-04-20T00:00:00+09:00</published><updated>2021-04-20T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/20/scrl-8</id><content type="html" xml:base="http://localhost:4000/2021/04/20/scrl-8.html">&lt;h2 id=&quot;state-action-value-functions&quot;&gt;State-Action Value Functions&lt;/h2&gt;
 
 &lt;p&gt;In this post, we’re going to define an important concept that is widely used in both MDP and RL.&lt;/p&gt;
@@ -21,12 +21,92 @@ Q^\star(s,a) &amp;amp; = r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s, a) v^\sta
 
 &lt;p&gt;We can then define the Bellman operator $\mathcal{T}$ for Q-functions&lt;/p&gt;
 
-&lt;p&gt;\((\mathcal{T}Q)(s,a) := r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) \max_{a'\in A} Q^\star(s',a')\)
-Then, it is a monotone contraction mapping.&lt;/p&gt;
+\[(\mathcal{T}Q)(s,a) := r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) \max_{a'\in A} Q^\star(s',a')\]
+
+&lt;p&gt;Then, it is a &lt;strong&gt;monotone contraction&lt;/strong&gt; mapping.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext success highlighter-rouge&quot;&gt;Monotone Proof&lt;/code&gt;
+Prove that the Bellman operator is monotone, i.e.,&lt;/p&gt;
+
+\[\mathcal{T}Q \leq \mathcal{T}Q' \ \ \  \forall Q,Q' \in  \mathbb{R}^{n\times m} \text{ s.t. }Q \leq Q'.\]
+
+&lt;p&gt;Define $a^\star_{Q’}(s)= \arg \max_a Q’(s,a)$ and $a^\star_{Q}(s)= \arg \max_a Q(s,a)$&lt;/p&gt;
+
+\[\begin{aligned}
+        	(\mathcal{T}Q')(s,a) &amp;amp; = r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a)\max_{a'\in A}Q'(s',a')\\
+        	&amp;amp; = r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a)Q'(s',a_{Q'}^\star(s'))\\
+        	&amp;amp; \geq r(s,a) + \gamma \sum_{s' \in S}p(s'|s,a) Q'(s',a_Q^\star(s'))\\
+        	&amp;amp; \geq r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a) Q(s',a_Q^\star(s')) \\
+        	&amp;amp; = r(s,a)+ \gamma \sum_{s'\in S}p(s'|s,a) \max_{a'\in A}Q(s',a')\\
+        	&amp;amp; = (\mathcal{T}Q)(s,a) \ \ \ \forall (s,a) \in (S\times A)
+        \end{aligned}\]
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext success highlighter-rouge&quot;&gt;Contraction Proof&lt;/code&gt; Prove that the Bellman operator is a $\gamma$-contraction mapping with respect to $| \cdot |_\infty$, i.e.,&lt;/p&gt;
+
+\[\|\mathcal{T}Q- \mathcal{T}Q'\|_\infty \leq \gamma \|Q- Q'\|_\infty \ \ \ \forall Q, Q' \in \mathbb{R}^{n\times m}.\]
+
+&lt;p&gt;Recall that sup-norm of matrix $\mathbf{A}\in \mathbb{R}^{n\times m}$ is defined as&lt;/p&gt;
+
+\[\|\mathbf{A}\|_\infty = \max_{\substack{1\leq i\leq n\\ 1 \leq j \leq m}} |\mathbf{A}_{ij}|.\]
+
+&lt;p&gt;Applying (14) to (13), we have&lt;/p&gt;
+
+\[\begin{aligned}
+			\|\mathcal{T}Q-\mathcal{T}Q'\|_\infty &amp;amp;= \max_{(s,a) \in (S\times A)} \Big |(\mathcal{T}Q)(s,a) - (\mathcal{T}Q')(s,a) \Big|\\
+			&amp;amp; = \max_{s,a} \Big | \gamma \sum_{s'\in S} p(s'|s,a)\max_{a'\in A}Q(s',a')- \gamma \sum_{s'\in S}p(s'|s,a)\max_{a'\in A}Q'(s',a') \Big |\\
+			&amp;amp; = \gamma \max_{s,a} \Big | \sum_{s'\in S}p(s'|s,a) \big [ \max_{a'\in A} Q(s',a')- \max_{a'\in A} Q'(s',a')\big ] \Big |\\
+			&amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \Big | \max_{a'\in A} Q(s',a') - \max_{a'\in A}Q'(s',a') \Big | \\
+			&amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_{a'\in A} \Big |Q(s',a')-Q'(s',a') \Big | \ \ \ \because \text{inequality }(6)\\
+			&amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_{(s',a')\in (S\times A)} \Big | Q(s',a') -Q'(s',a')\Big | \\
+			&amp;amp; = \gamma \max_{(s',a')\in (S\times A)} \Big | Q(s',a')-Q'(s',a') \Big |\\
+			&amp;amp; = \gamma \|Q-Q'\|_\infty
+		\end{aligned}\]
 
 &lt;h3 id=&quot;lp-formulation&quot;&gt;LP-Formulation&lt;/h3&gt;
 
-&lt;p&gt;We can also change this as a Linear Program as well.&lt;/p&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Lecture-Note" /><category term="Theory/Survey" /><summary type="html">State-Action Value Functions In this post, we’re going to define an important concept that is widely used in both MDP and RL. Definition The optimal Q-function $Q^\star(s,a)$ is the maximum expected return starting from state $s$, taking action $a$: \[Q^\star(s,a) := \max_\pi Q^\pi (s,a) = \max_\pi \mathbb{E} ^\pi \bigg [ \sum_{t=0}^\infty \gamma^t r(s_t, a_t) \ \vert \ s_0 = s, a_0 =a \bigg ]\] By definition we have \[v^\star(s) = \max_{a\in A} Q^\star(s,a)\] Bellman Equation for Q-functions \[\begin{aligned} Q^\star(s,a) &amp;amp; = r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s, a) v^\star(s')\\ &amp;amp; = r(s,a) + \gamma \sum_{s'\in S} p(s' \vert s,a) \max_{a'\in A} Q^\star (s',a') \end{aligned}\] We can then define the Bellman operator $\mathcal{T}$ for Q-functions \((\mathcal{T}Q)(s,a) := r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) \max_{a'\in A} Q^\star(s',a')\) Then, it is a monotone contraction mapping. LP-Formulation We can also change this as a Linear Program as well.</summary></entry><entry><title type="html">[RL Theory] 6 - Policy Iteration</title><link href="http://localhost:4000/2021/04/20/scrl-6.html" rel="alternate" type="text/html" title="[RL Theory] 6 - Policy Iteration" /><published>2021-04-20T00:00:00+09:00</published><updated>2021-04-20T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/20/scrl-6</id><content type="html" xml:base="http://localhost:4000/2021/04/20/scrl-6.html">&lt;h2 id=&quot;policy-iteration&quot;&gt;Policy Iteration&lt;/h2&gt;
+&lt;p&gt;We can also solve the Q-function based on optimization principle&lt;/p&gt;
+
+\[\begin{aligned}
+\min_{Q\in\mathbb{R}^{n\times m}} &amp;amp; \ \ \ \sum_{s,a} c(s,a) Q(s,a) \\
+\text{s.t.} &amp;amp; \ \ \ Q \geq \mathcal{T} Q
+\end{aligned}\]
+
+&lt;p&gt;which can be also formulated as Linear Program.&lt;/p&gt;
+
+\[\begin{aligned}
+\min_{Q\in\mathbb{R}^{n\times m}} &amp;amp; \ \ \ \sum_{s,a} c(s,a) Q(s,a) \\
+\text{s.t.} &amp;amp; \ \ \ Q(s,a) \geq r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) Q(s', a') \ \ \forall (s,a,a')
+\end{aligned}\]
+
+&lt;p&gt;However, this LP is inefficient! (number of constraints $n\times m^2$ and optimization variable $n\times m$.&lt;/p&gt;
+
+&lt;h3 id=&quot;policy-iteration-using-q-functions&quot;&gt;Policy Iteration using Q-functions&lt;/h3&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Policy Evaluation&lt;/strong&gt;&lt;/p&gt;
+
+    &lt;p&gt;Given a policy $\pi$, we can compute $Q^\pi$ by solving&lt;/p&gt;
+
+\[\begin{aligned}
+\min_{Q\in\mathbb{R}^{n\times m}} &amp;amp; \ \ \ \sum_{s,a} c(s,a) Q(s,a) \\
+\text{s.t.} &amp;amp; \ \ \ Q(s,a) \geq r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,\pi(s)) Q(s', \pi(s')) \ \ \forall (s,a)
+\end{aligned}\]
+
+    &lt;p&gt;which its number of constraints and optimization varible dimension is identical ($n\times m$).&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Policy Improvement&lt;/strong&gt;&lt;/p&gt;
+
+    &lt;p&gt;Then, we update the policy by&lt;/p&gt;
+
+\[\pi(s) \in \arg \max_{a\in A}Q^\pi (s,a)\]
+
+    &lt;p&gt;Meanwhile, it is worth noting that this policy improvement step doesn’t require any sort of model informations (transition probability, reward function or so)&lt;/p&gt;
+
+    &lt;p&gt;$\rightarrow$ &lt;strong&gt;Q-functions are frequently used for model-free approach!&lt;/strong&gt;&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;</content><author><name>Younghyo Park</name><email>parkyh9492@snu.ac.kr</email></author><category term="Reinforcement-Learning" /><category term="Lecture-Note" /><category term="Theory/Survey" /><summary type="html">State-Action Value Functions In this post, we’re going to define an important concept that is widely used in both MDP and RL. Definition The optimal Q-function $Q^\star(s,a)$ is the maximum expected return starting from state $s$, taking action $a$: \[Q^\star(s,a) := \max_\pi Q^\pi (s,a) = \max_\pi \mathbb{E} ^\pi \bigg [ \sum_{t=0}^\infty \gamma^t r(s_t, a_t) \ \vert \ s_0 = s, a_0 =a \bigg ]\] By definition we have \[v^\star(s) = \max_{a\in A} Q^\star(s,a)\] Bellman Equation for Q-functions \[\begin{aligned} Q^\star(s,a) &amp;amp; = r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s, a) v^\star(s')\\ &amp;amp; = r(s,a) + \gamma \sum_{s'\in S} p(s' \vert s,a) \max_{a'\in A} Q^\star (s',a') \end{aligned}\] We can then define the Bellman operator $\mathcal{T}$ for Q-functions \[(\mathcal{T}Q)(s,a) := r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) \max_{a'\in A} Q^\star(s',a')\] Then, it is a monotone contraction mapping. Monotone Proof Prove that the Bellman operator is monotone, i.e., \[\mathcal{T}Q \leq \mathcal{T}Q' \ \ \ \forall Q,Q' \in \mathbb{R}^{n\times m} \text{ s.t. }Q \leq Q'.\] Define $a^\star_{Q’}(s)= \arg \max_a Q’(s,a)$ and $a^\star_{Q}(s)= \arg \max_a Q(s,a)$ \[\begin{aligned} (\mathcal{T}Q')(s,a) &amp;amp; = r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a)\max_{a'\in A}Q'(s',a')\\ &amp;amp; = r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a)Q'(s',a_{Q'}^\star(s'))\\ &amp;amp; \geq r(s,a) + \gamma \sum_{s' \in S}p(s'|s,a) Q'(s',a_Q^\star(s'))\\ &amp;amp; \geq r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a) Q(s',a_Q^\star(s')) \\ &amp;amp; = r(s,a)+ \gamma \sum_{s'\in S}p(s'|s,a) \max_{a'\in A}Q(s',a')\\ &amp;amp; = (\mathcal{T}Q)(s,a) \ \ \ \forall (s,a) \in (S\times A) \end{aligned}\] Contraction Proof Prove that the Bellman operator is a $\gamma$-contraction mapping with respect to $| \cdot |_\infty$, i.e., \[\|\mathcal{T}Q- \mathcal{T}Q'\|_\infty \leq \gamma \|Q- Q'\|_\infty \ \ \ \forall Q, Q' \in \mathbb{R}^{n\times m}.\] Recall that sup-norm of matrix $\mathbf{A}\in \mathbb{R}^{n\times m}$ is defined as \[\|\mathbf{A}\|_\infty = \max_{\substack{1\leq i\leq n\\ 1 \leq j \leq m}} |\mathbf{A}_{ij}|.\] Applying (14) to (13), we have \[\begin{aligned} \|\mathcal{T}Q-\mathcal{T}Q'\|_\infty &amp;amp;= \max_{(s,a) \in (S\times A)} \Big |(\mathcal{T}Q)(s,a) - (\mathcal{T}Q')(s,a) \Big|\\ &amp;amp; = \max_{s,a} \Big | \gamma \sum_{s'\in S} p(s'|s,a)\max_{a'\in A}Q(s',a')- \gamma \sum_{s'\in S}p(s'|s,a)\max_{a'\in A}Q'(s',a') \Big |\\ &amp;amp; = \gamma \max_{s,a} \Big | \sum_{s'\in S}p(s'|s,a) \big [ \max_{a'\in A} Q(s',a')- \max_{a'\in A} Q'(s',a')\big ] \Big |\\ &amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \Big | \max_{a'\in A} Q(s',a') - \max_{a'\in A}Q'(s',a') \Big | \\ &amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_{a'\in A} \Big |Q(s',a')-Q'(s',a') \Big | \ \ \ \because \text{inequality }(6)\\ &amp;amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_{(s',a')\in (S\times A)} \Big | Q(s',a') -Q'(s',a')\Big | \\ &amp;amp; = \gamma \max_{(s',a')\in (S\times A)} \Big | Q(s',a')-Q'(s',a') \Big |\\ &amp;amp; = \gamma \|Q-Q'\|_\infty \end{aligned}\] LP-Formulation We can also solve the Q-function based on optimization principle \[\begin{aligned} \min_{Q\in\mathbb{R}^{n\times m}} &amp;amp; \ \ \ \sum_{s,a} c(s,a) Q(s,a) \\ \text{s.t.} &amp;amp; \ \ \ Q \geq \mathcal{T} Q \end{aligned}\] which can be also formulated as Linear Program. \[\begin{aligned} \min_{Q\in\mathbb{R}^{n\times m}} &amp;amp; \ \ \ \sum_{s,a} c(s,a) Q(s,a) \\ \text{s.t.} &amp;amp; \ \ \ Q(s,a) \geq r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) Q(s', a') \ \ \forall (s,a,a') \end{aligned}\] However, this LP is inefficient! (number of constraints $n\times m^2$ and optimization variable $n\times m$. Policy Iteration using Q-functions Policy Evaluation Given a policy $\pi$, we can compute $Q^\pi$ by solving \[\begin{aligned} \min_{Q\in\mathbb{R}^{n\times m}} &amp;amp; \ \ \ \sum_{s,a} c(s,a) Q(s,a) \\ \text{s.t.} &amp;amp; \ \ \ Q(s,a) \geq r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,\pi(s)) Q(s', \pi(s')) \ \ \forall (s,a) \end{aligned}\] which its number of constraints and optimization varible dimension is identical ($n\times m$). Policy Improvement Then, we update the policy by \[\pi(s) \in \arg \max_{a\in A}Q^\pi (s,a)\] Meanwhile, it is worth noting that this policy improvement step doesn’t require any sort of model informations (transition probability, reward function or so) $\rightarrow$ Q-functions are frequently used for model-free approach!</summary></entry><entry><title type="html">[RL Theory] 6 - Policy Iteration</title><link href="http://localhost:4000/2021/04/20/scrl-6.html" rel="alternate" type="text/html" title="[RL Theory] 6 - Policy Iteration" /><published>2021-04-20T00:00:00+09:00</published><updated>2021-04-20T00:00:00+09:00</updated><id>http://localhost:4000/2021/04/20/scrl-6</id><content type="html" xml:base="http://localhost:4000/2021/04/20/scrl-6.html">&lt;h2 id=&quot;policy-iteration&quot;&gt;Policy Iteration&lt;/h2&gt;
 &lt;h3 id=&quot;idea-of-policy-iteration&quot;&gt;Idea of Policy Iteration&lt;/h3&gt;
 
 &lt;p&gt;So far, our algorithm updated everything only in the &lt;strong&gt;value space&lt;/strong&gt;. After we obtained the optimal value function $v^\star$, we switched over to the policy space, and obtained $\pi^\star$.&lt;/p&gt;

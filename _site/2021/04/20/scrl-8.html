@@ -376,12 +376,92 @@ Q^\star(s,a) &amp; = r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s, a) v^\star(s'
 
 <p>We can then define the Bellman operator $\mathcal{T}$ for Q-functions</p>
 
-<p>\((\mathcal{T}Q)(s,a) := r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) \max_{a'\in A} Q^\star(s',a')\)
-Then, it is a monotone contraction mapping.</p>
+\[(\mathcal{T}Q)(s,a) := r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) \max_{a'\in A} Q^\star(s',a')\]
+
+<p>Then, it is a <strong>monotone contraction</strong> mapping.</p>
+
+<p><code class="language-plaintext success highlighter-rouge">Monotone Proof</code>
+Prove that the Bellman operator is monotone, i.e.,</p>
+
+\[\mathcal{T}Q \leq \mathcal{T}Q' \ \ \  \forall Q,Q' \in  \mathbb{R}^{n\times m} \text{ s.t. }Q \leq Q'.\]
+
+<p>Define $a^\star_{Q’}(s)= \arg \max_a Q’(s,a)$ and $a^\star_{Q}(s)= \arg \max_a Q(s,a)$</p>
+
+\[\begin{aligned}
+        	(\mathcal{T}Q')(s,a) &amp; = r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a)\max_{a'\in A}Q'(s',a')\\
+        	&amp; = r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a)Q'(s',a_{Q'}^\star(s'))\\
+        	&amp; \geq r(s,a) + \gamma \sum_{s' \in S}p(s'|s,a) Q'(s',a_Q^\star(s'))\\
+        	&amp; \geq r(s,a) + \gamma \sum_{s'\in S}p(s'|s,a) Q(s',a_Q^\star(s')) \\
+        	&amp; = r(s,a)+ \gamma \sum_{s'\in S}p(s'|s,a) \max_{a'\in A}Q(s',a')\\
+        	&amp; = (\mathcal{T}Q)(s,a) \ \ \ \forall (s,a) \in (S\times A)
+        \end{aligned}\]
+
+<p><code class="language-plaintext success highlighter-rouge">Contraction Proof</code> Prove that the Bellman operator is a $\gamma$-contraction mapping with respect to $| \cdot |_\infty$, i.e.,</p>
+
+\[\|\mathcal{T}Q- \mathcal{T}Q'\|_\infty \leq \gamma \|Q- Q'\|_\infty \ \ \ \forall Q, Q' \in \mathbb{R}^{n\times m}.\]
+
+<p>Recall that sup-norm of matrix $\mathbf{A}\in \mathbb{R}^{n\times m}$ is defined as</p>
+
+\[\|\mathbf{A}\|_\infty = \max_{\substack{1\leq i\leq n\\ 1 \leq j \leq m}} |\mathbf{A}_{ij}|.\]
+
+<p>Applying (14) to (13), we have</p>
+
+\[\begin{aligned}
+			\|\mathcal{T}Q-\mathcal{T}Q'\|_\infty &amp;= \max_{(s,a) \in (S\times A)} \Big |(\mathcal{T}Q)(s,a) - (\mathcal{T}Q')(s,a) \Big|\\
+			&amp; = \max_{s,a} \Big | \gamma \sum_{s'\in S} p(s'|s,a)\max_{a'\in A}Q(s',a')- \gamma \sum_{s'\in S}p(s'|s,a)\max_{a'\in A}Q'(s',a') \Big |\\
+			&amp; = \gamma \max_{s,a} \Big | \sum_{s'\in S}p(s'|s,a) \big [ \max_{a'\in A} Q(s',a')- \max_{a'\in A} Q'(s',a')\big ] \Big |\\
+			&amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \Big | \max_{a'\in A} Q(s',a') - \max_{a'\in A}Q'(s',a') \Big | \\
+			&amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_{a'\in A} \Big |Q(s',a')-Q'(s',a') \Big | \ \ \ \because \text{inequality }(6)\\
+			&amp; \leq \gamma \max_{s,a} \sum_{s'\in S} p(s'|s,a) \max_{(s',a')\in (S\times A)} \Big | Q(s',a') -Q'(s',a')\Big | \\
+			&amp; = \gamma \max_{(s',a')\in (S\times A)} \Big | Q(s',a')-Q'(s',a') \Big |\\
+			&amp; = \gamma \|Q-Q'\|_\infty
+		\end{aligned}\]
 
 <h3 id="lp-formulation">LP-Formulation</h3>
 
-<p>We can also change this as a Linear Program as well.</p>
+<p>We can also solve the Q-function based on optimization principle</p>
+
+\[\begin{aligned}
+\min_{Q\in\mathbb{R}^{n\times m}} &amp; \ \ \ \sum_{s,a} c(s,a) Q(s,a) \\
+\text{s.t.} &amp; \ \ \ Q \geq \mathcal{T} Q
+\end{aligned}\]
+
+<p>which can be also formulated as Linear Program.</p>
+
+\[\begin{aligned}
+\min_{Q\in\mathbb{R}^{n\times m}} &amp; \ \ \ \sum_{s,a} c(s,a) Q(s,a) \\
+\text{s.t.} &amp; \ \ \ Q(s,a) \geq r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) Q(s', a') \ \ \forall (s,a,a')
+\end{aligned}\]
+
+<p>However, this LP is inefficient! (number of constraints $n\times m^2$ and optimization variable $n\times m$.</p>
+
+<h3 id="policy-iteration-using-q-functions">Policy Iteration using Q-functions</h3>
+
+<ol>
+  <li>
+    <p><strong>Policy Evaluation</strong></p>
+
+    <p>Given a policy $\pi$, we can compute $Q^\pi$ by solving</p>
+
+\[\begin{aligned}
+\min_{Q\in\mathbb{R}^{n\times m}} &amp; \ \ \ \sum_{s,a} c(s,a) Q(s,a) \\
+\text{s.t.} &amp; \ \ \ Q(s,a) \geq r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,\pi(s)) Q(s', \pi(s')) \ \ \forall (s,a)
+\end{aligned}\]
+
+    <p>which its number of constraints and optimization varible dimension is identical ($n\times m$).</p>
+  </li>
+  <li>
+    <p><strong>Policy Improvement</strong></p>
+
+    <p>Then, we update the policy by</p>
+
+\[\pi(s) \in \arg \max_{a\in A}Q^\pi (s,a)\]
+
+    <p>Meanwhile, it is worth noting that this policy improvement step doesn’t require any sort of model informations (transition probability, reward function or so)</p>
+
+    <p>$\rightarrow$ <strong>Q-functions are frequently used for model-free approach!</strong></p>
+  </li>
+</ol>
 
 </div><section class="article__sharing d-print-none"></section><div id="disqus_thread"></div>
   <script>

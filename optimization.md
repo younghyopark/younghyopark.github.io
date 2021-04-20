@@ -1,7 +1,7 @@
 ---
 layout: article
-title: About
-show_title: false
+title: Optimization
+show_title: true
 comment: false
 ---
 
