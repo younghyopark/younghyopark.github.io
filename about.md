@@ -1,7 +1,8 @@
 ---
-layout: article
+layout: article_nocomment
 title: About
 show_title: false
+comment: false
 ---
 <!-- 
 ![TeXt Theme](https://raw.githubusercontent.com/kitian616/jekyll-TeXt-theme/master/screenshots/TeXt-home.jpg)

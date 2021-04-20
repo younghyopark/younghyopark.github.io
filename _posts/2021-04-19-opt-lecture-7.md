@@ -2,6 +2,7 @@
 title: "[Optimization] 7 - KKT Optimality Condition"
 tags: Optimization Lecture-Note
 permalink: "/notion_to_markdown/opt-lecture-7/"
+comment: true
 ---
 
 ## Characterizing the Optimality 

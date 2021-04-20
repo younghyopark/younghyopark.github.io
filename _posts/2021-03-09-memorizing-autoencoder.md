@@ -2,6 +2,7 @@
 title: "[ICCV 2019] Memorizing Normality to Detect Anomaly: Memory-augmented Deep Autoencoder for Unsupervised Anomaly Detection"
 tags: Autoencoder
 permalink: "/notion_to_markdown/%5BPaper%20Review%5D%20Memorizing%20Normality%20to%20Detect%20Anom%209d61a839fc9a41a68d1fd4d65a8ace01/"
+comment: true
 ---
 
 ## Motivation
