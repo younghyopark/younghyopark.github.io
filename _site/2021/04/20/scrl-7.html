@@ -1,10 +1,10 @@
 <!DOCTYPE html><html lang="en">
   <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[AIRE 2020] A comprehensive survey on model compression and acceleration - Younghyo Park</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[RL Theory] 7 - Linear Programming Approach - Younghyo Park</title>
 
-<meta name="description" content="PruningMotivation      Primary motive of pruning is to reduce the storage requirement of the DL model and make it storage-friendly.    → Pruning parameters f...">
-<link rel="canonical" href="http://localhost:4000/notion_to_markdown/A%20comprehensive%20survey%20on%20model%20compression%20and%20ac%204c3c4286b4ba4b30ac64f7813827a86e/"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
+<meta name="description" content="Iteration based vs Optimization basedRecall that the Bellman operator is given by\[(\mathcal{T}v) (s) := \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s' \in S...">
+<link rel="canonical" href="http://localhost:4000/2021/04/20/scrl-7.html"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
 <!--<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
 
 <meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
@@ -336,415 +336,135 @@ fill="#000000" stroke="none">
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
 <!-- end custom main top snippet -->
-<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[AIRE 2020] A comprehensive survey on model compression and acceleration</h1></header><span class="split-space">&nbsp;</span>
+<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[RL Theory] 7 - Linear Programming Approach</h1></header><span class="split-space">&nbsp;</span>
           <a class="edit-on-github"
             title="Edit on Github"
-            href="https://github.com/younghyopark/younghyopark.github.io/tree/main/_posts/2021-03-16-comprehensive-survey-compression.md">
-            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[AIRE 2020] A comprehensive survey on model compression and acceleration"><div class="article__info clearfix"><ul class="left-col menu"><li>
+            href="https://github.com/younghyopark/younghyopark.github.io/tree/main/_posts/2021-04-20-scrl-7.md">
+            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[RL Theory] 7 - Linear Programming Approach"><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Model-Compression">Model-Compression</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Mar 16, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-03-16T00:00:00+09:00">
-    <meta itemprop="keywords" content="Model-Compression"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
+                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
+            </li><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
+            </li><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Theory%2FSurvey">Theory/Survey</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 20, 2021</span>
+            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-20T00:00:00+09:00">
+    <meta itemprop="keywords" content="Reinforcement-Learning,Lecture-Note,Theory/Survey"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
 
 <!-- end custom article top snippet -->
-<div class="article__content" itemprop="articleBody"><p><img src="Untitled.png" alt="Untitled.png" /></p>
-
-<h2 id="pruning">Pruning</h2>
-
-<h3 id="motivation">Motivation</h3>
-
-<ul>
-  <li>
-    <p>Primary motive of pruning is to reduce the storage requirement of the DL model and make it storage-friendly.</p>
-
-    <p>→ Pruning parameters from the dense layer helps in making the model smaller.</p>
-  </li>
-  <li>
-    <p><strong>Pruning also helps to reduce the overfitting problem of the NNs.</strong></p>
-
-    <p>I personally consider this as the key motivation of applying pruning (and other model compression methods) to improve the performance of outlier detection.</p>
-  </li>
-  <li>
-    <p>A model can be pruned either during or after the training.</p>
-  </li>
-</ul>
-
-<h3 id="types-of-pruning">Types of Pruning</h3>
-
-<ol>
-  <li><strong>Weight Pruning</strong> : prunes out (zeros out) the weight connections if they are below some predefined threshold</li>
-  <li><strong>Neuron Pruning</strong> : remove the individual neurons if they are redundant → all the incoming and outgoing connection of the neuron is removed</li>
-  <li><strong>Filter Pruning</strong> : remove the filters that are ranked less important → importance of filters can be calculated by L1/L2 norm</li>
-  <li><strong>Layer Pruning</strong> : from a very deep network, some of the layers can also be pruned.</li>
-</ol>
-
-<h3 id="pruning-for-fc-layers">Pruning for FC layers</h3>
-
-<ol>
-  <li><strong>LeCun et al. (1990)</strong> first introduces the idea of feed-forward network pruning
-    <ul>
-      <li>suggested the removal of the weights based on their <strong>saliency</strong> (if the removal of the weight parameter has a small effect on the training error)</li>
-      <li>authors said that <strong>small magnitude weights</strong> have less impact on the training error, and thus have small saliency.</li>
-    </ul>
-
-    <p>To determine the saliency (and lead to above observation), LeCun et al introduced a method called <strong>“Optimal Brain Damage (OBD)”</strong> which second derivative of the obejctive function is used with respect to the parameters.</p>
-
-    <ul>
-      <li>Saliency $s_k$  is calculated by $s_k  = h_{kk} u_k ^2 / 2$ where $u_k$  is weight parameter, $h_{kk}$ is the second-order derivatives for the parameter.</li>
-      <li>effect on accuracy and training will be least if <strong>small-magnitude parameters</strong> are eliminated</li>
-      <li>Network needs few times of re-training to gain a considerable accuracy again.</li>
-    </ul>
-  </li>
-  <li><strong>Hassibi and Strok (1993)</strong> proposed another method of FC layer pruning.
-    <ul>
-      <li>authors claimed that eliminating small magnitude weights can eliminate wrong weight connections!</li>
-    </ul>
-
-    <p>They say that <strong>small magnitude weights</strong> can also be necessary for lowering the error!</p>
-
-    <ul>
-      <li>propose a method of <strong>“Optimal Brain Surgeon (OBS)”</strong> which showed that the Hessian matrix is in fact non-diagonal.</li>
-    </ul>
-  </li>
-  <li><strong><a href="https://link.springer.com/content/pdf/10.1023/A:1009639214138.pdf">Suzuki et al (2001)</a></strong> remove the network connections based on their influence on the error
-    <ul>
-      <li>remove the network based on their influence on the error, and retrain the network using back-propagation</li>
-      <li><strong>Checkout the exact algorithm here</strong>
-        <ol>
-          <li>Train a large enough NN until $E \leq E_P$</li>
-          <li>Remove the $r$ th unit virtually and calculate $E^{(r)}$</li>
-          <li>If every unit is examined by removing it virtually and calculating $E^{(r)}$, then go to Step 4, else go back to Step 2.</li>
-          <li>Remove the $a$th unit where $E^{(a)}$ is the minimum among $E^{(r)}$s.</li>
-          <li>Retraing the NN, which has been removed of the $a$ th unit, by back-propagation</li>
-          <li>If $E \leq E_p$ ; then memorize the weights and the structure, and go back to step 2, else replace the network by the previous one, and finish the steps.</li>
-        </ol>
-      </li>
-    </ul>
-  </li>
-  <li><strong><a href="https://arxiv.org/pdf/1507.06149.pdf">Srinivas and Babu (2015)</a></strong> instead remove neruons which are determined as redundant
-    <ul>
-      <li>Which neuron is redundant? author answers - Similar neurons are redundant.</li>
-      <li>
-        <p>Authors found out that not only single weight being equal to zero create redundancy in the network, equal weights also create redundancies</p>
-
-        <p>→ If two weight sets W1 and W2 are similar, then one of them can be removed</p>
-      </li>
-      <li>
-        <p>To find out and prune those, authors prune the weights which changes the output neuron activations the least, removing a set of weights at once.</p>
-
-        <center><img src="Untitled%201.png" width="500" /></center>
-      </li>
-    </ul>
-  </li>
-  <li><strong><a href="https://arxiv.org/pdf/1611.01427.pdf">Ardakani et al. (2016)</a></strong> just randomly remove (zeros out) the connections
-    <ul>
-      <li>
-        <p>Considering the network layer with weight $\mathbf{W}$ and bias $\mathbf{b}$</p>
-
-\[\mathbf{y} = \texttt{nn.ReLU} (\mathbf{Wx+b})\]
-
-        <p>authors introduce the sparse weight matrix $\mathbf{W}_s$</p>
-
-\[\mathbf{W}_s = \mathbf{W} \cdot \mathbf{M}\]
-
-        <p>where $\mathbf{M}$ is called as a “Mask matrix” which is a random binary matrix.</p>
-      </li>
-      <li>
-        <p>Now, we can generate a sparse fc layer by replacing $\mathbf{W}$ with $\mathbf{W}_s$</p>
-
-\[\mathbf{y} = \texttt{nn.ReLU} (\mathbf{W_s x+b})\]
-      </li>
-      <li>
-        <p>How do we generate this “Mask matrix” $\mathbf{M}$?</p>
-
-        <p>→ Application of <strong>Linear Feedback Shift Register</strong> (LFSR)</p>
-
-        <p><img src="Untitled%202.png" alt="Untitled%202.png" /></p>
-      </li>
-      <li>
-        <p>Then, retrain the network!</p>
-        <ul>
-          <li>
-            <p>Checkout the specific algorithm here</p>
-
-            <p><img src="Untitled%203.png" alt="Untitled%203.png" /></p>
-          </li>
-        </ul>
-      </li>
-    </ul>
-  </li>
-  <li><strong><a href="https://openreview.net/pdf?id=HJIY0E9ge">Babaeizadeh et al (2017)</a></strong> propose NoiseOut algorithm.
-    <ul>
-      <li>Removal of neurons from the network takes place based on the <strong>correlation</strong> among activations of neurons in the inner layers</li>
-      <li>Remove one of the two neurons with strongly correlated activations</li>
-    </ul>
-  </li>
-  <li>Some other algorithms <strong>replace</strong> the FC layer with another type of layer
-    <ul>
-      <li><a href="https://arxiv.org/abs/1412.7149">Yang et al (2015)</a> replaces the FC layer with Adaptive Fastfood transform</li>
-      <li>NIN and GoogleNet replaces FC layer with global average pooling layer</li>
-    </ul>
-  </li>
-</ol>
-
-<h2 id="quantization">Quantization</h2>
-
-<h3 id="motivation-1">Motivation</h3>
-
-<ul>
-  <li>
-    <p>Most of the DNNs store their weights using a 32-bit floating point numbers</p>
-
-    <p>→ Reducing the number of bits can lead to significant reduction in necessary operations / size of the model</p>
-  </li>
-  <li>
-    <p>Quantization can be considered as a gradual thought process</p>
-    <ol>
-      <li>Quantization of weights</li>
-      <li>Quantization of gradient / activation</li>
-    </ol>
-  </li>
-</ul>
-
-<h3 id="types-of-quantization">Types of Quantization</h3>
-
-<ul>
-  <li>Weights can be quantized to 16-bit, 8-bit, 4-bit or even with 1-bit (binary)</li>
-  <li>
-    <p>Creating a cluster of weights</p>
-
-    <p>→ all the weights which fall into the same cluster can share the same weight value</p>
-
-    <p>→ we only need to fine-tune the shared weights instead of 32-bit full precision weights</p>
-  </li>
-  <li>
-    <p><strong>Quantization can be applied during / after the training of network</strong></p>
-
-    <p>→ Qunatization after training : applied to reduce inference time and energy</p>
-
-    <p>→ Quantization during training : applied to reduce the network size, make the training efficient</p>
-  </li>
-</ul>
-
-<h3 id="quantization-during-training">Quantization During Training</h3>
-
-<ol>
-  <li><a href="https://www.cs.toronto.edu/~hinton/absps/JMLRdropout.pdf"><strong>Soudry et al. (2014)</strong></a> (which, by the way, is a popular paper that proposed the method of dropout) presented expectation back-propagation (EBP) algorithm which can be used to train a multi-layer NN with disccrete weights</li>
-  <li><strong><a href="https://arxiv.org/pdf/1504.04788.pdf">Chen et al. (2015)</a></strong> proposed HashedNets, which implemented the concept of shared weight
-    <ul>
-      <li>Concept of hash function is used to group the weight connection into hash buckets randomly</li>
-      <li>
-        <p>All weight connections belonging to the same hash bucket share the same parameter</p>
-
-        <p>(All weight connections grouped to $i$th hash bucket share the same weight $\mathbf{w}_i$ )</p>
-      </li>
-      <li>Shared weight of each connection is determined by a hash function</li>
-    </ul>
-
-    <center><img src="Untitled%204.png" width="500" /></center>
-  </li>
-  <li><a href="https://arxiv.org/pdf/1511.00363.pdf"><strong>Courbariaux et al. (2015)</strong></a> introduces BinaryConnect, in which weights are restricted to have only two values (-1 or +1) → change the matrix-accumulation operation inside the neuron to a simple accumulation.
-    <ul>
-      <li>
-        <p>Transforms the real-valued weights into binary weights stochastically as:</p>
-
-        <center><img src="Untitled%205.png" width="300" /></center>
-      </li>
-      <li>
-        <p>Note that real-valued weight is used during back propagation &amp; parameter update</p>
-
-        <p><img src="Untitled%206.png" alt="Untitled%206.png" /></p>
-      </li>
-    </ul>
-  </li>
-  <li><a href="https://arxiv.org/abs/1602.02830"><strong>Hubara et al. (2016)</strong></a> proposed Binarized Neural Network (BNN)
-    <ul>
-      <li>
-        <p>Weight <strong>and activations</strong> are constrained to have the values between +1 and -1.</p>
-
-        <p>Recall that <strong>BinaryConnect did not binarize the activations</strong>!</p>
-      </li>
-      <li>To that end, activation function is set as a sign function</li>
-      <li>
-        <p>To back-propagate the sign function, authors approximate it as Htanh function.</p>
-
-        <center><img src="Untitled%207.png" width="400" /></center>
-      </li>
-    </ul>
-  </li>
-  <li>
-    <p><a href="https://openreview.net/pdf?id=BkrSv0lA-"><strong>Hou et al. (2017)</strong></a> introduce a loss-aware binarization shceme that considers the effect of binarization on the loss.</p>
-
-    <p>Authors claim that earlier quantization techniques do not consider the quantization effect on the <strong>objective loss function</strong>!</p>
-
-    <ul>
-      <li>Authors consider the loss explicitly during quantization and obtain the quantization thresholds and scaling parameter by solving an optimization problem of the loss.</li>
-    </ul>
-  </li>
-  <li>
-    <p>Meanwhile, <a href="https://arxiv.org/pdf/1511.06488.pdf"><strong>Sung et al. (2015)</strong></a> finds out that <strong>“bigger models are resilient to quantization while the smaller networks are less resilient to quantization”.</strong></p>
-
-    <center><img src="Untitled%208.png" width="600" /></center>
-  </li>
-  <li>
-    <p>Also, ReLU activation function, innately unbounded, may require high-bit precision, making the quantization difficult. This can be solved by using a clipping activation function. However, this introduces an interesting problem:</p>
-
-    <p><strong>What is the optimal clipping value for the clip function</strong> to replace ReLU function?</p>
-
-    <p>To answer this question, <a href="https://arxiv.org/abs/1805.06085"><strong>Choi et al. (2018)</strong></a> finds the otpimal qunatization scale $\alpha$ during training, at the same time, implementing a new clipping function called PACT.</p>
-
-    <center><img src="Untitled%209.png" width="400" /></center>
-  </li>
-</ol>
-
-<h3 id="quantization-after-training-for-efficient-inference">Quantization After Training (for Efficient Inference)</h3>
-
-<ol>
-  <li><a href="https://arxiv.org/pdf/1412.6115.pdf"><strong>Gong et al. (2015)</strong></a> applied vector quantization to compress the DNNs
-    <ul>
-      <li>Authors assess two classes of methods for compressing the parameters in FC layers</li>
-      <li>First is Matrix Factorization Methods : Singular-Value Decomposition (SVD)</li>
-      <li>Second is Vector Qunatization Methods
-        <ol>
-          <li>
-            <p>Binarization : given the parameter $\mathbf{W}$, we take the sign of the matrix</p>
-
-\[\mathbf{W}_{ij} = \begin{cases}1 &amp; \text{if } \mathbf{W}_{ij} \geq 0 ,\\ -1 &amp; \text{if } \mathbf{W}_{ij} &lt; 0  \end{cases}\]
-          </li>
-          <li>
-            <p>Scalar Quantization using K-means (KM) : for $\mathbf{W} \in \R^{m\times n}$ , flatten it to $\mathbf{w} \in \R^{mn}$ and perform k-means clustering to the values</p>
-
-\[\min \sum_{i} ^{mn} \sum_j^k \|w_i - c_j \|_2 ^2\]
-
-            <p>where each value in $\mathbf{w}$ is assigned to a cluster index → Given $k$ centers we only need $\log_2 (k)$ bits to encode the centers.</p>
-
-            <p>Despite the simplicity of this approach, authors claim that this approach gives <strong>surprisingly good performance</strong> for compressing parameters!</p>
-          </li>
-          <li>
-            <p>Product Qunatization (PQ) : partition the vector space into many disjoint subspaces, and perform quantization in each subspace!</p>
-
-            <p>→ Specifically, given the matrix $\mathbf{W}$, we partition it column-wise into several submatrices</p>
-
-\[\mathbf{W}= [\mathbf{W}^1, \mathbf{W}^2, \cdots, \mathbf{W}^s]\]
-
-            <p>and then perform k-mena clustering to each submatrix $\mathbf{W}^i$</p>
-          </li>
-          <li>
-            <p>Residual Quantization (RQ) : qunatize the vectors into $k$ centers and then recursively qunatize the residuals!
-  → Given a set of vectors $\mathbf{w}_i$ , $i \in 1, \cdots, m$ at the first stage, quantize them into $k$ different vectors using k-means clustering → Next, compute the residual $\mathbf{r}_z ^1$  between $\mathbf{w}_z$ and first code $\mathbf{c}_j^1$ → k-means cluster the residual $\mathbf{r}_z^1$ → repeat the same procedure</p>
-
-            <p>→ Final vector representation is</p>
-
-\[\hat {\mathbf{w}}_z = \mathbf{c}_j ^1 + \mathbf{c}_j ^2 + \cdots + \mathbf{c}_j ^t\]
-
-            <center><img src="Untitled%2010.png" width="600" /></center>
-          </li>
-        </ol>
-      </li>
-    </ul>
-  </li>
-  <li>
-    <p><strong><a href="https://arxiv.org/pdf/1510.00149.pdf">Han et al. (2016)</a></strong> combines several model compression techniques : proposing three-stage pipeline of <strong>pruning → quantization → Huffman coding</strong></p>
-
-    <center><img src="Untitled%2011.png" width="600" /></center>
-  </li>
-  <li>
-    <p><a href=""><strong>Zhou et al. (2017)</strong></a> improved the prediction accuracy of quantized NN by balancing the distribution of quantized values using histogram equalization.</p>
-
-    <p><a href="Balanced_Quantization__An_Effective_and_Efficient_Approach_to_Quantized_Neural_Networks.pdf">Balanced Quantization_ An Effective and Efficient Approach to Quantized Neural Networks.pdf</a></p>
-  </li>
-</ol>
-
-<h2 id="knowledge-distillation">Knowledge Distillation</h2>
-
-<p>Note that <strong>most of below KD methods cannot be directly applied to non-classifier networks. → Developing KD algorithms that can be applied to autoencoder type networks may be an interesting approach to take.</strong></p>
-
-<ol>
-  <li><a href="https://dl.acm.org/doi/pdf/10.1145/1150402.1150464"><strong>Bucilua et al. (2006)</strong></a> first introduced the concept of knowledge transfer.</li>
-  <li><strong><a href="https://arxiv.org/pdf/1312.6184.pdf">Ba and Caruana (2014)</a></strong> further extended the idea of KD
-    <ul>
-      <li>First train a large DNN with conventional cross-entropy objective function</li>
-      <li>Next, shallow neural network is trained by minimizing the squared difference between the logits produced by the bigger model and logist produced by the smaller model.</li>
-    </ul>
-  </li>
-  <li>
-    <p><strong><a href="https://arxiv.org/pdf/1503.02531.pdf">Hinton et al. (2015)</a></strong> introduced the concept of temperature $T$ to generate softer logits</p>
-
-\[q_i = \frac{\exp (z_i /T)}{\sum_j \exp (z_j /T)}\]
-
-    <center><img src="Untitled%2012.png" width="600" /></center>
-  </li>
-  <li>
-    <p><a href="https://arxiv.org/pdf/1412.6550.pdf"><strong>Romero et al. (2015)</strong></a> uses the teacher network’s middle layer as hints to guide the training of smaller student model.</p>
-
-    <center><img src="Untitled%2013.png" width="600" /></center>
-
-    <ul>
-      <li>Defining $P_S = \text{softmax}(\mathbf{a}_S)$ and $P_T = \text{softmax}(\mathbf{a}_T)$</li>
-      <li>
-        <p>Temperature technique is also applied as well</p>
-
-\[P_S^ \tau  = \text{softmax}(\frac{\mathbf{a}_S}{\tau})\]
-      </li>
-      <li>
-        <p>Student network is trained to optimize the following loss function</p>
-
-\[\mathcal{L}_{DK}(\mathbf{W_S})= \mathcal{H}(\mathbf{y_{true}}, P_S) + \lambda \mathcal{H}(P_T^\tau , P_S^\tau)\]
-      </li>
-      <li>
-        <p>Also, hint-based training objective is defined by</p>
-
-        <center><img src="Untitled%2014.png" width="400" /></center>
-      </li>
-    </ul>
-  </li>
-  <li>
-    <p><a href="https://arxiv.org/pdf/1802.04977.pdf"><strong>Kim et al. (2018)</strong></a> states that, “if the teacher’s knowledge is directly provided to a student model without any explanation, then a student cannot learn it properly”. To that end, authors translate (paraphrase) the knowledge into simpler terms using convolutional module.</p>
-
-    <center><img src="Untitled%2015.png" width="600" /></center>
-
-    <ul>
-      <li>
-        <p>Reading above figure’s explanation, one might instantaneously wonder <strong>“how is the paraphraser trained unsupervisedly”</strong> before the FT?</p>
-
-        <p>→ Trains the paraphraser network $P(\cdot)$ , which is basically an convolutional autoencoder but the dimensionality reduction happens <strong>channelwise</strong>, not on the spatial dimension.</p>
-
-\[\mathcal{L}_{rec}= \|x- P(x)\|^2\]
-      </li>
-      <li>
-        <p>Then, how is the translator trained? According to the paper, <strong>“the translator is trained jointly with the student network”</strong> so that the student network can learn the paraphrased information from the teacher network.</p>
-
-        <p>→ To that end, student network is trained by the sum of two loss terms</p>
-
-\[\mathcal{L}_{\texttt{student}} = \mathcal{L}_{\texttt{cls}}+\beta \mathcal{L}_{\texttt{FT}}\]
-
-        <p>→ First is classification loss, $\mathcal{L}_{\texttt{cls}} = \mathcal{H}(S(I_x), y)$</p>
-
-        <p>→ Second is the factor transfor (FT) loss (intutivie form)</p>
-
-\[\mathcal{L}_{\texttt{FT}} = \Big \|\frac{F_T}{\|F_T\|^2 } - \frac{F_S}{\|F_S\|^2} \Big \|_p\]
-      </li>
-    </ul>
-  </li>
-  <li><a href="https://arxiv.org/pdf/1806.04606.pdf"><strong>Lan et al. (2018)</strong></a> trains a student model and teacher model simultaneously, unlike any other KD methods.</li>
-  <li><a href="http://proceedings.mlr.press/v80/srinivas18a/srinivas18a.pdf"><strong>Sirnivas and Flueret (2018)</strong></a> showed that matching the Jacobian between student and teacher networks can be an alternative solution of knowledge transfer/distillation.</li>
-</ol>
-
-<h2 id="low-rank-factorization">Low-rank factorization</h2>
-
-<p>Most of the low-rank factorization methods are further developed to work better on CNNs. Only those which can also be applied to FC layers are listed below.</p>
-
-<p>Low-rank factorization compresses a weight matrix $A$ with $m\times n$ dimension having rank $r$ to a smaller dimension matrices. <strong>Singular Value Decomposition (SVD)</strong> is a popular method to do so.</p>
-
-<ol>
-  <li><a href="http://www.vikas.sindhwani.org/lowRank.pdf"><strong>Saniath et al. (2013)</strong></a> uses SVD on the final weight layer to reduce the parameters!</li>
-  <li>
-    <p><a href="https://arxiv.org/pdf/1509.06569.pdf"><strong>Novikov et al. (2015)</strong></a> uses a compact multilinear format (Tensor-Train format) to represent the FC weight matrix using few parameters while keeping enough flexilbity to performa signal transformations.</p>
-
-    <p>cf) learn about <strong>Tensor Train Decomposition</strong> <a href="https://bayesgroup.github.io/team/arodomanov/tt_hse16_slides.pdf">[link]</a></p>
-  </li>
-</ol>
+<div class="article__content" itemprop="articleBody"><h2 id="iteration-based-vs-optimization-based">Iteration based vs Optimization based</h2>
+
+<p>Recall that the Bellman operator is given by</p>
+
+\[(\mathcal{T}v) (s) := \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) v(s') \bigg ].\]
+
+<p>We tried to solve above Bellman equation by iteration-based methods.</p>
+
+<center><img src="https://tva1.sinaimg.cn/large/008eGmZEgy1gpq7n4nn4yj30s008imz0.jpg" alt="image-20210420155003180" style="zoom:50%;" /></center>
+
+<p>In this section, we will try to solve the Bellman equation by Optimization-based method.</p>
+
+<h2 id="optimization-based-method">Optimization Based Method</h2>
+
+<h3 id="problem-formulation">Problem Formulation</h3>
+
+<p>Instead of the iteration-based algorithm, we can obtain the value function by solving:</p>
+
+\[\begin{aligned}
+\min_{v \in \mathbb{R}^n } &amp; \ \ \ c^T v \\
+\text{s.t.} &amp; \ \ \ v \geq \mathcal{T}v
+\end{aligned}\]
+
+<p>where the inequality holds entry-wise, and each entry of $c$ is positive.</p>
+
+<p class="info"><strong>[Theorem]</strong> The optimization problem above has a <strong>unique optimal solution</strong>, which corresponds to the <strong>optimal value function</strong> $v^\star$.</p>
+
+<p><strong>[proof]</strong> For feasible $v$, 
+\(v \geq \mathcal{T}v \geq \mathcal{T}^2 v \geq \cdots \geq \mathcal{T}^k v\)</p>
+
+<p>Taking $k\rightarrow \infty$ for both sides, we have</p>
+
+\[v \geq v^\star\]
+
+<p>Multiplying $c^T$ at both sides,  (since $c_i &gt;0$ for all $i$)</p>
+
+\[c^T v \geq c^T v^\star\]
+
+<p>we can see that $v^\star$ which satisfies $v^\star = \mathcal{T}v^\star$ makes the objective function $c^Tv$ the smallest. Thus, $v^\star$ is the optimal solution.</p>
+
+<p>Now, we also want to show that this optimal solution $v^\star$ is unique. First, let’s assume that other solution $\hat{v}$ exists, and $\hat{v} \not = v^\star$.</p>
+
+<p>Since $\hat{v}$ is an optimal solution, there should be some $i$ that satisfies</p>
+
+\[\hat{v}(i) &lt; v^\star (i) \ \ \ \exists i\]
+
+<p>or otherwise, $c^T v^\star = c^T \hat{v}$ cannot be satisfied ($c_i &gt;0 $ for all $i$).</p>
+
+<p>Meanwhile, $\hat{v}(i) \geq \mathcal{T}\hat{v}(i)$ holds for all $i$ since $\hat{v}$ is an optimal solution that satisfies the constraint. Applying this $k$ times and taking it to infinity, we have</p>
+
+\[\hat{v}(i) \geq v^\star (i)  \ \ \ \forall i\]
+
+<p>This is in fact a contradiction!</p>
+
+<h3 id="linear-programming-formulation">Linear Programming Formulation</h3>
+
+<p>Note that the constraint $v\geq \mathcal{T}v$ is not a linear constraint. Fortunately, we can change it to a linear program.</p>
+
+\[\begin{aligned}
+\min_{v \in \mathbb{R}^n } &amp; \ \ \ c^T v \\
+\text{s.t.} &amp; \ \ \ v(s)  \geq r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s, a) v(s')  \ \ \ \forall (s,a) \in S \times A
+\end{aligned}\]
+
+<p>Now, the dimension of optimization variable is $n$, but the number of constraints is $n\times m$.</p>
+
+<h3 id="evaluating-policy-via-lp">Evaluating Policy via LP</h3>
+
+<p>Given a policy $\pi$, consider</p>
+
+\[\begin{aligned}
+\min_{v \in \mathbb{R}^n } &amp; \ \ \ c^T v \\
+\text{s.t.} &amp; \ \ \ v \geq \mathcal{T}^\pi v
+\end{aligned}\]
+
+<p>which its optimal solution is $v^\pi$.</p>
+
+<p>This can also be formulated as an LP by:</p>
+
+\[\begin{aligned}
+\min_{v \in \mathbb{R}^n } &amp; \ \ \ c^T v \\
+\text{s.t.} &amp; \ \ \ v(s)  \geq r(s,\pi(s)) + \gamma \sum_{s' \in S} p(s' \vert s, \pi(s)) v(s')  \ \ \ \forall s \in S
+\end{aligned}\]
+
+<p>In this case, the dimension of optimization variable and the number of constraints are both $n$.</p>
+
+<h2 id="dual-problem">Dual Problem</h2>
+
+<h3 id="lagrangian">Lagrangian</h3>
+
+<p>Note that our constraint’s dimension is $n\times m$, thus its corresponding dual variable is a function of $(s,a)$.</p>
+
+<p>First, define the Lagrangian.</p>
+
+\[L(v, \lambda) = \sum_s c(s) v(s) + \sum_{s,a} \lambda (s,a) \bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) v(s') - v(s) \bigg ]\]
+
+<h3 id="dual-function">Dual Function</h3>
+
+<p>Then, we have the dual function.</p>
+
+\[g(\lambda) = \min_v L(v,\lambda) = \sum_{s,a} \lambda (s,a) r(s,a)\]
+
+<p>when</p>
+
+\[c(s') + \gamma \sum_{s,a} \lambda(s,a) p(s' \vert s,a) - \sum_a \lambda (s', a) =0 \ \ \ \forall s' \in S\]
+
+<h3 id="dual-problem-1">Dual Problem</h3>
+
+<p>We can then define our dual problem, which its duality gap is zero (it satisfies the slater’s condition)</p>
+
+<center><img src="https://tva1.sinaimg.cn/large/008eGmZEgy1gpq9xl76evj30zk06wgme.jpg" alt="image-20210420170917920" style="zoom:35%;" /></center>
+
 </div><section class="article__sharing d-print-none"></section><div id="disqus_thread"></div>
   <script>
       /**
@@ -764,7 +484,7 @@ fill="#000000" stroke="none">
       })();
   </script>
 
-  <div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-03-16T00:00:00+09:00"><!-- start custom article footer snippet -->
+  <div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-04-20T00:00:00+09:00"><!-- start custom article footer snippet -->
 
 <!-- end custom article footer snippet -->
 <div class="article__license"><div class="license">
@@ -775,7 +495,7 @@ fill="#000000" stroke="none">
     </p>
   </div></div><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </footer>
-<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/notion_to_markdown/%5BPaper%20Review%5D%20Neural%20Discrete%20Representation%20Lear%20bd407a55549646a2a73e1aa2d5b6cd61/">[NIPS 2017] Neural Discrete Representation Learning</a></div><div class="next"><span>NEXT</span><a href="/notion_to_markdown/%5BPaper%20Review%5D%20What%E2%80%99s%20Hidden%20in%20a%20Randomly%20Weighte%20a4b62c1371134df789f399dbc3f6e284/">[CVPR 2020] What’s Hidden in a Randomly Weighted Neural Network?</a></div></div></div>
+<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2021/04/20/scrl-6.html">[RL Theory] 6 - Policy Iteration</a></div></div></div>
 
 </div>
 
