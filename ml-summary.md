@@ -7,7 +7,7 @@ comment: false
 
 ### Pattern Recognition and Machine Learning
 
-These are my study notes for the book **[Pattern Recognition and Machine Learning (PRML)]**, written by [Christopher Bishop](https://www.microsoft.com/en-us/research/people/cmbishop/prml-book/).
+These are my personal study notes for the book **[Pattern Recognition and Machine Learning (PRML)]**, written by [Christopher Bishop](https://www.microsoft.com/en-us/research/people/cmbishop/prml-book/).
 {:.gray}
 
 1. Updating...
@@ -15,7 +15,7 @@ These are my study notes for the book **[Pattern Recognition and Machine Learnin
 
 ### Deep Learning 
 
-These are my study notes for the book **[Deep Learning]**, written by [Ian Goodfellow](https://www.deeplearningbook.org).
+These are my personal study notes for the book **[Deep Learning]**, written by [Ian Goodfellow](https://www.deeplearningbook.org).
 {:.gray}
 
 1. Updating...
