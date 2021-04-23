@@ -14,5 +14,6 @@ These are my notes for the lecture **[Convex Optimization and Applications]** fr
 5. [Typical Convex Optimization Problems](./notion_to_markdown/opt-lecture-5/)
 6. [Lagrange Duality, Slater's Condition](./notion_to_markdown/opt-lecture-6/)
 7. [KKT Optimality Condition](./notion_to_markdown/opt-lecture-7/)
+8. [Approximation and Fitting](./2021/0423/opt-lecture-8/)
 
 <br/>
