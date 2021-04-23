@@ -1,11 +1,10 @@
 <!DOCTYPE html><html lang="en">
   <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>Home - Younghyo Park</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[Optimization] Statistical Learning - Younghyo Park</title>
 
-<meta name="description" content="Your Site Description
-">
-<link rel="canonical" href="http://localhost:4000/page3/"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
+<meta name="description" content="Maximum Likelihood (ML) estimationIntroductionConsider a family of probability distributions on $\mathbb{R}^m$, parameterized by a vector $\mathbf{x}\in \mat...">
+<link rel="canonical" href="http://localhost:4000/2021/04/23/opt-lecture-10.html"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
 <!--<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
 
 <meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
@@ -264,7 +263,7 @@
 </head>
   <body>
     <div class="root" data-is-touch="false">
-      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport cell cell--auto">
+      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport has-aside cell cell--auto">
 
       <div class="page__main-inner"><div class="page__header d-print-none"><header class="header"><div class="main">
       <div class="header__title">
@@ -331,203 +330,388 @@ fill="#000000" stroke="none">
   </header>
 </div><div class="page__content"><div class ="main"><div class="grid grid--reverse">
 
-              <div class="col-aside d-print-none js-col-aside"></div>
+              <div class="col-aside d-print-none js-col-aside"><aside class="page__aside js-page-aside"><div class="toc-aside js-toc-root"></div>
+</aside></div>
 
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
 <!-- end custom main top snippet -->
-<article itemscope itemtype="http://schema.org/WebPage"><header style="display:none;"><h1>Home</h1></header><meta itemprop="headline" content="Home"><meta itemprop="author" content="Younghyo Park"/><div class="js-article-content"><div class="layout--articles"><div class="article-list items items--divided"><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/notion_to_markdown/opt-lecture-5/"><h2 itemprop="headline" class="item__header">[Optimization] Typical Convex Optimization Problems</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Standard Form of Convex Optimization Problems
+<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[Optimization] Statistical Learning</h1></header><span class="split-space">&nbsp;</span>
+          <a class="edit-on-github"
+            title="Edit on Github"
+            href="https://github.com/younghyopark/younghyopark.github.io/tree/main/_posts/2021-04-23-opt-lecture-10.md">
+            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[Optimization] Statistical Learning"><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Optimization">Optimization</a>
+            </li><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 23, 2021</span>
+            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-23T00:00:00+09:00">
+    <meta itemprop="keywords" content="Optimization,Lecture-Note"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
+
+<!-- end custom article top snippet -->
+<div class="article__content" itemprop="articleBody"><h2 id="maximum-likelihood-ml-estimation">Maximum Likelihood (ML) estimation</h2>
+
+<h3 id="introduction">Introduction</h3>
+
+<p>Consider a family of probability distributions on $\mathbb{R}^m$, parameterized by a vector $\mathbf{x}\in \mathbb{R}^n$ with densities $p_\mathbf{x}(\cdot)$. When considered as a function of $\mathbf{x}$, for fixed $\mathbf{y}\in \mathbb{R}^m$, the function $p_{\mathbf{x}}(\mathbf{y})$ is called the <strong>likelihood function</strong>. It is more convenient to work with its lograithm, thus we define a <strong>log-likelihood function</strong>, denoted by $l$:</p>
+
+\[l(x) = \log p_{\mathbf{x}}(\mathbf{y})\]
+
+<p>One can add constraints on the values of the parameter $\mathbf{x}$, represening the prior knowledge about $\mathbf{x}$. These constraints can be explicilty given, or incorporated into the likelihood function by assigning $p_{\mathbf{x}}(\mathbf{y})=0$ for all $\mathbf{y}$ if $\mathbf{x} \not \in C$.</p>
+
+<p>Now, consider the problem of estimating the value of the parameter $\mathbf{x}$, based on observing one sample $\mathbf{y}$ from the distribution. ML estimation is to estimate $\mathbf{x}$ as</p>
+
+\[\mathbf{x}_{ml} = \arg\max_{\mathbf{x}}p_{\mathbf{x}}({\mathbf{y}})\]
+
+<p>which is a convex optimization problem, if the log-likelihood function $l$ is concave for each value $\mathbf{y}$, and the feasible set $C$ can be described by a set of linear equality and conve inequality constraints.</p>
+
+<h3 id="linear-measurements-with-iid-noise">Linear measurements with IID noise</h3>
+
+<p>Consider a linear measurement model:</p>
+
+<p>\(y_ i = a_i ^T x + v_i , \ i=1, \cdots, m\)
+where $x \in \mathbb{R}^n$ is a vector of parametes to be estimated, $y_i \in \mathbb{R}$ are the measured / observed quantities, and $v_i \in \mathbb{R}$ are the measruement erros or noise. Assuming that $v_i$ are independent, identically distributed (IID), with density $p$ on $\mathbb{R}$. Then, the likelihood function is:</p>
+
+\[p_x(y) = \prod _{i=1}^m p(y_i - a_i ^T x)\]
+
+<p>so the log-likelihood function is</p>
+
+\[l(x) = \log p_x(y) = \sum_{i=1}^m \log p(y_i - a_i ^T x)\]
+
+<p>thus the ML estimate is any optimal point for the problem</p>
+
+\[\max_x  \sum_{i=1}^m \log p(y_i - a_i^T x)\]
+
+<ol>
+  <li>
+    <p>If $v$ is <strong>gaussian noise</strong></p>
+
+    <p>Knowing that guaussian noise $\mathcal{N}(0, \sigma^2)$:</p>
+
+\[p(z) = \frac{1}{\sqrt{2\pi \sigma^2}}e^{-\frac{z^2}{2\sigma^2}}\]
+
+    <p>ML estimate is an optimal solution to</p>
+
+\[\max_x  \sum_{i=1}^m \log p(y_i - a_i^T x) \\
+\iff \max_x \sum_{i=1}^m -\frac{1}{2\sigma^2}(y_i -a_i ^T x)^2\\
+\iff \min_x \sum_{i=1}^m \frac{1}{2\sigma^2} (a_i ^T x - y_i )^2\]
+
+    <p>which is a least squares solution.</p>
+  </li>
+  <li>
+    <p>If $v$ is <strong>Laplacian noise</strong></p>
+
+    <p>Knowing that laplacian noise is defined by</p>
+
+\[p(z) = \frac{1}{2a} e^{-\frac{|z|}{a}}\]
+
+    <p>ML estimate is an optimal solution to</p>
+
+\[\max_x  \sum_{i=1}^m \log p(y_i - a_i^T x) \\
+\iff \max_x \sum_{i=1}^m -\frac{1}{a}|y_i - a_i^T x |\\
+\iff \min_x \sum_{i=1}^m \frac{1}{a}|y_i - a_i^T x |\]
+
+    <p>which is an $l_1$-norm solution.</p>
+  </li>
+  <li>
+    <p>If $v$ is <strong>Uniform noise</strong></p>
+
+    <p>Uniform noise on $[-a,a]$:</p>
+
+\[p(z) = \frac{1}{2a}, \ \ \forall z \in [-a,a]\]
+
+    <p>Thus, we have</p>
+
+\[l(x)= \begin{cases}
+-m \log(2a) &amp; \text{if } |a_i^T x - y_i | \leq a\\
+-\infty &amp; \text{otherwise}
+\end{cases}\]
+
+    <p>ML estimate is any $x$ with \(\vert a_i^T x - y_i \vert \leq a\) for all $i$.</p>
+  </li>
+</ol>
+
+<h3 id="logistic-regression">Logistic Regression</h3>
+
+<p>Consider a random variable \(y \in \{0,1\}\) with</p>
+
+\[\text{prob} (y=1) = p, \ \ \text{prob}(y=0)= 1-p\]
+
+<p>We want to estimate the probability of being $y=1$ for a given observed state $u$. To do so, we are going to estimate the parameters $a, b$ from $m$ observations $(u_i, y_i)$, while the proability $p$ is parametrized by:</p>
+
+\[p = \frac{\exp{(a^Tu +b)}}{1+\exp{(a^T u+b)}} = \sigma(a^Tu+b)\]
+
+<p>where $\sigma(z)$ is a sigmoid function</p>
+
+\[\sigma(z) = \frac{e^z}{1+e^z}\]
+
+<center><img src="https://live.staticflickr.com/65535/51132038707_021254c699_o.png" alt="image-20210423141438269" style="zoom:75%;" /></center>
+
+<p>Assuming $y_1, \cdots, y_k = 1$ and $y_{k+1}, \cdots, y_n =0$, the likelihood function has the form</p>
+
+\[p_{a,b}(y) = \prod _{i=1}^k p_i \prod_{i=k+1}^n (1-p_i)\]
+
+<p>Thus, the log-likelihood function is given by</p>
 
 \[\begin{aligned}
-\min &amp;\ \ f_0 (x) \\
-\text{s.t.} &amp; \ \ f_i (x)  \leq 0, i=1,\cdots, m\\
-&amp; \ \ a_i ^T x = b_i , i=1,\cdots, p
-
+l(a,b) &amp; = \sum_{i=1}^k \log p_i + \sum_{i=k+1}^n \log (1-p_i)\\
+&amp; = \sum_{i=1}^k (a^T u _i +b) - \sum_{i=1}^n \log (1+ \exp(a^T u_i + b) )
 \end{aligned}\]
 
+<p>which is a concave maximization problem in $a,b$.</p>
 
-  the objective function must be convex
-  inequality constraint functions must be convex
-  the equality constraint functions should be affine
-...</div><p><a href="/notion_to_markdown/opt-lecture-5/">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Optimization">Optimization</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 18, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-18T00:00:00+09:00">
-    <meta itemprop="keywords" content="Optimization,Lecture-Note"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2021/04/18/opt-lecture-4-1.html"><h2 itemprop="headline" class="item__header">[Optimization] Operations that preserve Convexity</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Operations that preserve convexity
+<center><img src="https://live.staticflickr.com/65535/51133832535_c5c8845a3a_o.png" alt="image-20210423142049082" style="zoom:50%;" /></center>
 
+<h2 id="maximum-a-posteriori-probability-map-estimation">Maximum a posteriori probability (MAP) estimation</h2>
 
-  nonnegative weighted sums
-  composition with an affine mapping
-  pointwise maximum and supremum
-  composition
-  minimization
-  perpsective of a function
+<h3 id="introduction-1">Introduction</h3>
 
+<p>Maximum a posteriori probability (MAP) estimation can be considered as a Bayesian version of ML estimation, with a prior probability density on the underlying parameter $x$. In MAP, we assume that $x$ and $y$ are both random variables with a joint probability density $p(x,y)$.</p>
 
-Nonnegative weighted sums
+<p>The <strong>prior density</strong> of $x$ is given by</p>
 
+\[p_x (x) = \int p (x,y) dy\]
 
+<p>This density represents our prior information about <strong>what the values of the vector $x$ might be</strong>, <strong>before we observe the vector $y$.</strong> Similariy, the prior density of $y$ is given by</p>
+
+\[p_y (y) = \int p(x,y) dx\]
+
+<p>This density represents the prior information about what the measurement or observation vector $y$ will be.</p>
+
+<p>The <strong>conditional density of $y$</strong>, given $x$, is given by</p>
+
+\[p_{y|x} (x,y) = \frac{p(x,y)}{p_x (x)}\]
+
+<p>In the MAP estimation method, \(p_{y \vert x}\) plays the role of the <strong>parameter dependent density</strong> $p_x$ in the ML estimation setup. The conditional density of $x$, given $y$, is given by</p>
+
+\[p_{x|y} (x,y) = \frac{p(x,y)}{p_y (y)} = p_{y|x}(x,y) \frac{p_x (x)}{p_y(y)}\]
+
+<p>When we substitute the observed value $y$ into $p_{x \vert y}$, we obtain the <strong>posterior density</strong> of $x$. It represents our knowledge of $x$ <strong>after observation</strong>.</p>
+
+<p>Thus, in MAP estimation method, our estimate of $x$, given the observation $y$, is given by</p>
+
+\[\begin{aligned}
+\hat{x}_{map} &amp;= \arg \max_x p_{x|y} (x,y)\\
+&amp; = \arg \max_x p_{y|x}(x,y)p_x(x)/p_y (y)\\
+&amp;  = \arg \max_x p_{y|x} (x,y) p_x (x) \\
+&amp; = \arg \max_x p(x,y)
+\end{aligned}\]
+
+<p class="info">We are taking an estimate of $x$ as the value that maximizes the <strong>conditional density of $x$</strong>, given the observed value of $y$. The only difference between the ML estimate is that, we are taking the $p_x(x)$ term into account, which represents our prior knowledge of $x$. If this $p_x(x)$ is constant, MAP estimation is identical to ML estimation.</p>
+
+<p>Taking logarithms, we can express the MAP estimate as</p>
+
+\[\hat{x}_{map} \in \arg \max _x \bigg [ \log p_{y|x} (x,y) + \log p_x (x) \bigg ]\]
+
+<p>This problem is convex if the log-likelihood function is concave, and the prior density of $x$ is log-concave.</p>
+
+<h3 id="linear-measurements-with-iid-noise-1">Linear measurements with IID noise</h3>
+
+<p>Suppose that $x\in \mathbb{R}^n$ and $y \in \mathbb{R}^m$ are related by</p>
+
+\[y_i = a_i ^T x + v_i, \ \ i=1, \cdots, m\]
+
+<p>where $v_i$ are IID with density $p_v$ on $\mathbb{R}$, and $x$ has prior density $p_x$ on $\mathbb{R}^n$. The joint density of $x$ and $y$ is then</p>
+
+\[p(x,y) =p_x (x) \prod _{i=1}^m p_v (y_i - a_i^T x)\]
+
+<p>and the MAP estimate can be found by solving the optimization problem</p>
+
+\[\max _x \log p_x (x) + \sum_{i=1}^m \log p_v (y_i - a_i^T x)\]
+
+<p>For example, if $v_i$ are uniform on $[-a,a]$, and the prior of $x$ is Guassian with mean $\bar{x}$ and covariance $\Sigma$, the MAP estimation is found by solving the QP</p>
+
+\[\begin{aligned}
+\max_x &amp; \ \ (x-\bar{x})^T \Sigma^{-1} (x-\bar{x})\\
+\text{s.t.} &amp; \ \ \|Ax-y \|_\infty \leq a  
+\end{aligned}\]
+
+<h2 id="nonparametric-distribution-estimation">Nonparametric distribution estimation</h2>
+
+<p>Let $X$ be the random variable with values in \(\{\alpha_1, \cdots, \alpha_n \} \subset \mathbb{R}\). Then the distribution of $X$ can be characterized by $p\in \mathbb{R}^n$ with $\text{prob }(X= \alpha_k)=p_k$. Clearly, $p$ satisfies $p\geq 0, \ \mathbf{1}^Tp = 1$.</p>
+
+<p>Conversely, if $p\in \mathbb{R}^n$ satisfies $p\geq 0, \ \mathbf{1}^T p =1$, then it defines a probability distribution for a random variable $X$, defined as $\text{prob } (X=\alpha_k) = p_k$. Thus, we can define a <strong>probability simplex</strong></p>
+
+\[\{ p \in \mathbb{R}^n \ \vert \ p \geq 0 , \ \mathbf{1}^T p =1 \}\]
+
+<p>which has a one-to-one correspondence with <strong>all possible probability distributions</strong> for $X$.</p>
+
+<p>Our question in this section is:</p>
+
+<p class="info">How should we estimate the distribution $p$ based on a combination of <strong>prior information</strong>, and possibly, <strong>observations</strong> and <strong>measurements.</strong> Keep in mind, we don’t want a parameterized probability (density) function, but a probability vector.</p>
+
+<h3 id="prior-information">Prior Information</h3>
+
+<p>How can we express the prior information about $p$? It can be expressed in terms of linear equality constraints or inequalities. If $f:\mathbb{R} \rightarrow \mathbb{R}$ is any function, then</p>
+
+\[\mathbb{E} f(X) = \sum_{i=1}^n p_i f(\alpha_i)\]
+
+<p>is a linear function of $p$. Also, if we consider the $\text{prob } (X \in C)$ for $C\subseteq \mathbb{R}$, this can also be expressed as a linear function of $p$.</p>
+
+\[\text{prob } (X \in C) = c^T p , \ \ \ c_i = \begin{cases} 1 &amp; \ \alpha_i \in C\\
+0 &amp; \ \alpha_i \not \in C
+\end{cases}\]
+
+<p class="gray_no_border">These examples show that, known expected values of certain functions or known probabiliteis of certain sets can be incorporated as linear equality constraints on $p\in \mathbb{R}^n$. Let’s look at some more examples:</p>
+
+<ol>
+  <li>
+    <p>suppose we know that $X$ has mean $\mathbb{E}X = \alpha$, and second moment $\mathbb{E}X^2 = \beta$, and $\text{prob } (X\geq 0) \leq 0.3$. This can be expressed as a constraint:</p>
+
+\[\mathbb{E}X = \sum_{i=1}^n \alpha_i p_i = \alpha, \ \ \mathbb{E}X^2 = \sum_{i=1}^n \alpha_i ^2 p_i = \beta, \ \ \sum_{\alpha_i \geq 0} p_i \leq 0.3\]
+  </li>
+  <li>
+    <p>variance of $X$ given as a constraint:</p>
+
+\[\text{var } X = \mathbb{E}X^2 - (\mathbb{E}X)^2 = \sum_{i=1}^n \alpha_i ^2 p_i - \bigg ( \sum_{i=1}^n \alpha_i p_i \bigg )^2\]
+
+    <p>In this case, the first term is a linear function of $p$, and the second term is concave quadratic in $p$. Thus, the constraint of</p>
+
+\[\text{var}(X) \geq \sigma^2\]
+
+    <p>is a convex constraint, while the \(\text{var}(X) \leq \sigma^2\) is not a conevx constraint.</p>
+  </li>
+  <li>
+    <p>Suppose $A, B \subseteq \mathbb{R}$. COnsider a conditional probability of $A$ given $B$.</p>
+
+\[\text{prob} (X \in A \vert X\in B) = \frac{\text{prob}(X\in A\cap B)}{\text{prob}(X\in B)}\]
+
+    <p>This function is linear-fractional in $p\in \mathbb{R}^n$, since we can express $\text{prob}(X\in C)$ for any $C$ as a linear function of $p$.</p>
+
+    <p>Thus, if we want to impose a prior constraint of</p>
+
+\[l \leq \text{prob}(X \in A | X \in B) = \frac{c^T p}{d^T p} \leq u\]
+
+    <p>as the linear inequality constraints on $p$</p>
+
+\[l d^T \leq c^T p \leq u d^T\]
+  </li>
+  <li>
+    <p>One might impose a entropy constraint:</p>
+
+\[-\sum_{i=1}^n p_i \log p_i\]
+
+    <p>which is a concave function of $p$. <strong>Be careful with the inequality direction to make it as a convex constraint!</strong></p>
+  </li>
+  <li>
+    <p>Kullback-Leibeler divergence of another distribution $q$ from the distribution $p$:</p>
+
+\[D_{KL}(p \| q) = \sum_{i=1}^n p_i \log (p_i / q_i )\]
+  </li>
+</ol>
+
+<h3 id="bounding-probabilities-and-expected-values">Bounding probabilities and expected values</h3>
+
+<p>Using above techniques, we might easily convert the prior information as a form of feasible set $\mathcal{P}$. Using this, we can then compute upper / lower bounds on the expected value of a function, or a probability of a set. For example, to determine a lower bound on $\mathbb{E} f(X)$ over all distributions that satisfy the prior information $\mathcal{P}$, we should solve the <strong>convex problem</strong>:</p>
+
+\[\begin{aligned}
+\min_p &amp; \ \ \sum_{i=1}^n f(\alpha_i ) p_i\\
+\text{s.t.} &amp; \ \ p \in \mathcal{P}
+\end{aligned}\]
+
+<h3 id="maximum-likelihood-estimation">Maximum Likelihood Estimation</h3>
+
+<p>We can use maximum likelihood estimation to estimate $p$ based on observations from the distribution. Suppose we observe $N$ independent samples $x_1, \cdots, x_N$ from the distribution . Let $k_i$ denote the number of these samples with value $\alpha_i$, so that $k_1 + \cdots+ k_n = N $. The log-likelihood of the function is then</p>
+
+\[l(p) = \sum_{i=1}^n k_i \log p_i\]
+
+<p>Thus, the ML estimate of $p$ can be found by solving the convex optimiation problem of</p>
+
+\[\begin{aligned}
+\max_p &amp; \ \ l(p) = \sum_{i=1}^n k_i \log p_i\\
+\text{s.t.}&amp; \ \ p \in \mathcal{P}
+\end{aligned}\]
+
+<h3 id="maximum-entropy">Maximum Entropy</h3>
+
+<p>The maximum entropy distribution consistent with the prior assumptions can be found by solving the convex problem</p>
+
+\[\begin{aligned}
+\max_p &amp; \ \ \sum_{i=1}^n p_i \log p_i\\
+\text{s.t.}&amp; \ \ p \in \mathcal{P}
+\end{aligned}\]
+
+<p>This is the most <strong>equivocal, most random</strong> among those consistent with the prior information.</p>
+
+<h3 id="minimum-kl-divergence">Minimum KL Divergence</h3>
+
+<p>Find distribution $p$ that has minimum KL divergence from a given distribution $q$.</p>
+
+\[\begin{aligned}
+\max_p &amp; \ \ \sum_{i=1}^n p_i \log (p_i/q_i)\\
+\text{s.t.}&amp; \ \ p \in \mathcal{P}
+\end{aligned}\]
+
+<h2 id="references">References</h2>
+
+<ul>
+  <li>S. Boyd, L.Vandenberghe, Convex Opimization, Cambridge University Press, 2004. <a href="http://stanford.edu/~boyd/cvxbook/">http://stanford.edu/~boyd/cvxbook/</a></li>
+  <li>Optimization Theory and Applications, SNU EE 2021, Insoon Yang</li>
+</ul>
+
+</div><section class="article__sharing d-print-none"></section><br/>
   
-    A nonnegative weighted sum of convex functions
-\begin{equation}
-f:=\sum_{i=1}^n w_i f_i
-\end{equation}
-is convex ($w_i...</div><p><a href="/2021/04/18/opt-lecture-4-1.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Optimization">Optimization</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 18, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-18T00:00:00+09:00">
-    <meta itemprop="keywords" content="Optimization,Lecture-Note"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/"><h2 itemprop="headline" class="item__header">[Literature Survey] Multi-Reward/Objective Reinforcement Learning</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Multi-Reward Reinforcement Learning Literature Survey
-Based on the survey done on multi-reward/objective reinforcement learning topic, I summarized what I’ve understood.
+  <div id="disqus_thread"></div>
+  <script>
+      /**
+      *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+      *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+      /*
+      var disqus_config = function () {
+      this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+      };
+      */
+      (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://younghyopark-github-io.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+      })();
+  </script>
 
-    Multi reward literature_survey_younghyo_park  from YounghyoPark</div><p><a href="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Multi-Reward%2FObjective">Multi-Reward/Objective</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Theory%2FSurvey">Theory/Survey</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 16, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-16T00:00:00+09:00">
-    <meta itemprop="keywords" content="Reinforcement-Learning,Multi-Reward/Objective,Theory/Survey"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/notion_to_markdown/%5BICML%202015%5D%20Universal%20Value%20Function%20Approximators%207120334d6860455c801cd9284c92970b/"><h2 itemprop="headline" class="item__header">[ICML 2015] Universal Value Function Approximators</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Introduction
+  <div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-04-23T00:00:00+09:00"><!-- start custom article footer snippet -->
 
-Extending the purpose of value function
+<!-- end custom article footer snippet -->
+<div class="article__license"><div class="license">
+    <p>This work is licensed under a <a itemprop="license" rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">Attribution-NonCommercial 4.0 International</a> license.
+      <a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">
+        <img alt="Attribution-NonCommercial 4.0 International" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" />
+      </a>
+    </p>
+  </div></div><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</footer>
+<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2021/04/21/scrl-11.html">[RL Theory] Q-learning</a></div><div class="next"><span>NEXT</span><a href="/2021/04/23/opt-lecture-11.html">[Optimization] Unconstrained Optimization Algorithms</a></div></div></div>
 
+</div>
 
-  General value function $V_g(s)$ represent the utility of any state $s$ in achieving a given goal $g$, represented by a pseudo-reward function.
-  A collection of general value functions is powerful, and can be used in many ways.
-    
-      Horde architecture → consist of discrete set of va...</div><p><a href="/notion_to_markdown/%5BICML%202015%5D%20Universal%20Value%20Function%20Approximators%207120334d6860455c801cd9284c92970b/">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Multi-Reward%2FObjective">Multi-Reward/Objective</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 13, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-13T00:00:00+09:00">
-    <meta itemprop="keywords" content="Reinforcement-Learning,Multi-Reward/Objective"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/notion_to_markdown/%5BNIPS%202017%5D%20Hybrid%20Reward%20Architecture%20for%20Reinfor%20ec4b86df520441bab17567b05419da01/"><h2 itemprop="headline" class="item__header">[NIPS 2017] Hybrid Reward Architecture for Reinforcement Learning </h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Horde vs HRA vs UVFA
+<script>(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    $(function() {
+      var $this ,$scroll;
+      var $articleContent = $('.js-article-content');
+      var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+      var scroll = hasSidebar ? '.js-page-main' : 'html, body';
+      $scroll = $(scroll);
 
-
-  Horde architecture learns multiple general value functions(GVFs), each corresponding to different reward functions and other question functions, using multiple demons.
-  UVFA tries to generalize the value functions across different task and goals.
-  
-    HRA, on the other hand, decomposes the reward function into $n$ dif...</div><p><a href="/notion_to_markdown/%5BNIPS%202017%5D%20Hybrid%20Reward%20Architecture%20for%20Reinfor%20ec4b86df520441bab17567b05419da01/">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Multi-Reward%2FObjective">Multi-Reward/Objective</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 13, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-13T00:00:00+09:00">
-    <meta itemprop="keywords" content="Reinforcement-Learning,Multi-Reward/Objective"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/notion_to_markdown/%5BNIPS%202017%5D%20Hindsight%20Experience%20Replay%206daf8b2ade014cf58ea2d223723e0390/"><h2 itemprop="headline" class="item__header">[NIPS 2017] Hindsight Experience Replay </h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Introduction
-
-Designing a reward function is important, but not easy.
-
-
-  common challenge of RL is to carefully enegineer the reward function → not only reflecting the task at hand, but also carefully shaped to guide the policy optimization.
-  The necessity of cost engineering limits the applicability of RL in the real world, because it require...</div><p><a href="/notion_to_markdown/%5BNIPS%202017%5D%20Hindsight%20Experience%20Replay%206daf8b2ade014cf58ea2d223723e0390/">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Multi-Reward%2FObjective">Multi-Reward/Objective</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 13, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-13T00:00:00+09:00">
-    <meta itemprop="keywords" content="Reinforcement-Learning,Multi-Reward/Objective"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/notion_to_markdown/%5BJAIR%202013%5D%20A%20Survey%20of%20Multi-Objective%20Sequential%202596a1a7dc934dbc9ed305d644b17155/"><h2 itemprop="headline" class="item__header">[JAIR 2013] A Survey of Multi-Objective Sequential Decision-Making</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Introduction of MOMDP
-
-
-  
-    MOMDP is an MDP wichih the reward function
-
-\[\mathbf{R} : \mathcal{S\times A \times S} \rightarrow \mathbb{R}^n\]
-
-    is a vector of $n$ rewards, one for each objective, instead of a scalar.
-  
-  
-    Value function $\mathbf{V}^\pi$ is also a vector where
-
-\[\mathbf{V}^\pi (s) = \mathbb{E}^\pi \bigg [ \sum_{k=0}^...</div><p><a href="/notion_to_markdown/%5BJAIR%202013%5D%20A%20Survey%20of%20Multi-Objective%20Sequential%202596a1a7dc934dbc9ed305d644b17155/">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Multi-Reward%2FObjective">Multi-Reward/Objective</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 12, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-12T00:00:00+09:00">
-    <meta itemprop="keywords" content="Reinforcement-Learning,Multi-Reward/Objective"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/notion_to_markdown/%5BNIPS%202000%5D%20Balancing%20Multiple%20Sources%20of%20Reward%20i%20d60cc762d6104f86a42d227fabdf7e6f/"><h2 itemprop="headline" class="item__header">[NIPS 2000] Balancing Multiple Sources of Reward in Reinforcement Learning</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">For many problems, the reward signal is not a single scalar, but has multiple scalar components. Creating a single reward value by combining the multiple components can throw anway vial information and can lead to incorrect solutions!
-
-This paper discuss a multiple reward source problem, and the problems of applying traditional RL algorithm.
-
-In...</div><p><a href="/notion_to_markdown/%5BNIPS%202000%5D%20Balancing%20Multiple%20Sources%20of%20Reward%20i%20d60cc762d6104f86a42d227fabdf7e6f/">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Multi-Reward%2FObjective">Multi-Reward/Objective</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 12, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-12T00:00:00+09:00">
-    <meta itemprop="keywords" content="Reinforcement-Learning,Multi-Reward/Objective"></div>
-      </article></div>
-</div><br/>
-
-<div class="layout--home"><div class="pagination"><p>35 post articles, 5 pages.</p>
-    <div class="pagination__menu">
-      <ul class="menu menu--nowrap"><li><a class="button button--secondary button--circle" href="/page2">
-            <i class="fas fa-angle-left"></i>
-          </a></li><li>
-              <a class="button button--secondary button--circle" href="/"><span>1</span></a>
-            </li><li>
-                <a class="button button--secondary button--circle" href="/page2"><span>2</span></a>
-              </li><li>
-              <div class="button button--primary button--circle focus"><span>3</span></div>
-            </li><li>
-                <a class="button button--secondary button--circle" href="/page4"><span>4</span></a>
-              </li><li>
-                <a class="button button--secondary button--circle" href="/page5"><span>5</span></a>
-              </li><li><a class="button button--secondary button--circle" href="/page4">
-            <i class="fas fa-angle-right"></i>
-          </a></li></ul>
-    </div>
-  </div></div>
-<script>/*(function () {
-
-})();*/
+      $articleContent.find('.highlight').each(function() {
+        $this = $(this);
+        $this.attr('data-lang', $this.find('code').attr('data-lang'));
+      });
+      $articleContent.find('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]').each(function() {
+        $this = $(this);
+        $this.append($('<a class="anchor d-print-none" aria-hidden="true"></a>').html('<i class="fas fa-anchor"></i>'));
+      });
+      $articleContent.on('click', '.anchor', function() {
+        $scroll.scrollToAnchor('#' + $(this).parent().attr('id'), 400);
+      });
+    });
+  });
+})();
 </script>
-
-
-
 </div><section class="page__comments d-print-none"></section></article><!-- start custom main bottom snippet -->
 
 <!-- end custom main bottom snippet -->
@@ -1075,6 +1259,68 @@ window.Lazyload.js([SOURCES.jquery, PAHTS.search_js], function() {
 /*(function () {
 
 })();*/
+</script><script>
+  /* toc must before affix, since affix need to konw toc' height. */(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  var TOC_SELECTOR = window.TEXT_VARIABLES.site.toc.selectors;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window);
+    var $articleContent = $('.js-article-content');
+    var $tocRoot = $('.js-toc-root'), $col2 = $('.js-col-aside');
+    var toc;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+    var hasToc = $articleContent.find(TOC_SELECTOR).length > 0;
+
+    function disabled() {
+      return $col2.css('display') === 'none' || !hasToc;
+    }
+
+    tocDisabled = disabled();
+
+    toc = $tocRoot.toc({
+      selectors: TOC_SELECTOR,
+      container: $articleContent,
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      tocDisabled = disabled();
+      toc && toc.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+  });
+})();
+(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window), $pageFooter = $('.js-page-footer');
+    var $pageAside = $('.js-page-aside');
+    var affix;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+
+    affix = $pageAside.affix({
+      offsetBottom: $pageFooter.outerHeight(),
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      scroll: hasSidebar ? $('.js-page-main').children() : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      affix && affix.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+    window.pageAsideAffix = affix;
+  });
+})();
 </script><script>
   window.Lazyload.js(['https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js', 'https://cdn.bootcss.com/Chart.js/2.7.2/Chart.bundle.min.js'], function() {
     var $canvas = null, $this = null, _ctx = null, _text = '';

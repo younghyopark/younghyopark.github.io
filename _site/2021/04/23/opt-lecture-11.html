@@ -1,11 +1,10 @@
 <!DOCTYPE html><html lang="en">
   <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>Home - Younghyo Park</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[Optimization] Unconstrained Optimization Algorithms - Younghyo Park</title>
 
-<meta name="description" content="Your Site Description
-">
-<link rel="canonical" href="http://localhost:4000/page3/"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
+<meta name="description" content="MReferences  S. Boyd, L.Vandenberghe, Convex Opimization, Cambridge University Press, 2004. http://stanford.edu/~boyd/cvxbook/  Optimization Theory and Appli...">
+<link rel="canonical" href="http://localhost:4000/2021/04/23/opt-lecture-11.html"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
 <!--<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
 
 <meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
@@ -264,7 +263,7 @@
 </head>
   <body>
     <div class="root" data-is-touch="false">
-      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport cell cell--auto">
+      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport has-aside cell cell--auto">
 
       <div class="page__main-inner"><div class="page__header d-print-none"><header class="header"><div class="main">
       <div class="header__title">
@@ -331,203 +330,97 @@ fill="#000000" stroke="none">
   </header>
 </div><div class="page__content"><div class ="main"><div class="grid grid--reverse">
 
-              <div class="col-aside d-print-none js-col-aside"></div>
+              <div class="col-aside d-print-none js-col-aside"><aside class="page__aside js-page-aside"><div class="toc-aside js-toc-root"></div>
+</aside></div>
 
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
 <!-- end custom main top snippet -->
-<article itemscope itemtype="http://schema.org/WebPage"><header style="display:none;"><h1>Home</h1></header><meta itemprop="headline" content="Home"><meta itemprop="author" content="Younghyo Park"/><div class="js-article-content"><div class="layout--articles"><div class="article-list items items--divided"><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/notion_to_markdown/opt-lecture-5/"><h2 itemprop="headline" class="item__header">[Optimization] Typical Convex Optimization Problems</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Standard Form of Convex Optimization Problems
-
-\[\begin{aligned}
-\min &amp;\ \ f_0 (x) \\
-\text{s.t.} &amp; \ \ f_i (x)  \leq 0, i=1,\cdots, m\\
-&amp; \ \ a_i ^T x = b_i , i=1,\cdots, p
-
-\end{aligned}\]
-
-
-  the objective function must be convex
-  inequality constraint functions must be convex
-  the equality constraint functions should be affine
-...</div><p><a href="/notion_to_markdown/opt-lecture-5/">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[Optimization] Unconstrained Optimization Algorithms</h1></header><span class="split-space">&nbsp;</span>
+          <a class="edit-on-github"
+            title="Edit on Github"
+            href="https://github.com/younghyopark/younghyopark.github.io/tree/main/_posts/2021-04-23-opt-lecture-11.md">
+            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[Optimization] Unconstrained Optimization Algorithms"><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
                 href="/archive.html?tag=Optimization">Optimization</a>
             </li><li>
               <a class="button button--secondary button--pill button--sm"
                 href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 18, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-18T00:00:00+09:00">
-    <meta itemprop="keywords" content="Optimization,Lecture-Note"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2021/04/18/opt-lecture-4-1.html"><h2 itemprop="headline" class="item__header">[Optimization] Operations that preserve Convexity</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Operations that preserve convexity
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 23, 2021</span>
+            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-23T00:00:00+09:00">
+    <meta itemprop="keywords" content="Optimization,Lecture-Note"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
 
+<!-- end custom article top snippet -->
+<div class="article__content" itemprop="articleBody"><h2 id="m">M</h2>
 
-  nonnegative weighted sums
-  composition with an affine mapping
-  pointwise maximum and supremum
-  composition
-  minimization
-  perpsective of a function
+<h2 id="references">References</h2>
 
+<ul>
+  <li>S. Boyd, L.Vandenberghe, Convex Opimization, Cambridge University Press, 2004. <a href="http://stanford.edu/~boyd/cvxbook/">http://stanford.edu/~boyd/cvxbook/</a></li>
+  <li>Optimization Theory and Applications, SNU EE 2021, Insoon Yang</li>
+</ul>
 
-Nonnegative weighted sums
-
-
+</div><section class="article__sharing d-print-none"></section><br/>
   
-    A nonnegative weighted sum of convex functions
-\begin{equation}
-f:=\sum_{i=1}^n w_i f_i
-\end{equation}
-is convex ($w_i...</div><p><a href="/2021/04/18/opt-lecture-4-1.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Optimization">Optimization</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 18, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-18T00:00:00+09:00">
-    <meta itemprop="keywords" content="Optimization,Lecture-Note"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/"><h2 itemprop="headline" class="item__header">[Literature Survey] Multi-Reward/Objective Reinforcement Learning</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Multi-Reward Reinforcement Learning Literature Survey
-Based on the survey done on multi-reward/objective reinforcement learning topic, I summarized what I’ve understood.
+  <div id="disqus_thread"></div>
+  <script>
+      /**
+      *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+      *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+      /*
+      var disqus_config = function () {
+      this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+      };
+      */
+      (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://younghyopark-github-io.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+      })();
+  </script>
 
-    Multi reward literature_survey_younghyo_park  from YounghyoPark</div><p><a href="/assets/images/Multi_Reward_Literature_Survey_YounghyoPark/">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Multi-Reward%2FObjective">Multi-Reward/Objective</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Theory%2FSurvey">Theory/Survey</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 16, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-16T00:00:00+09:00">
-    <meta itemprop="keywords" content="Reinforcement-Learning,Multi-Reward/Objective,Theory/Survey"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/notion_to_markdown/%5BICML%202015%5D%20Universal%20Value%20Function%20Approximators%207120334d6860455c801cd9284c92970b/"><h2 itemprop="headline" class="item__header">[ICML 2015] Universal Value Function Approximators</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Introduction
+  <div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-04-23T00:00:00+09:00"><!-- start custom article footer snippet -->
 
-Extending the purpose of value function
+<!-- end custom article footer snippet -->
+<div class="article__license"><div class="license">
+    <p>This work is licensed under a <a itemprop="license" rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">Attribution-NonCommercial 4.0 International</a> license.
+      <a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">
+        <img alt="Attribution-NonCommercial 4.0 International" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" />
+      </a>
+    </p>
+  </div></div><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</footer>
+<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2021/04/23/opt-lecture-10.html">[Optimization] Statistical Learning</a></div><div class="next"><span>NEXT</span><a href="/2021/04/23/opt-lecture-8.html">[Optimization] Approximation and Fitting</a></div></div></div>
 
+</div>
 
-  General value function $V_g(s)$ represent the utility of any state $s$ in achieving a given goal $g$, represented by a pseudo-reward function.
-  A collection of general value functions is powerful, and can be used in many ways.
-    
-      Horde architecture → consist of discrete set of va...</div><p><a href="/notion_to_markdown/%5BICML%202015%5D%20Universal%20Value%20Function%20Approximators%207120334d6860455c801cd9284c92970b/">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Multi-Reward%2FObjective">Multi-Reward/Objective</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 13, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-13T00:00:00+09:00">
-    <meta itemprop="keywords" content="Reinforcement-Learning,Multi-Reward/Objective"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/notion_to_markdown/%5BNIPS%202017%5D%20Hybrid%20Reward%20Architecture%20for%20Reinfor%20ec4b86df520441bab17567b05419da01/"><h2 itemprop="headline" class="item__header">[NIPS 2017] Hybrid Reward Architecture for Reinforcement Learning </h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Horde vs HRA vs UVFA
+<script>(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    $(function() {
+      var $this ,$scroll;
+      var $articleContent = $('.js-article-content');
+      var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+      var scroll = hasSidebar ? '.js-page-main' : 'html, body';
+      $scroll = $(scroll);
 
-
-  Horde architecture learns multiple general value functions(GVFs), each corresponding to different reward functions and other question functions, using multiple demons.
-  UVFA tries to generalize the value functions across different task and goals.
-  
-    HRA, on the other hand, decomposes the reward function into $n$ dif...</div><p><a href="/notion_to_markdown/%5BNIPS%202017%5D%20Hybrid%20Reward%20Architecture%20for%20Reinfor%20ec4b86df520441bab17567b05419da01/">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Multi-Reward%2FObjective">Multi-Reward/Objective</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 13, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-13T00:00:00+09:00">
-    <meta itemprop="keywords" content="Reinforcement-Learning,Multi-Reward/Objective"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/notion_to_markdown/%5BNIPS%202017%5D%20Hindsight%20Experience%20Replay%206daf8b2ade014cf58ea2d223723e0390/"><h2 itemprop="headline" class="item__header">[NIPS 2017] Hindsight Experience Replay </h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Introduction
-
-Designing a reward function is important, but not easy.
-
-
-  common challenge of RL is to carefully enegineer the reward function → not only reflecting the task at hand, but also carefully shaped to guide the policy optimization.
-  The necessity of cost engineering limits the applicability of RL in the real world, because it require...</div><p><a href="/notion_to_markdown/%5BNIPS%202017%5D%20Hindsight%20Experience%20Replay%206daf8b2ade014cf58ea2d223723e0390/">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Multi-Reward%2FObjective">Multi-Reward/Objective</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 13, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-13T00:00:00+09:00">
-    <meta itemprop="keywords" content="Reinforcement-Learning,Multi-Reward/Objective"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/notion_to_markdown/%5BJAIR%202013%5D%20A%20Survey%20of%20Multi-Objective%20Sequential%202596a1a7dc934dbc9ed305d644b17155/"><h2 itemprop="headline" class="item__header">[JAIR 2013] A Survey of Multi-Objective Sequential Decision-Making</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Introduction of MOMDP
-
-
-  
-    MOMDP is an MDP wichih the reward function
-
-\[\mathbf{R} : \mathcal{S\times A \times S} \rightarrow \mathbb{R}^n\]
-
-    is a vector of $n$ rewards, one for each objective, instead of a scalar.
-  
-  
-    Value function $\mathbf{V}^\pi$ is also a vector where
-
-\[\mathbf{V}^\pi (s) = \mathbb{E}^\pi \bigg [ \sum_{k=0}^...</div><p><a href="/notion_to_markdown/%5BJAIR%202013%5D%20A%20Survey%20of%20Multi-Objective%20Sequential%202596a1a7dc934dbc9ed305d644b17155/">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Multi-Reward%2FObjective">Multi-Reward/Objective</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 12, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-12T00:00:00+09:00">
-    <meta itemprop="keywords" content="Reinforcement-Learning,Multi-Reward/Objective"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/notion_to_markdown/%5BNIPS%202000%5D%20Balancing%20Multiple%20Sources%20of%20Reward%20i%20d60cc762d6104f86a42d227fabdf7e6f/"><h2 itemprop="headline" class="item__header">[NIPS 2000] Balancing Multiple Sources of Reward in Reinforcement Learning</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">For many problems, the reward signal is not a single scalar, but has multiple scalar components. Creating a single reward value by combining the multiple components can throw anway vial information and can lead to incorrect solutions!
-
-This paper discuss a multiple reward source problem, and the problems of applying traditional RL algorithm.
-
-In...</div><p><a href="/notion_to_markdown/%5BNIPS%202000%5D%20Balancing%20Multiple%20Sources%20of%20Reward%20i%20d60cc762d6104f86a42d227fabdf7e6f/">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Multi-Reward%2FObjective">Multi-Reward/Objective</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 12, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-12T00:00:00+09:00">
-    <meta itemprop="keywords" content="Reinforcement-Learning,Multi-Reward/Objective"></div>
-      </article></div>
-</div><br/>
-
-<div class="layout--home"><div class="pagination"><p>35 post articles, 5 pages.</p>
-    <div class="pagination__menu">
-      <ul class="menu menu--nowrap"><li><a class="button button--secondary button--circle" href="/page2">
-            <i class="fas fa-angle-left"></i>
-          </a></li><li>
-              <a class="button button--secondary button--circle" href="/"><span>1</span></a>
-            </li><li>
-                <a class="button button--secondary button--circle" href="/page2"><span>2</span></a>
-              </li><li>
-              <div class="button button--primary button--circle focus"><span>3</span></div>
-            </li><li>
-                <a class="button button--secondary button--circle" href="/page4"><span>4</span></a>
-              </li><li>
-                <a class="button button--secondary button--circle" href="/page5"><span>5</span></a>
-              </li><li><a class="button button--secondary button--circle" href="/page4">
-            <i class="fas fa-angle-right"></i>
-          </a></li></ul>
-    </div>
-  </div></div>
-<script>/*(function () {
-
-})();*/
+      $articleContent.find('.highlight').each(function() {
+        $this = $(this);
+        $this.attr('data-lang', $this.find('code').attr('data-lang'));
+      });
+      $articleContent.find('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]').each(function() {
+        $this = $(this);
+        $this.append($('<a class="anchor d-print-none" aria-hidden="true"></a>').html('<i class="fas fa-anchor"></i>'));
+      });
+      $articleContent.on('click', '.anchor', function() {
+        $scroll.scrollToAnchor('#' + $(this).parent().attr('id'), 400);
+      });
+    });
+  });
+})();
 </script>
-
-
-
 </div><section class="page__comments d-print-none"></section></article><!-- start custom main bottom snippet -->
 
 <!-- end custom main bottom snippet -->
@@ -1075,6 +968,68 @@ window.Lazyload.js([SOURCES.jquery, PAHTS.search_js], function() {
 /*(function () {
 
 })();*/
+</script><script>
+  /* toc must before affix, since affix need to konw toc' height. */(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  var TOC_SELECTOR = window.TEXT_VARIABLES.site.toc.selectors;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window);
+    var $articleContent = $('.js-article-content');
+    var $tocRoot = $('.js-toc-root'), $col2 = $('.js-col-aside');
+    var toc;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+    var hasToc = $articleContent.find(TOC_SELECTOR).length > 0;
+
+    function disabled() {
+      return $col2.css('display') === 'none' || !hasToc;
+    }
+
+    tocDisabled = disabled();
+
+    toc = $tocRoot.toc({
+      selectors: TOC_SELECTOR,
+      container: $articleContent,
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      tocDisabled = disabled();
+      toc && toc.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+  });
+})();
+(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window), $pageFooter = $('.js-page-footer');
+    var $pageAside = $('.js-page-aside');
+    var affix;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+
+    affix = $pageAside.affix({
+      offsetBottom: $pageFooter.outerHeight(),
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      scroll: hasSidebar ? $('.js-page-main').children() : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      affix && affix.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+    window.pageAsideAffix = affix;
+  });
+})();
 </script><script>
   window.Lazyload.js(['https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js', 'https://cdn.bootcss.com/Chart.js/2.7.2/Chart.bundle.min.js'], function() {
     var $canvas = null, $this = null, _ctx = null, _text = '';
