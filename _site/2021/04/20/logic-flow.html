@@ -1,9 +1,9 @@
 <!DOCTYPE html><html lang="en">
   <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[Personal Note] Logic Flow  - Younghyo Park</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[Personal Research] Autoencoder Sparsity and Outlier Detection  - Younghyo Park</title>
 
-<meta name="description" content="##">
+<meta name="description" content="IntroductionSparsity of Neural NetworkSparsity of a neural network can be construed as a constraint. Given a dataset $\mathcal{D}= { \mathbf{x}_1,\mathbf{x}_...">
 <link rel="canonical" href="http://localhost:4000/2021/04/20/logic-flow.html"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
 <!--<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
 
@@ -336,19 +336,233 @@ fill="#000000" stroke="none">
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
 <!-- end custom main top snippet -->
-<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[Personal Note] Logic Flow </h1></header><span class="split-space">&nbsp;</span>
+<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[Personal Research] Autoencoder Sparsity and Outlier Detection </h1></header><span class="split-space">&nbsp;</span>
           <a class="edit-on-github"
             title="Edit on Github"
             href="https://github.com/younghyopark/younghyopark.github.io/tree/main/_posts/2021-04-20-logic-flow.md">
-            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[Personal Note] Logic Flow "><div class="article__info clearfix"><ul class="left-col menu"><li>
+            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[Personal Research] Autoencoder Sparsity and Outlier Detection "><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Personal-Note">Personal-Note</a>
+                href="/archive.html?tag=Personal-Research">Personal-Research</a>
             </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 20, 2021</span>
             </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-20T00:00:00+09:00">
-    <meta itemprop="keywords" content="Personal-Note"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
+    <meta itemprop="keywords" content="Personal-Research"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
 
 <!-- end custom article top snippet -->
-<div class="article__content" itemprop="articleBody"><p>##</p>
+<div class="article__content" itemprop="articleBody"><h2 id="introduction">Introduction</h2>
+
+<h3 id="sparsity-of-neural-network">Sparsity of Neural Network</h3>
+
+<p>Sparsity of a neural network can be construed as a <strong>constraint</strong>. Given a dataset $\mathcal{D}= { \mathbf{x}_1,\mathbf{x}_2, \cdots, \mathbf{x}_N }$ and a desired sparsity level $\kappa$ (number of zero weights), neural network pruning can be formulated as  a <strong>constrained optimization problem</strong>. In case of autoencoder $\mathbf{x} \rightarrow f(\mathbf{x}; \mathbf{w}) = d(e(\mathbf{x}))$ where $e, d$ each corresponds to encoder and decoder network, sparsifying the network is an optimization problem of:</p>
+
+\[\begin{aligned}
+\min_\mathbf{w} &amp; \ \ \ \mathcal{L}(\mathbf{w}; \mathcal{D}) = \frac{1}{N}\sum_{i=1}^N \|f(\mathbf{x}_i; \mathbf{w}) - \mathbf{x}_i \|_2\\
+\text{s.t.} &amp; \ \ \ \mathbf{w}\in \mathbb{R}^m , \ \ \|\mathbf{w}\|_0  \leq \kappa 
+\end{aligned}\]
+
+<p>We can alternatively describe the problem above by decoupling the weight term $\mathbf{w}$ and sparsifying (pruning) term - mask $\mathbf{c}$.</p>
+
+\[\begin{aligned}
+\min_\mathbf{c,w} &amp; \ \ \ \mathcal{L}(\mathbf{c} \odot \mathbf{w}; \mathcal{D}) = \frac{1}{N}\sum_{i=1}^N \|f(\mathbf{x}; \mathbf{c}\odot \mathbf{w}) - \mathbf{x}_i \|_2^2 \\
+\text{s.t.} &amp; \ \ \ \mathbf{w}\in \mathbb{R}^n \\
+&amp; \ \ \|\mathbf{c}\| \in \{0,1\}^m   , \ \ \ \|\mathbf{c}\|_0 \leq \kappa 
+\end{aligned}\]
+
+<p>Note that, we can optimize the objective with respect to $\mathbf{w}$, $\mathbf{c}$, or both. In fact, one line of research treats the weight term $\mathbf{w}$ as a fixed constant (usually at its initialized state), while the other line of research tries to jointly optimize both $\mathbf{w}$ and $\mathbf{c}$. Former line of research was rather recently ignited by the Lottery Ticket paper (ICLR 2019), while the latter line of research was done for quite a while.</p>
+
+<h3 id="regularizing-neural-network">Regularizing Neural Network</h3>
+
+<p>A similar, but way more popular constraint is the <strong>weight regularization</strong>. $L_1$ or $L_2$ norm of the weight parameters can be added to the objective function to penalize the magnitude of weights during training, making the network <strong>semi-sparse</strong>.</p>
+
+\[\begin{aligned}
+\min_\mathbf{w} &amp; \ \ \ \mathcal{L}(\mathbf{w} ; \mathcal{D}) + \gamma \|\mathbf{w}\|_2 ^2 = \frac{1}{N}\sum_{i=1}^N \|f(\mathbf{x}; \mathbf{w}) - \mathbf{x}_i \|_2^2 + \gamma \|\mathbf{w}\|_2 ^2\\
+\text{s.t.} &amp; \ \ \ \mathbf{w}\in \mathbb{R}^n \\
+\end{aligned}\]
+
+<p>Adding a regularizing term when training a neural network can effectively prevent the problem of over-fitting.</p>
+
+<p>However, this regularization cannot achieve the effect of <strong>model compression</strong>, since we cannot entirely eliminate the neurons or disconnect the wires unless it’s completely zero.</p>
+
+<h2 id="sparsity-of-autoencoder-and-outlier-detection">Sparsity of Autoencoder and Outlier Detection</h2>
+
+<p>At this point, what we want to prove is:</p>
+
+<p class="info">By <strong>appropriately</strong> sparsifying the autoencoder, one can improve its outlier detection performance. To be specific, appropriately sparsifying the autoencoder can prevent the <strong>outlier reconstruction</strong> phenomenon.</p>
+
+<p>When tackling this problem, we have two options.</p>
+
+<h3 id="1-solving-the-same-optimization-problem">1. Solving the same optimization problem</h3>
+
+<p>We can use the same optimization problem we formulated above, <strong>naively expecting</strong> that, reducing the inlier reconstruction errors <strong>by sparsifying the network</strong> can effectively prevent the outliers from being reconstructed.</p>
+
+<p>To be specific, we are expecting the autoencoder $f(\cdot \ ; \mathbf{w^\star})$  to have better outlier detection performance than autoencoder $f(\cdot \ ; \mathbf{w}<em>{\text{base}})$ while $\mathbf{w}^\star$ and $\mathbf{w}</em>{\text{base}}$ are each the optimized weights corresponding to sparsity constrained and non-constrained optimization problem.</p>
+
+\[\begin{aligned}
+\mathbf{w^\star} = \arg \min_\mathbf{w} &amp; \ \ \ \mathcal{L}(\mathbf{w}; \mathcal{D}) = \frac{1}{N}\sum_{i=1}^N \|f(\mathbf{x}_i; \mathbf{w}) - \mathbf{x}_i \|_2\\
+\text{s.t.} &amp; \ \ \ \mathbf{w}\in \mathbb{R}^m , \ \ \|\mathbf{w}\|_0  \leq \kappa 
+\end{aligned}\]
+
+\[\begin{aligned}
+   \mathbf{w}_{\text{base}} = \arg \min_\mathbf{w} &amp; \ \ \ \mathcal{L}(\mathbf{w}; \mathcal{D}) = \frac{1}{N}\sum_{i=1}^N \|f(\mathbf{x}_i; \mathbf{w}) - \mathbf{x}_i \|_2\\
+   \text{s.t.} &amp; \ \ \ \mathbf{w}\in \mathbb{R}^m
+   \end{aligned}\]
+
+<h3 id="2-solving-a-different-optimization-problem">2. Solving a different optimization problem</h3>
+
+<p>One might use a different optimization problem, explicitly targetting the outlier reconstruction phenomenon:</p>
+
+\[\begin{aligned}
+     \min_\mathbf{c,w} &amp; \ \ \ \mathcal{L}(\mathbf{c} \odot \mathbf{w}; \mathcal{D}_\text{in}) - \mathcal{L}(\mathbf{c} \odot \mathbf{w}; \mathcal{D}_\text{out})\\ &amp; \ \ \ \ \ \ \ \ \  = \bigg (\frac{1}{N}\sum_{i=1}^N \|f(\mathbf{x}_i; \mathbf{c}\odot \mathbf{w}) - \mathbf{x}_i \|_2 ^2 - \frac{1}{N}\sum_{i=1}^N \|f(\mathbf{x}'_i; \mathbf{c}\odot \mathbf{w}) - \mathbf{x}_i \|_2 ^2 \bigg ) \\
+     \text{s.t.} &amp; \ \ \ \mathbf{w}\in \mathbb{R}^m \\
+     &amp; \ \ \|\mathbf{c}\| \in \{0,1\}^m   , \ \ \ \|\mathbf{c}\|_0 \leq \kappa 
+     \end{aligned}\]
+
+<p>where $\mathcal{D}_{\text{out}} = { \mathbf{x}’_1, \cdots,  \mathbf{x}’_N}$ is the dataset that represents the outliers. However, since we cannot obtain the dataset that represents all possible outliers, one must use an alternative strategy (e.g. MCMC sampling) to realize above objective function.</p>
+
+<p class="gray_no_border">However, to make our assertion to gain some sort of novelty, the outlier detection performance achieved by either of above <strong>pruning-based approaches</strong> should be better than the performance we can achieve by <strong>regularization-based method.</strong></p>
+
+<p>To be specific, we have to obtain a <strong>sparse weight</strong> $\mathbf{w}^\star$ that makes the autoencoder $f(\cdot \ ; \mathbf{w}^\star)$ to have better outlier detection performance than \(f(\cdot ; \mathbf{w}_{\text{reg}})\) or $f(\cdot ; \mathbf{w}_{\text{base}})$ where  \(\mathbf{w}_{\text{reg}}\) is the weight we obtain from regularized loss function:</p>
+
+\[\begin{aligned}
+\mathbf{w}_{\text{reg}} = \arg\min_\mathbf{w} &amp; \ \ \ \mathcal{L}(\mathbf{w} ; \mathcal{D}) + \gamma \|\mathbf{w}\|_2 ^2 = \frac{1}{N}\sum_{i=1}^N \|f(\mathbf{x}; \mathbf{w}) - \mathbf{x}_i \|_2^2 + \gamma \|\mathbf{w}\|_2 ^2\\
+\text{s.t.} &amp; \ \ \ \mathbf{w}\in \mathbb{R}^n \\
+\end{aligned}\]
+
+\[\begin{aligned}
+   \mathbf{w}_{\text{base}} = \arg \min_\mathbf{w} &amp; \ \ \ \mathcal{L}(\mathbf{w}; \mathcal{D}) = \frac{1}{N}\sum_{i=1}^N \|f(\mathbf{x}_i; \mathbf{w}) - \mathbf{x}_i \|_2\\
+   \text{s.t.} &amp; \ \ \ \mathbf{w}\in \mathbb{R}^m
+   \end{aligned}\]
+
+<h2 id="ways-to-implement-sparsity-ways-to-prune">Ways to implement sparsity (ways to prune)</h2>
+
+<p>To prove our point, we should first and foremost determine the <strong>sparsifying method</strong> that can be applied to the autoencoder.</p>
+
+<h3 id="traditional-saliency-estimation-techniques">Traditional Saliency Estimation Techniques</h3>
+
+<p>Saliency based methods selectively removes redundant parameters in the neural network. In this case, <strong>assessing the saliency</strong> is the most important task. One of the earliest saliency estimating functions are based on 1) magnitude and 2) Hessian matrix.</p>
+
+\[s_j = 
+\begin{cases}
+|\mathbf{w}_j | , &amp; \text{magnitude based}\\
+\frac{\mathbf{w}_j^2 \mathbf{H}_{jj}}{2}, &amp; \text{Hessian based}
+\end{cases}\]
+
+<p>Note that both the <a href="https://arxiv.org/pdf/1506.02626.pdf">magnitude</a> and Hessian is computed for pretrained weights $\mathbf{w}_{\text{pt}}$, while the Hessian matrix is defined as:</p>
+
+\[\mathbf{H} = \frac{\partial^2 \mathcal{L}}{\partial \mathbf{w}^2} \bigg \vert _{\mathbf{w}_{\text{pt}}} \in \mathbb{R}^{m\times m}.\]
+
+<p><strong>Regularizing constraint</strong> can also be used: one might add some regularizer during the pretraining phase, and then estimate the saliency in the preceding step.</p>
+
+<h3 id="modern-advances-in-saliency-estimation-techniques">Modern Advances in Saliency Estimation Techniques</h3>
+
+<p>Meanwhile, as the neural network gets larger and deeper, many modern advances were made in saliency estimation techniques.</p>
+
+<p><a href="https://openreview.net/pdf?id=B1VZqjAcYX">Lee et al.</a> proposed a method called <strong>SNIP</strong>, a single-shot saliency estimating technique where the saliency is computed by the <strong>effect of connection (weight) $j$ on the loss</strong>. To do so, authors remove the connection $j$ and measure its effect:
+\(\Delta \mathcal{L}_j (\mathbf{w}; \mathcal{D}) = \mathcal{L} (\mathbf{1} \odot \mathbf{w}; \mathcal{D}) - \mathcal{L} \big ((\mathbf{1}-\mathbf{e}_j) \odot \mathbf{w}; \mathcal{D}\big )\)</p>
+
+<p>Since this computation is quite expensive, authors try to approximate this by the derivative of $\mathcal{L}$ with respect to $c_j$.</p>
+
+\[\Delta\mathcal{L}_j (\mathbf{w}; \mathcal{D}) \approx g_j (\mathbf{w}; \mathcal{D})  = \frac{\partial \mathcal{L}(\mathbf{c}\odot \mathbf{w}; \mathcal{D}) }{\partial c_j } \bigg \vert _{\mathbf{c=1}} = \lim_{\delta \rightarrow 0} \frac{\mathcal{L}(\mathbf{1}\odot \mathbf{w} ; \mathcal{D}) - \mathcal{L}((\mathbf{1} - \delta\mathbf{e}_j )\odot \mathbf{w}; \mathcal{D})}{\delta}\]
+
+<p>Finally, we can compute the saliency by its normalized magnitude:</p>
+
+\[s_j = \frac{|g_j (\mathbf{w}; \mathcal{D})|}{\sum_{k=1}^n |g_k (\mathbf{w}; \mathcal{D})|}\]
+
+<h3 id="optimization-based-maskingpruning">Optimization based Masking/Pruning</h3>
+
+<p>One may directly optimize the mask $\mathbf{c}$ in the optimization problem below:</p>
+
+\[\begin{aligned}
+\min_\mathbf{c} &amp; \ \ \ \mathcal{L}(\mathbf{c} \odot \mathbf{w}_\text{init}; \mathcal{D}) = \frac{1}{N}\sum_{i=1}^N \|f(\mathbf{x}; \mathbf{c}\odot \mathbf{w}_\text{init}) - \mathbf{x}_i \|_2^2 \\
+\text{s.t.} 
+&amp; \ \ \|\mathbf{c}\| \in \{0,1\}^m   , \ \ \ \|\mathbf{c}\|_0 \leq \kappa 
+\end{aligned}\]
+
+<p>while fixing the weight to its initialized value $\mathbf{w}_\text{init}$.</p>
+
+<p>We can optimize the binary mask $\mathbf{c}$ by optimizing its associated (continuos) weight $\mathbf{w}_c$, which can be converted to binary mask $\mathbf{c}$ in a stochastic way,</p>
+
+\[\mathbf{c}(\mathbf{w}_c) (i)  = \text{Bern}\big (p= \text{sigmoid}(\mathbf{w}_c (i))\big )\\
+\mathbf{w}_c  \in \mathbb{R}^m\]
+
+<p>or in a non-stochastic way</p>
+
+\[\mathbf{c}(\mathbf{w}_c )(i) = 
+\begin{cases}
+1&amp;\ \ \text{if } \mathbf{w}_c (i) \geq \mathbf{w}_{\text{th}} \\
+0&amp;\ \ \text{if } \mathbf{w}_c (i) &lt; \mathbf{w}_{\text{th}}.
+\end{cases}\]
+
+<p>These methods are called <strong>supermask</strong> training method. One of the advantage of supermask training is that, we can directly minimize any kind of objective function we’d like to optimize only by pruning.</p>
+
+<p class="gray_no_border">To summarize, we can enforce the sparsity (obtain the mask $\mathbf{c}$) by the following methods:</p>
+
+<ol>
+  <li><strong>Magnitude based pruning</strong>: train the network with conventional training procedure, and then prune the weights with small magnitudes.</li>
+  <li><strong>Hessian based pruning</strong>: train the network with conventional training procedure, and then prune the weights with small Hessians.</li>
+  <li><strong>SNIP</strong> : estimate the effect of individual weights on loss, and prune the connections that has small effect on loss.</li>
+  <li><strong>Supermask</strong> : directly the optimize the mask $\mathbf{c}$ to minimize the loss while fixing the weight $\mathbf{w}$</li>
+</ol>
+
+<h2 id="baseline-experiment">Baseline Experiment</h2>
+
+<h3 id="experiment-setting">Experiment Setting</h3>
+
+<p>We will use MNIST hold-out experiment to test our hypothesis. (e.g. If we hold-out MNIST 1, our inlier data is the set of images including MNIST $0,2,3,\cdots,9$, and we will treat MNIST 1 images as an outlier)</p>
+
+<p>Regarding the network architecture, will use a convolutional autoencoder with $D_z = 17$.</p>
+
+<center><img src="https://live.staticflickr.com/65535/51131302801_680e533339_o.png" alt="image-20210422222410214" style="zoom:50%;" /></center>
+
+<h3 id="auroc-of-fcdot---mathbfw_textbase">AUROC of $f(\cdot \ ; \mathbf{w}_{\text{base}})$</h3>
+
+<p>In this section, we will first check the baseline results corresponding to the baseline weight $\mathbf{w}_{\text{base}}$ that optimizes the following unconstrained optimization problem.</p>
+
+\[\begin{aligned}
+   \mathbf{w}_{\text{base}} = \arg \min_\mathbf{w} &amp; \ \ \ \mathcal{L}(\mathbf{w}; \mathcal{D}) = \frac{1}{N}\sum_{i=1}^N \|f(\mathbf{x}_i; \mathbf{w}) - \mathbf{x}_i \|_2\\
+   \text{s.t.} &amp; \ \ \ \mathbf{w}\in \mathbb{R}^m
+   \end{aligned}\]
+
+<p>We optimized above problem by Adam optimizer with learning rate 0.0001 and batch size 128.</p>
+
+<center><img src="https://live.staticflickr.com/65535/51132526223_a0928c088f_o.png" alt="image-20210423085150199" style="zoom:50%;" /></center>
+
+<h3 id="auroc-of-fcdot--mathbfw_textreg">AUROC of $f(\cdot \ ;\mathbf{w}_{\text{reg}})$</h3>
+
+<p>Now, we will first check the regularized results corresponding to the regularized weight $\mathbf{w}_{\text{reg}}$ that optimizes the following optimization problem.</p>
+
+\[\begin{aligned}
+\mathbf{w}_{\text{reg}} = \arg\min_\mathbf{w} &amp; \ \ \ \mathcal{L}(\mathbf{w} ; \mathcal{D}) + \gamma \|\mathbf{w}\|_2 ^2 = \frac{1}{N}\sum_{i=1}^N \|f(\mathbf{x}; \mathbf{w}) - \mathbf{x}_i \|_2^2 + \gamma \|\mathbf{w}_{\text{enc}}\|_2 ^2\\
+\text{s.t.} &amp; \ \ \ \mathbf{w}\in \mathbb{R}^n \\
+\end{aligned}\]
+
+<p>In this case, I will regularize only the encoder weights with regularizing constant $\gamma = 0.0001$.</p>
+
+<center><img src="https://live.staticflickr.com/65535/51133089564_15249f4420_o.png" alt="image-20210423085045940" style="zoom:50%;" /></center>
+
+<h2 id="sparsifying-the-autoencoder">Sparsifying the Autoencoder</h2>
+
+<h3 id="weight-based-pruning">Weight based Pruning</h3>
+
+<p>This procedure can be either done in <strong>one-shot:</strong></p>
+
+<ol>
+  <li>pretrain the weights</li>
+  <li>prune $p\%$ of the weights with small magnitude</li>
+  <li>finetune the remaining $(100-p)\%$ of the weights, fixing the pruned weights to zero.</li>
+</ol>
+
+<p>or in an <strong>iterative process:</strong></p>
+
+<ol>
+  <li>pretrain the weights</li>
+  <li>leave $(1-p)^{1/n}\%$ of the weights with large magnitude $\iff$ prune $\big (1- (1-p)^{1/n}\big)\%$ of the weights wit small magnitude</li>
+  <li>finetune the remaining weights, fixing the pruned weights to zero.</li>
+  <li>repeat step 2 and 3 $n$ times, and achieve $p\%$ pruning ratio.</li>
+</ol>
+
+<p>For faster experiments, I used one-shot pruning method:</p>
+
+<h3 id="hessian-based-pruning">Hessian based Pruning</h3>
 
 </div><section class="article__sharing d-print-none"></section><br/>
   

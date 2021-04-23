@@ -1,11 +1,10 @@
 <!DOCTYPE html><html lang="en">
   <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>Home - Younghyo Park</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[Optimization] Approximation and Fitting - Younghyo Park</title>
 
-<meta name="description" content="Your Site Description
-">
-<link rel="canonical" href="http://localhost:4000/page2/"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
+<meta name="description" content="Norm ApproximationProblem DefinitionWe are considering\[\min_{\mathbf{x}} \|\mathbf{Ax-b}\|\]where $\mathbf{A} \in \mathbb{R}^{m\times n}$ with $m\geq n$, an...">
+<link rel="canonical" href="http://localhost:4000/2021/04/23/opt-lecture-8.html"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
 <!--<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
 
 <meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
@@ -264,7 +263,7 @@
 </head>
   <body>
     <div class="root" data-is-touch="false">
-      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport cell cell--auto">
+      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport has-aside cell cell--auto">
 
       <div class="page__main-inner"><div class="page__header d-print-none"><header class="header"><div class="main">
       <div class="header__title">
@@ -331,239 +330,418 @@ fill="#000000" stroke="none">
   </header>
 </div><div class="page__content"><div class ="main"><div class="grid grid--reverse">
 
-              <div class="col-aside d-print-none js-col-aside"></div>
+              <div class="col-aside d-print-none js-col-aside"><aside class="page__aside js-page-aside"><div class="toc-aside js-toc-root"></div>
+</aside></div>
 
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
 <!-- end custom main top snippet -->
-<article itemscope itemtype="http://schema.org/WebPage"><header style="display:none;"><h1>Home</h1></header><meta itemprop="headline" content="Home"><meta itemprop="author" content="Younghyo Park"/><div class="js-article-content"><div class="layout--articles"><div class="article-list items items--divided"><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2021/04/19/scrl-5.html"><h2 itemprop="headline" class="item__header">[RL Theory] Infinite Horizon MDP, Value Iteration</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Infinite Horizon Discounted MDP
-Assumptions
-
-  
-    Stationary rewards and transition probabilities:
-  $r(s,a)$ and $p(s’ \vert s,a)$ doesn’t change over time.
-  
-  
-    Finite state and action sets
-
-    $\rightarrow$ this implies that $r(s,a)$ is bounded! There exists a constant $M$ such that
-
-\[|r(s,a)|&lt;M \ \ \forall s \in S, \ \ \forall a ...</div><p><a href="/2021/04/19/scrl-5.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Theory%2FSurvey">Theory/Survey</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 19, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-19T00:00:00+09:00">
-    <meta itemprop="keywords" content="Reinforcement-Learning,Lecture-Note,Theory/Survey"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2021/04/19/scrl-4.html"><h2 itemprop="headline" class="item__header">[RL Theory] Finite Horizon MDP (2)</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Optimal Policy of Finite-Horizon MDP
-
-Deterministic Markov Policy
-
-Define a deterministic Markov policy $\pi^\star$ by
-
-\[\pi_t^\star (s) \in \arg\max_{a\in A} \bigg (r_t (s,a) + \sum_{s'\in S} p(s' \vert s,a)v_{t+1}^\star (s') \bigg )\]
-
-Optimality of Deterministic Markov Policy
-
-Assume that $S, A$ are finite sets. Then, the deterministic Marko...</div><p><a href="/2021/04/19/scrl-4.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Theory%2FSurvey">Theory/Survey</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 19, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-19T00:00:00+09:00">
-    <meta itemprop="keywords" content="Reinforcement-Learning,Lecture-Note,Theory/Survey"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2021/04/19/scrl-3.html"><h2 itemprop="headline" class="item__header">[RL Theory] Finite Horizon MDP (1)</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Finite-Horizon MDP
-
-Problem Definition
-
-Instead of $\gamma$, we set the length of the horizon as $T$. Thus, a finite-horizon MDP is a tuple $\langle T,S,A,P,R \rangle$, consisting of
-
-
-  $T$ : length of horizon
-  everything else is the same.
-
-
-Our goal is to find the optimal policy that maximizes the expected cumulative reward:
-
-\[\max_{\pi \in ...</div><p><a href="/2021/04/19/scrl-3.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Theory%2FSurvey">Theory/Survey</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 19, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-19T00:00:00+09:00">
-    <meta itemprop="keywords" content="Reinforcement-Learning,Lecture-Note,Theory/Survey"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/notion_to_markdown/opt-lecture-7/"><h2 itemprop="headline" class="item__header">[Optimization] KKT Optimality Condition</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Characterizing the Optimality
-
-How should we characterize the conditions for optimality?
-
-What are the necessary and sufficient conditions for
-
-\[x: \text{primal feasible point}\\
-(\lambda, \nu) : \text{dual feasible point}\]
-
-to be optimal?
-
-Complementary slackness
-
-Suppose that strong duality holds, and (somehow) the primal and dual optimal va...</div><p><a href="/notion_to_markdown/opt-lecture-7/">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[Optimization] Approximation and Fitting</h1></header><span class="split-space">&nbsp;</span>
+          <a class="edit-on-github"
+            title="Edit on Github"
+            href="https://github.com/younghyopark/younghyopark.github.io/tree/main/_posts/2021-04-23-opt-lecture-8.md">
+            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[Optimization] Approximation and Fitting"><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
                 href="/archive.html?tag=Optimization">Optimization</a>
             </li><li>
               <a class="button button--secondary button--pill button--sm"
                 href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 19, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-19T00:00:00+09:00">
-    <meta itemprop="keywords" content="Optimization,Lecture-Note"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2021/04/19/mac-tips-1.html"><h2 itemprop="headline" class="item__header">[macOS Tips] App Specific New Tab/Window Preference</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Problem
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 23, 2021</span>
+            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-23T00:00:00+09:00">
+    <meta itemprop="keywords" content="Optimization,Lecture-Note"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
 
-macOS allows you to change the prefer tabs behavior in the settings &gt; general panel.
+<!-- end custom article top snippet -->
+<div class="article__content" itemprop="articleBody"><h2 id="norm-approximation">Norm Approximation</h2>
 
+<h3 id="problem-definition">Problem Definition</h3>
 
+<p>We are considering</p>
 
-However, the option they give is quite black and white.
+\[\min_{\mathbf{x}} \|\mathbf{Ax-b}\|\]
 
+<p>where $\mathbf{A} \in \mathbb{R}^{m\times n}$ with $m\geq n$, and $|\cdot |$ is a norm on $\mathbb{R}^m $. This can be considered as a convex optimization problem, since norm is a convex function, and $\mathbf{Ax-b}$ is an affine transformation.</p>
 
+<h3 id="interpretation">Interpretation</h3>
 
-If you prefer new tabs on Preview , but prefer new windows on Finder or Safari, there’s nothing you can do on the settings panel.
+<p>We can interpret this problem in many ways:</p>
 
-Solution
+<ol>
+  <li>
+    <p><strong>geometric</strong> : $\mathbf{Ax}^\star$ is a point in $\mathcal{R}(\mathbf{A})$ closest to $\mathbf{b}$.</p>
 
-In that case,
+    <center><img src="https://live.staticflickr.com/65535/51132546203_d5f03f1c50_o.png" alt="image-20210423090720126" style="zoom:50%;" /></center>
+  </li>
+  <li>
+    <p><strong>estimation</strong> : For a linear measurement model</p>
 
+\[\mathbf{y = Ax+v}\]
 
-  revert the prefer tabs settin...</div><p><a href="/2021/04/19/mac-tips-1.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=macOS-Tips">macOS-Tips</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 19, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-19T00:00:00+09:00">
-    <meta itemprop="keywords" content="macOS-Tips"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/notion_to_markdown/opt-lecture-6/"><h2 itemprop="headline" class="item__header">[Optimization] Lagrange Duality, Slater's Condition</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Lagrangian
+    <p>where $\mathbf{y}$ is the observation, $\mathbf{x}$ is unknown, and $\mathbf{v}$ is the measurement error, given $\mathbf{y=b}$, $\mathbf{x}^\star$ is the best guess of $\mathbf{x}$.</p>
+  </li>
+  <li>
+    <p><strong>optimal design</strong> : $\mathbf{x}$ is the design variable, where $\mathbf{Ax}$ is the result. $\mathbf{x}^\star$ is the design choice that best approximates the desired result $\mathbf{b}$.</p>
+  </li>
+</ol>
 
-Consider an optimization problem
+<h3 id="example">Example</h3>
 
-\[\begin{aligned} \min &amp; \ \ \ f_0 (x) \\ \text{s.t} &amp; \ \ \ f_i (x) \leq 0, \ \ \  i= 1, \cdots, m \\ &amp; \ \ \ h_i (x) =0, \ \ \ i=1, \cdots, p \end{aligned}\]
-
-Now, take the constraint into account by augmenting the objective function with a weighted sum of the constraint functions.
-
-Lag...</div><p><a href="/notion_to_markdown/opt-lecture-6/">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Optimization">Optimization</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 18, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-18T00:00:00+09:00">
-    <meta itemprop="keywords" content="Optimization,Lecture-Note"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/notion_to_markdown/opt-lecture-5/"><h2 itemprop="headline" class="item__header">[Optimization] Typical Convex Optimization Problems</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Standard Form of Convex Optimization Problems
+<ul>
+  <li><strong>least-squares approximation</strong> $| \cdot |_2$ :</li>
+</ul>
 
 \[\begin{aligned}
-\min &amp;\ \ f_0 (x) \\
-\text{s.t.} &amp; \ \ f_i (x)  \leq 0, i=1,\cdots, m\\
-&amp; \ \ a_i ^T x = b_i , i=1,\cdots, p
+	\min_{\mathbf{x}} &amp; \ \ \ \|\mathbf{Ax-b}\|_2^2  = \mathbf{(Ax-b)}^T\mathbf{(Ax-b)}\\
+  &amp; \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ = \mathbf{x}^T\mathbf{A}^T\mathbf{A}\mathbf{x}-2\mathbf{b}^T\mathbf{A}\mathbf{x}+\mathbf{b}^T\mathbf{b}
+  \end{aligned}\]
 
+<p>the solution satisfies the normal equation</p>
+
+\[\mathbf{A}^T \mathbf{Ax} = \mathbf{A}^T \mathbf{b}\]
+
+<p>If $\text{rank } \mathbf{A}=n$ , $\mathbf{x}^\star = (\mathbf{A}^T \mathbf{A})^{-1}\mathbf{A}^T \mathbf{b}$</p>
+
+<ul>
+  <li><strong>chebysev approximation</strong> $|\cdot |_\infty$ :</li>
+</ul>
+
+\[\begin{aligned}
+  \min_{\mathbf{x}} &amp; \ \ \ \bigg ( \|\mathbf{Ax-b}\|_\infty  = \max_i\ \big | \mathbf{a}_i^T \mathbf{x}-\mathbf{b}_i \big | \bigg ) 
+  \end{aligned}\]
+
+<p>this can be converted to LP</p>
+
+\[\begin{aligned}
+\min &amp; \ \ \ t \\
+  \text{s.t.} &amp; \ \ \ |\mathbf{a}_i ^T \mathbf{x}- \mathbf{b}_i |\leq t, \ \ \ i = 1,\cdots, m\\
+  &amp; \ \ \ \iff -t\mathbf{1} \leq \mathbf{Ax-b} \leq t\mathbf{1}
+  \end{aligned}\]
+
+<ul>
+  <li><strong>sum of absolute residuals approximation</strong> $|\cdot |_1 $ :</li>
+</ul>
+
+\[\begin{aligned}
+  \min_{\mathbf{x}} &amp; \ \ \ \bigg ( \|\mathbf{Ax-b}\|_1  = \sum_i \ \big | \mathbf{a}_i^T \mathbf{x}-\mathbf{b}_i \big | \bigg ) 
+  \end{aligned}\]
+
+<p>this can be converted to LP</p>
+
+\[\begin{aligned}
+\min &amp; \ \ \ \mathbf{1}^T \mathbf{y} \\
+  \text{s.t.} &amp; \ \ \ |\mathbf{A}  \mathbf{x}- \mathbf{b} |\leq \mathbf{y}\\
+  &amp; \ \ \ \iff -\mathbf{y} \leq \mathbf{Ax-b} \leq \mathbf{y}
+  \end{aligned}\]
+
+<h2 id="penalty-function-approximation">Penalty Function Approximation</h2>
+
+<h3 id="problem-defintion">Problem Defintion</h3>
+
+<p>In $l_p$-norm approximation, for $1\leq p&lt; \infty$, the objective is</p>
+
+\[\big( |\mathbf{r}_1|^p+|\mathbf{r}_2|^p+ \cdots + |\mathbf{r}_m|^p\big ) ^{1/p}\]
+
+<p>where</p>
+
+\[\mathbf{r}_i = \mathbf{a}_i ^T \mathbf{x} - \mathbf{b}_i\]
+
+<p>In that case, if we define $\phi: \mathbb{R} \rightarrow \mathbb{R}$,</p>
+
+\[\phi(r) = |r|^p\]
+
+<p>we can convert above problem into</p>
+
+\[\begin{aligned}
+\min &amp; \ \ \ \sum_{i=1}^m \phi (\mathbf{r}_i )\\
+\text{s.t.}&amp; \ \ \ \mathbf{r= Ax-b}
 \end{aligned}\]
 
+<p>We call $\phi$ a <strong>convex penalty function.</strong></p>
 
-  the objective function must be convex
-  inequality constraint functions must be convex
-  the equality constraint functions should be affine
-...</div><p><a href="/notion_to_markdown/opt-lecture-5/">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Optimization">Optimization</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 18, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-18T00:00:00+09:00">
-    <meta itemprop="keywords" content="Optimization,Lecture-Note"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2021/04/18/opt-lecture-4-1.html"><h2 itemprop="headline" class="item__header">[Optimization] Operations that preserve Convexity</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Operations that preserve convexity
+<h3 id="examples">Examples</h3>
 
+<ul>
+  <li>
+    <p><strong>Quadratic</strong> : \(\phi(u) = u^2\)</p>
+  </li>
+  <li>
+    <p><strong>Deadzone-linear</strong> with width $a$ : \(\phi(u) = \max \{0,\vert u\vert-a\}\)</p>
+  </li>
+  <li>
+    <p><strong>Log-barrier</strong> with limit $a$ : 
+\(\phi(u)= \begin{cases}
+-a^2 \log(1- (u/a)^2 ) &amp; \ \text{if } |u| &lt;a\\
+\infty &amp; \ \text{otherwise}
+\end{cases}\)</p>
 
-  nonnegative weighted sums
-  composition with an affine mapping
-  pointwise maximum and supremum
-  composition
-  minimization
-  perpsective of a function
+    <center><img src="https://live.staticflickr.com/65535/51132430846_c78a752679_o.png" alt="image-20210423102502942" style="zoom:50%;" /></center>
+  </li>
+</ul>
 
+<h3 id="huber-penalty-function">Huber penalty function</h3>
 
-Nonnegative weighted sums
+\[\phi_{\text{hub}}(u) = \begin{cases}
+u^2 &amp; \ \text{if } |u| \leq M\\
+M(2|u|-M)&amp; \ \text{otherwise}
+\end{cases}\]
 
+<center><img src="https://live.staticflickr.com/65535/51132644338_5151c1bb5f_o.png" alt="image-20210423102705223" style="zoom:50%;" /></center>
 
+<p>This huber penalty function allows an approximation less sensitive to outliers. In case of a least-squares regression where we fit $(t,y)$ with a linear curve $y = \alpha + \beta t$, using a huber penalty function makes us to draw a line that’s way more robust to outliers.</p>
+
+\[\min \sum_i \phi_{\text{hub}}(y_i - \alpha- \beta t_i )\]
+
+<center><img src="https://live.staticflickr.com/65535/51131764947_fea274e64f_o.png" alt="image-20210423103135246" style="zoom:50%;" /></center>
+
+<h2 id="least-norm-problem">Least-Norm Problem</h2>
+
+<h3 id="problem-definition-1">Problem Definition</h3>
+
+<p>Consider the problem</p>
+
+\[\begin{aligned}
+\min_{\mathbf{x}} &amp; \ \ \|\mathbf{x}\|\\
+\text{s.t.} &amp; \ \ \mathbf{Ax=b}
+\end{aligned}\]
+
+<p>where $\mathbf{A} \in \mathbb{R}^{m \times n}$ with $m\leq n$ (rows of $\mathbf{A}$ are linearly independent) and $|\cdot |$ is a norm on $\mathbb{R}^m $. In case of $m=n$, $\mathbf{x}^\star = \mathbf{A}^{-1}\mathbf{b}$. Thus, we assume $m&lt;n$.</p>
+
+<h3 id="interpretation-1">Interpretation</h3>
+
+<ol>
+  <li>geometric : $\mathbf{x}^\star$ is a point in the affine set \(\{\mathbf{x} \vert \mathbf{Ax=b}\}\) with minimum distance to origin $\mathbf{0}$.</li>
+  <li>estimation : $\mathbf{b=Ax}$ are perfect measurements of $\mathbf{x}$. Among those, $\mathbf{x}^\star$ is the smallest estimate, consistent with the measurements.</li>
+  <li>optimal design : $\mathbf{x}$ are design variables, $\mathbf{b}$ are required results: $\mathbf{x}^\star$ is the most efficient design that satisfies the requirements.</li>
+</ol>
+
+<h3 id="examples-1">Examples</h3>
+
+<ul>
+  <li>
+    <p>In case of $|\cdot |_2$, this problem can be solved by <strong>optimality conditions</strong></p>
+
+\[\begin{aligned}
+\min _\mathbf{x} &amp; \ \ \|\mathbf{x}\|_2 ^2 = \mathbf{x}^T \mathbf{x}\\
+\text{s.t.}&amp; \ \ \mathbf{Ax=b}
+\end{aligned}\]
+
+    <p>where the Lagrangian is defined by</p>
+
+\[\mathcal{L}(\mathbf{x, \nu}) = \mathbf{x}^T \mathbf{x} + \nu^T (\mathbf{Ax-b})\]
+
+    <p>Then, if we assume $(\mathbf{x}^\star, \nu^\star)$ as a primal and dual optimal point, below conditions must hold.</p>
+
+\[2\mathbf{x}^\star+ \mathbf{A}^T \nu ^\star = \mathbf{0}, \ \ \mathbf{Ax}^\star =b\]
+
+    <p>From these, we have</p>
+
+\[2\mathbf{Ax}^\star + \mathbf{AA}^T \mathbf{\nu}^\star = \mathbf{0}\\
+\iff 2\mathbf{b}+\mathbf{AA}^T \mathbf{\nu}^\star =0 \\
+\iff \nu^\star = -2(\mathbf{AA}^T)^{-1}\mathbf{b}\]
+
+    <p>and</p>
+
+\[\mathbf{x}^\star = \mathbf{A}^T (\mathbf{AA}^T)^{-1}\mathbf{b}\]
+
+    <p>Note that $\text{rank } \mathbf{A} = m &lt;n$ , and thus the matrix $\mathbf{AA}^T$ is invertible.</p>
+  </li>
+  <li>
+    <p>In case of $|\cdot |_1 $, this can be solved by LP</p>
+
+\[\begin{aligned}
+\min _\mathbf{x} &amp; \ \  \mathbf{1}^T \mathbf{y}\\
+\text{s.t.}&amp; \ \ \mathbf{Ax=b}\\
+&amp; \ \ -\mathbf{y}\leq \mathbf{x} \leq \mathbf{y}
+\end{aligned}\]
+  </li>
+</ul>
+
+<h2 id="regularized-approximation">Regularized Approximation</h2>
+<h3 id="problem-definiion">Problem Definiion</h3>
+<p>Regularization is a common scalariziation method used to solve the bi-criterion problem. One form of regularization is to minimize the weighted sum of the objectives:</p>
+
+\[\min \|\mathbf{Ax-b}\| + \gamma \|\mathbf{x}\|\]
+
+<p>where $\mathbf{A} \in \mathbb{R}^{m\times n}$ and norms on $\mathbb{R}^m$ and $\mathbb{R}^n$ can be different.</p>
+
+<h3 id="tikhonov-regularization">Tikhonov regularization</h3>
+
+<p>The most common form of regularization is the one with Euclidean norms, resulting in a conevx quadratic optimization problem.</p>
+
+\[\min \|\mathbf{Ax-b}\|_2 ^2 + \delta \|\mathbf{x}\|_2 ^2 = \mathbf{x}^T (\mathbf{A}^T\mathbf{A}+ \delta \mathbf{I})\mathbf{x}- 2\mathbf{b}^T\mathbf{Ax}+ \mathbf{b}^T \mathbf{b}\]
+
+<p>This has an analytical solution of</p>
+
+\[\mathbf{x}^\star = (\mathbf{A}^T \mathbf{A}+ \delta \mathbf{I})^{-1}\mathbf{A}^T \mathbf{b}\]
+
+<h3 id="optimal-input-design">Optimal Input Design</h3>
+
+<p>Consider a linear dynamical system with input $u(t)$ and output $y(t)$.</p>
+
+<ol>
+  <li>
+    <p>tracking error with desired output $y_{des}$:</p>
+
+\[J_{track} := \sum_{t=0}^N (y(t) - y_{des}(t))^2\]
+  </li>
+  <li>
+    <p>input variation :</p>
+
+\[J_{der} := \sum_{t=0}^{N-1} (u(t+1)- u(t))^2\]
+  </li>
+  <li>
+    <p>input magnitude :</p>
+
+\[J_{mag} := \sum_{t=0}^N u(t)^2\]
+  </li>
+</ol>
+
+<p>Regularized least-squares formulation:</p>
+
+\[\min_u J_{track} + \delta J_{der} + \eta J_{mag}\]
+
+<center><img src="https://live.staticflickr.com/65535/51133712765_331360869e_o.png" alt="image-20210423123819940" style="zoom:50%;" /></center>
+
+<h2 id="signal-reconstruction">Signal Reconstruction</h2>
+
+<h3 id="problem-definition-2">Problem Definition</h3>
+
+<p>Consider the multi-objective problem</p>
+
+\[\min_{\hat{\mathbf{x}}}  \ (\|\hat{\mathbf{x}} - \mathbf{x}_{cor} \|_2 , \phi(\hat{\mathbf{x}}) )\]
+
+<p>where $\mathbf{x}$ is unknown signal, and $\mathbf{x}_{cor} = \mathbf{x}+\mathbf{v}$ is observed corrupted version of $\mathbf{x}$, with additive noise $\mathbf{v}$. $\phi$ is regularization function or smoothing objective.</p>
+
+<h3 id="example-1">Example</h3>
+
+<ul>
+  <li>
+    <p>Quadratic smoothing :</p>
+
+\[\phi_{quad}(\hat{\mathbf{x}}) = \sum_{i=1}^{n-1} (\hat{\mathbf{x}}_{i+1} - \hat{\mathbf{x}}_i )^2\]
+  </li>
+  <li>
+    <p>Total variation smoothing :</p>
+
+\[\phi_{tv}(\hat {\mathbf{x}}) = \sum_{i=1}^{n-1}|\hat{\mathbf{x}}_{i+1} - \hat{\mathbf{x}}_i |\]
+  </li>
+</ul>
+
+<h3 id="total-variation-vs-quadratic-smoothing">Total variation vs Quadratic Smoothing</h3>
+
+<center><img src="https://live.staticflickr.com/65535/51133723770_e40182b2d0_o.png" alt="image-20210423124638505" style="zoom:30%;" /></center>
+
+<center><img src="https://live.staticflickr.com/65535/51133389864_51876ac60d_o.png" alt="image-20210423124755116" style="zoom:30%;" /></center>
+
+<p>Total variation smoothing preserves sharp transitions in signal!</p>
+
+<h2 id="robust-approximation">Robust Approximation</h2>
+<h3 id="problem-definition-3">Problem Definition</h3>
+
+<p>We want to minimize \(\|\mathbf{Ax-b}\|\) with uncertain \(\mathbf{A}\). We can take two approaches:</p>
+
+<ol>
+  <li>Stochastic : assume $\mathbf{A}$ is random, and minimize \(\mathbb{E}\|\mathbf{Ax-b}\|\).</li>
+  <li>Worst-case : choose set of $\mathcal{A}$ of possible values of $\mathbf{A}$, and minimize the worst-case scenario, \(\sup_{\mathbf{A}\in \mathcal{A}} \|\mathbf{Ax-b}\|\).</li>
+</ol>
+
+<h3 id="example-2">Example</h3>
+
+<p>Let $\mathbf{A} = \mathbf{A}_0 + u \mathbf{A}_1 $. Stochastic case minimizes</p>
+
+\[\mathbb{E} \|\mathbf{A}(u)\mathbf{x} - \mathbf{b}\|_2 ^2 , \ \ u \in \text{uni}[-1,1]\]
+
+<p>Worst-case minimizes</p>
+
+\[\sup_{u\in [-1,1]} \|\mathbf{A}(u) \mathbf{x}- \mathbf{b}\|_2^2\]
+
+<p>The residual in three cases \(r(u) = \|\mathbf{A}(u)\mathbf{x}- \mathbf{b}\|_2\)</p>
+
+<center><img src="https://live.staticflickr.com/65535/51133399499_4e6c203e3b_o.png" alt="image-20210423125450373" style="zoom:50%;" /></center>
+
+<h3 id="stochastic-robust-least-squares">Stochastic Robust Least Squares</h3>
+
+<p>Let $\mathbf{A = \bar{A}+U}$, where $\mathbf{U}$ is random with $\mathbb{E}\mathbf{U}=\mathbf{0}$, and $\mathbb{E}\mathbf{U}^T \mathbf{U = P}$. Consider the problem</p>
+
+\[\min \ \mathbb{E}\|\mathbf{(\bar{A}+U)x-b}\|_2 ^2\]
+
+<p>This can be converted to the problem of</p>
+
+\[\mathbb{E} \|\mathbf{(\bar{A} + U)x - b}\|_2 ^2 =\|\mathbf{\bar{A}x-b}\|_2 ^2 + \mathbf{x}^T \mathbf{Px}\]
+
+<p>Hence, this problem is equivalent to LS problem</p>
+
+\[\mathbb{E} \|\mathbf{(\bar{A} + U)x - b}\|_2 ^2 =\|\mathbf{\bar{A}x-b}\|_2 ^2 +\|\mathbf{P}^{1/2}\mathbf{x}\|_2^2\]
+
+<p>for \(\mathbf{P} = \delta \mathbf{I}\), we obtain a Tikhonov regularized problem.</p>
+
+<h2 id="references">References</h2>
+
+<ul>
+  <li>S. Boyd, L.Vandenberghe, Convex Opimization, Cambridge University Press, 2004. <a href="http://stanford.edu/~boyd/cvxbook/">http://stanford.edu/~boyd/cvxbook/</a></li>
+  <li>Optimization Theory and Applications, SNU EE 2021, Insoon Yang</li>
+</ul>
+
+</div><section class="article__sharing d-print-none"></section><br/>
   
-    A nonnegative weighted sum of convex functions
-\begin{equation}
-f:=\sum_{i=1}^n w_i f_i
-\end{equation}
-is convex ($w_i...</div><p><a href="/2021/04/18/opt-lecture-4-1.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Optimization">Optimization</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 18, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-18T00:00:00+09:00">
-    <meta itemprop="keywords" content="Optimization,Lecture-Note"></div>
-      </article></div>
-</div><br/>
+  <div id="disqus_thread"></div>
+  <script>
+      /**
+      *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+      *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+      /*
+      var disqus_config = function () {
+      this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+      };
+      */
+      (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://younghyopark-github-io.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+      })();
+  </script>
 
-<div class="layout--home"><div class="pagination"><p>33 post articles, 5 pages.</p>
-    <div class="pagination__menu">
-      <ul class="menu menu--nowrap"><li><a class="button button--secondary button--circle" href="/">
-            <i class="fas fa-angle-left"></i>
-          </a></li><li>
-              <a class="button button--secondary button--circle" href="/"><span>1</span></a>
-            </li><li>
-              <div class="button button--primary button--circle focus"><span>2</span></div>
-            </li><li>
-                <a class="button button--secondary button--circle" href="/page3"><span>3</span></a>
-              </li><li>
-                <a class="button button--secondary button--circle" href="/page4"><span>4</span></a>
-              </li><li>
-                <a class="button button--secondary button--circle" href="/page5"><span>5</span></a>
-              </li><li><a class="button button--secondary button--circle" href="/page3">
-            <i class="fas fa-angle-right"></i>
-          </a></li></ul>
-    </div>
-  </div></div>
-<script>/*(function () {
+  <div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-04-23T00:00:00+09:00"><!-- start custom article footer snippet -->
 
-})();*/
+<!-- end custom article footer snippet -->
+<div class="article__license"><div class="license">
+    <p>This work is licensed under a <a itemprop="license" rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">Attribution-NonCommercial 4.0 International</a> license.
+      <a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">
+        <img alt="Attribution-NonCommercial 4.0 International" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" />
+      </a>
+    </p>
+  </div></div><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</footer>
+<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2021/04/21/scrl-11.html">[RL Theory] Q-learning</a></div></div></div>
+
+</div>
+
+<script>(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    $(function() {
+      var $this ,$scroll;
+      var $articleContent = $('.js-article-content');
+      var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+      var scroll = hasSidebar ? '.js-page-main' : 'html, body';
+      $scroll = $(scroll);
+
+      $articleContent.find('.highlight').each(function() {
+        $this = $(this);
+        $this.attr('data-lang', $this.find('code').attr('data-lang'));
+      });
+      $articleContent.find('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]').each(function() {
+        $this = $(this);
+        $this.append($('<a class="anchor d-print-none" aria-hidden="true"></a>').html('<i class="fas fa-anchor"></i>'));
+      });
+      $articleContent.on('click', '.anchor', function() {
+        $scroll.scrollToAnchor('#' + $(this).parent().attr('id'), 400);
+      });
+    });
+  });
+})();
 </script>
-
-
-
 </div><section class="page__comments d-print-none"></section></article><!-- start custom main bottom snippet -->
 
 <!-- end custom main bottom snippet -->
@@ -1111,6 +1289,68 @@ window.Lazyload.js([SOURCES.jquery, PAHTS.search_js], function() {
 /*(function () {
 
 })();*/
+</script><script>
+  /* toc must before affix, since affix need to konw toc' height. */(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  var TOC_SELECTOR = window.TEXT_VARIABLES.site.toc.selectors;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window);
+    var $articleContent = $('.js-article-content');
+    var $tocRoot = $('.js-toc-root'), $col2 = $('.js-col-aside');
+    var toc;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+    var hasToc = $articleContent.find(TOC_SELECTOR).length > 0;
+
+    function disabled() {
+      return $col2.css('display') === 'none' || !hasToc;
+    }
+
+    tocDisabled = disabled();
+
+    toc = $tocRoot.toc({
+      selectors: TOC_SELECTOR,
+      container: $articleContent,
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      tocDisabled = disabled();
+      toc && toc.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+  });
+})();
+(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window), $pageFooter = $('.js-page-footer');
+    var $pageAside = $('.js-page-aside');
+    var affix;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+
+    affix = $pageAside.affix({
+      offsetBottom: $pageFooter.outerHeight(),
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      scroll: hasSidebar ? $('.js-page-main').children() : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      affix && affix.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+    window.pageAsideAffix = affix;
+  });
+})();
 </script><script>
   window.Lazyload.js(['https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js', 'https://cdn.bootcss.com/Chart.js/2.7.2/Chart.bundle.min.js'], function() {
     var $canvas = null, $this = null, _ctx = null, _text = '';
