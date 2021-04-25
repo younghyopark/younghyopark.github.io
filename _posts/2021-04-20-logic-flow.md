@@ -1,7 +1,7 @@
 ---
 title: "[Personal Research] Autoencoder Sparsity and Outlier Detection "
 tags: Personal-Research
-published: false
+published: true
 comment: true
 
 ---
@@ -29,7 +29,7 @@ $$
 \end{aligned}
 $$
 
-Note that, we can optimize the objective with respect to $\mathbf{w}$, $\mathbf{c}$, or both. In fact, one line of research treats the weight term $\mathbf{w}$ as a fixed constant (usually at its initialized state), while the other line of research tries to jointly optimize both $\mathbf{w}$ and $\mathbf{c}$. Former line of research was rather recently ignited by the Lottery Ticket paper (ICLR 2019), while the latter line of research was done for quite a while. 
+Note that, we can **optimize the objective with respect to $\mathbf{w}$, $\mathbf{c}$, or both**. In fact, one line of research treats the weight term $\mathbf{w}$ as a fixed constant (usually at its initialized state), while the other line of research tries to jointly optimize both $\mathbf{w}$ and $\mathbf{c}$. Former line of research was rather recently ignited by the **Lottery Ticket paper (ICLR 2019)**, while the latter line of research was done for quite a while. 
 
 ### Regularizing Neural Network
 
@@ -109,6 +109,8 @@ $$
    \text{s.t.} & \ \ \ \mathbf{w}\in \mathbb{R}^m
    \end{aligned}
 $$
+
+For clarity, we will denote the AUROC of autoencoder $f(\cdot ; \mathbf{w})$ as $$\text{AUC}(\mathbf{w})$$. 
 
 ## Ways to implement sparsity (ways to prune)
 
@@ -219,11 +221,7 @@ $$
    \end{aligned}
 $$
 
-We optimized above problem by Adam optimizer with learning rate 0.0001 and batch size 128.
-
-<center><img src="https://live.staticflickr.com/65535/51132526223_a0928c088f_o.png" alt="image-20210423085150199" style="zoom:50%;" /></center>
-
-
+We optimized above problem by Adam optimizer with learning rate 0.0001 and batch size 128. Results are shown in figure right below. 
 
 ### AUROC of $f(\cdot \ ;\mathbf{w}_{\text{reg}})$
 
@@ -236,11 +234,9 @@ $$
 \end{aligned}
 $$
 
-In this case, I will regularize only the encoder weights with regularizing constant $\gamma = 0.0001$. 
+In this case, I will regularize only the encoder weights with regularizing constant $\gamma = 0.0001$. Results are shown in figure right below. 
 
-<center><img src="https://live.staticflickr.com/65535/51133089564_15249f4420_o.png" alt="image-20210423085045940" style="zoom:50%;" /></center>
-
-
+![image-20210424145210119](https://live.staticflickr.com/65535/51134880498_a204047eb6_o.png)
 
 
 
@@ -263,12 +259,71 @@ or in an **iterative process:**
 
 For faster experiments, I used one-shot pruning method:
 
+- **Right after pruning** (MNIST leave-out 1)
+
+<center><img src="https://live.staticflickr.com/65535/51133957527_0cb5cb7018_o.gif" alt="weight_leaveout_1_inlier" style="zoom:67%;" /></center>
+
+<center><img src="https://live.staticflickr.com/65535/51135411284_16371a55fc_o.gif" alt="weight_leaveout_1_outlier" style="zoom:67%;" /></center>
+
+- **Finetuned** for 30 epochs after pruning (MNIST leave-out 1)
+
+<center><img src="https://live.staticflickr.com/65535/51134635561_b69dfc84b2_o.gif" alt="weight_leaveout_1_finetuned_inlier" style="zoom:67%;" /></center>
+
+<center><img src="https://live.staticflickr.com/65535/51134854803_20592dcf67_o.gif" alt="weight_leaveout_1_finetuned_outlier" style="zoom:67%;" /></center>
+
+We can see that **pruning over 90% of the weights with small magnitude**  destroys the reconstruction capability of an autoencoder (outputting a black image), but **finetuning the remaining weights can successfully resuscitate** the damaged/pruned autoencoder.
+{:.gray_no_border}
+
+However, in terms of **outlier detection** performance, a simple weight based pruning wasn't helpful at all. 
+
+<center><img src="https://live.staticflickr.com/65535/51134864783_4c2827bb89_o.png" alt="image-20210424144040649" style="zoom:50%;" /></center> 
+
+<center><img src="https://live.staticflickr.com/65535/51134646231_a79b231e1d_o.png" alt="image-20210424144059477" style="zoom:50%;" /></center>
+
+Compared to the baseline performance of **AUROC 0.2135** obtained by $$f(\cdot ; \mathbf{w}_{\text{base}})$$, or AUROC 0.1614 obtained by $$f(\cdot ; \mathbf{w}_{\text{reg}})$$, pruning the weights with small magnitudes couldn't dramatically increase the outlier detection performance. In other words, $$\text{AUC}(\mathbf{w}_{\text{base}}\odot \mathbf{c}_{\text{mag}})$$ was no better than $$\text{AUC}(\mathbf{w}_{\text{base}})$$ regarldess of sparsity level. This phenomenon was consistent over other MNIST hold-out experiments. **No performance surge was observed for weight-based pruning experiment.**
+{:.gray_no_border}
+
+Recall that, we were able to observe quite remarkable performane surge in fully-connected autoencoder experiment. Everything's the same, but we 1) **changed the autoencoder architecture** to a convolutional one, the one used in NAE experiments, and 2) **reduced the bottleneck dimension**. While the FC-autoencoder experiment used quite 64-dimension for the bottleneck, this experiment used 17-dimension bottleneck. 
+
+
+
+
+
 
 
 ### Hessian based Pruning
 
 
 
+### SNIP
+
+Recall that SNIP prunes the network at its initialized state, before the training. 
+
+- **Right after SNIP pruning** (MNIST hold-out 1)
+
+<center><img src="https://live.staticflickr.com/65535/51136643028_8ec487c6e3_o.gif" alt="snip_leaveout1_inlier" style="zoom:67%;" /></center>
+
+<center><img src="https://live.staticflickr.com/65535/51137538085_f4592f072c_o.gif" alt="snip_leaveout1_outlier" style="zoom:67%;" /></center>
+
+- **250 epoch trained after SNIP pruning** (MNIST hold-out 1)
+
+<center><img src="https://live.staticflickr.com/65535/51137207269_343609d1fa_o.gif" alt="snip_trained_leaveout1_inlier" style="zoom:67%;" /></center>
+
+<center><img src="https://live.staticflickr.com/65535/51137539320_4d1a5f3991_o.gif" alt="snip_trained_leaveout1_outlier" style="zoom:67%;" /></center>
+
+We can see that, if we **prune over 90% of the weights that has the least effect on the loss (reconstruction error)**, preceding training step was not successful: the inliers couldn't be reconstructed. (Checkout the figure below) The reconstructed samples before the weight training step shows a meaningless grayed image, which is obvious since the weights are at its initialized state. Changing the training setting (optimizer settings, batch size) did not help its training either.
+{:.gray_no_border}
+
+<center><img src="https://live.staticflickr.com/65535/51136655833_bb9fb8f25f_o.png" alt="image-20210425105651802" style="zoom:80%;" /></center>
+
+More importantly, SNIP based pruning was also not helpful in terms of outlier detection performance. 
+
+<center><img src="https://live.staticflickr.com/65535/51136469026_71e0fd8329_o.png" alt="image-20210425111515193" style="zoom:50%;" /></center>
+
+Compared to the baseline performance of **AUROC 0.2135** obtained by $$f(\cdot ; \mathbf{w}_{\text{base}})$$, or AUROC 0.1614 obtained by $$f(\cdot ; \mathbf{w}_{\text{reg}})$$, pruning the weights that has least effect on the loss couldn't dramatically increase the outlier detection performance: it in fact decreased the AUROC. This phenomenon was consistent over other MNIST hold-out experiments. **No performance surge was observed for SNIP-based pruning experiment.**
+{:.gray_no_border}
+
+### Supermask
 
 
 

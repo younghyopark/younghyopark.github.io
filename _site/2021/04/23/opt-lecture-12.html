@@ -1,10 +1,10 @@
 <!DOCTYPE html><html lang="en">
   <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[Optimization] Unconstrained Optimization Algorithms - Younghyo Park</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[Optimization] Interior Point Methods - Younghyo Park</title>
 
-<meta name="description" content="Unconstrained Minimization ProblemsProblem DefinitionIn this post, we will consider methods for solving the unconstrained optimization problem:\[\min \ \ f(x...">
-<link rel="canonical" href="http://localhost:4000/2021/04/23/opt-lecture-11.html"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
+<meta name="description" content="Constrained Minimization ProblemsProblem DefinitionIn this post, we will consider methods for inequality constrained minimization problem:\[\begin{aligned}\m...">
+<link rel="canonical" href="http://localhost:4000/2021/04/23/opt-lecture-12.html"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
 <!--<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
 
 <meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
@@ -336,11 +336,11 @@ fill="#000000" stroke="none">
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
 <!-- end custom main top snippet -->
-<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[Optimization] Unconstrained Optimization Algorithms</h1></header><span class="split-space">&nbsp;</span>
+<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[Optimization] Interior Point Methods</h1></header><span class="split-space">&nbsp;</span>
           <a class="edit-on-github"
             title="Edit on Github"
-            href="https://github.com/younghyopark/younghyopark.github.io/tree/main/_posts/2021-04-23-opt-lecture-11.md">
-            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[Optimization] Unconstrained Optimization Algorithms"><div class="article__info clearfix"><ul class="left-col menu"><li>
+            href="https://github.com/younghyopark/younghyopark.github.io/tree/main/_posts/2021-04-23-opt-lecture-12.md">
+            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[Optimization] Interior Point Methods"><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
                 href="/archive.html?tag=Optimization">Optimization</a>
             </li><li>
@@ -351,299 +351,183 @@ fill="#000000" stroke="none">
     <meta itemprop="keywords" content="Optimization,Lecture-Note"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
 
 <!-- end custom article top snippet -->
-<div class="article__content" itemprop="articleBody"><h2 id="unconstrained-minimization-problems">Unconstrained Minimization Problems</h2>
+<div class="article__content" itemprop="articleBody"><h2 id="constrained-minimization-problems">Constrained Minimization Problems</h2>
 
 <h3 id="problem-definition">Problem Definition</h3>
 
-<p>In this post, we will consider methods for solving the unconstrained optimization problem:</p>
-
-\[\min \ \ f(x)\]
-
-<p>where $f$ is convex and twice continuously differentiable (Hessian is well defined). We will also assume that the problem is solvable, and there exists an optimal point $x^\star$.</p>
-
-\[p^\star = \inf_xf(x)\]
-
-<p>Since $f$ is differentiable and convex, a <strong>necessary and sufficient condition</strong> for a point $x^\star$ to be optimal is:</p>
-
-\[\nabla f(x^\star)=0\]
-
-<p>Solving the unconstrained minimization problem is same as finding the solution of above equation. Usually the problem must be solved by an iterative algorithm. By this we mean an algorithm that finds the <strong>minimizing sequence</strong> $x^{(0)},x^{(1)},\cdots, x^{(k)} \in \text{dom }f$.</p>
-
-\[f(x^{(k)}) \rightarrow p^\star\]
-
-<p>The algorithm is terminated when $f(x^{(k)})-p^\star \leq \epsilon$ for predefined tolerance $\epsilon$.</p>
-
-<h3 id="strong-convexity-and-implications">Strong convexity and implications</h3>
-
-<p>We assume that the <strong>objective function</strong> is stronlgy convex on $S$, which means that there exists an $m&gt;0$ such that</p>
-
-\[\nabla^2 f(x) \succeq mI\]
-
-<p>for all $x\in S$. This means that $\nabla^2 f(x) - mI$  is positive semi-definite for $\exists m$, thus $f$ has curvature greater than $m$. Strong convexity has several interesting consequences:</p>
-
-<p><code class="language-plaintext info highlighter-rouge">consequence1</code> For $x, y\in S$ we have</p>
-
-\[f(y) = f(x) + \nabla f(x)^T (y-x) + \frac{1}{2}(y-x)^T \nabla^2 f(z) (y-x)\]
-
-<p>for some $z$ on the line segment $[x,y]$. By the strong convexity assumption, we have</p>
-
-\[f(y) \geq f(x) + \nabla f(x)^T (y-x) + \frac{m}{2} \|y-x\|_2^2\]
-
-<p>for all $x,y \in S$.</p>
-
-<center><img src="https://live.staticflickr.com/65535/51134323485_f7dba5e635_o.png" alt="image-20210423215014656" style="zoom:50%;" /></center>
-
-<p>When $m=0$, we recover the basic inequality characterizing the convexity. We can see that strong convexity ($m&gt;0$) allows us to obtain a better lower bound on $f(y)$.</p>
-
-<p><code class="language-plaintext info highlighter-rouge">consequence2</code> We will then prove that above <strong>strong</strong> inequality can be used to bound $f(x) -p^\star$, which is the <strong>suboptimality</strong> of the point $x$, in terms of $|\nabla f(x) |_2$. Since the righthand side of equation (7) is a convex quadratic function of $y$, we can easily find $\tilde{y}$ that minimizes that function of $y$. 
-\(\tilde{y} = x - (1/m) \nabla f(x)\)</p>
-
-<p>Thus, we can say that</p>
+<p>In this post, we will consider methods for inequality constrained minimization problem:</p>
 
 \[\begin{aligned}
-f(y) &amp; \geq f(x) + \nabla f(x)^T (y-x) + \frac{m}{2} \|y-x\|_2^2\\
-&amp; \geq f(x) + \nabla f(x)^T (\tilde{y}-x) + \frac{m}{2} \|\tilde{y} - x\|_2 ^2\\
-&amp; = f(x) + \nabla f(x)^T \bigg ( -\frac{1}{m}\nabla f(x)\bigg ) + \frac{m}{2} \bigg ( \frac{1}{m} \nabla f(x) \bigg )^2\\
-&amp; = f(x) - \frac{1}{2m}\|\nabla f(x)\|_2 ^2
+\min &amp;\ \ f_0(x)\\
+\text{s.t.}&amp; \ \ f_i (x) \leq 0,  \  i=1,\cdots, m\\
+&amp; \ \ Ax=b
 \end{aligned}\]
 
-<p>Since above inequality holds for any $y\in S$, we have</p>
+<p>where $f_0, \cdots, f_m : \mathbb{R}^n \rightarrow \mathbb{R}$ are convex and twice continuously differentiable with $A \in \mathbb{R}^{p\times n}$ with $\text{rank }A = p &lt;n$. We assume that the problem is solvable with optimal $x^\star$ and optimal value $p^\star$. We assume that the problem is strictly feasible, which means that Slater’s constraint holds, thus strong duality holds.</p>
 
-\[p^\star \geq f(x) - \frac{1}{2m} \|\nabla f(x)\|_2^2\]
-
-<p>This inequality shows that, if the <strong>gradient is small at a point</strong>, then the point is <strong>nearly optimal</strong>. Thus, this inequality can be interpreted as a condition for <strong>suboptimality</strong> which generalizes the optimality condition:</p>
-
-\[\|\nabla f(x) \|_2 \leq (2m\epsilon)^{1/2} \implies f(x)-p^\star \leq \epsilon\]
-
-<p><code class="language-plaintext info highlighter-rouge">consequence3</code> We can also derive a bound on $|x- x^\star|_2$, the distance between $x$ and any optimal point $x^\star$, in terms of $|\nabla f(x) |_2$:
-\(\|x - x^\star \|_2 \leq \frac{2}{m}\|\nabla f(x) \|_2\)</p>
-
-<p>to see this, we apply $y= x^\star$ to obtain</p>
+<p>In other words, there exist dual optimal $\lambda^\star \in \mathbb{R}^m$ and $\nu^\star \in \mathbb{R}^p $ which together with $x^\star$ satisfy the KKT conditions.</p>
 
 \[\begin{aligned}
-f(x^\star)= p^\star &amp; \geq f(x) + \nabla f(x)^T (x^\star-x) + \frac{m}{2} \|x^\star-x\|_2^2\\
-&amp; \geq f(x) - \|\nabla f(x)\|_2 \|x^\star - x\|_2 + \frac{m}{2}\|x^\star - x\|_2 ^2 \ \ \ (\because \text{caushy-schwarz inequality})
+Ax^\star &amp; = b\\
+f_i (x^\star) &amp; \leq 0 \ \ (i=1,\cdots, m)\\
+\lambda^\star &amp; \geq 0\\
+\nabla f_0 (x^\star) +\sum_{i=1}^m \lambda^\star_i \nabla f_i (x^\star) + A^T \nu^\star &amp; =0\\
+\lambda_i^\star f_i (x^\star)&amp; =0 \ \ (i=1,\cdots, m)
 \end{aligned}\]
 
-<p>since $p^\star \leq f(x)$, we can conclude that</p>
+<h3 id="logarithmic-barrier">Logarithmic Barrier</h3>
+<p>Our goal is to approximately formulate the inequality constrained problem as an equality constraint problem to which <strong>Newton’s method can be applied</strong>. To do so, we can rewrite the problem, making the inequality constraints implicit in the objective:</p>
 
-\[- \|\nabla f(x) \|_2 \|x^\star - x\|_2 + \frac{m}{2} \|x^\star - x\|_2 ^2 \leq 0\]
+\[\begin{aligned}
+\min_x &amp; \ \ f_0 (x) + \sum_{i=1}^m I_- (f_i (x))\\
+\text{s.t.}&amp; \ \ Ax =b
+\end{aligned}\]
 
-<p>which leads to the inequality in (11).</p>
+<p>where $I_-: \mathbb{R} \rightarrow \mathbb{R}$ is the indicator function for the nonpositive reals,</p>
 
-<h2 id="descent-methods">Descent Methods</h2>
+\[I_- (u) = \begin{cases}
+0 &amp; \ u\leq 0\\
+\infty &amp; \ u&gt;0
+\end{cases}\]
 
-<h3 id="introduction">Introduction</h3>
+<p>Now, the problem has no inequality constraints, but its objective function is not differentiable, thus Newton’s method cannot be applied. Thus, we might come up with an idea to use an approximate function of $I_-$, replaced by the function</p>
 
-<p>Algorithms in this section produce a <strong>minimizing sequence</strong> $x^{(k)} ,\ k= 1, \cdots, $ where</p>
+\[\hat{I}_-(u) = -\frac{1}{t} \log (-u)\]
 
-\[x^{(k+1)}:= x^{(k)}+ t^{(k)}\Delta x^{(k)} \ \ \ \text{with } f(x^{(k+1)}) &lt; f(x^{(k)})\]
+<p>which is convex and increasing in $u$, and differentiable. Substituting $\hat{I}<em>-$ for $I</em>-$ in above problem, we can get</p>
 
-<p>In above equation, $\Delta x$ is the search direction, $t$ is the step size.</p>
+\[\begin{aligned}
+\min_x &amp; \ \ f_0 (x) + \sum_{i=1}^m -(1/t) \log(-f_i (x))\\
+\text{s.t.}&amp; \ \ Ax =b
+\end{aligned}\]
 
-<p>From convexity, \(f(x+ t\Delta x) &lt; f(x)\) implies</p>
+<center><img src="https://live.staticflickr.com/65535/51136714066_9ddd8f623a_o.png" alt="image-20210425141158137" style="zoom:50%;" /></center>
 
-\[\nabla f(x)^T \Delta x &lt;0\]
+<p>If we define</p>
 
-<p>since \(f(x) &gt; f(x+ t \Delta x) \geq f(x) + \nabla f(x)^T t \Delta x\) and $t&gt;0$. Thus, $\Delta x$ is called a <strong>descent direction</strong>. It is typical to use $\Delta x = -\nabla f(x)$.</p>
+\[\phi(x) = - \sum_{i=1}^m \log (-f_i (x)), \ \ \text{dom } \phi = \{ x \ \vert \ f_i (x) &lt;0, \ i=1, \cdots, m\}\]
 
-<center><img src="https://live.staticflickr.com/65535/51133491093_ff7397d11c_o.png" alt="image-20210423223228424" style="zoom:50%;" /></center>
+<p>we can see that $\phi$ is convex and twice continuously differentiable with derivatives</p>
 
-<h3 id="line-search">Line Search</h3>
+\[\nabla \phi(x) = \sum_{i=1}^m -\frac{1}{f_i (x)}\nabla f_i (x)\\
+\nabla ^2 \phi(x) = \sum_{i=1}^m \bigg [ \frac{1}{f_i(x)^2 }\nabla f_i (x) \nabla f_i (x)^T -\frac{1}{f_i(x)}\nabla ^2 f_i (x) \bigg ]\]
 
-<p>In line search step, we determine the step size $t$ , which determines where along the line \(\{x + t\Delta x \ \vert \ t \in \mathbb{R}_+\}\) the next ierate will be. There are typically two types of line search:</p>
+<p>Using $\phi$, we rewrite the problem</p>
 
-<ol>
-  <li>
-    <p><strong>exact line search</strong> : $t$ is chosen to minimize $f$ along the ray \(\{ x+ t\Delta x \ \vert \ t \geq 0 \}\):</p>
+\[\begin{aligned}
+\min_x &amp; \ \ tf_0 (x) + \phi(x)\\
+\text{s.t.}&amp; \ \ Ax =b
+\end{aligned}\]
 
-\[t = \arg \min _{s \geq 0} f(x + s \Delta x)\]
+<h3 id="central-path">Central Path</h3>
 
-    <p>However, directly solving above minimization problem is computationally challenging.</p>
-  </li>
-  <li>
-    <p><strong>backtracking line search</strong> : there are many inexact line search method chooses the step length that can <strong>approximately minimize</strong> $f$ along the ray \(\{ x+ t\Delta x \ \vert \ t \geq 0 \}\). backtracking line search is one of them. It depends on two constants $\alpha, \beta$ with $\alpha \in (0,0.5)$ and $\beta \in (0,1)$.</p>
+<p>For $t&gt;0$, we define $x^\star(t)$ as the solution of above problem. The <strong>central path</strong> associated with this problem is defined as the set of point $x^\star(t), t&gt;0$ which we call the <strong>central points</strong>.</p>
 
-    <center><img src="https://live.staticflickr.com/65535/51133504933_9ac42a28d7_o.png" alt="image-20210423224109387" style="zoom:50%;" /></center>
+\[\{x^\star(t) \ \vert \ t&gt;0\}\]
 
-    <p>Recall that a proper descent direction $\Delta x$ will satisfy $\nabla f(x)^T \Delta x \leq 0$. Thus, backtracking line search is <strong>reducing</strong> the step size until</p>
+<p>Points on the central path are characterized by the following necessary and sufficient conditions:</p>
 
-\[f(x + t \Delta x) &lt; f(x) + \alpha t \nabla f(x)^T \Delta x\]
+\[Ax^\star(t) =b\\
+f_i (x^\star(t)) &lt;0, \ \ i=1,\cdots, m\\
+t\nabla f_0 (x^\star(t)) + \nabla \phi(x^\star(t))+ A^T\hat{v} =0\]
 
-    <p>is satisfied.</p>
+<p>Note that first two conditions imply that slater’s condition, thus strong duality holds. Also, the third condition implies that there exists $\hat{\nu}$ such that</p>
 
-    <center><img src="https://live.staticflickr.com/65535/51132623972_8d88ff99a2_o.png" alt="image-20210423224522373" style="zoom:50%;" /></center>
-  </li>
-</ol>
+\[0= t\nabla f_0 (x^\star(t) ) + \sum_{i=1}^m -\frac{1}{f_i (x^\star(t))}\nabla f_i (x^\star(t))+ A^T \hat{\nu}\]
 
-<h2 id="gradient-descent-method">Gradient descent method</h2>
+<p>For example, let’s consider a simple LP problem:</p>
 
-<p>A natural choice for the search direction $\Delta x$ is the negative direction $\Delta x = - \nabla f(x)$. The resulting algorithm is <strong>gradient descent method</strong>.</p>
+\[\begin{aligned}
+\min &amp; \ \ c^T x\\
+\text{s.t.}&amp; \ \ Ax \leq b
+\end{aligned}\]
 
-<center><img src="https://live.staticflickr.com/65535/51132628072_75332793c6_o.png" alt="image-20210423224757150" style="zoom:50%;" /></center>
+<p>in this case, the logarithmic barrier function is given by</p>
+
+\[\phi(x) = - \sum_{i=1}^m \log (b_i - a_i ^T x)\]
+
+<p>and this LP problem can be reformulated as a problem of</p>
+
+\[\min_x \ \ \  t c^T x + \phi(x)\]
+
+<p>which implies the centrality condition:</p>
+
+\[tc + \sum_{i=1}^m \frac{1}{b_i - a_i ^T x^\star (t)}a_i = tc + \nabla \phi(x^\star(t)) =0\]
+
+<p>This implies that, at the point of $x^\star(t)$, the level curve of $\phi(x)$ is parallel to $-c$. In other words, $c^T x = c^T x^\star(t)$ is tanget to the level curve of $\phi$ through $x^\star(t)$.</p>
+
+<center><img src="https://live.staticflickr.com/65535/51137515189_ed75ac140e_o.png" alt="image-20210425143617920" style="zoom:50%;" /></center>
+
+<h2 id="central-path-interpretations">Central Path Interpretations</h2>
+
+<h3 id="dual-points-on-central-path">Dual points on central path</h3>
+
+<p>From equation (7), rewritten below,</p>
+
+\[0= t\nabla f_0 (x^\star(t) ) + \sum_{i=1}^m -\frac{1}{f_i (x^\star(t))}\nabla f_i (x^\star(t))+ A^T \hat{\nu}\]
+
+<p>we can derive an important property of the central path: <strong>every central path yiels a dual feasible point, and hence a lower bound on the optimal value $ p^\star$</strong>. More specifically, if we define</p>
+
+\[\lambda_i^\star (t) = -\frac{1}{tf_i (x^\star(t))}, \ \ i=1, \cdots, m, \ \ \ \nu^\star(t) = \frac{\hat{\nu}}{t}\]
+
+<p>then, the equation above can be rewritten as</p>
+
+\[\nabla f_0 (x^\star(t)) + \sum_{i=1}^m \lambda_i ^\star(t) \nabla f_i (x^\star(t))+ A^T\nu^\star(t) =0\]
+
+<p>which is a 1st-order optimality condition for convex function. Thus, $x^\star(t)$ minimizes</p>
+
+\[L(x, \lambda^\star(t), \nu^\star(t) ) = f_0 (x) + \sum_{i=1}^m \lambda_i(t) ^\star f_i (x) + \nu^\star(t) ^T (Ax-b)\]
+
+<p>This implies that $(\lambda^\star(t), \nu^\star(t))$ is a dual feasible point. Note also that</p>
+
+\[p^\star \geq g(\lambda^\star(t), \nu^\star(t)) = L(x^\star(t), \lambda^\star(t), \nu^\star(t)) = f_0 (x^\star(t))-\frac{m}{t}\]
+
+<p>which provides a lower bound on the optimal value. This also confirms the intuitive idea that</p>
+
+\[f_0 (x^\star(t)) \rightarrow p^\star \ \ \text{as } t\rightarrow \infty\]
+
+<p>since</p>
+
+\[f_0 (x^\star(t)) - \frac{m}{t} \leq p^\star \leq f_0 (x^\star(t))\]
+
+<h3 id="interpretation-via-kkt-conditions">Interpretation via KKT conditions</h3>
+
+<p>We can also interpret the central path conditions as a continuous deformation of the KKT optimality conditions. A point $x$ is equal to $x^\star(t)$ iff there exists $\lambda, \nu$ such that</p>
+
+\[\begin{aligned}
+Ax&amp;=b\\
+f_i (x) &amp; \leq 0 , \ \ \ i=1,\cdots, m\\
+\lambda &amp; \geq 0\\
+\nabla f_0 (x) + \sum_{i=1}^m \lambda_i \nabla f_i (x) + A^T \nu&amp; =0\\
+-\lambda_i f_i (x) &amp;= 1/t
+\end{aligned}\]
+
+<p>Note that the complementary slackness condition is <strong>relaxed</strong>.</p>
+
+<h2 id="barrier-method">Barrier Method</h2>
+
+<p>We have seen that</p>
 
 <ul>
-  <li>
-    <p>Stopping criterion : usually of the form</p>
-
-\[\|\nabla f(x) \|_2 \leq \epsilon\]
-  </li>
-  <li>
-    <p>convergence result : for strongly convex $f$,</p>
-
-\[f(x^{(k)}) - p^\star \leq c^k [ f(x^{(0)})- p^\star],\]
-
-    <p>where $c \in (0,1)$ depends on $m$, $x^{(0)}$, line search type.</p>
-  </li>
-  <li>
-    <p>It’s main disadvantage is that its convergence rate depends on so critically on the condition number of the Hessian or sublevel sets.</p>
-  </li>
+  <li>the point $x^\star(t)$ is $m/t$-suboptimal</li>
+  <li>a certificate of this accuracy is provided by the dual feasible pair $\lambda^\star(t), \nu^\star(t)$.</li>
 </ul>
 
-<h2 id="steepest-descent-method">Steepest descent method</h2>
-
-<p>The first-order Taylor approximation of $f(x+v)$ around $x$ is</p>
-
-\[f(x+v) \approx \hat{f}(x+v) = f(x)+ \nabla f(x) ^T v\]
-
-<p>where the second term on the RHS is the <strong>directional derivative</strong> of $f$ at $x$ in the direction $v$. We now raise the question of <strong>how to choose $v$</strong> <strong>to make the directional derivative as negative as possible!</strong> To limit the effect of the length of $v$, we define a <strong>normalized steepest descent direction</strong> as</p>
-
-\[\Delta x_{\text{nsd}} = \arg \min \{ \nabla f(x)^T v \ \vert \ \|v \|=1 \}\]
-
-<p>Thus, $\Delta x_{\text{nsd}}$ is a step of unit norm that gives the largest decrease in the linear approximate of $f$.</p>
-
-<center><img src="https://live.staticflickr.com/65535/51134978023_80c15c1013_o.png" alt="image-20210424161657849" style="zoom:50%;" /></center>
-
-<p>For example, if we define a weighted quadratic norm of</p>
-
-\[\|x \|_P : = (x^T P x) ^{1/2}, \ \ P \in \mathbb{S}^n _{++}\]
-
-<p>we can determine the steepest descent direction by solving</p>
+<p>This suggests a very straightforward method for solving the original problem with a gauranteed specified accuracy $\epsilon$. Take $t=m/\epsilon$</p>
 
 \[\begin{aligned}
-\arg \min _v &amp; \ \ \nabla f(x)^T v \\
-\text{s.t.} &amp; \ \ v^T P v = 1
+\min_x &amp; \ \ \frac{m}{\epsilon}f_0 (x) + \phi(x)\\
+\text{s.t.}&amp; \ \ Ax =b
 \end{aligned}\]
 
-<p>This can is in fact finding the point $v$ on the ellipsoid that extends as far as possible along the direction $-\nabla f(x)$.</p>
+<p>and solve it via Newton’s method.</p>
 
-<center><img src="https://live.staticflickr.com/65535/51134091332_c3658c2db6_o.png" alt="image-20210424162150251" style="zoom:50%;" /></center>
-
-<h2 id="newtons-method">Newton’s Method</h2>
-
-<h3 id="the-newton-step">The Newton Step</h3>
-
-<p>For $x \in \text{dom }f$, the vector</p>
-
-\[\Delta x_{\text{nt}} = -\nabla^2 f(x) ^{-1} \nabla f(x)\]
-
-<p>is called the <strong>newton step</strong>. Positive definiteness of $\nabla^2 f(x)$ implies that</p>
-
-\[\nabla f(x)^T \Delta x_{\text{nt}} = - \nabla f(x)^T \nabla^2 f(x)^{-1} \nabla f(x) &lt;0\]
-
-<p>unless $\nabla f(x) =0$, so the Newton step is a descent direction. The Newton step can be itnerpreted in several ways.</p>
-
-<h3 id="interpretations">Interpretations</h3>
-
-<ol>
-  <li>
-    <p>$x+ \Delta x_{\text{nt}}$ minimizes second order approximation</p>
-
-\[\hat{f}(x+v) = f(x) + \nabla f(x)^T v + \frac{1}{2}v^T \nabla^2 f(x) v\]
-
-    <p>which is a convex quadratic function of $v$. Thus, we can easily find that $v = \Delta x_{\text{nt}}$ minimizes above second-order taylor approximation.</p>
-
-    <center><img src="https://live.staticflickr.com/65535/51134770971_2c0bae2613_o.png" alt="image-20210424162818816" style="zoom:50%;" /></center>
-
-    <p>If $f$ is quadratic, then $x+\Delta x_{\text{nt}}$ is the <strong>exact minimizer</strong> of $f$.</p>
-  </li>
-  <li>
-    <p>$\Delta x _{\text{nt}}$ is the steepest descent direction in Hessian norm</p>
-
-    <p>If we define the quadratic norm defined by the Hessian $\nabla^2 f(x)$,</p>
-
-\[\|u \|_{\nabla^2 f(x)} = (u^T \nabla^2 f(x) u)^{1/2}\]
-
-    <p>the Newton step is the steepest descent direction at $x$.</p>
-  </li>
-  <li>
-    <p>$x+ \Delta x_{\text{nt}}$ solves the linearized optimality condition</p>
-
-    <p>If we linearize the optimality condition $\nabla f(x^\star)=0$ near $x$, we have</p>
-
-\[\nabla f(x+v) \approx \nabla f(x) + \nabla^ 2f(x)v=0\]
-
-    <p>which has the solution of $v= \Delta x _{\text{nt}}$. When $f: \mathbb{R} \rightarrow \mathbb{R}$, this interpretation is particularly very simple. The solution of $x^\star$ of the minimization problem is characterized by $f’(x^\star)=0$, the zero-crossing of the derivative $f’$.</p>
-
-    <center><img src="https://live.staticflickr.com/65535/51135566569_9c2c922bd8_o.png" alt="image-20210424164213428" style="zoom:50%;" /></center>
-  </li>
-</ol>
-
-<h3 id="newton-decrement">Newton decrement</h3>
-
-<p>The quantity</p>
-
-\[\lambda (x) := \Big [ \nabla f(x) ^T \nabla ^2 f(x)^{-1} \nabla f(x) \Big ] ^{1/2}\]
-
-<p>is called the <strong>Newton decrement</strong> at $x$. This is a useful quantity in Newton’s method. We can relate the Newton decrement to the quantity $f(x) - \inf_y \hat{f}(y)$ where $\hat{f}$ is the second-order approximation of $f$ at $x$. This can be used as an estimate of $f(x) - p^\star$.</p>
-
-\[\begin{aligned}
-f(x) - p^\star \approx f(x) - \inf_y \hat{f}(y) &amp; = f(x) - \hat{f}(x+ \Delta x_{\text{nt}})\\
-&amp; = - \nabla f(x) ^T \Delta x_{\text{nt}}  - \frac{1}{2}\Delta x_{\text{nt}}^T \nabla^2 f(x) \Delta x_{\text{nt}}\\
-&amp; = \frac{1}{2}\nabla f(x)^T \nabla^2 f(x)^{-1}\nabla f(x) = \frac{1}{2} \lambda(x)^2 
-\end{aligned}\]
-
-<p>Also, this newton decrement $\lambda(x)$ is equal to the norm of the Newton step in the quadratic Hessian norm.</p>
-
-\[\lambda(x) = \Big [ \Delta x_{\text{nt}}^T \nabla^2 f(x) \Delta x_{\text{nt}}   \Big ]^{1/2}\]
-
-<p>Finally, recall that backtracking line search procedure requires a step direction where $\nabla f(x)^T \Delta x &lt;0$. Newton decrement again appears when calculating this</p>
-
-\[\nabla f(x)^T \Delta_{\text{nt}} = -\lambda(x)^2\]
-
-<h3 id="newtons-method-1">Newton’s Method</h3>
-
-<center><img src="https://live.staticflickr.com/65535/51135592139_97fb7618b8_o.png" alt="image-20210424170358315" style="zoom:50%;" /></center>
-
-<h2 id="newtons-method-convergence-analysis">Newton’s Method: Convergence Analysis</h2>
-
-<h3 id="assumption">Assumption</h3>
-
-<p>We assume that $f$ is twice continuously differentiable, and strongly convex with constant $m$ for all $x$.</p>
-
-\[\nabla^2 f(x) \succeq mI\]
-
-<p>In addition, we assume that the Hessian of $f$ is Lipschitz continuous on $S$ with constant $L$.</p>
-
-\[\|\nabla^2 f(x) - \nabla^2 f(y) \|_2 \leq L \|x- y \|_2\]
-
-<p>for all $x, y \in S$. The coefficient $L$ measrues how well $f$ can be approximated by a quadratic model. Intuition suggests that Newton’s method will work very well for a function whose quadratic model varies slowly (small $L$).</p>
-
-<h3 id="outline-of-the-proof">Outline of the proof</h3>
-
-<p>We will show that there are number $\eta$ and $\gamma$ with $0&lt;\eta \leq m^2 /L$ and $\gamma &gt;0$ such that the following hold.</p>
+<center><img src="https://live.staticflickr.com/65535/51136124487_9341e983b2_o.png" alt="image-20210425152107502" style="zoom:50%;" /></center>
 
 <ul>
-  <li>
-    <p><strong>(Damped newton phase)</strong> If \(\| \nabla f(x^{(k)})\|_2 \geq \eta\), then
- \(f(x^{(k+1)})-f(x^{(k)}) \leq -\gamma\)</p>
-
-    <ul>
-      <li>most iterations require backtracking steps</li>
-      <li>function value decreases by at least $\gamma$</li>
-      <li>if $p^\star &gt;-\infty$, this phase ends after at most \(f(x^{(0)}- p^\star) / \gamma\) iterations.</li>
-    </ul>
-  </li>
-  <li>
-    <p><strong>(Quadratic convergent phase)</strong> If \(\|\nabla f(x^{(k)})\|_2 &lt; \eta\), then the backtracking line search selects \(t^{(k)}=1\) and</p>
-
-\[\frac{L}{2m^2} \|\nabla f(x^{(k+1)})\|_2 \leq \bigg ( \frac{L}{2m^2} \| \nabla f(x^{(k)})\|_2 \bigg )^2\]
-
-    <ul>
-      <li>all iterations use step size $t=1$.</li>
-      <li>$|\nabla f(x)|_2$ converges to zero quadratically.</li>
-    </ul>
-  </li>
+  <li>obtained solution satisfies $f_0 (x) - p^\star \leq \epsilon$.</li>
+  <li>centering step is usually done via Newton’s method</li>
+  <li>large $\mu$ means fewer outer iterations, more inner Newton iterations.</li>
 </ul>
 
 <h2 id="references">References</h2>
@@ -685,7 +569,7 @@ f(x) - p^\star \approx f(x) - \inf_y \hat{f}(y) &amp; = f(x) - \hat{f}(x+ \Delta
     </p>
   </div></div><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </footer>
-<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2021/04/23/opt-lecture-10.html">[Optimization] Statistical Learning</a></div><div class="next"><span>NEXT</span><a href="/2021/04/23/opt-lecture-12.html">[Optimization] Interior Point Methods</a></div></div></div>
+<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2021/04/23/opt-lecture-11.html">[Optimization] Unconstrained Optimization Algorithms</a></div><div class="next"><span>NEXT</span><a href="/2021/04/23/opt-lecture-8.html">[Optimization] Approximation and Fitting</a></div></div></div>
 
 </div>
 

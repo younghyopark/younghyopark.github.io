@@ -1,10 +1,10 @@
 <!DOCTYPE html><html lang="en">
   <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[Optimization] Unconstrained Optimization Algorithms - Younghyo Park</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[Optimization] Subgradient Methods - Younghyo Park</title>
 
-<meta name="description" content="Unconstrained Minimization ProblemsProblem DefinitionIn this post, we will consider methods for solving the unconstrained optimization problem:\[\min \ \ f(x...">
-<link rel="canonical" href="http://localhost:4000/2021/04/23/opt-lecture-11.html"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
+<meta name="description" content="MotivationHow should we handle nondifferentiable objective functions?  objective functions can be convex but not differentiable  can’t use the standard optim...">
+<link rel="canonical" href="http://localhost:4000/2021/04/24/opt-lecture-13.html"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
 <!--<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
 
 <meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
@@ -336,313 +336,271 @@ fill="#000000" stroke="none">
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
 <!-- end custom main top snippet -->
-<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[Optimization] Unconstrained Optimization Algorithms</h1></header><span class="split-space">&nbsp;</span>
+<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[Optimization] Subgradient Methods</h1></header><span class="split-space">&nbsp;</span>
           <a class="edit-on-github"
             title="Edit on Github"
-            href="https://github.com/younghyopark/younghyopark.github.io/tree/main/_posts/2021-04-23-opt-lecture-11.md">
-            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[Optimization] Unconstrained Optimization Algorithms"><div class="article__info clearfix"><ul class="left-col menu"><li>
+            href="https://github.com/younghyopark/younghyopark.github.io/tree/main/_posts/2021-04-24-opt-lecture-13.md">
+            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[Optimization] Subgradient Methods"><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
                 href="/archive.html?tag=Optimization">Optimization</a>
             </li><li>
               <a class="button button--secondary button--pill button--sm"
                 href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 23, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-23T00:00:00+09:00">
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 24, 2021</span>
+            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-24T00:00:00+09:00">
     <meta itemprop="keywords" content="Optimization,Lecture-Note"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
 
 <!-- end custom article top snippet -->
-<div class="article__content" itemprop="articleBody"><h2 id="unconstrained-minimization-problems">Unconstrained Minimization Problems</h2>
+<div class="article__content" itemprop="articleBody"><h2 id="motivation">Motivation</h2>
 
-<h3 id="problem-definition">Problem Definition</h3>
+<p class="info">How should we handle <strong>nondifferentiable objective functions</strong>?</p>
 
-<p>In this post, we will consider methods for solving the unconstrained optimization problem:</p>
+<ul>
+  <li>objective functions can be convex but not differentiable</li>
+  <li>can’t use the standard optimality conditions</li>
+  <li>can’t use gradient or Hessian information in optimization algorithms</li>
+</ul>
 
-\[\min \ \ f(x)\]
+<h2 id="subgradients">Subgradients</h2>
 
-<p>where $f$ is convex and twice continuously differentiable (Hessian is well defined). We will also assume that the problem is solvable, and there exists an optimal point $x^\star$.</p>
+<h3 id="definition">Definition</h3>
 
-\[p^\star = \inf_xf(x)\]
+<p>The subgradient set or subdifferential of a function $f$ at a point $x$ is defined as</p>
 
-<p>Since $f$ is differentiable and convex, a <strong>necessary and sufficient condition</strong> for a point $x^\star$ to be optimal is:</p>
+\[\partial f(x) := \{ g \ \vert \ f(y) \geq f(x) + \langle g, y-x \rangle, \ \ \forall y\}\]
 
-\[\nabla f(x^\star)=0\]
+<p>Intuitively, since a <strong>function is convex if and only if its epigraph $\text{epi } f$ is convex</strong>, the subgradient set $\partial f$ should be non-empty and consist of supporting hyperplanes of $\text{epi }f$.</p>
 
-<p>Solving the unconstrained minimization problem is same as finding the solution of above equation. Usually the problem must be solved by an iterative algorithm. By this we mean an algorithm that finds the <strong>minimizing sequence</strong> $x^{(0)},x^{(1)},\cdots, x^{(k)} \in \text{dom }f$.</p>
+<center><img src="https://live.staticflickr.com/65535/51136147022_f2f3ecbe53_o.png" alt="image-20210425153801880" style="zoom:50%;" /></center>
 
-\[f(x^{(k)}) \rightarrow p^\star\]
+<p>If $f$ is conevx and diffeerentiable at $x$, then $\partial f(x) = { \nabla f(x)}$.</p>
 
-<p>The algorithm is terminated when $f(x^{(k)})-p^\star \leq \epsilon$ for predefined tolerance $\epsilon$.</p>
+<h3 id="optimality-condition">Optimality Condition</h3>
 
-<h3 id="strong-convexity-and-implications">Strong convexity and implications</h3>
+<p><code class="language-plaintext info highlighter-rouge">Theorem</code>  Let $f: \mathbb{R}^n \rightarrow \mathbb{R}$ be convex. The point $x \in \mathbb{R}^n$ minimizes $f$ over a convex set $C$ if and only if there exists a subgradient $g\in \partial f(x)$ such that simultaneously for all $y\in C$,</p>
 
-<p>We assume that the <strong>objective function</strong> is stronlgy convex on $S$, which means that there exists an $m&gt;0$ such that</p>
+\[\langle g, y-x \rangle \geq 0\]
 
-\[\nabla^2 f(x) \succeq mI\]
+<p><code class="language-plaintext success highlighter-rouge">Intuition</code> There is a vector $g$ in the subgradient set $\partial f(x)$ such that $-g$ is a supporting hyperplane to the feasible set $C$ at the point $x$. The direction of decrease of the function $f$ lie outside the set $C$.</p>
 
-<p>for all $x\in S$. This means that $\nabla^2 f(x) - mI$  is positive semi-definite for $\exists m$, thus $f$ has curvature greater than $m$. Strong convexity has several interesting consequences:</p>
+<center><img src="https://live.staticflickr.com/65535/51137953510_423d8fb348_o.png" alt="image-20210425155612693" style="zoom:50%;" /></center>
 
-<p><code class="language-plaintext info highlighter-rouge">consequence1</code> For $x, y\in S$ we have</p>
+<p>If $C =\mathbb{R}^n$, $g=0$ is the only case where above inequality holds.</p>
 
-\[f(y) = f(x) + \nabla f(x)^T (y-x) + \frac{1}{2}(y-x)^T \nabla^2 f(z) (y-x)\]
-
-<p>for some $z$ on the line segment $[x,y]$. By the strong convexity assumption, we have</p>
-
-\[f(y) \geq f(x) + \nabla f(x)^T (y-x) + \frac{m}{2} \|y-x\|_2^2\]
-
-<p>for all $x,y \in S$.</p>
-
-<center><img src="https://live.staticflickr.com/65535/51134323485_f7dba5e635_o.png" alt="image-20210423215014656" style="zoom:50%;" /></center>
-
-<p>When $m=0$, we recover the basic inequality characterizing the convexity. We can see that strong convexity ($m&gt;0$) allows us to obtain a better lower bound on $f(y)$.</p>
-
-<p><code class="language-plaintext info highlighter-rouge">consequence2</code> We will then prove that above <strong>strong</strong> inequality can be used to bound $f(x) -p^\star$, which is the <strong>suboptimality</strong> of the point $x$, in terms of $|\nabla f(x) |_2$. Since the righthand side of equation (7) is a convex quadratic function of $y$, we can easily find $\tilde{y}$ that minimizes that function of $y$. 
-\(\tilde{y} = x - (1/m) \nabla f(x)\)</p>
-
-<p>Thus, we can say that</p>
-
-\[\begin{aligned}
-f(y) &amp; \geq f(x) + \nabla f(x)^T (y-x) + \frac{m}{2} \|y-x\|_2^2\\
-&amp; \geq f(x) + \nabla f(x)^T (\tilde{y}-x) + \frac{m}{2} \|\tilde{y} - x\|_2 ^2\\
-&amp; = f(x) + \nabla f(x)^T \bigg ( -\frac{1}{m}\nabla f(x)\bigg ) + \frac{m}{2} \bigg ( \frac{1}{m} \nabla f(x) \bigg )^2\\
-&amp; = f(x) - \frac{1}{2m}\|\nabla f(x)\|_2 ^2
-\end{aligned}\]
-
-<p>Since above inequality holds for any $y\in S$, we have</p>
-
-\[p^\star \geq f(x) - \frac{1}{2m} \|\nabla f(x)\|_2^2\]
-
-<p>This inequality shows that, if the <strong>gradient is small at a point</strong>, then the point is <strong>nearly optimal</strong>. Thus, this inequality can be interpreted as a condition for <strong>suboptimality</strong> which generalizes the optimality condition:</p>
-
-\[\|\nabla f(x) \|_2 \leq (2m\epsilon)^{1/2} \implies f(x)-p^\star \leq \epsilon\]
-
-<p><code class="language-plaintext info highlighter-rouge">consequence3</code> We can also derive a bound on $|x- x^\star|_2$, the distance between $x$ and any optimal point $x^\star$, in terms of $|\nabla f(x) |_2$:
-\(\|x - x^\star \|_2 \leq \frac{2}{m}\|\nabla f(x) \|_2\)</p>
-
-<p>to see this, we apply $y= x^\star$ to obtain</p>
-
-\[\begin{aligned}
-f(x^\star)= p^\star &amp; \geq f(x) + \nabla f(x)^T (x^\star-x) + \frac{m}{2} \|x^\star-x\|_2^2\\
-&amp; \geq f(x) - \|\nabla f(x)\|_2 \|x^\star - x\|_2 + \frac{m}{2}\|x^\star - x\|_2 ^2 \ \ \ (\because \text{caushy-schwarz inequality})
-\end{aligned}\]
-
-<p>since $p^\star \leq f(x)$, we can conclude that</p>
-
-\[- \|\nabla f(x) \|_2 \|x^\star - x\|_2 + \frac{m}{2} \|x^\star - x\|_2 ^2 \leq 0\]
-
-<p>which leads to the inequality in (11).</p>
-
-<h2 id="descent-methods">Descent Methods</h2>
-
-<h3 id="introduction">Introduction</h3>
-
-<p>Algorithms in this section produce a <strong>minimizing sequence</strong> $x^{(k)} ,\ k= 1, \cdots, $ where</p>
-
-\[x^{(k+1)}:= x^{(k)}+ t^{(k)}\Delta x^{(k)} \ \ \ \text{with } f(x^{(k+1)}) &lt; f(x^{(k)})\]
-
-<p>In above equation, $\Delta x$ is the search direction, $t$ is the step size.</p>
-
-<p>From convexity, \(f(x+ t\Delta x) &lt; f(x)\) implies</p>
-
-\[\nabla f(x)^T \Delta x &lt;0\]
-
-<p>since \(f(x) &gt; f(x+ t \Delta x) \geq f(x) + \nabla f(x)^T t \Delta x\) and $t&gt;0$. Thus, $\Delta x$ is called a <strong>descent direction</strong>. It is typical to use $\Delta x = -\nabla f(x)$.</p>
-
-<center><img src="https://live.staticflickr.com/65535/51133491093_ff7397d11c_o.png" alt="image-20210423223228424" style="zoom:50%;" /></center>
-
-<h3 id="line-search">Line Search</h3>
-
-<p>In line search step, we determine the step size $t$ , which determines where along the line \(\{x + t\Delta x \ \vert \ t \in \mathbb{R}_+\}\) the next ierate will be. There are typically two types of line search:</p>
-
-<ol>
-  <li>
-    <p><strong>exact line search</strong> : $t$ is chosen to minimize $f$ along the ray \(\{ x+ t\Delta x \ \vert \ t \geq 0 \}\):</p>
-
-\[t = \arg \min _{s \geq 0} f(x + s \Delta x)\]
-
-    <p>However, directly solving above minimization problem is computationally challenging.</p>
-  </li>
-  <li>
-    <p><strong>backtracking line search</strong> : there are many inexact line search method chooses the step length that can <strong>approximately minimize</strong> $f$ along the ray \(\{ x+ t\Delta x \ \vert \ t \geq 0 \}\). backtracking line search is one of them. It depends on two constants $\alpha, \beta$ with $\alpha \in (0,0.5)$ and $\beta \in (0,1)$.</p>
-
-    <center><img src="https://live.staticflickr.com/65535/51133504933_9ac42a28d7_o.png" alt="image-20210423224109387" style="zoom:50%;" /></center>
-
-    <p>Recall that a proper descent direction $\Delta x$ will satisfy $\nabla f(x)^T \Delta x \leq 0$. Thus, backtracking line search is <strong>reducing</strong> the step size until</p>
-
-\[f(x + t \Delta x) &lt; f(x) + \alpha t \nabla f(x)^T \Delta x\]
-
-    <p>is satisfied.</p>
-
-    <center><img src="https://live.staticflickr.com/65535/51132623972_8d88ff99a2_o.png" alt="image-20210423224522373" style="zoom:50%;" /></center>
-  </li>
-</ol>
-
-<h2 id="gradient-descent-method">Gradient descent method</h2>
-
-<p>A natural choice for the search direction $\Delta x$ is the negative direction $\Delta x = - \nabla f(x)$. The resulting algorithm is <strong>gradient descent method</strong>.</p>
-
-<center><img src="https://live.staticflickr.com/65535/51132628072_75332793c6_o.png" alt="image-20210423224757150" style="zoom:50%;" /></center>
+<h3 id="calculus-rules-with-subgradients">Calculus rules with subgradients</h3>
 
 <ul>
   <li>
-    <p>Stopping criterion : usually of the form</p>
+    <p>Scaling : if $h(x) = \alpha f(x)$ for some $\alpha \geq 0$, then</p>
 
-\[\|\nabla f(x) \|_2 \leq \epsilon\]
+\[\partial h(x) = \alpha \partial f(x)\]
   </li>
   <li>
-    <p>convergence result : for strongly convex $f$,</p>
+    <p>Finite sum : Suppose $f_1, \cdots, f_m$ are convex functions and let $f:=\sum_{i=1}^m f_i$. Then,</p>
 
-\[f(x^{(k)}) - p^\star \leq c^k [ f(x^{(0)})- p^\star],\]
+\[\partial f(x) = \sum_{i=1}^m \partial f_i (x)\]
 
-    <p>where $c \in (0,1)$ depends on $m$, $x^{(0)}$, line search type.</p>
+    <p>where the addition is Minkowski sum.</p>
+
+    <p><code class="language-plaintext warning highlighter-rouge">Proof</code> Let $g_i \in \partial f_i(x)$ for all $i$. Then,</p>
+
+\[\begin{aligned}
+f(y) = \sum_{i=1}^m f_i (y) &amp; \geq \sum_{i=1}^m (f_i(x)+ \langle g_i , y-x\rangle )\\
+&amp; =\sum_{i=1}^m f_i (x) + \bigg \langle \sum_{i=1}^m g_i , y-x \bigg \rangle
+\end{aligned}\]
+
+    <p>we can see that</p>
+
+\[\sum_i g_i \in \partial f(x)\]
   </li>
   <li>
-    <p>It’s main disadvantage is that its convergence rate depends on so critically on the condition number of the Hessian or sublevel sets.</p>
+    <p>Affine transformations : Let $f: \mathbb{R}^m \rightarrow \mathbb{R}$ be convex and $A \in \mathbb{R}^{m\times n}$ and $b\in \mathbb{R}^m$. Then, $h: \mathbb{R}^n \rightarrow \mathbb{R}$ defined by $h(x) = f(Ax+b)$ is convex and has subdifferential</p>
+
+\[\partial h(x) = A^T \partial f(Ax+b)\]
+
+    <p><code class="language-plaintext warning highlighter-rouge">Proof</code> Let $g \in \partial f(Ax+b)$. Then,</p>
+
+\[\begin{aligned}
+h(y) = f(Ay+b) &amp; \geq f(Ax+b) + \langle g, (Ay+b) - (Ax+b) \rangle\\
+&amp; = h(x) + \langle g, A(y-x) \rangle\\
+&amp; = h(x) + \langle A^T g, y-x \rangle\\
+\end{aligned}\]
+
+    <p>which shows that</p>
+
+\[A^T g = A^T \partial f(Ax+b)\in \partial h(x)\]
   </li>
 </ul>
 
-<h2 id="steepest-descent-method">Steepest descent method</h2>
+<h3 id="integrals-with-subgradients">Integrals with subgradients</h3>
 
-<p>The first-order Taylor approximation of $f(x+v)$ around $x$ is</p>
+<p>Suppose that $f_s$ is convex for each $s\in S$, and let</p>
 
-\[f(x+v) \approx \hat{f}(x+v) = f(x)+ \nabla f(x) ^T v\]
+\[f(x):= \int_S f_s (x) d\mu (s).\]
 
-<p>where the second term on the RHS is the <strong>directional derivative</strong> of $f$ at $x$ in the direction $v$. We now raise the question of <strong>how to choose $v$</strong> <strong>to make the directional derivative as negative as possible!</strong> To limit the effect of the length of $v$, we define a <strong>normalized steepest descent direction</strong> as</p>
+<p>where $\mu$ is a positive measure on $S$. Then, if we let $g_s(x) \in \partial f_s(x)$ for each $s\in S$, we have</p>
 
-\[\Delta x_{\text{nsd}} = \arg \min \{ \nabla f(x)^T v \ \vert \ \|v \|=1 \}\]
+\[\int_S g_s (x) d\mu(s) \in \partial f(x)\]
 
-<p>Thus, $\Delta x_{\text{nsd}}$ is a step of unit norm that gives the largest decrease in the linear approximate of $f$.</p>
-
-<center><img src="https://live.staticflickr.com/65535/51134978023_80c15c1013_o.png" alt="image-20210424161657849" style="zoom:50%;" /></center>
-
-<p>For example, if we define a weighted quadratic norm of</p>
-
-\[\|x \|_P : = (x^T P x) ^{1/2}, \ \ P \in \mathbb{S}^n _{++}\]
-
-<p>we can determine the steepest descent direction by solving</p>
+<p><code class="language-plaintext warning highlighter-rouge">Proof</code></p>
 
 \[\begin{aligned}
-\arg \min _v &amp; \ \ \nabla f(x)^T v \\
-\text{s.t.} &amp; \ \ v^T P v = 1
+\bigg \langle \int_S g_s (x) d\mu(s), y-x \bigg \rangle &amp; = \int \langle g_s(x), y-x \rangle d\mu(s)\\
+&amp; \leq \int \Big ( f_s (y) - f_s(x) \Big )d\mu(s)\\
+&amp; = f(y)-f(x)
 \end{aligned}\]
 
-<p>This can is in fact finding the point $v$ on the ellipsoid that extends as far as possible along the direction $-\nabla f(x)$.</p>
+<h3 id="application-to-stochastic-optimization">Application to stochastic optimization</h3>
 
-<center><img src="https://live.staticflickr.com/65535/51134091332_c3658c2db6_o.png" alt="image-20210424162150251" style="zoom:50%;" /></center>
+<p>If we have a collection of functions $F:\mathbb{R}^n \times \mathcal{S} \rightarrow \mathbb{R}$, where for each $s\in S$ the function $F(\cdot; s)$ is convex, then</p>
 
-<h2 id="newtons-method">Newton’s Method</h2>
+\[f(x) := \mathbb{E}_s [ F(x; \mathcal{S}) ]\]
 
-<h3 id="the-newton-step">The Newton Step</h3>
+<p>is convex when taking expectations over $\mathcal{S}$, and letting</p>
 
-<p>For $x \in \text{dom }f$, the vector</p>
+\[g(x; s) \in \partial F(x;s)\]
 
-\[\Delta x_{\text{nt}} = -\nabla^2 f(x) ^{-1} \nabla f(x)\]
+<p>gives a stochastic subgradient with the property that</p>
 
-<p>is called the <strong>newton step</strong>. Positive definiteness of $\nabla^2 f(x)$ implies that</p>
+\[\mathbb{E}_s [g(x;S)] \in \partial f(x).\]
 
-\[\nabla f(x)^T \Delta x_{\text{nt}} = - \nabla f(x)^T \nabla^2 f(x)^{-1} \nabla f(x) &lt;0\]
+<h3 id="finite-maxima">Finite Maxima</h3>
 
-<p>unless $\nabla f(x) =0$, so the Newton step is a descent direction. The Newton step can be itnerpreted in several ways.</p>
+<p>Let $f_i$, $i=1,\cdots, m$ be convex functions and $f(x) := \max_i f_i (x)$. Then,</p>
 
-<h3 id="interpretations">Interpretations</h3>
+\[\text{epi }f = \bigcap_i \text{epi }f\]
+
+<p>Then, the subgradient set of $f$ is the convex hull of the subgradients of **active functions ** at $x$ (those attaining the maximum:</p>
+
+\[\partial f(x) = \text{Conv} \{ \partial f_i (x) : f_i(x) = f(x)\}\]
+
+<p><code class="language-plaintext warning highlighter-rouge">Proof</code> For $y\in \mathbb{R}^n$, let $i$ be any index that $f_i (x) = f(x)$ (active index) and let $g_i \in \partial f_i (x)$.</p>
+
+\[\begin{aligned}
+f(y) \geq f_i (y) &amp; \geq f_i (x) + \langle g_i, y-x \rangle\\
+&amp; = f(x) + \langle g_i, y-x \rangle
+\end{aligned}\]
+
+<h2 id="subgradient-methods">Subgradient Methods</h2>
+
+<h3 id="motivation-1">Motivation</h3>
+
+<p>Subgradient-based methods are essentially universally applicable for convex optimization problems, becuase they rely very little on the structure of the problem being solved.</p>
+
+<ul>
+  <li>This leads to effective but slow algorithms in classical optimization problems.</li>
+  <li>In large scale problems arising out of ML and statistical tasks, however, subgradient methods enjoy a number of (thoretical) optimality properties and have excellent practical performance.</li>
+</ul>
+
+<h3 id="subgradient-algorithms">Subgradient Algorithms</h3>
+
+<p>Recall that in gradient descent method, we have</p>
+
+\[x_{k+1} = x_k - \alpha_k \nabla f(x_k)\]
+
+<p>where $\alpha_ k&gt;0$ is a positive sequence of stepsizes.</p>
+
+<p>Then, the subgradient algorithm iterates for $k=1,2,\cdots$, the following step:</p>
 
 <ol>
   <li>
-    <p>$x+ \Delta x_{\text{nt}}$ minimizes second order approximation</p>
+    <p>choose any subgradient</p>
 
-\[\hat{f}(x+v) = f(x) + \nabla f(x)^T v + \frac{1}{2}v^T \nabla^2 f(x) v\]
-
-    <p>which is a convex quadratic function of $v$. Thus, we can easily find that $v = \Delta x_{\text{nt}}$ minimizes above second-order taylor approximation.</p>
-
-    <center><img src="https://live.staticflickr.com/65535/51134770971_2c0bae2613_o.png" alt="image-20210424162818816" style="zoom:50%;" /></center>
-
-    <p>If $f$ is quadratic, then $x+\Delta x_{\text{nt}}$ is the <strong>exact minimizer</strong> of $f$.</p>
+\[g_k \in \partial f(x_k)\]
   </li>
   <li>
-    <p>$\Delta x _{\text{nt}}$ is the steepest descent direction in Hessian norm</p>
+    <p>Take the subgradient step</p>
 
-    <p>If we define the quadratic norm defined by the Hessian $\nabla^2 f(x)$,</p>
-
-\[\|u \|_{\nabla^2 f(x)} = (u^T \nabla^2 f(x) u)^{1/2}\]
-
-    <p>the Newton step is the steepest descent direction at $x$.</p>
-  </li>
-  <li>
-    <p>$x+ \Delta x_{\text{nt}}$ solves the linearized optimality condition</p>
-
-    <p>If we linearize the optimality condition $\nabla f(x^\star)=0$ near $x$, we have</p>
-
-\[\nabla f(x+v) \approx \nabla f(x) + \nabla^ 2f(x)v=0\]
-
-    <p>which has the solution of $v= \Delta x _{\text{nt}}$. When $f: \mathbb{R} \rightarrow \mathbb{R}$, this interpretation is particularly very simple. The solution of $x^\star$ of the minimization problem is characterized by $f’(x^\star)=0$, the zero-crossing of the derivative $f’$.</p>
-
-    <center><img src="https://live.staticflickr.com/65535/51135566569_9c2c922bd8_o.png" alt="image-20210424164213428" style="zoom:50%;" /></center>
+\[x_{k+1}:= x_k - \alpha_k g_k.\]
   </li>
 </ol>
 
-<h3 id="newton-decrement">Newton decrement</h3>
+<p class="info">Note that, subgradient descent does not guarantee $f(x_{k+1}) \not \leq f(x_k)$.</p>
 
-<p>The quantity</p>
+<center><img src="https://live.staticflickr.com/65535/51137877199_1b3e1bdd83_o.png" alt="image-20210425191319246" style="zoom:50%;" /></center>
 
-\[\lambda (x) := \Big [ \nabla f(x) ^T \nabla ^2 f(x)^{-1} \nabla f(x) \Big ] ^{1/2}\]
+<p>In this case, however, subgradients at least descend on a related quantity: the distance of $x$ to any optimal point.</p>
 
-<p>is called the <strong>Newton decrement</strong> at $x$. This is a useful quantity in Newton’s method. We can relate the Newton decrement to the quantity $f(x) - \inf_y \hat{f}(y)$ where $\hat{f}$ is the second-order approximation of $f$ at $x$. This can be used as an estimate of $f(x) - p^\star$.</p>
+<p><code class="language-plaintext warning highlighter-rouge">Proof</code> Let $g\in \partial f(x)$ and let $x^\star \in \arg\min f(x)$. Then, for any $\alpha$,</p>
+
+\[\frac{1}{2} \|x - \alpha g-x^\star\|_2^2 = \frac{1}{2}\|x - x^\star\|_2 ^2 -\alpha \langle g, x-x^\star\rangle + \frac{\alpha^2}{2} \|g \|_2^2\]
+
+<p>Then, by the definition of subgradients,</p>
+
+\[-\langle g, x-x^\star \rangle  = \langle g, x^\star - x\rangle  \leq f(x^\star) - f(x)\]
+
+<p>Therefore,</p>
+
+\[\frac{1}{2}\|x- \alpha g -x^\star\|_2^2 \leq \frac{1}{2} \|x- x^\star\|_2^2 -\alpha (f(x) - f(x^\star) ) + \frac{\alpha^2}{2}\|g\|_2 ^2.\]
+
+<p>We then conclude that, if $0&lt;\alpha&lt; \frac{2(f(x) - f(x^\star))}{|g|_2^2}$,</p>
+
+\[\|x- \alpha g- x^\star \|_2 ^2 \leq \|x - x^\star \|_2 ^2\]
+
+<p class="info">If $0\not\in \partial f(x)$, then for any $x^\star\in \arg\min_x f(x)$ and any $g\in \partial f(x)$, there exists a stepsize $\alpha&gt;0$ such that \(\|x-\alpha g -x^\star\|_2^2 &lt; \|x-x^\star\|_2^2\).</p>
+
+<h3 id="convergence-gaurantees">Convergence Gaurantees</h3>
+
+<p>We begin by stating a general result on the convergence of subgradient methods. We make a few simplifying assumptions in stating our result, several of which are not completely necessary, but which considerably simplify the analysis.</p>
+
+<p><code class="language-plaintext success highlighter-rouge">Assumption</code></p>
+<ol>
+  <li>There is at least one (possibly non-unique) minimizing point \(x^\star \in \arg\min_x f(x)\) with \(f(x^\star) = \inf_x f(x) &gt;-\infty\).</li>
+  <li>The subgradients are bounded: for all $x$ and all $g\in \partial f(x)$, we have the subgradient \(\|g\|_2 \leq M &lt;\infty\) (independently of $x$).</li>
+</ol>
+
+<p><code class="language-plaintext info highlighter-rouge">Theorem</code> Let $\alpha_k$ be any non-negative sequence of stepsizes and the preceding assumptions hold. Let $x_k$ be generated by the subgradient iteration. Then for all $K\geq 1$,</p>
+
+\[\sum_{k=1}^K \alpha_k \Big [ f(x_k) - f(x^\star) \Big ] \leq \frac{1}{2} \|x_1 - x^\star\|_2^2 + \frac{1}{2} \sum_{k=1}^K \alpha_k^2 M^2\]
+
+<p><code class="language-plaintext warning highlighter-rouge">Proof</code> By using equation (20),</p>
 
 \[\begin{aligned}
-f(x) - p^\star \approx f(x) - \inf_y \hat{f}(y) &amp; = f(x) - \hat{f}(x+ \Delta x_{\text{nt}})\\
-&amp; = - \nabla f(x) ^T \Delta x_{\text{nt}}  - \frac{1}{2}\Delta x_{\text{nt}}^T \nabla^2 f(x) \Delta x_{\text{nt}}\\
-&amp; = \frac{1}{2}\nabla f(x)^T \nabla^2 f(x)^{-1}\nabla f(x) = \frac{1}{2} \lambda(x)^2 
+\frac{1}{2}\|x_{k+1}- x^\star\|_2^2 &amp; \leq \frac{1}{2}\|x_k - \alpha_k g_k - x^\star\|_2^2\\
+&amp; \leq \frac{1}{2} \|x- x^\star\|_2^2 - \alpha_k (f(x_k) - f(x^\star) ) + \frac{\alpha^2}{2}\|g_k\|_2^2
 \end{aligned}\]
 
-<p>Also, this newton decrement $\lambda(x)$ is equal to the norm of the Newton step in the quadratic Hessian norm.</p>
+<p>Rearranging this inequality, and using the <strong>bounded assumption</strong> \(\|g_k\|_2^2 \leq M^2\), we obtain</p>
 
-\[\lambda(x) = \Big [ \Delta x_{\text{nt}}^T \nabla^2 f(x) \Delta x_{\text{nt}}   \Big ]^{1/2}\]
+\[\alpha_k (f(x_k) -f(x^\star))\leq \frac{1}{2} \|x_k - x^\star\|_2^2 - \frac{1}{2}\|x_{k+1}- x^\star\|_2^2 + \frac{\alpha_k^2}{2}M^2\]
 
-<p>Finally, recall that backtracking line search procedure requires a step direction where $\nabla f(x)^T \Delta x &lt;0$. Newton decrement again appears when calculating this</p>
+<p>By summing above equation from $k=1$ to $k=K$, we obtain</p>
 
-\[\nabla f(x)^T \Delta_{\text{nt}} = -\lambda(x)^2\]
+\[\sum_{k=1}^K \alpha_k \Big [ f(x_k) - f(x^\star) \Big ] \leq \frac{1}{2} \|x_1 - x^\star\|_2^2 + \frac{1}{2} \sum_{k=1}^K \alpha_k^2 M^2\]
 
-<h3 id="newtons-method-1">Newton’s Method</h3>
+<h3 id="weighted-averaging">Weighted Averaging</h3>
 
-<center><img src="https://live.staticflickr.com/65535/51135592139_97fb7618b8_o.png" alt="image-20210424170358315" style="zoom:50%;" /></center>
+<p><code class="language-plaintext info highlighter-rouge">Corollary</code> Let $A_k:= \sum_{i=1}^k \alpha_i$ and define</p>
 
-<h2 id="newtons-method-convergence-analysis">Newton’s Method: Convergence Analysis</h2>
+\[\bar{x}_k = \frac{1}{A_k} \sum_{k=1}^K \alpha_k x_k.\]
 
-<h3 id="assumption">Assumption</h3>
+<p>Then, we have</p>
 
-<p>We assume that $f$ is twice continuously differentiable, and strongly convex with constant $m$ for all $x$.</p>
+\[f(\bar{x}_k) -f(x^\star) \leq \frac{\|x_1 -x^\star\|_2^2 + \sum_{k=1}^K \alpha_k^2 M^2}{2\sum_{k=1}^K \alpha_k}\]
 
-\[\nabla^2 f(x) \succeq mI\]
+<p><code class="language-plaintext warning highlighter-rouge">Proof</code> Note that $A_k^{-1} \sum_i \alpha_i =1$, and convexity of $f$ implies</p>
 
-<p>In addition, we assume that the Hessian of $f$ is Lipschitz continuous on $S$ with constant $L$.</p>
+\[\begin{aligned}
+f(\bar{x}_k) - f(x^\star) &amp;\leq \frac{1}{\sum_i \alpha_i} \sum_{k=1}^K \alpha_k f(x_k) - f(x^\star)\\
+&amp; = A_k^{-1} \bigg [ \sum_{k=1}^K \alpha_k (f(x_k)-  f(x^\star)) \bigg ] \\
+&amp; =\frac{\|x_1 - x^\star\|_2^2 + \sum_{k=1}^K \alpha_k^2 M^2}{2A_k}
+\end{aligned}\]
 
-\[\|\nabla^2 f(x) - \nabla^2 f(y) \|_2 \leq L \|x- y \|_2\]
-
-<p>for all $x, y \in S$. The coefficient $L$ measrues how well $f$ can be approximated by a quadratic model. Intuition suggests that Newton’s method will work very well for a function whose quadratic model varies slowly (small $L$).</p>
-
-<h3 id="outline-of-the-proof">Outline of the proof</h3>
-
-<p>We will show that there are number $\eta$ and $\gamma$ with $0&lt;\eta \leq m^2 /L$ and $\gamma &gt;0$ such that the following hold.</p>
+<h3 id="remarks">Remarks</h3>
 
 <ul>
   <li>
-    <p><strong>(Damped newton phase)</strong> If \(\| \nabla f(x^{(k)})\|_2 \geq \eta\), then
- \(f(x^{(k+1)})-f(x^{(k)}) \leq -\gamma\)</p>
+    <p>Suppose that</p>
 
-    <ul>
-      <li>most iterations require backtracking steps</li>
-      <li>function value decreases by at least $\gamma$</li>
-      <li>if $p^\star &gt;-\infty$, this phase ends after at most \(f(x^{(0)}- p^\star) / \gamma\) iterations.</li>
-    </ul>
-  </li>
-  <li>
-    <p><strong>(Quadratic convergent phase)</strong> If \(\|\nabla f(x^{(k)})\|_2 &lt; \eta\), then the backtracking line search selects \(t^{(k)}=1\) and</p>
+\[\alpha_k \rightarrow 0 \ \ \ \ \text{and} \ \ \ \ \sum_{k=1}^\infty \alpha_k = \infty\]
 
-\[\frac{L}{2m^2} \|\nabla f(x^{(k+1)})\|_2 \leq \bigg ( \frac{L}{2m^2} \| \nabla f(x^{(k)})\|_2 \bigg )^2\]
+    <p>Then,</p>
 
-    <ul>
-      <li>all iterations use step size $t=1$.</li>
-      <li>$|\nabla f(x)|_2$ converges to zero quadratically.</li>
-    </ul>
+\[\frac{\sum_{k=1}^K \alpha_k^2}{\sum_{k=1}^K \alpha_k} \rightarrow 0\]
+
+    <p>and thus</p>
+
+\[f(\bar{x}_K) - f(x^\star) \rightarrow 0 \ \ \text{as} \ \ K\rightarrow \infty\]
   </li>
 </ul>
 
@@ -674,7 +632,7 @@ f(x) - p^\star \approx f(x) - \inf_y \hat{f}(y) &amp; = f(x) - \hat{f}(x+ \Delta
       })();
   </script>
 
-  <div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-04-23T00:00:00+09:00"><!-- start custom article footer snippet -->
+  <div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-04-24T00:00:00+09:00"><!-- start custom article footer snippet -->
 
 <!-- end custom article footer snippet -->
 <div class="article__license"><div class="license">
@@ -685,7 +643,7 @@ f(x) - p^\star \approx f(x) - \inf_y \hat{f}(y) &amp; = f(x) - \hat{f}(x+ \Delta
     </p>
   </div></div><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </footer>
-<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2021/04/23/opt-lecture-10.html">[Optimization] Statistical Learning</a></div><div class="next"><span>NEXT</span><a href="/2021/04/23/opt-lecture-12.html">[Optimization] Interior Point Methods</a></div></div></div>
+<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2021/04/23/opt-lecture-8.html">[Optimization] Approximation and Fitting</a></div></div></div>
 
 </div>
 
