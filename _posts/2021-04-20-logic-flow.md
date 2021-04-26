@@ -287,13 +287,10 @@ Recall that, we were able to observe quite remarkable performane surge in fully-
 
 
 
-
-
-
-
 ### Hessian based Pruning
 
-
+Will be done after I see entire results for supermask.
+{:.gray_no_border}
 
 ### SNIP
 
@@ -305,7 +302,7 @@ Recall that SNIP prunes the network at its initialized state, before the trainin
 
 <center><img src="https://live.staticflickr.com/65535/51137538085_f4592f072c_o.gif" alt="snip_leaveout1_outlier" style="zoom:67%;" /></center>
 
-- **250 epoch trained after SNIP pruning** (MNIST hold-out 1)
+- **250 epoch finetunined the remaining weights after SNIP pruning** (MNIST hold-out 1)
 
 <center><img src="https://live.staticflickr.com/65535/51137207269_343609d1fa_o.gif" alt="snip_trained_leaveout1_inlier" style="zoom:67%;" /></center>
 
@@ -325,5 +322,55 @@ Compared to the baseline performance of **AUROC 0.2135** obtained by $$f(\cdot ;
 
 ### Supermask
 
+Supermask optimizes the mask $\mathbf{c}$, for fixed weight $\mathbf{w}_{\text{init}}$. 
+
+$$
+\begin{aligned}
+\min_\mathbf{c} & \ \ \ \mathcal{L}(\mathbf{c} \odot \mathbf{w}_{\text{init}}; \mathcal{D}) = \frac{1}{N}\sum_{i=1}^N \|f(\mathbf{x}_i; \mathbf{c}\odot \mathbf{w}_{\text{init}}) - \mathbf{x}_i \|_2^2 \\
+\text{s.t.} & \ \ \|\mathbf{c}\| \in \{0,1\}^m   , \ \ \ \|\mathbf{c}\|_0 \leq \kappa 
+\end{aligned}
+$$
+
+Note that, if we implement the non-stochastic version of supermask, we can specify the sparsity of mask $\mathbf{c}$. 
+
+Results below are the results for $f(\cdot ; \mathbf{c} \odot \mathbf{w}_{\text{init}})$ without any sort of weight finetuning. 
+
+ <center><img src="https://live.staticflickr.com/65535/51137799806_805a40a6a4_o.gif" alt="supermask_leaveout1_inlier" style="zoom:67%;" /></center>
+
+<center><img src="https://live.staticflickr.com/65535/51137124492_6565c1c1f7_o.gif" alt="supermask_leaveout1_outlier" style="zoom:67%;" /></center>
+
+We can see that, before sparsity 70%, the sparsified autoencoder can surprisingly reconstruct the input samples. However, if we increase the sparsity over 80%, the reconstructed image gets blurry for both inliers and outliers. This phenomenon was observed for other MNIST hold-out experiments as well.
+{:.gray_no_border}
+
+<center><img src="https://live.staticflickr.com/65535/51138972620_6cd5a0e9f9_o.png" alt="image-20210426022153953" style="zoom:50%;" /></center>
+
+Meanwhile, we can see that supermask training can effectively reduce the loss, if it's specified sparsitiy is not that high. 
+
+Unfortunately, supermask training wasn't helpful in terms of outlier detection performance. 
+
+<center><img src="https://live.staticflickr.com/65535/51137815911_70b6e73024_o.png" alt="image-20210426015854779" style="zoom:50%;" /></center>
+
+Each colored line represents each MNIST hold-out experiments. Note that, if pruning ratio gets higher than 80%, it starts to destruct the autoencoder's reconstruction capability; increasing the mean reconstruction error both for inliers and outliers. However, this wasn't helpful for the outlier detection performance: **outlier detection performance** remained fairly constant as pruning ratio increased. 
+{:.gray_no_border}
+
+Now, one might wonder, **what if we finetune those remaining weights?** However, finetuning did not help. First of all, for low pruning ratio (where supermask itself already trained the network quite well) finetuning could not minimize the loss any more. 
+
+<center><img src="https://live.staticflickr.com/65535/51138672696_511a0c221d_o.png" alt="image-20210426085656791" style="zoom:50%;" /></center>
+
+On the other hand, for higher pruning ratio, (where supermask itself could not sufficiently minimize the loss) finetuning the reamining weights did reduce the loss a bit more, but it still wasn't helpful in terms of outlier detection performance. Both figures above and below are from MNIST hold-out 1 experiment. 
+
+<center><img src="https://live.staticflickr.com/65535/51138892578_bd1c31bcfb_o.png" alt="image-20210426085805738" style="zoom:50%;" /></center> 
 
 
+
+Final question in this post: **what if we finetune those remaining weights with respect to NAE loss?** I've conducted the experiment for MNIST hold-out 1 and 7. Below results are for sparsity 10%.
+
+First of all, NAE training procedure wasn't able to sample images that resemble MNIST images, and AUROC also did not improve. 
+
+<center><img src="https://live.staticflickr.com/65535/51138736571_9764b84329_o.gif" alt="nae_supermask_leaveout1_sample" style="zoom:67%;" /></center>
+
+<center><img src="https://live.staticflickr.com/65535/51138747331_271fd0cbea_o.gif" alt="nae_supermask_leaveout1_inlier" style="zoom:67%;" /></center>
+
+<center><img src="https://live.staticflickr.com/65535/51138747756_7418051254_o.gif" alt="nae_supermask_leaveout1_outlier" style="zoom:67%;" /></center>
+
+<center><img src="https://live.staticflickr.com/65535/51138965203_ca6877634f_o.png" alt="image-20210426094545266" style="zoom:50%;" /></center>
