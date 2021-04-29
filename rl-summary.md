@@ -21,6 +21,8 @@ These are my notes for the lecture **[Stochastic Control and Reinforcement Learn
 9. [Q-learning](./2021/04/29/scrl-11.html)
 10. [Approximation RL in Value Space (Linear)](./2021/04/29/scrl-12.html)
 11. [Approximation RL in Value Space (Non-Linear)](./2021/04/29/scrl-13.html)
+12. [Approximation RL in Policy Space](./2021/04/29/scrl-15.html)
+13. [Actor-Critic Algorithm](./2021/04/29/scrl-16.html)
 
 
 ### Shared Autonomy

@@ -20,6 +20,6 @@ These are my notes for the lecture **[Convex Optimization and Applications]** fr
 11. [Interior Point Methods](./2021/04/23/opt-lecture-12.html)
 12. [Subgradient Methods](./2021/04/24/opt-lecture-13.html)
 13. [Projected Subgradient Methods](./2021/04/24/opt-lecture-14.html)
-14. [Stochastic Optimization](./2021/04/24/opt-lecture-15.html)
+14. [Stochastic Subgradient / Optimization](./2021/04/24/opt-lecture-15.html)
 
 <br/>
