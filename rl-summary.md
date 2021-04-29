@@ -18,7 +18,9 @@ These are my notes for the lecture **[Stochastic Control and Reinforcement Learn
 6. [Q-function](./2021/04/20/scrl-8.html)
 7. [Stochastic Approximation](./2021/04/20/scrl-9.html)
 8. [Temporal Difference Learning](./2021/04/21/scrl-10.html)
-9. [Q-learning](./2021/04/21/scrl-11.html)
+9. [Q-learning](./2021/04/29/scrl-11.html)
+10. [Approximation RL in Value Space (Linear)](./2021/04/29/scrl-12.html)
+11. [Approximation RL in Value Space (Non-Linear)](./2021/04/29/scrl-13.html)
 
 
 ### Shared Autonomy
