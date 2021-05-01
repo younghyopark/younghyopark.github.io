@@ -106,7 +106,7 @@ When the primal problem is convex, we cany say something more. KKT conditions ar
 
 <center><img src="image-20210419094313583.png" alt="image-20210419094313583" style="zoom:50%;" /></center>
 
-
+<center><img src="https://live.staticflickr.com/65535/51150036593_fd92031162_o.png" alt="image-20210501153039328" style="zoom:50%;" /></center>
 
 ### Proving the KKT Condition
 
@@ -151,7 +151,6 @@ Suppose that strong duality holds, and an optimal dual is known. We assume that 
 - S. Boyd, L.Vandenberghe, Convex Opimization, Cambridge University Press, 2004. <http://stanford.edu/~boyd/cvxbook/>
 
 - Optimization Theory and Applications, SNU EE 2021, Insoon Yang
-
 
 
 
