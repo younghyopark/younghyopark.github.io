@@ -98,7 +98,7 @@ Thus, we have the following **necessary** conditions for optimality, called "Kar
 
 <center><img src="image-20210419093930984.png" alt="image-20210419093930984" style="zoom:50%;" /></center>
 
-
+<center><img src="https://live.staticflickr.com/65535/51150036593_fd92031162_o.png" alt="image-20210501153039328" style="zoom:50%;" /></center>
 
 ### KKT Conditions for Convex Problems
 
@@ -106,7 +106,7 @@ When the primal problem is convex, we cany say something more. KKT conditions ar
 
 <center><img src="image-20210419094313583.png" alt="image-20210419094313583" style="zoom:50%;" /></center>
 
-<center><img src="https://live.staticflickr.com/65535/51150036593_fd92031162_o.png" alt="image-20210501153039328" style="zoom:50%;" /></center>
+
 
 ### Proving the KKT Condition
 
