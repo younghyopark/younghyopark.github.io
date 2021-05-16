@@ -5,7 +5,7 @@
 
 <meta name="description" content="Your Site Description
 ">
-<link rel="canonical" href="http://localhost:4000/page2/"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
+<link rel="canonical" href="http://139.59.110.180:4000/page2/"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
 <!--<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
 
 <meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
@@ -337,6 +337,184 @@ fill="#000000" stroke="none">
 
 <!-- end custom main top snippet -->
 <article itemscope itemtype="http://schema.org/WebPage"><header style="display:none;"><h1>Home</h1></header><meta itemprop="headline" content="Home"><meta itemprop="author" content="Younghyo Park"/><div class="js-article-content"><div class="layout--articles"><div class="article-list items items--divided"><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
+          <header><a href="/2021/04/24/opt-lecture-13.html"><h2 itemprop="headline" class="item__header">[Optimization] Subgradient Methods</h2></a></header>
+          <div class="item__description"><div class="article__content" itemprop="description articleBody">Motivation
+
+How should we handle nondifferentiable objective functions?
+
+
+  objective functions can be convex but not differentiable
+  can’t use the standard optimality conditions
+  can’t use gradient or Hessian information in optimization algorithms
+
+
+Subgradients
+
+Definition
+
+The subgradient set or subdifferential of a function $f$ at a point ...</div><p><a href="/2021/04/24/opt-lecture-13.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Optimization">Optimization</a>
+            </li><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 24, 2021</span>
+            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-24T00:00:00+00:00">
+    <meta itemprop="keywords" content="Optimization,Lecture-Note"></div>
+      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
+          <header><a href="/2021/04/23/opt-lecture-8.html"><h2 itemprop="headline" class="item__header">[Optimization] Approximation and Fitting</h2></a></header>
+          <div class="item__description"><div class="article__content" itemprop="description articleBody">Norm Approximation
+
+Problem Definition
+
+We are considering
+
+\[\min_{\mathbf{x}} \|\mathbf{Ax-b}\|\]
+
+where $\mathbf{A} \in \mathbb{R}^{m\times n}$ with $m\geq n$, and $|\cdot |$ is a norm on $\mathbb{R}^m $. This can be considered as a convex optimization problem, since norm is a convex function, and $\mathbf{Ax-b}$ is an affine transformation.
+...</div><p><a href="/2021/04/23/opt-lecture-8.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Optimization">Optimization</a>
+            </li><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 23, 2021</span>
+            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-23T00:00:00+00:00">
+    <meta itemprop="keywords" content="Optimization,Lecture-Note"></div>
+      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
+          <header><a href="/2021/04/23/opt-lecture-12.html"><h2 itemprop="headline" class="item__header">[Optimization] Interior Point Methods</h2></a></header>
+          <div class="item__description"><div class="article__content" itemprop="description articleBody">Constrained Minimization Problems
+
+Problem Definition
+
+In this post, we will consider methods for inequality constrained minimization problem:
+
+\[\begin{aligned}
+\min &amp;\ \ f_0(x)\\
+\text{s.t.}&amp; \ \ f_i (x) \leq 0,  \  i=1,\cdots, m\\
+&amp; \ \ Ax=b
+\end{aligned}\]
+
+where $f_0, \cdots, f_m : \mathbb{R}^n \rightarrow \mathbb{R}$ are convex...</div><p><a href="/2021/04/23/opt-lecture-12.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Optimization">Optimization</a>
+            </li><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 23, 2021</span>
+            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-23T00:00:00+00:00">
+    <meta itemprop="keywords" content="Optimization,Lecture-Note"></div>
+      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
+          <header><a href="/2021/04/23/opt-lecture-11.html"><h2 itemprop="headline" class="item__header">[Optimization] Unconstrained Optimization Algorithms</h2></a></header>
+          <div class="item__description"><div class="article__content" itemprop="description articleBody">Unconstrained Minimization Problems
+
+Problem Definition
+
+In this post, we will consider methods for solving the unconstrained optimization problem:
+
+\[\min \ \ f(x)\]
+
+where $f$ is convex and twice continuously differentiable (Hessian is well defined). We will also assume that the problem is solvable, and there exists an optimal point $x^\star$....</div><p><a href="/2021/04/23/opt-lecture-11.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Optimization">Optimization</a>
+            </li><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 23, 2021</span>
+            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-23T00:00:00+00:00">
+    <meta itemprop="keywords" content="Optimization,Lecture-Note"></div>
+      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
+          <header><a href="/2021/04/23/opt-lecture-10.html"><h2 itemprop="headline" class="item__header">[Optimization] Statistical Learning</h2></a></header>
+          <div class="item__description"><div class="article__content" itemprop="description articleBody">Maximum Likelihood (ML) estimation
+
+Introduction
+
+Consider a family of probability distributions on $\mathbb{R}^m$, parameterized by a vector $\mathbf{x}\in \mathbb{R}^n$ with densities $p_\mathbf{x}(\cdot)$. When considered as a function of $\mathbf{x}$, for fixed $\mathbf{y}\in \mathbb{R}^m$, the function $p_{\mathbf{x}}(\mathbf{y})$ is called...</div><p><a href="/2021/04/23/opt-lecture-10.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Optimization">Optimization</a>
+            </li><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 23, 2021</span>
+            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-23T00:00:00+00:00">
+    <meta itemprop="keywords" content="Optimization,Lecture-Note"></div>
+      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
+          <header><a href="/2021/04/21/scrl-10.html"><h2 itemprop="headline" class="item__header">[RL Theory] Temporal Difference Learning</h2></a></header>
+          <div class="item__description"><div class="article__content" itemprop="description articleBody">Review : Fixed Point Problems
+
+Bellman Equations
+
+Recall, that both policy evaluation and optimality equation is a fixed point problem.
+
+
+  
+    Policy Evaluation
+
+\[v = \mathcal{T}^\pi v\]
+
+    or equivalently
+  
+
+
+\[v(s) = r(s, \pi(s)) + \gamma \sum_{s' \in S} p(s' \vert s, \pi(s) ) v(s')\]
+
+
+  Optimality Equation
+
+
+\[v = \mathcal{T}v\]
+
+or eq...</div><p><a href="/2021/04/21/scrl-10.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
+            </li><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
+            </li><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Theory%2FSurvey">Theory/Survey</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 21, 2021</span>
+            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-21T00:00:00+00:00">
+    <meta itemprop="keywords" content="Reinforcement-Learning,Lecture-Note,Theory/Survey"></div>
+      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
+          <header><a href="/2021/04/20/scrl-9.html"><h2 itemprop="headline" class="item__header">[RL Theory] Stochastic Approximation</h2></a></header>
+          <div class="item__description"><div class="article__content" itemprop="description articleBody">Review: MDP Problem
+
+Bellman Equations
+
+Recall, that both policy evaluation and optimality equation is a fixed point problem.
+
+
+  
+    Policy Evaluation
+
+\[v = \mathcal{T}^\pi v\]
+
+    or equivalently
+  
+
+
+\[v(s) = r(s, \pi(s)) + \gamma \sum_{s' \in S} p(s' \vert s, \pi(s) ) v(s')\]
+
+
+  
+    Optimality Equation
+
+\[v = \mathcal{T}v\]
+
+    or equi...</div><p><a href="/2021/04/20/scrl-9.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
+            </li><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
+            </li><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Theory%2FSurvey">Theory/Survey</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 20, 2021</span>
+            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-20T00:00:00+00:00">
+    <meta itemprop="keywords" content="Reinforcement-Learning,Lecture-Note,Theory/Survey"></div>
+      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
           <header><a href="/2021/04/20/scrl-8.html"><h2 itemprop="headline" class="item__header">[RL Theory] Q-function</h2></a></header>
           <div class="item__description"><div class="article__content" itemprop="description articleBody">State-Action Value Functions
 
@@ -355,170 +533,12 @@ The optimal Q-function $Q^\star(s,a)$ is the maximum expected return starting fr
               <a class="button button--secondary button--pill button--sm"
                 href="/archive.html?tag=Theory%2FSurvey">Theory/Survey</a>
             </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 20, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-20T00:00:00+09:00">
+            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-20T00:00:00+00:00">
     <meta itemprop="keywords" content="Reinforcement-Learning,Lecture-Note,Theory/Survey"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2021/04/20/scrl-7.html"><h2 itemprop="headline" class="item__header">[RL Theory] Linear Programming Approach</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Iteration based vs Optimization based
-
-Recall that the Bellman operator is given by
-
-\[(\mathcal{T}v) (s) := \max_{a\in A} \bigg [ r(s,a) + \gamma \sum_{s' \in S} p(s' \vert s,a) v(s') \bigg ].\]
-
-We tried to solve above Bellman equation by iteration-based methods.
-
-
-
-In this section, we will try to solve the Bellman equation by Optimization-bas...</div><p><a href="/2021/04/20/scrl-7.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Theory%2FSurvey">Theory/Survey</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 20, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-20T00:00:00+09:00">
-    <meta itemprop="keywords" content="Reinforcement-Learning,Lecture-Note,Theory/Survey"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2021/04/20/scrl-6.html"><h2 itemprop="headline" class="item__header">[RL Theory] Policy Iteration</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Policy Iteration
-Idea of Policy Iteration
-
-So far, our algorithm updated everything only in the value space. After we obtained the optimal value function $v^\star$, we switched over to the policy space, and obtained $\pi^\star$.
-
-
-
-This can be considered somewhat inefficient: we might want to use some information about the policy as well, during...</div><p><a href="/2021/04/20/scrl-6.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Theory%2FSurvey">Theory/Survey</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 20, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-20T00:00:00+09:00">
-    <meta itemprop="keywords" content="Reinforcement-Learning,Lecture-Note,Theory/Survey"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2021/04/20/logic-flow.html"><h2 itemprop="headline" class="item__header">[Personal Research] Autoencoder Sparsity and Outlier Detection </h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Introduction
-
-Sparsity of Neural Network
-
-Sparsity of a neural network can be construed as a constraint. Given a dataset $\mathcal{D}= { \mathbf{x}_1,\mathbf{x}_2, \cdots, \mathbf{x}_N }$ and a desired sparsity level $\kappa$ (number of zero weights), neural network pruning can be formulated as  a constrained optimization problem. In case of aut...</div><p><a href="/2021/04/20/logic-flow.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Personal-Research">Personal-Research</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 20, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-20T00:00:00+09:00">
-    <meta itemprop="keywords" content="Personal-Research"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2021/04/19/scrl-5.html"><h2 itemprop="headline" class="item__header">[RL Theory] Infinite Horizon MDP, Value Iteration</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Infinite Horizon Discounted MDP
-Assumptions
-
-  
-    Stationary rewards and transition probabilities:
-  $r(s,a)$ and $p(s’ \vert s,a)$ doesn’t change over time.
-  
-  
-    Finite state and action sets
-
-    $\rightarrow$ this implies that $r(s,a)$ is bounded! There exists a constant $M$ such that
-
-\[|r(s,a)|&lt;M \ \ \forall s \in S, \ \ \forall a ...</div><p><a href="/2021/04/19/scrl-5.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Theory%2FSurvey">Theory/Survey</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 19, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-19T00:00:00+09:00">
-    <meta itemprop="keywords" content="Reinforcement-Learning,Lecture-Note,Theory/Survey"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2021/04/19/scrl-4.html"><h2 itemprop="headline" class="item__header">[RL Theory] Finite Horizon MDP (2)</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Optimal Policy of Finite-Horizon MDP
-
-Deterministic Markov Policy
-
-Define a deterministic Markov policy $\pi^\star$ by
-
-\[\pi_t^\star (s) \in \arg\max_{a\in A} \bigg (r_t (s,a) + \sum_{s'\in S} p(s' \vert s,a)v_{t+1}^\star (s') \bigg )\]
-
-Optimality of Deterministic Markov Policy
-
-Assume that $S, A$ are finite sets. Then, the deterministic Marko...</div><p><a href="/2021/04/19/scrl-4.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Theory%2FSurvey">Theory/Survey</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 19, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-19T00:00:00+09:00">
-    <meta itemprop="keywords" content="Reinforcement-Learning,Lecture-Note,Theory/Survey"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2021/04/19/scrl-3.html"><h2 itemprop="headline" class="item__header">[RL Theory] Finite Horizon MDP (1)</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Finite-Horizon MDP
-
-Problem Definition
-
-Instead of $\gamma$, we set the length of the horizon as $T$. Thus, a finite-horizon MDP is a tuple $\langle T,S,A,P,R \rangle$, consisting of
-
-
-  $T$ : length of horizon
-  everything else is the same.
-
-
-Our goal is to find the optimal policy that maximizes the expected cumulative reward:
-
-\[\max_{\pi \in ...</div><p><a href="/2021/04/19/scrl-3.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Theory%2FSurvey">Theory/Survey</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 19, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-19T00:00:00+09:00">
-    <meta itemprop="keywords" content="Reinforcement-Learning,Lecture-Note,Theory/Survey"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/notion_to_markdown/opt-lecture-7/"><h2 itemprop="headline" class="item__header">[Optimization] KKT Optimality Condition</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Characterizing the Optimality
-
-How should we characterize the conditions for optimality?
-
-What are the necessary and sufficient conditions for
-
-\[x: \text{primal feasible point}\\
-(\lambda, \nu) : \text{dual feasible point}\]
-
-to be optimal?
-
-Complementary slackness
-
-Suppose that strong duality holds, and (somehow) the primal and dual optimal va...</div><p><a href="/notion_to_markdown/opt-lecture-7/">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Optimization">Optimization</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 19, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-19T00:00:00+09:00">
-    <meta itemprop="keywords" content="Optimization,Lecture-Note"></div>
       </article></div>
 </div><br/>
 
-<div class="layout--home"><div class="pagination"><p>37 post articles, 5 pages.</p>
+<div class="layout--home"><div class="pagination"><p>44 post articles, 6 pages.</p>
     <div class="pagination__menu">
       <ul class="menu menu--nowrap"><li><a class="button button--secondary button--circle" href="/">
             <i class="fas fa-angle-left"></i>
@@ -527,12 +547,12 @@ Suppose that strong duality holds, and (somehow) the primal and dual optimal va.
             </li><li>
               <div class="button button--primary button--circle focus"><span>2</span></div>
             </li><li>
-                <a class="button button--secondary button--circle" href="/page3"><span>3</span></a>
-              </li><li>
-                <a class="button button--secondary button--circle" href="/page4"><span>4</span></a>
-              </li><li>
-                <a class="button button--secondary button--circle" href="/page5"><span>5</span></a>
-              </li><li><a class="button button--secondary button--circle" href="/page3">
+                  <a class="button button--secondary button--circle" href="/page3"><span>3</span></a>
+                </li><li>
+                  <a class="button button--secondary button--circle" href="/page4"><span>4</span></a>
+                </li><li><span class="pagination__omit"><i class="fas fa-ellipsis-h"></i></span></li><li>
+                  <a class="button button--secondary button--circle" href="/page6"><span>6</span></a>
+                </li><li><a class="button button--secondary button--circle" href="/page3">
             <i class="fas fa-angle-right"></i>
           </a></li></ul>
     </div>
