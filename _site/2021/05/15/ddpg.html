@@ -1,10 +1,10 @@
 <!DOCTYPE html><html lang="en">
   <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[RL Theory] Approximation RL in Value Space (Non-Linear) - Younghyo Park</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[RL Research] Multi Reward for Robot Arm Manipluation Task - Younghyo Park</title>
 
-<meta name="description" content="General Version of Model-Free PIAlgorithm      Assume a nonlienar architecture \(Q(s,a) \approx Q_\theta(s,a)\).        (Approximate Policy Evalution) Evalua...">
-<link rel="canonical" href="http://139.59.110.180:4000/2021/04/29/scrl-13.html"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
+<meta name="description" content="MotivationOne of the most popular applications of reinforcement learning is done for robot arm manipulation tasks. Motion planning of a robot arm can be done...">
+<link rel="canonical" href="http://139.59.110.180:4000/2021/05/15/ddpg.html"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
 <!--<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
 
 <meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
@@ -336,89 +336,39 @@ fill="#000000" stroke="none">
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
 <!-- end custom main top snippet -->
-<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[RL Theory] Approximation RL in Value Space (Non-Linear)</h1></header><span class="split-space">&nbsp;</span>
+<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[RL Research] Multi Reward for Robot Arm Manipluation Task</h1></header><span class="split-space">&nbsp;</span>
           <a class="edit-on-github"
             title="Edit on Github"
-            href="https://github.com/younghyopark/younghyopark.github.io/tree/main/_posts/2021-04-29-scrl-13.md">
-            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[RL Theory] Approximation RL in Value Space (Non-Linear)"><div class="article__info clearfix"><ul class="left-col menu"><li>
+            href="https://github.com/younghyopark/younghyopark.github.io/tree/main/_posts/2021-05-15-ddpg.md">
+            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[RL Research] Multi Reward for Robot Arm Manipluation Task"><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
                 href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Theory%2FSurvey">Theory/Survey</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 29, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-29T00:00:00+00:00">
-    <meta itemprop="keywords" content="Reinforcement-Learning,Lecture-Note,Theory/Survey"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>May 15, 2021</span>
+            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-05-15T00:00:00+00:00">
+    <meta itemprop="keywords" content="Reinforcement-Learning"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
 
 <!-- end custom article top snippet -->
-<div class="article__content" itemprop="articleBody"><h2 id="general-version-of-model-free-pi">General Version of Model-Free PI</h2>
+<div class="article__content" itemprop="articleBody"><h2 id="motivation">Motivation</h2>
 
-<h3 id="algorithm">Algorithm</h3>
+<p>One of the most popular applications of reinforcement learning is done for robot arm manipulation tasks. Motion planning of a robot arm can be done by traditional motion planning methods such as classical line geometry approach, but \textbf{reinforcement learning} is considered as a robust solution that can be applied to wide variety of new or dynamic environments.</p>
 
-<ul>
-  <li>
-    <p>Assume a nonlienar architecture \(Q(s,a) \approx Q_\theta(s,a)\).</p>
-  </li>
-  <li>
-    <p><strong>(Approximate Policy Evalution)</strong> Evaluate the approximate Q-function $Q_\theta ^\pi$ for current policy $\pi$</p>
-  </li>
-  <li>
-    <p>(Approximate Policy Improvement) Generate imporved policy $\pi’$</p>
+<p>The bane of reinforcement learning, however, is that we have to design the reward in a careful manner. A simple binary reward, only given when the episode succeeds the mission, is often too sparse and contains insufficient information for a successful training. Many papers such as Hindsight Experience Replay (HER) \cite{andrychowicz2017hindsight}, which allows the network to learn also from the failed attempts, was proposed as an effective solution to tackle this problem of sparse rewards. However, if we have certain amount of domain knowledge, it might be better to engineer a more expressive reward function for better performance and faster training.</p>
 
-\[\pi'(s) = \arg \max_{a\in A} Q_\theta ^\pi (s,a)\]
-  </li>
-</ul>
+<p>Unfortunately, reward engineering is often considered problematic in reinforcement learning community. We may come up with multiple options for possible reward functions if we have adequate domain knowledge, but the problem is in its decision stage: besides testing out all possible options, how should we determine which is the best choice? Moreover, reward functions that we engineered may not give us an optimal policy that we have thought of: we may get a side-effect which is known as the \textit{cobra effect} \cite{lip2018introduction}. If the government, for instance, incentivize people to assist them in ridding the area of cobras by giving money in exchange of a killed snake, people will just start breeding venomous snakes! Same thing may happen in reinforcement learning, ending up with a policy that specifically suits the incentive we gave, not what we truly intended.</p>
 
-<p class="info">Again, our problem is the policy evaluation step.</p>
+<p>However, considering that reward engineering is the process of injecting human/domain knowledge into the RL system, it might be reasonable to expect the system to monotonously improve as we hand out more hints: multiple hand-engineered reward functions. If have such a solution, we may at least get rid of the problem of deciding the reward to use: we may use multiple possible reward functions all at once for training. Fortunately, there are multiple literatures \cite{abels2019dynamic, shelton2000balancing, van2017hybrid, Roijers_Vamplew_Whiteson_Dazeley_2013, Mossalam_Assael_Roijers_Whiteson_2016} dealing with multiple-reward reinforcement learning (multi-reward RL), basically tackling the case where the value function for a given state is no longer a scalar, but a vector, each of its element corresponding to the expected cumulative rewards for different reward functions.</p>
 
-<h3 id="value-function-approximation-via-stochastic-incremental-gradient-descent">Value Function Approximation via Stochastic (Incremental) Gradient Descent</h3>
+<p>Hybrid Reward Architecture (HRA) \cite{van2017hybrid}, for instance, uses a  multi-output DQN to take the advantage of multiple rewards to facilitate the training and boost the performance. However, its original paper have mainly tested its effect on binary rewards based on multiple goals, not for multiple hand-engineered reward functions. Thus, for this project, I want to assess whether using multiple reward functions does improve the performance of RL system, and propose a proper solution to do so. To summarize, I will:</p>
 
-<p>Approximate policy evaluation:</p>
+<ol>
+  <li>Assess the effect of various reward functions for various robot manipulation tasks in terms of success rate and convergence speed</li>
+  <li>Assess the effect of using multi-reward at once on robot arm manipulation task using various multi-reward RL algorithms (such as \cite{van2017hybrid})</li>
+  <li>Develop an algorithm that suits robot-arm manipulation task with multiple reward functions</li>
+</ol>
 
-\[\theta \in \arg \min_\theta J(\theta):= \frac{1}{2} \mathbb{E} \Big [ (Q_\theta^\pi (s_t, a_t) - y_t )^2 \Big ]\]
+<center><iframe src="https://player.vimeo.com/video/550034553?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="434" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen="" title="PickAndPlace - MultiRL (3 different weighted distance norm)"></iframe></center>
 
-<p>where $y_t$ is the estimate of $Q^\pi(s_t, a_t)$.</p>
-
-<p>Stochastic gradient using a single sample leads us to use</p>
-
-\[g_t := (Q_\theta^\pi (s_t, a_t) - y_t) \nabla_\theta Q_\theta ^\pi (s_t, a_t)\]
-
-<p>as a step direction. Note that</p>
-
-\[\mathbb{E}[g_t] = \nabla_\theta J(\theta)\]
-
-<p class="info">Check out the <a href="./2021/04/24/opt-lecture-15.html">Stochastic subgradient</a> post to learn more about stochastic gradient</p>
-
-<p>Then, we can update the parameter $\theta$</p>
-
-<p>\(\theta \leftarrow \theta + \alpha_t (Q_\theta^\pi (s_t, a_t) - y_t) \nabla_\theta Q_\theta^\pi (s_t, a_t)\)
-Since this is a <strong>stochastic gradient</strong>, this is not an exact policy evaluation algorithm. This is in fact called as <strong>inexact policy evaluation step</strong>. Now, we need to learn how to estimate $y_t$!</p>
-
-<h2 id="sarsa-on-policy">SARSA (On-policy)</h2>
-
-<h3 id="single-step-sarsa">Single-step SARSA</h3>
-
-<p>We need to define $y_t$, which can be used as an estimation of $Q_\theta^\pi(s_t, a_t)$. One possible choice is SARSA,</p>
-
-\[y_t := r_t + Q_\theta (s_{t+1}, a_{t+1})\]
-
-<p>You may notice the similarity between TD(0) algorithm. However, its convergence is not theoretically clear.</p>
-
-<h3 id="n-step-sarsa">$n$-Step SARSA</h3>
-
-\[y_t =r_t + \gamma r_{t+1}+ \cdots + \gamma^{n-1} r_{t+n-1} + \gamma^n Q_\theta(s_{t+n}, a_{t+n})\]
-
-<p>Note that n-step SARSA uses sample data generated by the policy at each step.</p>
-
-<p>\(\pi(s) \in \arg \max_{a\in A} Q_\theta(s,a)\)
-because $y_t$ is the target for $Q^\pi$.</p>
-
-<h2 id="q-learning-off-policy">Q-learning (Off-policy)</h2>
-
-<center><img src="https://live.staticflickr.com/65535/51146278828_b25a6d8cbe_o.png" alt="image-20210429193756484" style="zoom:50%;" /></center>
+<center><iframe src="https://player.vimeo.com/video/550034553?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="434" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen="" title="PickAndPlace - MultiRL (3 different weighted distance norm)"></iframe></center>
 
 </div><section class="article__sharing d-print-none"></section><br/>
   
@@ -441,7 +391,7 @@ because $y_t$ is the target for $Q^\pi$.</p>
       })();
   </script>
 
-  <div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-04-29T00:00:00+00:00"><!-- start custom article footer snippet -->
+  <div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-05-15T00:00:00+00:00"><!-- start custom article footer snippet -->
 
 <!-- end custom article footer snippet -->
 <div class="article__license"><div class="license">
@@ -452,7 +402,7 @@ because $y_t$ is the target for $Q^\pi$.</p>
     </p>
   </div></div><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </footer>
-<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2021/04/29/scrl-12.html">[RL Theory] Approximation RL in Value Space (Linear)</a></div><div class="next"><span>NEXT</span><a href="/2021/04/29/scrl-15.html">[RL Theory] Approximation RL in Policy Space</a></div></div></div>
+<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2021/04/29/scrl-16.html">[RL Theory] Actor-Critic Algorithm</a></div></div></div>
 
 </div>
 
