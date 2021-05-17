@@ -1,9 +1,9 @@
 <!DOCTYPE html><html lang="en">
   <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[RL Papers] Deep Deterministic Policy Gradient - Younghyo Park</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[RL Research] Multi Reward for Robot Arm Manipluation Task - Younghyo Park</title>
 
-<meta name="description" content="Policy EvaluationRecall      our policy gradient (REINFORCE) algorithm requires a gradient of\[J(\theta):= \mathbb{E}_{\tau \sim p_\theta(\tau)}\Big [ \sum_t...">
+<meta name="description" content="MotivationOne of the most popular applications of reinforcement learning is done for robot arm manipulation tasks. Motion planning of a robot arm can be done...">
 <link rel="canonical" href="http://139.59.110.180:4000/2021/05/15/ddpg.html"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
 <!--<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
 
@@ -336,11 +336,11 @@ fill="#000000" stroke="none">
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
 <!-- end custom main top snippet -->
-<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[RL Papers] Deep Deterministic Policy Gradient</h1></header><span class="split-space">&nbsp;</span>
+<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[RL Research] Multi Reward for Robot Arm Manipluation Task</h1></header><span class="split-space">&nbsp;</span>
           <a class="edit-on-github"
             title="Edit on Github"
             href="https://github.com/younghyopark/younghyopark.github.io/tree/main/_posts/2021-05-15-ddpg.md">
-            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[RL Papers] Deep Deterministic Policy Gradient"><div class="article__info clearfix"><ul class="left-col menu"><li>
+            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[RL Research] Multi Reward for Robot Arm Manipluation Task"><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
                 href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
             </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>May 15, 2021</span>
@@ -348,172 +348,28 @@ fill="#000000" stroke="none">
     <meta itemprop="keywords" content="Reinforcement-Learning"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
 
 <!-- end custom article top snippet -->
-<div class="article__content" itemprop="articleBody"><h2 id="policy-evaluation">Policy Evaluation</h2>
+<div class="article__content" itemprop="articleBody"><h2 id="motivation">Motivation</h2>
 
-<h3 id="recall">Recall</h3>
+<p>One of the most popular applications of reinforcement learning is done for robot arm manipulation tasks. Motion planning of a robot arm can be done by traditional motion planning methods such as classical line geometry approach, but \textbf{reinforcement learning} is considered as a robust solution that can be applied to wide variety of new or dynamic environments.</p>
 
-<ul>
-  <li>
-    <p>our policy gradient (REINFORCE) algorithm requires a gradient of</p>
+<p>The bane of reinforcement learning, however, is that we have to design the reward in a careful manner. A simple binary reward, only given when the episode succeeds the mission, is often too sparse and contains insufficient information for a successful training. Many papers such as Hindsight Experience Replay (HER) \cite{andrychowicz2017hindsight}, which allows the network to learn also from the failed attempts, was proposed as an effective solution to tackle this problem of sparse rewards. However, if we have certain amount of domain knowledge, it might be better to engineer a more expressive reward function for better performance and faster training.</p>
 
-\[J(\theta):= \mathbb{E}_{\tau \sim p_\theta(\tau)}\Big [ \sum_t r(s_t, a_t) \Big ]\]
+<p>Unfortunately, reward engineering is often considered problematic in reinforcement learning community. We may come up with multiple options for possible reward functions if we have adequate domain knowledge, but the problem is in its decision stage: besides testing out all possible options, how should we determine which is the best choice? Moreover, reward functions that we engineered may not give us an optimal policy that we have thought of: we may get a side-effect which is known as the \textit{cobra effect} \cite{lip2018introduction}. If the government, for instance, incentivize people to assist them in ridding the area of cobras by giving money in exchange of a killed snake, people will just start breeding venomous snakes! Same thing may happen in reinforcement learning, ending up with a policy that specifically suits the incentive we gave, not what we truly intended.</p>
 
-    <p>which can be calculated in a form of expectation:</p>
+<p>However, considering that reward engineering is the process of injecting human/domain knowledge into the RL system, it might be reasonable to expect the system to monotonously improve as we hand out more hints: multiple hand-engineered reward functions. If have such a solution, we may at least get rid of the problem of deciding the reward to use: we may use multiple possible reward functions all at once for training. Fortunately, there are multiple literatures \cite{abels2019dynamic, shelton2000balancing, van2017hybrid, Roijers_Vamplew_Whiteson_Dazeley_2013, Mossalam_Assael_Roijers_Whiteson_2016} dealing with multiple-reward reinforcement learning (multi-reward RL), basically tackling the case where the value function for a given state is no longer a scalar, but a vector, each of its element corresponding to the expected cumulative rewards for different reward functions.</p>
 
-\[\nabla_\theta J(\theta) = \mathbb{E}_{\tau \sim p_\theta (\tau)}\bigg [ \Big (\sum_{t=0}^T \nabla_\theta \log \pi_\theta (a_t |s_t) \Big ) \Big (\sum_{t=0}^T r(s_t, a_t) \Big ) \bigg ]\]
-  </li>
-  <li>
-    <p>We can also estimate above gradient in a data-driven approach:</p>
-
-    <ul>
-      <li>
-        <p>sample $N$ episodes of state-action transition based on current policy $\pi_\theta(a_t \vert s_t )$</p>
-      </li>
-      <li>
-        <p>Estimate the gradient by</p>
-
-\[\nabla_\theta J(\theta) \approx \frac{1}{N} \sum_{i=1}^N \bigg [ \Big (\sum_{t=0}^T \nabla_\theta \log \pi_\theta (a_t^i |s_t^i ) \Big ) \Big (\sum_{t=0}^T r(s_t^i, a_t^i ) \Big) \bigg ]\]
-      </li>
-      <li>
-        <p>Meanwhile, because of <strong>causality</strong>: policy at time $t’$ cannot affect reward at time $t&lt;t’$, we can rewrite the equation above</p>
-
-\[\begin{aligned}
-\nabla_\theta J(\theta) &amp; \approx \frac{1}{N} \sum_{i=1}^N \bigg [ \Big (\sum_{t=0}^T \nabla_\theta \log \pi_\theta (a_t^i |s_t^i ) \Big ) \Big (\sum_{t=0}^T r(s_t^i, a_t^i ) \Big) \bigg ]\\
-&amp; \approx \frac{1}{N} \sum_{i=1}^N \bigg [ \Big (\sum_{t=0}^T \nabla_\theta \log \pi_\theta (a_t^i |s_t^i ) \Big )\sum_{t'=t}^T r(s_{t'}^i, a_{t'}^i )  \bigg ]\\
-&amp; = \frac{1}{N} \sum_{i=1}^N \bigg [ \Big (\sum_{t=0}^T \nabla_\theta \log \pi_\theta (a_t^i |s_t^i ) \Big )Q(s_{t'}^i, a_{t'}^i )  \bigg ]
-\end{aligned}\]
-      </li>
-    </ul>
-  </li>
-  <li>
-    <p>Unfortunately, above gradient estimation can be extremely noisy: to reduce the variance, we introduced a technique called <strong>basline</strong>,</p>
-
-\[\nabla_\theta J(\theta) \approx \frac{1}{N} \sum_{i=1}^N \sum_{t=0}^T \nabla_\theta \log \pi_\theta(a_t^i |s_t^i ) \Big [ Q^{\pi_\theta}(s_t^i, a_t^i ) - b\Big ]\]
-
-    <p>while a good choise of baseline is $b= v^{\pi_\theta}(s_t, a_t)$ which leads to</p>
-
-\[\begin{aligned}
-\nabla_\theta J(\theta) &amp; \approx \frac{1}{N} \sum_{i=1}^N \sum_{t=0}^T \nabla_\theta \log \pi_\theta(a_t^i |s_t^i ) \Big [ Q^{\pi_\theta}(s_t^i, a_t^i ) - v^{\pi_\theta}(s_t^i, a_t^i)\Big ]\\
-&amp; \approx \frac{1}{N} \sum_{i=1}^N \sum_{t=0}^T \nabla_\theta \log \pi_\theta(a_t^i |s_t^i ) \Big [ A^{\pi_\theta}(s_t^i, a_t^i) \Big ]
-\end{aligned}\]
-  </li>
-</ul>
-
-<p>where $A$ is called an <strong>advantage function</strong> (always has negative value)</p>
-
-<p class="info">Now, our task is to better evaluate the policy: calculate $v^{\pi_\theta}$, or $Q^{\pi_\theta}$.</p>
-
-<h3 id="monte-carlo">Monte Carlo</h3>
-
-<p>One naive way to evaluate such policy might be the <strong>Monte Carlo</strong> method.
-\(v^\pi(s_t) \approx \frac{1}{N} \sum_{i=1}^N \sum_{t'=t}^T r_{t'}^i\)</p>
-
-<h3 id="function-approximation">Function Approximation</h3>
-
-<p>Otherwise, we might want to fit the value function by</p>
-
-<p>\(v^\pi(s_t) \approx v_{\phi}^\pi (s_t)\)
-where $\phi$ is the parameter vector for this value approximation function. To find the optimal $\phi$, we might consider a supervised learning with some training data with labels.</p>
-
-\[\text{training data} = \{(s^i, y^i)\}\]
-
-<p>Thus, our immediate task is to find out the labels $y^i$. Recall, that one naive way of doing so is the <strong>Monte Carlo</strong> method,</p>
-
-\[y^i = \sum_{t'=t}^T r_{t'}^i\]
-
-<p>or we might use the previous fitted value function</p>
-
-\[y_i = r(s_t^i, a_t^i) + v_{\phi}^\pi (s_{t+1}^i).\]
-
-<p>If we have all the labels, next step is simple: just a simple regression.</p>
-
-\[\min_\phi \mathcal{L}(\phi) = \frac{1}{2} \sum_i \|v_\phi^\pi(s_i) - y_i \|^2\]
-
-<h2 id="actor-critic-algorithm">Actor-Critic Algorithm</h2>
-
-<h3 id="algorithm">Algorithm</h3>
+<p>Hybrid Reward Architecture (HRA) \cite{van2017hybrid}, for instance, uses a  multi-output DQN to take the advantage of multiple rewards to facilitate the training and boost the performance. However, its original paper have mainly tested its effect on binary rewards based on multiple goals, not for multiple hand-engineered reward functions. Thus, for this project, I want to assess whether using multiple reward functions does improve the performance of RL system, and propose a proper solution to do so. To summarize, I will:</p>
 
 <ol>
-  <li>
-    <p>sample \(\{(s_t^i, a_t^i, s_{t+1}^i, r_t^i)\}\) using $\pi_\theta(a\vert s)$.</p>
-  </li>
-  <li>
-    <p>Fit $v_\phi^\pi(s)$ by solving the regression problem</p>
-
-\[\min_\phi \mathcal{L}(\phi) = \frac{1}{2} \sum_i \|v_\phi^\pi(s_i) - y_i \|^2\]
-
-    <p>choose an appropriate method to estimate $y_i$.</p>
-  </li>
-  <li>
-    <p>Evaluate the advantage</p>
-
-\[A^\pi (s_t^i, a_t^i) = Q^\pi (s_t^i, a_t^i) - v^\pi(s_t^i ) = r_t^i + v_\phi^\pi (s_{t+1}^i) - v_\phi^\pi(s_t^i)\]
-  </li>
-  <li>Estimate the gradient</li>
-  <li>Gradient ascent</li>
+  <li>Assess the effect of various reward functions for various robot manipulation tasks in terms of success rate and convergence speed</li>
+  <li>Assess the effect of using multi-reward at once on robot arm manipulation task using various multi-reward RL algorithms (such as \cite{van2017hybrid})</li>
+  <li>Develop an algorithm that suits robot-arm manipulation task with multiple reward functions</li>
 </ol>
 
-<p class="info">If we anaylze this algorithm, we can see that it’s quite similar to the policy iteration algorithm. <strong>Actor Critic is a data-driven version of PI.</strong> Step 2-3 is the part where we evalulate current policy, and step 4-5 is the part where we aim to improve(update) the policy.</p>
+<center><iframe src="https://player.vimeo.com/video/550034553?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="434" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen="" title="PickAndPlace - MultiRL (3 different weighted distance norm)"></iframe></center>
 
-<h3 id="intuition-behind-the-algorithm">Intuition behind the algorithm</h3>
+<center><iframe src="https://player.vimeo.com/video/550034553?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="434" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen="" title="PickAndPlace - MultiRL (3 different weighted distance norm)"></iframe></center>
 
-<center><img src="https://live.staticflickr.com/65535/51148681930_40f06580fe_o.png" alt="image-20210430125806266" style="zoom:50%;" /></center>
-
-<h3 id="actor-critic-algorithm-with-discount-factor">Actor-critic algorithm with discount factor</h3>
-
-<p>Simple, just take the discounting factor into account when</p>
-
-<ol>
-  <li>
-    <p>estimating $y_i$ via monte Carlo or TD(0)</p>
-  </li>
-  <li>
-    <p>Evaluate the advantage by</p>
-
-\[A^\pi (s_t^i, a_t^i) = Q^\pi (s_t^i, a_t^i) - v^\pi(s_t^i ) = r_t^i + {\color{red}{\gamma} }v_\phi^\pi (s_{t+1}^i) - v_\phi^\pi(s_t^i)\]
-  </li>
-</ol>
-
-<h3 id="disadvantages">Disadvantages</h3>
-
-<p>The biggest disadvantage of this actor-critic algorithm is that it is an <strong>on-policy</strong> algorithm. This can be extremely inefficient!</p>
-
-<h2 id="off-policy-actor-critic">Off-policy Actor-Critic</h2>
-
-<h3 id="what-if-we-dont-have-samples-from-pi_thetatau">What if we don’t have samples from $\pi_\theta(\tau)$?</h3>
-
-<p>Recall, that we are trying to find</p>
-
-\[\theta^\star = \arg \max_\theta J(\theta)= \arg \max_\theta \mathbb{E}_{\tau \sim p_\theta(\tau)} [r(\tau)]\]
-
-<p>What if we don’t have samples from $p_\theta(\tau)$, which is a distribution defined by current policy $\pi_\theta(\tau)$? Let’s assume, fortuantely, we have samples from some $\bar{\pi}(\tau)$ instead.  Then,</p>
-
-\[J(\theta) = \mathbb{E}_{\tau \sim \bar{p}(\tau)}\bigg [ \frac{p_\theta(\tau)}{\bar{p}(\tau)} r(\tau)\bigg ]
-\label{s}\]
-
-<p>which is driven by the <strong>importance sampling</strong> technique:</p>
-
-\[\begin{aligned}
-\mathbb{E}_{x\sim p(x)} [f(x)] &amp; = \int p(x)f(x)dx\\
-&amp; = \int \frac{q(x)}{q(x)}p(x)f(x)dx\\
-&amp; = \int q(x) \frac{p(x)}{	q(x)}f(x) dx\\
-&amp; = \mathbb{E}_{x\sim q(x)} \bigg [ \frac{p(x)}{q(x)}f(x)d x \bigg ] 
-\end{aligned}\]
-
-<p>Note that</p>
-
-\[\begin{aligned}
-&amp; p_\theta(\tau) = p(s_0) \prod_{t=0}^T \pi_\theta(a_t | s_t) p(s_{t+1}|s_t, a_t)\\
-&amp; \bar{p}(\tau) = p(s_0) \prod_{t=0}^T \bar{\pi}(a_t |s_t) p(s_{t+1}|s_t, a_t)
-\end{aligned}\]
-
-<p>Thus, equation $\ref{s}$ can be rewritten as</p>
-
-\[J(\theta) = \mathbb{E}_{\tau \sim \bar{p}(\tau)}\bigg [ \frac{\prod_{t=0}^T \pi_\theta(a_t | s_t)}{\prod_{t=0}^T \bar{\pi}(a_t|s_t)}r(\tau) \bigg ]\]
-
-<p>while its gradient can be approximated by</p>
-
-\[\nabla_\theta J(\theta) \approx \mathbb{E}_{\tau \sim \bar{p}(\tau)}\bigg [ \frac{\pi_\theta(a|s)}{\bar{\pi}(a|s)}\nabla_\theta \log \pi_\theta(a|s) r(\tau) \bigg ]\]
 </div><section class="article__sharing d-print-none"></section><br/>
   
   <div id="disqus_thread"></div>
