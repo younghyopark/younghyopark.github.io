@@ -72,6 +72,10 @@ Besides that, I love traveling, playing piano and learning new stuffs.</p>
   </div>
 </div>
 
+You can checkout the PDF version of my Curriculum Vitae [here](/assets/Younghyo_Park_CV.pdf)!
+{:.gray_no_border}
+
+
 ### <i class="fas fa-graduation-cap"></i>  Education
   - **2016 Mar - 2022 Feb** B.S. degree in Mechanical Engineering, Seoul National University [\[Courseworks\]](/courseworks)
     - GPA : Total 4.25 / 4.3, Major 4.25 / 4.3
@@ -79,39 +83,41 @@ Besides that, I love traveling, playing piano and learning new stuffs.</p>
 
   - **2014 Mar - 2016 Feb** Gyeonggi Science High School for the Gifted 
 
-
 ### <i class="fas fa-microscope"></i> Research Experiences
-- **2021 Mar - 2021 Dec** [Interactive & Networked Robotics Laboratory](https://www.inrol.snu.ac.kr), Seoul National University 
-  - Topic : 
+- **2021 Mar - 2021 Jun** [Interactive & Networked Robotics Laboratory](https://www.inrol.snu.ac.kr), **Research Intern**
+  - Topic : Development of multi-reward DDPG algorithm for robot-arm manipulation tasks
+- **2020 Sep - 2021 Aug** [Robotics Laboratory](https://sites.google.com/robotics.snu.ac.kr/fcp/), **Graduation Thesis Research Project**
+  - Topic : Enhancing Outlier Detection Performance via Autoencoder Pruning
 
-- **2020 Sep - 2021 Aug** [Robotics Laboratory](https://sites.google.com/robotics.snu.ac.kr/fcp/), Seoul National University 
-  - Topic : Robot Collision Detection using Unsupervised Anomaly Detection Algorithm (Advisor Frank C. Park) [\[Summary\]]()
-- **2020 Jul - 2021 Jan** [Saige Research](https://saigeresearch.ai), Machine Learning Research Intern
-  - Topic : Developing Out-of-Distribution Image Detection Algorithm for Industrial Images [\[Summary\]](/saige)
+- **2020 Sep - 2021 Feb** [Robotics Laboratory](https://sites.google.com/robotics.snu.ac.kr/fcp/), **Research Intern**
+  - Topic : Robot Collision Detection using Unsupervised Anomaly Detection Algorithm (Advisor Frank C. Park)
+- **2020 Jul - 2021 Jan** [Saige Research](https://saigeresearch.ai), **Machine Learning Research Intern**
+  - Topic : Developing Out-of-Distribution Image Detection Algorithm for Industrial Images
 
 
 ### <i class="fas fa-pencil-alt"></i> Publications
+- Kyumin Park, **Younghyo Park**, Sangwoong Yoon and Frank C. Park. **Collision Detection for Robot Manipulators Using Unsupervised Anomaly Detection Algorithms**, IEEE/ASME Transactions on Mechatronics, 2021 (Under-Review)
 - **Younghyo Park**, Jaehyeok Bae and Jinwoo Lee. **Design of a Perforated Panel for Transmission Noise Reduction**, Transactions of the Korean Society of Mechanical Engineers, 2015
-
-
-### <i class="fas fa-chalkboard-teacher"></i> Teaching Experience
-- **2020 Sep - 2020 Feb**, Undergraduate Tutor, Dynamics / Fluid Dynamics / Introduction to Robotics
-- **2020 Mar - 2020 Jun**, Undergraduate Tutor, Solid Mechanics
-
-### <i class="fas fa-globe-americas"></i> English Proficiency
-- **TOEFL** 114/120 (2021)
-- **GRE** 164/170/4.0 (2020)
-
-
-### <i class="fas fa-coins"></i> Scholarship
-- **2016 Mar - 2021 Feb**, National Science& Technology Scholarship (4-year Full Tuition)
 
 ### <i class="fab fa-python"></i> Skills
 - **Programming**: Python, MATLAB
-- **Libraries**: PyTorch, OpenAI-gym, Mujoco, CVX
+- **Libraries/Frameworks**: PyTorch, OpenAI-gym, MuJoCo, CVX
+- **Developer Tools**: GitHub, VS Code, Jupyter, Google Cloud Platform
 - **Software & Tools**: Linux, Latex
 - **Modeling and Analysis**: SolidWorks, COMSOL
 - **Languages**: Korean (native), English 
+
+### <i class="fas fa-globe-americas"></i> English Proficiency
+- **TOEFL** 114/120 (Reading 30/30, Listening 30/30, Speaking 26/30, Writing 28/30) [pdf](./assets/TOEFL_ScoreReport_YounghyoPark_new copy copy.pdf)
+- **GRE** Verbal Reasoning 164/170, Quantitative Reasoning 170/170, Analytical Writing 4.0/5.0 [pdf](./assets/GRE_ScoreReport_YounghyoPark copy copy.pdf)
+
+### <i class="fas fa-chalkboard-teacher"></i> Teaching Experience
+- **2020 Sep - 2020 Feb**, Undergraduate Tutor (Dynamics / Fluid Dynamics / Introduction to Robotics)
+- **2020 Mar - 2020 Jun**, Undergraduate Tutor (Solid Mechanics)
+
+### <i class="fas fa-coins"></i> Scholarship
+- **2016 Mar - 2021 Feb**, National Science & Technology Scholarship (4-year Full Tuition)
+
 
 
 <!-- Celeste is a lightweight Jekyll theme that features a minimalist, content-first design. It places your content center stage and lets your readers view them in a clutter-free environment without visual distractions. It is based on [Poole](https://github.com/poole/poole), the Jekyll butler, by [@mdo](https://twitter.com/mdo).

@@ -350,25 +350,369 @@ fill="#000000" stroke="none">
 <!-- end custom article top snippet -->
 <div class="article__content" itemprop="articleBody"><h2 id="motivation">Motivation</h2>
 
-<p>One of the most popular applications of reinforcement learning is done for robot arm manipulation tasks. Motion planning of a robot arm can be done by traditional motion planning methods such as classical line geometry approach, but \textbf{reinforcement learning} is considered as a robust solution that can be applied to wide variety of new or dynamic environments.</p>
+<p>One of the most popular applications of reinforcement learning is done for robot arm manipulation tasks. Motion planning of a robot arm can be done by traditional motion planning methods such as classical line geometry approach, but <strong>reinforcement learning</strong> is considered as a robust solution that can be applied to wide variety of new or dynamic environments.</p>
 
-<p>The bane of reinforcement learning, however, is that we have to design the reward in a careful manner. A simple binary reward, only given when the episode succeeds the mission, is often too sparse and contains insufficient information for a successful training. Many papers such as Hindsight Experience Replay (HER) \cite{andrychowicz2017hindsight}, which allows the network to learn also from the failed attempts, was proposed as an effective solution to tackle this problem of sparse rewards. However, if we have certain amount of domain knowledge, it might be better to engineer a more expressive reward function for better performance and faster training.</p>
+<p>The bane of reinforcement learning, however, is that we have to <strong>design the reward</strong> in a careful manner. A simple binary reward, only given when the episode succeeds the mission, is often too sparse and contains insufficient information for a successful training. Many papers such as Hindsight Experience Replay (HER), which allows the network to learn also from the failed attempts, was proposed as an effective solution to tackle this problem of sparse rewards. However, if we have certain amount of domain knowledge, it might be better to engineer a more expressive reward function for better performance and faster training.</p>
 
-<p>Unfortunately, reward engineering is often considered problematic in reinforcement learning community. We may come up with multiple options for possible reward functions if we have adequate domain knowledge, but the problem is in its decision stage: besides testing out all possible options, how should we determine which is the best choice? Moreover, reward functions that we engineered may not give us an optimal policy that we have thought of: we may get a side-effect which is known as the \textit{cobra effect} \cite{lip2018introduction}. If the government, for instance, incentivize people to assist them in ridding the area of cobras by giving money in exchange of a killed snake, people will just start breeding venomous snakes! Same thing may happen in reinforcement learning, ending up with a policy that specifically suits the incentive we gave, not what we truly intended.</p>
+<p>Unfortunately, reward engineering is often considered problematic in reinforcement learning community. We may come up with multiple options for possible reward functions if we have adequate domain knowledge, but the problem is in its decision stage: besides testing out all possible options, how should we determine which is the best choice? Moreover, reward functions that we engineered may not give us an optimal policy that we have thought of: we may get a side-effect which is known as the <em>cobra effect</em>. If the government, for instance, incentivize people to assist them in ridding the area of cobras by giving money in exchange of a dead snake, people will just start breeding venomous snakes just to kill them! Same thing may happen in reinforcement learning, ending up with a policy that specifically suits the incentive we gave, not what we truly intended.</p>
 
-<p>However, considering that reward engineering is the process of injecting human/domain knowledge into the RL system, it might be reasonable to expect the system to monotonously improve as we hand out more hints: multiple hand-engineered reward functions. If have such a solution, we may at least get rid of the problem of deciding the reward to use: we may use multiple possible reward functions all at once for training. Fortunately, there are multiple literatures \cite{abels2019dynamic, shelton2000balancing, van2017hybrid, Roijers_Vamplew_Whiteson_Dazeley_2013, Mossalam_Assael_Roijers_Whiteson_2016} dealing with multiple-reward reinforcement learning (multi-reward RL), basically tackling the case where the value function for a given state is no longer a scalar, but a vector, each of its element corresponding to the expected cumulative rewards for different reward functions.</p>
+<p>However, considering that reward engineering is the process of injecting human/domain knowledge into the RL system, it might be reasonable to expect the system to monotonously improve as we hand out more hints: <strong>multiple hand-engineered reward functions</strong>. If have such a solution, we may at least get rid of the problem of deciding which reward to use: we may use multiple possible reward functions all at once for training. Fortunately, there are multiple literatures dealing with multiple-reward reinforcement learning (multi-reward RL), basically tackling the case where the value function for a given state is no longer a scalar, but a vector, each of its element corresponding to the expected cumulative rewards for different reward functions.</p>
 
-<p>Hybrid Reward Architecture (HRA) \cite{van2017hybrid}, for instance, uses a  multi-output DQN to take the advantage of multiple rewards to facilitate the training and boost the performance. However, its original paper have mainly tested its effect on binary rewards based on multiple goals, not for multiple hand-engineered reward functions. Thus, for this project, I want to assess whether using multiple reward functions does improve the performance of RL system, and propose a proper solution to do so. To summarize, I will:</p>
+<p>Hybrid Reward Architecture (HRA), for instance, uses a multi-output DQN to take the advantage of multiple rewards to facilitate the training and boost the performance. However, its original paper have mainly tested its effect on binary rewards based on multiple goals, not for multiple hand-engineered reward functions. Also, many papers dealing with multi-reward problems rather used a finite-action space environment, which can’t be directly applied to robot manipulation problems. Thus, for this project, I want to assess whether using multiple reward functions does improve the performance of RL system, and propose a proper solution to do so. To summarize, I will:</p>
 
 <ol>
   <li>Assess the effect of various reward functions for various robot manipulation tasks in terms of success rate and convergence speed</li>
-  <li>Assess the effect of using multi-reward at once on robot arm manipulation task using various multi-reward RL algorithms (such as \cite{van2017hybrid})</li>
+  <li>Assess the effect of using multi-reward at once on robot arm manipulation task using various multi-reward RL algorithms</li>
   <li>Develop an algorithm that suits robot-arm manipulation task with multiple reward functions</li>
 </ol>
 
-<center><iframe src="https://player.vimeo.com/video/550034553?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="434" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen="" title="PickAndPlace - MultiRL (3 different weighted distance norm)"></iframe></center>
+<h2 id="review--ddpg-algorithm">Review : DDPG Algorithm</h2>
 
-<center><iframe src="https://player.vimeo.com/video/550034553?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="434" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen="" title="PickAndPlace - MultiRL (3 different weighted distance norm)"></iframe></center>
+<p>Since we are dealing with the environment / task that requires continuous action space, we will use DDPG algorithm as a baseline. Before we dig into the details, let’s review the basics of DDPG algorithm.</p>
+
+<h3 id="innovations--problems-of-dqn">Innovations / Problems of DQN</h3>
+
+<p>Two innovations that DQN brought into the RL community was the usage of</p>
+
+<ol>
+  <li>the usage of <strong>target Q-network</strong> for stabilized training</li>
+  <li>the usage of <strong>replay-buffer</strong>, reducing the bias between training samples while at the same time increasing the sample efficiency</li>
+</ol>
+
+<p>However, one of the major drawbacks of DQN was that it was quite hard to use it for continuous action spaces. One might try discretizing the action space, but obviously, cannot be the ultimate solution, especially when our environment becomes complex. Thus, when dealing with continuous action space, <strong>policy gradient algorithms are used more often</strong>.</p>
+
+<h3 id="stochastic-pg--actor-critic">Stochastic PG / Actor-Critic</h3>
+
+<p>Recall that, policy gradient we tried to compute the gradient of</p>
+
+\[J(\theta):= \mathbb{E}_{\tau \sim p_\theta (\tau)} \bigg [ \sum_t r(s_t,a_t) \bigg ]\]
+
+<p>where $p_\theta$ is the probability of given trajectory</p>
+
+\[p_\theta(\tau) = p(s_0) \prod_{t=0}^T \pi_\theta(a_t | s_t) p(s_{t+1}|s_t, a_t)\]
+
+<p>to perform a gradient ascent to solve the optimization problem below.
+\(\max_\theta J(\theta)\)</p>
+
+<p>After some simple mathematical tricks, we could compute the gradient by</p>
+
+\[\begin{aligned}
+\nabla_\theta J(\theta) &amp; = \mathbb{E}_{\tau \sim p_\theta (\tau)} \bigg [ \sum_{t=0}^T \nabla_\theta \log \pi_\theta(a_t|s_t) r(\tau) \bigg ]\\
+&amp; = \mathbb{E}_{\tau \sim p_\theta(\tau)}\bigg [ \Big ( \sum_{t=0}^T \nabla_\theta \log \pi_\theta(a_t|s_t) \Big ) \Big ( \sum_{t=0}^T r(s_t, a_t) \Big )\bigg ].
+\end{aligned}\]
+
+<p>Remeber the next step? For the purpose of reducing the variance, we tried to estimate the value function of current policy $\pi_\theta$ to use it as a baseline. This value function estimation step was basically the <strong>critic</strong> part of actor-critic algorithm that assesses the quality of policy that <strong>actor</strong> produced.</p>
+
+<p class="gray_no_border">However, note that the policy we’re trying to use in this algorithm is <strong>stochastic policy</strong>. Unfortunately, usage of stochastic policy might be burdensome in some cases.</p>
+
+<h3 id="deterministic-policy-gradient-dpg">Deterministic Policy Gradient (DPG)</h3>
+
+<p>In many cases, it is sufficient to use deterministic policy rather than complicated stochastic policy.</p>
+
+\[a= \mu(s;\theta) = \mu_\theta(s)\]
+
+<p>However, in this case, it seems quite awkward to compute the gradient of certain functions. Why? Try to compute $p_\theta(\tau)$ in above equations! How should we replace the stochastic probability term $\pi_\theta(a_t | s_t)$ with deterministic policy term, which basically isn’t a probability distribution?</p>
+
+<p>In fact, in deterministic policy setting, our objective function should be defined as</p>
+
+\[J(\theta) = \mathbb{E}_{s\sim \rho^\mu} \bigg [ Q(s, \mu_\theta(s)) \bigg ] = \int_{\mathcal{S}}\rho^\mu(s)Q(s, \mu_\theta(s))ds\]
+
+<p>where $\rho^\mu$ is basically the equivalent of $p_\theta(\tau)$ from the stochastic version policy gradient, defined as</p>
+
+\[\rho^\mu (s') = \int_{\mathcal{S}}\sum_{k=1}^\infty \gamma^{k-1}\rho_0 (s) \rho^\mu (s \rightarrow s', k) ds.\]
+
+<p>Here, $\rho(s)$ is the initial distribution of states, and $\rho^\mu(s\rightarrow s’,k)$ is the probability of state being $s’$ starting from state $s$ after $k$ steps following deterministic policy $\mu$. So basically, $\rho^\mu(s)$ can be interpreted as <strong>discounted state distribution</strong> - the probability of state $s$ being observed at any time step, starting from any initial state $s$.</p>
+
+<p>Now, we have to compute the gradient. By the chain rule:</p>
+
+\[\begin{aligned}
+\nabla_\theta J(\theta) &amp; =\int_\mathcal{S} \rho^\mu(s)\nabla_a Q(s,a) \nabla_\theta \mu_\theta(s)  \Big | _{a=\mu_\theta(s)} ds\\
+&amp; = \mathbb{E}_{s\sim \rho^\mu}\bigg [\nabla_a Q(s,a) \nabla_\theta\mu_\theta(s)  \Big |_{a=\mu_\theta(s)}\bigg ] 
+\end{aligned}\]
+
+<p>Seems quite similar to the stochastic one, huh? Preceding steps are exactly same with the stochastic one.</p>
+
+<h3 id="deep-deterministic-policy-gradient-ddpg">Deep Deterministic Policy Gradient (DDPG)</h3>
+
+<p>DDPG is the combination of DQN + DPG (Deterministic Actor-Critic). While the fundamental procedure mainly follows DPG’s actor-critic algorithm, important techniques such as experience replay and frozen target network idea are also implemented into the DDPG algorithm.</p>
+
+<ol>
+  <li>
+    <p>Initialize the critic network \(Q(s,a ; \theta^Q)\) and actor network \(\mu(s;\theta^\mu)\) with weights $\theta^Q$ and $\theta^\mu$.</p>
+  </li>
+  <li>
+    <p>Motivated by DQN, introduce the <strong>target-version of each network</strong>: $Q’$ and $\mu’$. Initialize it with the same parameter.</p>
+  </li>
+  <li>
+    <p>Motivated by DQN, introduce <strong>replay buffer</strong> $R$. Initialize it.</p>
+  </li>
+  <li>
+    <p>for $M$ episodes… do</p>
+
+    <ol>
+      <li>
+        <p>Replacing the $\epsilon$-greedy policy (for better exploration), DDPG adds <strong>random noise</strong> $\mathcal{N}$ to the deterministic policy $\mu_\theta(s)$ for exploration. Initialize this random noise $\mathcal{N}$.</p>
+
+\[\mu'(s)  = \mu_\theta(s) + \mathcal{N}\]
+      </li>
+      <li>
+        <p>Starting from the initial observation state $s_1$, repeat for $T$ steps…</p>
+
+        <ol>
+          <li>
+            <p>Select action \(a_t = \mu(s_t ; \theta^\mu)+\mathcal{N}_t\)</p>
+          </li>
+          <li>
+            <p>Execute selected action $a_t$ and observe reward $r_t$ and new state $s_{t+1}$.</p>
+          </li>
+          <li>
+            <p>Store the transition $(s_t, a_t, r_t, s_{t+1})$ in the replay buffer $R$.</p>
+          </li>
+          <li>
+            <p>(If sufficient samples are stored inside the replay buffer) sample a random minibatch of $N$ transitions from the buffer $R$.</p>
+
+\[(s_i, a_i, r_i, s_{i+1}) \ \ \ i=1, \cdots, N\]
+          </li>
+          <li>
+            <p>Solve the regression problem and update the critic network : <strong>Critic Part of DDPG</strong></p>
+
+\[\begin{aligned}
+&amp; y_i = r_i + \gamma Q'(s_{i+1}, \mu'(s_{i+1}|\theta^{\mu'})\big |\theta^{Q'})\\
+&amp; \theta ^Q \leftarrow \arg\min_{\theta^Q}\frac{1}{N} \sum_i \big [ y_i - Q(s_i,a_i | \theta^Q)\big ]^2
+\end{aligned}\]
+          </li>
+          <li>
+            <p>Update the actor network (policy) using the sampled minibtach transitions</p>
+
+\[\nabla_{\theta^\mu} J(\theta^\mu) = \frac{1}{N} \bigg [ \sum_i \nabla_a Q(s_i,a|\theta^Q )\big | _{a=\mu_\theta(s_i)}\nabla_{\theta^\mu}\mu(s_i|\theta^\mu)\bigg ]\]
+          </li>
+          <li>
+            <p>Motivated by DQN, but slightly changing the method, update the target in a <strong>soft-manner</strong>, <strong>every step</strong>.</p>
+
+\[\theta^{Q'} \leftarrow \tau \theta^Q + (1-\tau)\theta^{Q'}\\
+\theta^{\mu'} \leftarrow \tau \theta^{\mu} + (1-\tau)\theta^{\mu'}\]
+          </li>
+        </ol>
+      </li>
+    </ol>
+  </li>
+</ol>
+
+<h3 id="important-tip-for-applying-ddpg-in-robotics">Important Tip for applying DDPG in Robotics</h3>
+
+<p>Unlike many game-based RL tasks (e.g. ATARI game), where the input state is basically pixels within a fixed range, states we observe in robot manipulation task are consisted of different units and scales (e.g. position, angular position, velocity and angular velocity). We can expect that different scales within the state may hinder the training process. Thus, DDPG algorithm uses popular <strong><u>batch normalization</u></strong> technique to normalize each dimension across the samples in a minibatch to have unit mean and variance.</p>
+
+<h2 id="baseline-experiments">Baseline Experiments</h2>
+
+<h3 id="implementation">Implementation</h3>
+
+<p>First of all, as my first attempt, I slightly altered the DDPG architecture to make the algorithm accept multiple rewards. This alteration was pretty simple: I just had to change the critic network to output multi-valued vector where $n$ is the number of rewards we are going to use.</p>
+
+\[Q(s,a | \theta^Q) = \begin{bmatrix} Q_1 \\
+ \vdots \\ Q_n\end{bmatrix} \in \mathbb{R}^n\]
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># define the actor network
+</span><span class="k">class</span> <span class="nc">actor</span><span class="p">(</span><span class="n">nn</span><span class="p">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env_params</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">actor</span><span class="p">,</span> <span class="bp">self</span><span class="p">).</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">max_action</span> <span class="o">=</span> <span class="n">env_params</span><span class="p">[</span><span class="s">'action_max'</span><span class="p">]</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">fc1</span> <span class="o">=</span> <span class="n">nn</span><span class="p">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">env_params</span><span class="p">[</span><span class="s">'obs'</span><span class="p">]</span> <span class="o">+</span> <span class="n">env_params</span><span class="p">[</span><span class="s">'goal'</span><span class="p">],</span> <span class="mi">256</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">fc2</span> <span class="o">=</span> <span class="n">nn</span><span class="p">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="mi">256</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">fc3</span> <span class="o">=</span> <span class="n">nn</span><span class="p">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="mi">256</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">action_out</span> <span class="o">=</span> <span class="n">nn</span><span class="p">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="n">env_params</span><span class="p">[</span><span class="s">'action'</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="p">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">fc1</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="p">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">fc2</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="p">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">fc3</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="n">actions</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">max_action</span> <span class="o">*</span> <span class="n">torch</span><span class="p">.</span><span class="n">tanh</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">action_out</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">actions</span>
+
+<span class="k">class</span> <span class="nc">critic</span><span class="p">(</span><span class="n">nn</span><span class="p">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env_params</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">critic</span><span class="p">,</span> <span class="bp">self</span><span class="p">).</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">max_action</span> <span class="o">=</span> <span class="n">env_params</span><span class="p">[</span><span class="s">'action_max'</span><span class="p">]</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">num_reward</span> <span class="o">=</span> <span class="n">env_params</span><span class="p">[</span><span class="s">'num_reward'</span><span class="p">]</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">fc1</span> <span class="o">=</span> <span class="n">nn</span><span class="p">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">env_params</span><span class="p">[</span><span class="s">'obs'</span><span class="p">]</span> <span class="o">+</span> <span class="n">env_params</span><span class="p">[</span><span class="s">'goal'</span><span class="p">]</span> <span class="o">+</span> <span class="n">env_params</span><span class="p">[</span><span class="s">'action'</span><span class="p">],</span> <span class="mi">256</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">fc2</span> <span class="o">=</span> <span class="n">nn</span><span class="p">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="mi">256</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">fc3</span> <span class="o">=</span> <span class="n">nn</span><span class="p">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="mi">256</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">intermediate_q_out</span> <span class="o">=</span> <span class="n">nn</span><span class="p">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="bp">self</span><span class="p">.</span><span class="n">num_reward</span><span class="p">)</span>
+<span class="c1">#         self.q_out = nn.Linear(self.num_reward, 1, bias=False)
+</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">actions</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">cat</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">actions</span> <span class="o">/</span> <span class="bp">self</span><span class="p">.</span><span class="n">max_action</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="p">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">fc1</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="p">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">fc2</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="p">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">fc3</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="n">q_value</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">intermediate_q_out</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="c1">#         q_value = self.q_out(x)
+</span>
+        <span class="k">return</span> <span class="n">q_value</span>
+</code></pre></div></div>
+
+<p>While there might be possible/necessary alterations that needs to be implemented to make multiRL + DDPG idea work, I changed nothing from the original training code. In fact, the original code itself works just fine, but the internal computation is changed a bit.</p>
+
+<p>Remeber that original DDPG updated the critic network by solving the regression problem below?</p>
+
+\[\begin{aligned}
+&amp; y_i = r_i + \gamma Q'(s_{i+1}, \mu'(s_{i+1}|\theta^{\mu'})\big |\theta^{Q'})\\
+&amp; \theta ^Q \leftarrow \arg\min_{\theta^Q}\frac{1}{N} \sum_i \big [ y_i - Q(s_i,a_i | \theta^Q)\big ]^2
+\end{aligned}\]
+
+<p>Well, if we have multiple rewards and a critic network that ouputs a vectorized output, above equation should be changed a bit.</p>
+
+\[\begin{aligned}
+&amp; y_i = r_i + \gamma Q'(s_{i+1}, \mu'(s_{i+1};\theta^{\mu'}) ;\theta^{Q'})\\
+&amp; \theta ^Q \leftarrow \arg\min_{\theta^Q}\frac{1}{N} \sum_i \big \| y_i - Q(s_i,a_i ; \theta^Q)\big \|^2
+\end{aligned}\]
+
+<p>Notice any difference? The term \(y_i - Q(s_i, a_i ; \theta^Q)\) is no longer a scalar, but a vector of $\mathbb{R}^n$. Thus, most naive choice might be to take the norm of that vector. Fortunately, the original code automatically calculates the critic loss function as defined above.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">_update_network</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+  <span class="c1"># sample the episodes
+</span>  <span class="n">transitions</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="nb">buffer</span><span class="p">.</span><span class="n">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">args</span><span class="p">.</span><span class="n">batch_size</span><span class="p">)</span>
+  <span class="c1"># pre-process the observation and goal
+</span>  <span class="n">o</span><span class="p">,</span> <span class="n">o_next</span><span class="p">,</span> <span class="n">g</span> <span class="o">=</span> <span class="n">transitions</span><span class="p">[</span><span class="s">'obs'</span><span class="p">],</span> <span class="n">transitions</span><span class="p">[</span><span class="s">'obs_next'</span><span class="p">],</span> <span class="n">transitions</span><span class="p">[</span><span class="s">'g'</span><span class="p">]</span>
+	<span class="p">...</span>
+  <span class="c1"># normalize the states
+</span>  <span class="n">obs_norm</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">o_norm</span><span class="p">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">transitions</span><span class="p">[</span><span class="s">'obs'</span><span class="p">])</span>
+	<span class="p">...</span>
+  <span class="c1"># transfer them into the tensor
+</span>  <span class="p">...</span>
+  <span class="c1"># use cuda GPU if possible
+</span>  <span class="k">if</span> <span class="bp">self</span><span class="p">.</span><span class="n">args</span><span class="p">.</span><span class="n">cuda</span><span class="p">:</span>
+    <span class="n">inputs_norm_tensor</span> <span class="o">=</span> <span class="n">inputs_norm_tensor</span><span class="p">.</span><span class="n">cuda</span><span class="p">()</span>
+    <span class="n">inputs_next_norm_tensor</span> <span class="o">=</span> <span class="n">inputs_next_norm_tensor</span><span class="p">.</span><span class="n">cuda</span><span class="p">()</span>
+    <span class="n">actions_tensor</span> <span class="o">=</span> <span class="n">actions_tensor</span><span class="p">.</span><span class="n">cuda</span><span class="p">()</span>
+    <span class="n">r_tensor</span> <span class="o">=</span> <span class="n">r_tensor</span><span class="p">.</span><span class="n">cuda</span><span class="p">()</span>
+    
+    <span class="c1"># calculate the target Q value function
+</span>    <span class="k">with</span> <span class="n">torch</span><span class="p">.</span><span class="n">no_grad</span><span class="p">():</span>
+      <span class="n">actions_next</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">actor_target_network</span><span class="p">(</span><span class="n">inputs_next_norm_tensor</span><span class="p">)</span>
+      <span class="n">q_next_value</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">critic_target_network</span><span class="p">(</span><span class="n">inputs_next_norm_tensor</span><span class="p">,</span> <span class="n">actions_next</span><span class="p">)</span>
+      <span class="n">q_next_value</span> <span class="o">=</span> <span class="n">q_next_value</span><span class="p">.</span><span class="n">detach</span><span class="p">()</span>
+			
+      <span class="n">target_q_value</span> <span class="o">=</span> <span class="n">r_tensor</span> <span class="o">+</span> <span class="bp">self</span><span class="p">.</span><span class="n">args</span><span class="p">.</span><span class="n">gamma</span> <span class="o">*</span> <span class="n">q_next_value</span>   <span class="c1"># This is now a n-dimensional vector (as a batch)
+</span>      <span class="n">target_q_value</span> <span class="o">=</span> <span class="n">target_q_value</span><span class="p">.</span><span class="n">detach</span><span class="p">()</span>  
+      <span class="c1"># clip the q value
+</span>      <span class="n">clip_return</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="p">.</span><span class="n">args</span><span class="p">.</span><span class="n">gamma</span><span class="p">)</span>
+      <span class="n">target_q_value</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">target_q_value</span><span class="p">,</span> <span class="o">-</span><span class="n">clip_return</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> 
+      <span class="c1"># the q loss
+</span>      <span class="n">real_q_value</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">critic_network</span><span class="p">(</span><span class="n">inputs_norm_tensor</span><span class="p">,</span> <span class="n">actions_tensor</span><span class="p">)</span>
+      <span class="n">critic_loss</span> <span class="o">=</span> <span class="p">(</span><span class="n">target_q_value</span> <span class="o">-</span> <span class="n">real_q_value</span><span class="p">).</span><span class="nb">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">).</span><span class="n">mean</span><span class="p">()</span>   <span class="c1"># compute the loss as the norm of vector difference divided by number of reward n
+</span>
+      <span class="n">actions_real</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">actor_network</span><span class="p">(</span><span class="n">inputs_norm_tensor</span><span class="p">)</span>
+      <span class="n">actor_loss</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="p">.</span><span class="n">critic_network</span><span class="p">(</span><span class="n">inputs_norm_tensor</span><span class="p">,</span> <span class="n">actions_real</span><span class="p">).</span><span class="n">mean</span><span class="p">()</span>
+      <span class="n">actor_loss</span> <span class="o">+=</span> <span class="bp">self</span><span class="p">.</span><span class="n">args</span><span class="p">.</span><span class="n">action_l2</span> <span class="o">*</span> <span class="p">(</span><span class="n">actions_real</span> <span class="o">/</span> <span class="bp">self</span><span class="p">.</span><span class="n">env_params</span><span class="p">[</span><span class="s">'action_max'</span><span class="p">]).</span><span class="nb">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">).</span><span class="n">mean</span><span class="p">()</span>
+      <span class="c1"># start to update the network
+</span>      <span class="bp">self</span><span class="p">.</span><span class="n">actor_optim</span><span class="p">.</span><span class="n">zero_grad</span><span class="p">()</span>
+      <span class="n">actor_loss</span><span class="p">.</span><span class="n">backward</span><span class="p">()</span>
+      <span class="n">sync_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">actor_network</span><span class="p">)</span>
+      <span class="bp">self</span><span class="p">.</span><span class="n">actor_optim</span><span class="p">.</span><span class="n">step</span><span class="p">()</span>
+      <span class="c1"># update the critic_network
+</span>      <span class="bp">self</span><span class="p">.</span><span class="n">critic_optim</span><span class="p">.</span><span class="n">zero_grad</span><span class="p">()</span>
+      <span class="n">critic_loss</span><span class="p">.</span><span class="n">backward</span><span class="p">()</span>
+      <span class="n">sync_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">critic_network</span><span class="p">)</span>
+      <span class="bp">self</span><span class="p">.</span><span class="n">critic_optim</span><span class="p">.</span><span class="n">step</span><span class="p">()</span>
+</code></pre></div></div>
+
+<h3 id="pick-and-place-operation">Pick And Place Operation</h3>
+
+<ul>
+  <li>
+    <p><strong>DDPG + HER (Sparse reward)</strong></p>
+
+    <p>Defining goal state (position) as $\mathbf{g}=[g_x, g_y, g_z]$ and current state (object position) as $\mathbf{s} = [s_x, s_y, s_z]$, original DDPG algorithm uses the reward with predefined threshold $t$.  Trained the network for 50 epochs, 50 samples collected per epoch, updated the network 40 times per epoch.</p>
+
+\[r(\mathbf{s,g}) = \begin{cases} -1 &amp; \ \text{if }(\|\mathbf{s-g}\|_2  &gt;t )\\
+0 &amp; \ \text{if }(\|\mathbf{s-g}\|_2  \leq t )\end{cases}\]
+  </li>
+</ul>
+
+<center><iframe src="https://player.vimeo.com/video/551589466" width="522" height="360" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
+
+<ul>
+  <li>
+    <p><strong>DDPG + HER + MultiRL</strong></p>
+
+    <p>For my version of DDPG, I used a vector-format reward function which each component weighs the distance difference in each axis differently with \(M=10\)</p>
+
+\[r(\mathbf{s,g}) = \begin{bmatrix} \sqrt{[M,1,1] \mathbf{d}} \\ \sqrt{[1,M,1] \mathbf{d}} \\ \sqrt{[1,1,M]  \mathbf{d}} \end{bmatrix}\]
+
+    <p>where</p>
+
+\[\mathbf{d}= \begin{bmatrix} (s_x- g_x)^2 \\ (s_y - g_y)^2 \\ (s_z - g_z)^2 \end{bmatrix}\]
+  </li>
+</ul>
+<center><iframe src="https://player.vimeo.com/video/551589506" width="522" height="360" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
+
+<p class="gray_no_border">Unfortuantely, for Pick And Place operation, multi-reward RL doesn’t seem to be that efficient. It seems like, since the reward still exists even when the episode were not able to succeed to achieve its goal, the RL training algorithm seems to be stalling during its training phase at sub-optimal point. <strong>Note that, in MultiRL phase,</strong> the robot doesn’t try to lift-up the object when the goal is in the air: this may be due to the fact that the reward is still (sufficiently) maximized only with the action that centers the only the x-y dimension between the object and goal position.</p>
+
+<h3 id="slide-operation">Slide Operation</h3>
+
+<ul>
+  <li><strong>DDPG + HER (Sparse reward)</strong></li>
+</ul>
+
+<center><iframe src="https://player.vimeo.com/video/551589491" width="522" height="360" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
+
+<p>Using the same reward function we used for Pick And Place operation, with longer training epochs (200), baseline DDPG + HER doesn’t seem to work well: the model frequently makes some non-sense mistake, pushing down the puck and making it to fall off the table.</p>
+
+<ul>
+  <li><strong>DDPG + HER + MultiRL</strong></li>
+</ul>
+
+<center><iframe src="https://player.vimeo.com/video/551589500" width="522" height="360" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
+
+<p>Although success rate is similar (or slightly low) compared to the baseline DDPG + HER experiment, above demo video using multiple reward functions shows no non-sense actions: it is only suffering from low accuracy.</p>
+
+<h3 id="push-operation">Push Operation</h3>
+
+<ul>
+  <li>
+    <p>DDPG + HER (sparse reward)</p>
+
+    <center><iframe src="https://player.vimeo.com/video/551589477" width="522" height="360" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
+  </li>
+  <li>
+    <p>DDPG + HER + MultiRL</p>
+
+    <center><iframe src="https://player.vimeo.com/video/551589485" width="522" height="360" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
+  </li>
+</ul>
+
+<p>For Push operation, although the baseline DDPG+HER method trains the model pretty well, but we can see that the usage of multiple reward functions makes the robot to <strong>precisely align the object with the goal</strong>, compared to the baseline training method.</p>
+
+<h3 id="reach-operation">Reach Operation</h3>
+
+<ul>
+  <li>
+    <p>DDPG + HER</p>
+
+    <center><iframe src="https://player.vimeo.com/video/551607232" width="522" height="360" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
+  </li>
+  <li>
+    <p>DDPG + HER + MultiRL</p>
+  </li>
+</ul>
+
+<center><iframe src="https://player.vimeo.com/video/551607782" width="522" height="360" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
+
+<p>Same thing happens for the simplest reach task as well. While the baseline model trained with a sparse reward stops trying to do better when the gripper reaches near certain boundary around the goal position, the model trained with multi reward for training constantly tries to precisely align the gripper right near the goal position.</p>
+
+<h2 id="remarks">Remarks</h2>
+
+<ul>
+  <li>First of all, we can see that vector-type reward (multiple rewards) based on goal / achieved position basically seems to work fine in most cases.</li>
+  <li>Recall, that I altered the original DDPG algorithm to
+    <ol>
+      <li>make the critic give out vector-type Q-values (each element corresponding to each reward function)</li>
+      <li>defined the loss function</li>
+    </ol>
+  </li>
+  <li>However, for some tasks, especially the <strong>Pick And Place</strong> task, usage of multiple rewards ruined the model’s performance compared to the baseline training method.</li>
+  <li>However,</li>
+</ul>
 
 </div><section class="article__sharing d-print-none"></section><br/>
   
