@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[RL Research] Multi Reward for Robot Arm Manipluation Task - Younghyo Park</title>
 
 <meta name="description" content="MotivationOne of the most popular applications of reinforcement learning is done for robot arm manipulation tasks. Motion planning of a robot arm can be done...">
-<link rel="canonical" href="https://younghyopark.github.io/2021/05/15/ddpg.html"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
+<link rel="canonical" href="http://139.59.110.180:4000/2021/05/15/ddpg.html"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
 <!--<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
 
 <meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
@@ -568,64 +568,112 @@ fill="#000000" stroke="none">
 
 <p>Notice any difference? The term \(y_i - Q(s_i, a_i ; \theta^Q)\) is no longer a scalar, but a vector of $\mathbb{R}^n$. Thus, most naive choice might be to take the norm of that vector. Fortunately, the original code automatically calculates the critic loss function as defined above.</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">_update_network</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-  <span class="c1"># sample the episodes
-</span>  <span class="n">transitions</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="nb">buffer</span><span class="p">.</span><span class="n">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">args</span><span class="p">.</span><span class="n">batch_size</span><span class="p">)</span>
-  <span class="c1"># pre-process the observation and goal
-</span>  <span class="n">o</span><span class="p">,</span> <span class="n">o_next</span><span class="p">,</span> <span class="n">g</span> <span class="o">=</span> <span class="n">transitions</span><span class="p">[</span><span class="s">'obs'</span><span class="p">],</span> <span class="n">transitions</span><span class="p">[</span><span class="s">'obs_next'</span><span class="p">],</span> <span class="n">transitions</span><span class="p">[</span><span class="s">'g'</span><span class="p">]</span>
-	<span class="p">...</span>
-  <span class="c1"># normalize the states
-</span>  <span class="n">obs_norm</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">o_norm</span><span class="p">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">transitions</span><span class="p">[</span><span class="s">'obs'</span><span class="p">])</span>
-	<span class="p">...</span>
-  <span class="c1"># transfer them into the tensor
-</span>  <span class="p">...</span>
-  <span class="c1"># use cuda GPU if possible
-</span>  <span class="k">if</span> <span class="bp">self</span><span class="p">.</span><span class="n">args</span><span class="p">.</span><span class="n">cuda</span><span class="p">:</span>
-    <span class="n">inputs_norm_tensor</span> <span class="o">=</span> <span class="n">inputs_norm_tensor</span><span class="p">.</span><span class="n">cuda</span><span class="p">()</span>
-    <span class="n">inputs_next_norm_tensor</span> <span class="o">=</span> <span class="n">inputs_next_norm_tensor</span><span class="p">.</span><span class="n">cuda</span><span class="p">()</span>
-    <span class="n">actions_tensor</span> <span class="o">=</span> <span class="n">actions_tensor</span><span class="p">.</span><span class="n">cuda</span><span class="p">()</span>
-    <span class="n">r_tensor</span> <span class="o">=</span> <span class="n">r_tensor</span><span class="p">.</span><span class="n">cuda</span><span class="p">()</span>
-    
-    <span class="c1"># calculate the target Q value function
-</span>    <span class="k">with</span> <span class="n">torch</span><span class="p">.</span><span class="n">no_grad</span><span class="p">():</span>
-      <span class="n">actions_next</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">actor_target_network</span><span class="p">(</span><span class="n">inputs_next_norm_tensor</span><span class="p">)</span>
-      <span class="n">q_next_value</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">critic_target_network</span><span class="p">(</span><span class="n">inputs_next_norm_tensor</span><span class="p">,</span> <span class="n">actions_next</span><span class="p">)</span>
-      <span class="n">q_next_value</span> <span class="o">=</span> <span class="n">q_next_value</span><span class="p">.</span><span class="n">detach</span><span class="p">()</span>
-			
-      <span class="n">target_q_value</span> <span class="o">=</span> <span class="n">r_tensor</span> <span class="o">+</span> <span class="bp">self</span><span class="p">.</span><span class="n">args</span><span class="p">.</span><span class="n">gamma</span> <span class="o">*</span> <span class="n">q_next_value</span>   <span class="c1"># This is now a n-dimensional vector (as a batch)
-</span>      <span class="n">target_q_value</span> <span class="o">=</span> <span class="n">target_q_value</span><span class="p">.</span><span class="n">detach</span><span class="p">()</span>  
-      <span class="c1"># clip the q value
-</span>      <span class="n">clip_return</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="p">.</span><span class="n">args</span><span class="p">.</span><span class="n">gamma</span><span class="p">)</span>
-      <span class="n">target_q_value</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">target_q_value</span><span class="p">,</span> <span class="o">-</span><span class="n">clip_return</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> 
-      <span class="c1"># the q loss
-</span>      <span class="n">real_q_value</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">critic_network</span><span class="p">(</span><span class="n">inputs_norm_tensor</span><span class="p">,</span> <span class="n">actions_tensor</span><span class="p">)</span>
-      <span class="n">critic_loss</span> <span class="o">=</span> <span class="p">(</span><span class="n">target_q_value</span> <span class="o">-</span> <span class="n">real_q_value</span><span class="p">).</span><span class="nb">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">).</span><span class="n">mean</span><span class="p">()</span>   <span class="c1"># compute the loss as the norm of vector difference divided by number of reward n
-</span>
-      <span class="n">actions_real</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">actor_network</span><span class="p">(</span><span class="n">inputs_norm_tensor</span><span class="p">)</span>
-      <span class="n">actor_loss</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="p">.</span><span class="n">critic_network</span><span class="p">(</span><span class="n">inputs_norm_tensor</span><span class="p">,</span> <span class="n">actions_real</span><span class="p">).</span><span class="n">mean</span><span class="p">()</span>
-      <span class="n">actor_loss</span> <span class="o">+=</span> <span class="bp">self</span><span class="p">.</span><span class="n">args</span><span class="p">.</span><span class="n">action_l2</span> <span class="o">*</span> <span class="p">(</span><span class="n">actions_real</span> <span class="o">/</span> <span class="bp">self</span><span class="p">.</span><span class="n">env_params</span><span class="p">[</span><span class="s">'action_max'</span><span class="p">]).</span><span class="nb">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">).</span><span class="n">mean</span><span class="p">()</span>
-      <span class="c1"># start to update the network
-</span>      <span class="bp">self</span><span class="p">.</span><span class="n">actor_optim</span><span class="p">.</span><span class="n">zero_grad</span><span class="p">()</span>
-      <span class="n">actor_loss</span><span class="p">.</span><span class="n">backward</span><span class="p">()</span>
-      <span class="n">sync_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">actor_network</span><span class="p">)</span>
-      <span class="bp">self</span><span class="p">.</span><span class="n">actor_optim</span><span class="p">.</span><span class="n">step</span><span class="p">()</span>
-      <span class="c1"># update the critic_network
-</span>      <span class="bp">self</span><span class="p">.</span><span class="n">critic_optim</span><span class="p">.</span><span class="n">zero_grad</span><span class="p">()</span>
-      <span class="n">critic_loss</span><span class="p">.</span><span class="n">backward</span><span class="p">()</span>
-      <span class="n">sync_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">critic_network</span><span class="p">)</span>
-      <span class="bp">self</span><span class="p">.</span><span class="n">critic_optim</span><span class="p">.</span><span class="n">step</span><span class="p">()</span>
-</code></pre></div></div>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">target_q_value</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">target_q_value</span><span class="p">,</span> <span class="o">-</span><span class="n">clip_return</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> 
+<span class="c1"># the q loss
+</span><span class="n">real_q_value</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">critic_network</span><span class="p">(</span><span class="n">inputs_norm_tensor</span><span class="p">,</span> <span class="n">actions_tensor</span><span class="p">)</span>
+<span class="n">critic_loss</span> <span class="o">=</span> <span class="p">(</span><span class="n">target_q_value</span> <span class="o">-</span> <span class="n">real_q_value</span><span class="p">).</span><span class="nb">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">).</span><span class="n">mean</span><span class="p">()</span>   <span class="c1"># compute the loss as the norm of vector difference divided by number of reward n
+</span></code></pre></div></div>
 
-<h3 id="pick-and-place-operation">Pick And Place Operation</h3>
+<h3 id="possible-reward-functions">Possible Reward Functions</h3>
+
+<ul>
+  <li>
+    <p><strong>Sparse Scalar Reward</strong> (baseline)</p>
+
+    <p>Defining goal state (position) as $\mathbf{g}=[g_x, g_y, g_z]$ and current state (object position) as $\mathbf{s} = [s_x, s_y, s_z]$, original DDPG algorithm uses a sparse reward with predefined threshold $t$.</p>
+
+\[r(\mathbf{s,g}) = \begin{cases} -1 &amp; \ \text{if }(\|\mathbf{s-g}\|_2  &gt;t )\\
+0 &amp; \ \text{if }(\|\mathbf{s-g}\|_2  \leq t )\end{cases}\]
+  </li>
+  <li>
+    <p><strong>Dense Scalar Reward</strong> (baseline)</p>
+
+    <p>One may instead use a dense-version of reward, basically the negative distance from current state to goal position.</p>
+
+\[r(\mathbf{s,g}) = - \|s-g\|_2\]
+  </li>
+  <li>
+    <p><strong>Distance based Vector Reward</strong></p>
+
+    <p>Off the top of my head, we may use vector-format reward function which each components (axes) are weighted differently when calculating its norm.</p>
+
+\[r(\mathbf{s,g}) = - \begin{bmatrix} \sqrt{[M,1,1] \mathbf{d}} \\ \sqrt{[1,M,1] \mathbf{d}} \\ \sqrt{[1,1,M]  \mathbf{d}} \end{bmatrix}\]
+
+    <p>where</p>
+
+\[\mathbf{d}= \begin{bmatrix} (s_x- g_x)^2 \\ (s_y - g_y)^2 \\ (s_z - g_z)^2 \end{bmatrix}\]
+
+    <p>Of course, there might be <strong>many more possible vector type reward functions</strong>, which we will go through in the later part of the research, we first have to check whether my naive DDPG + multiRL implementation indeed does a decent job of training the model. Doing so, we will use the vector reward defined above as a baseline experiment.</p>
+  </li>
+</ul>
+
+<h3 id="reach-task">Reach Task</h3>
+
+<ul>
+  <li>
+    <p>DDPG + HER (Sparse Reward)</p>
+
+    <center><iframe src="https://player.vimeo.com/video/551607232" width="522" height="360" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
+  </li>
+  <li>
+    <p>DDPG + HER (Dense Reward)</p>
+  </li>
+</ul>
+
+<center><iframe src="https://player.vimeo.com/video/552231980" width="526" height="360" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
+
+<ul>
+  <li>DDPG + HER + MultiRL</li>
+</ul>
+
+<center><iframe src="https://player.vimeo.com/video/551607782" width="522" height="360" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
+
+<ul>
+  <li>
+    <p>Learning Curve</p>
+
+    <center><img src="https://live.staticflickr.com/65535/51188546151_e6da9955fe_o.png" alt="image-20210519121053637" style="zoom:50%;" /></center>
+  </li>
+</ul>
+
+<p class="gray_no_border">Well, reach task is quite a simple task, so nothing interesting to observe here. But there seems to be some difference between sparse reward and dense (raw-distance) reward in terms of the quality of final trained model. While the original model trained with a sparse reward stops trying to do better when the gripper reaches near the certain boundary around the goal position, the model trained with distance based reward (both desne / multiRL) constantly tries to precisely align the gripper right near the goal position.</p>
+
+<h3 id="push-task">Push Task</h3>
+
+<ul>
+  <li>
+    <p>DDPG + HER (Sparse reward)</p>
+
+    <center><iframe src="https://player.vimeo.com/video/551589477" width="522" height="360" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
+  </li>
+  <li>
+    <p>DDPG + HER (Dense reward)</p>
+
+    <center></center>
+    <iframe src="https://player.vimeo.com/video/552233237" width="522" height="360" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe>
+    <p>&lt;/center&gt;</p>
+  </li>
+  <li>
+    <p>DDPG + HER + MultiRL</p>
+
+    <center><iframe src="https://player.vimeo.com/video/551589485" width="522" height="360" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
+  </li>
+  <li>
+    <p><strong>Learning Curve Comparison</strong></p>
+  </li>
+</ul>
+
+<center><img src="https://live.staticflickr.com/65535/51187835122_321117581e_o.png" alt="image-20210519120437611" style="zoom:50%;" /></center>
+
+<p class="info">For Push operation, although the baseline DDPG+HER method trains the model pretty well, but we can see that the usage of multiple reward functions makes the robot to <strong>precisely align the object with the goal</strong>, compared to the baseline training method.</p>
+
+<h3 id="pick-and-place-task">Pick And Place Task</h3>
 
 <ul>
   <li>
     <p><strong>DDPG + HER (Sparse reward)</strong></p>
 
-    <p>Defining goal state (position) as $\mathbf{g}=[g_x, g_y, g_z]$ and current state (object position) as $\mathbf{s} = [s_x, s_y, s_z]$, original DDPG algorithm uses the reward with predefined threshold $t$.  Trained the network for 50 epochs, 50 samples collected per epoch, updated the network 40 times per epoch.</p>
-
-\[r(\mathbf{s,g}) = \begin{cases} -1 &amp; \ \text{if }(\|\mathbf{s-g}\|_2  &gt;t )\\
-0 &amp; \ \text{if }(\|\mathbf{s-g}\|_2  \leq t )\end{cases}\]
+    <p>Trained the network for 50 epochs, 50 samples collected per epoch, updated the network 40 times per epoch.</p>
   </li>
 </ul>
 
@@ -633,22 +681,18 @@ fill="#000000" stroke="none">
 
 <ul>
   <li>
+    <p><strong>DDPG + HER (Dense reward)</strong></p>
+  </li>
+  <li>
     <p><strong>DDPG + HER + MultiRL</strong></p>
-
-    <p>For my version of DDPG, I used a vector-format reward function which each component weighs the distance difference in each axis differently with \(M=10\)</p>
-
-\[r(\mathbf{s,g}) = \begin{bmatrix} \sqrt{[M,1,1] \mathbf{d}} \\ \sqrt{[1,M,1] \mathbf{d}} \\ \sqrt{[1,1,M]  \mathbf{d}} \end{bmatrix}\]
-
-    <p>where</p>
-
-\[\mathbf{d}= \begin{bmatrix} (s_x- g_x)^2 \\ (s_y - g_y)^2 \\ (s_z - g_z)^2 \end{bmatrix}\]
   </li>
 </ul>
+
 <center><iframe src="https://player.vimeo.com/video/551589506" width="522" height="360" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
 
-<p class="gray_no_border">Unfortuantely, for Pick And Place operation, multi-reward RL doesn’t seem to be that efficient. It seems like, since the reward still exists even when the episode were not able to succeed to achieve its goal, the RL training algorithm seems to be stalling during its training phase at sub-optimal point. <strong>Note that, in MultiRL phase,</strong> the robot doesn’t try to lift-up the object when the goal is in the air: this may be due to the fact that the reward is still (sufficiently) maximized only with the action that centers the only the x-y dimension between the object and goal position.</p>
+<p>Unfortuantely, for Pick And Place operation, multi-reward RL doesn’t seem to be that efficient. It seems like, since the reward still exists even when the episode were not able to succeed to achieve its goal, the RL training algorithm seems to be stalling during its training phase at sub-optimal point. <strong>Note that, in MultiRL phase,</strong> the robot doesn’t try to lift-up the object when the goal is in the air: this may be due to the fact that the reward is still (sufficiently) maximized only with the action that centers the only the x-y dimension between the object and goal position.</p>
 
-<h3 id="slide-operation">Slide Operation</h3>
+<h3 id="slide-task">Slide Task</h3>
 
 <ul>
   <li><strong>DDPG + HER (Sparse reward)</strong></li>
@@ -665,40 +709,6 @@ fill="#000000" stroke="none">
 <center><iframe src="https://player.vimeo.com/video/551589500" width="522" height="360" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
 
 <p>Although success rate is similar (or slightly low) compared to the baseline DDPG + HER experiment, above demo video using multiple reward functions shows no non-sense actions: it is only suffering from low accuracy.</p>
-
-<h3 id="push-operation">Push Operation</h3>
-
-<ul>
-  <li>
-    <p>DDPG + HER (sparse reward)</p>
-
-    <center><iframe src="https://player.vimeo.com/video/551589477" width="522" height="360" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
-  </li>
-  <li>
-    <p>DDPG + HER + MultiRL</p>
-
-    <center><iframe src="https://player.vimeo.com/video/551589485" width="522" height="360" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
-  </li>
-</ul>
-
-<p>For Push operation, although the baseline DDPG+HER method trains the model pretty well, but we can see that the usage of multiple reward functions makes the robot to <strong>precisely align the object with the goal</strong>, compared to the baseline training method.</p>
-
-<h3 id="reach-operation">Reach Operation</h3>
-
-<ul>
-  <li>
-    <p>DDPG + HER</p>
-
-    <center><iframe src="https://player.vimeo.com/video/551607232" width="522" height="360" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
-  </li>
-  <li>
-    <p>DDPG + HER + MultiRL</p>
-  </li>
-</ul>
-
-<center><iframe src="https://player.vimeo.com/video/551607782" width="522" height="360" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
-
-<p>Same thing happens for the simplest reach task as well. While the baseline model trained with a sparse reward stops trying to do better when the gripper reaches near certain boundary around the goal position, the model trained with multi reward for training constantly tries to precisely align the gripper right near the goal position.</p>
 
 <h2 id="remarks">Remarks</h2>
 

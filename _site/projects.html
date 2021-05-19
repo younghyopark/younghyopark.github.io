@@ -1,10 +1,11 @@
 <!DOCTYPE html><html lang="en">
   <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[RL Theory] Approximation RL in Value Space (Non-Linear) - Younghyo Park</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>Project - Younghyo Park</title>
 
-<meta name="description" content="General Version of Model-Free PIAlgorithm      Assume a nonlienar architecture \(Q(s,a) \approx Q_\theta(s,a)\).        (Approximate Policy Evalution) Evalua...">
-<link rel="canonical" href="http://139.59.110.180:4000/2021/04/29/scrl-13.html"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
+<meta name="description" content="Your Site Description
+">
+<link rel="canonical" href="http://139.59.110.180:4000/projects.html"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
 <!--<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
 
 <meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
@@ -263,7 +264,7 @@
 </head>
   <body>
     <div class="root" data-is-touch="false">
-      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport has-aside cell cell--auto">
+      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport cell cell--auto">
 
       <div class="page__main-inner"><div class="page__header d-print-none"><header class="header"><div class="main">
       <div class="header__title">
@@ -325,134 +326,31 @@ fill="#000000" stroke="none">
 </svg>
 <a title="Your Site Description
 " href="/">Younghyo Park</a></div><button class="button button--secondary button--circle search-button js-search-toggle"><i class="fas fa-search"></i></button></div><nav class="navigation">
-        <ul><li class="navigation__item"><a href="/about.html">About</a></li><li class="navigation__item"><a href="/projects.html">Projects</a></li><li class="navigation__item"><a href="/study.html">Study</a></li><li class="navigation__item"><a href="/archive.html">Archive</a></li><li><button class="button button--secondary button--circle search-button js-search-toggle"><i class="fas fa-search"></i></button></li></ul>
+        <ul><li class="navigation__item"><a href="/about.html">About</a></li><li class="navigation__item navigation__item--active"><a href="/projects.html">Projects</a></li><li class="navigation__item"><a href="/study.html">Study</a></li><li class="navigation__item"><a href="/archive.html">Archive</a></li><li><button class="button button--secondary button--circle search-button js-search-toggle"><i class="fas fa-search"></i></button></li></ul>
       </nav></div>
   </header>
 </div><div class="page__content"><div class ="main"><div class="grid grid--reverse">
 
-              <div class="col-aside d-print-none js-col-aside"><aside class="page__aside js-page-aside"><div class="toc-aside js-toc-root"></div>
-</aside></div>
+              <div class="col-aside d-print-none js-col-aside"></div>
 
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
 <!-- end custom main top snippet -->
-<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[RL Theory] Approximation RL in Value Space (Non-Linear)</h1></header><span class="split-space">&nbsp;</span>
-          <a class="edit-on-github"
-            title="Edit on Github"
-            href="https://github.com/younghyopark/younghyopark.github.io/tree/main/_posts/2021-04-29-scrl-13.md">
-            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[RL Theory] Approximation RL in Value Space (Non-Linear)"><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Theory%2FSurvey">Theory/Survey</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 29, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-29T00:00:00+00:00">
-    <meta itemprop="keywords" content="Reinforcement-Learning,Lecture-Note,Theory/Survey"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
+<article itemscope itemtype="http://schema.org/Article"><header style="display:none;"><h1>Project</h1></header><meta itemprop="headline" content="Project"><meta itemprop="author" content="Younghyo Park"/><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
 
 <!-- end custom article top snippet -->
-<div class="article__content" itemprop="articleBody"><h2 id="general-version-of-model-free-pi">General Version of Model-Free PI</h2>
-
-<h3 id="algorithm">Algorithm</h3>
-
-<ul>
-  <li>
-    <p>Assume a nonlienar architecture \(Q(s,a) \approx Q_\theta(s,a)\).</p>
-  </li>
-  <li>
-    <p><strong>(Approximate Policy Evalution)</strong> Evaluate the approximate Q-function $Q_\theta ^\pi$ for current policy $\pi$</p>
-  </li>
-  <li>
-    <p>(Approximate Policy Improvement) Generate imporved policy $\pi’$</p>
-
-\[\pi'(s) = \arg \max_{a\in A} Q_\theta ^\pi (s,a)\]
-  </li>
-</ul>
-
-<p class="info">Again, our problem is the policy evaluation step.</p>
-
-<h3 id="value-function-approximation-via-stochastic-incremental-gradient-descent">Value Function Approximation via Stochastic (Incremental) Gradient Descent</h3>
-
-<p>Approximate policy evaluation:</p>
-
-\[\theta \in \arg \min_\theta J(\theta):= \frac{1}{2} \mathbb{E} \Big [ (Q_\theta^\pi (s_t, a_t) - y_t )^2 \Big ]\]
-
-<p>where $y_t$ is the estimate of $Q^\pi(s_t, a_t)$.</p>
-
-<p>Stochastic gradient using a single sample leads us to use</p>
-
-\[g_t := (Q_\theta^\pi (s_t, a_t) - y_t) \nabla_\theta Q_\theta ^\pi (s_t, a_t)\]
-
-<p>as a step direction. Note that</p>
-
-\[\mathbb{E}[g_t] = \nabla_\theta J(\theta)\]
-
-<p class="info">Check out the <a href="./2021/04/24/opt-lecture-15.html">Stochastic subgradient</a> post to learn more about stochastic gradient</p>
-
-<p>Then, we can update the parameter $\theta$</p>
-
-<p>\(\theta \leftarrow \theta + \alpha_t (Q_\theta^\pi (s_t, a_t) - y_t) \nabla_\theta Q_\theta^\pi (s_t, a_t)\)
-Since this is a <strong>stochastic gradient</strong>, this is not an exact policy evaluation algorithm. This is in fact called as <strong>inexact policy evaluation step</strong>. Now, we need to learn how to estimate $y_t$!</p>
-
-<h2 id="sarsa-on-policy">SARSA (On-policy)</h2>
-
-<h3 id="single-step-sarsa">Single-step SARSA</h3>
-
-<p>We need to define $y_t$, which can be used as an estimation of $Q_\theta^\pi(s_t, a_t)$. One possible choice is SARSA,</p>
-
-\[y_t := r_t + Q_\theta (s_{t+1}, a_{t+1})\]
-
-<p>You may notice the similarity between TD(0) algorithm. However, its convergence is not theoretically clear.</p>
-
-<h3 id="n-step-sarsa">$n$-Step SARSA</h3>
-
-\[y_t =r_t + \gamma r_{t+1}+ \cdots + \gamma^{n-1} r_{t+n-1} + \gamma^n Q_\theta(s_{t+n}, a_{t+n})\]
-
-<p>Note that n-step SARSA uses sample data generated by the policy at each step.</p>
-
-<p>\(\pi(s) \in \arg \max_{a\in A} Q_\theta(s,a)\)
-because $y_t$ is the target for $Q^\pi$.</p>
-
-<h2 id="q-learning-off-policy">Q-learning (Off-policy)</h2>
-
-<center><img src="https://live.staticflickr.com/65535/51146278828_b25a6d8cbe_o.png" alt="image-20210429193756484" style="zoom:50%;" /></center>
-
-</div><section class="article__sharing d-print-none"></section><br/>
-  
-  <div id="disqus_thread"></div>
-  <script>
-      /**
-      *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
-      *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
-      /*
-      var disqus_config = function () {
-      this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
-      this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
-      };
-      */
-      (function() { // DON'T EDIT BELOW THIS LINE
-      var d = document, s = d.createElement('script');
-      s.src = 'https://younghyopark-github-io.disqus.com/embed.js';
-      s.setAttribute('data-timestamp', +new Date());
-      (d.head || d.body).appendChild(s);
-      })();
-  </script>
-
-  <div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-04-29T00:00:00+00:00"><!-- start custom article footer snippet -->
+<div class="article__content" itemprop="articleBody"><div class="hero hero--dark" style="height: 100px; background-color: #123;">
+  <div class="hero__content">
+    <h3>Hero</h3>
+    <p>...</p>
+  </div>
+</div>
+</div><div class="d-print-none"><footer class="article__footer"><!-- start custom article footer snippet -->
 
 <!-- end custom article footer snippet -->
-<div class="article__license"><div class="license">
-    <p>This work is licensed under a <a itemprop="license" rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">Attribution-NonCommercial 4.0 International</a> license.
-      <a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">
-        <img alt="Attribution-NonCommercial 4.0 International" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" />
-      </a>
-    </p>
-  </div></div><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </footer>
-<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2021/04/29/scrl-12.html">[RL Theory] Approximation RL in Value Space (Linear)</a></div><div class="next"><span>NEXT</span><a href="/2021/04/29/scrl-15.html">[RL Theory] Approximation RL in Policy Space</a></div></div></div>
+</div>
 
 </div>
 
@@ -481,7 +379,7 @@ because $y_t$ is the target for $Q^\pi$.</p>
   });
 })();
 </script>
-</div><section class="page__comments d-print-none"></section></article><!-- start custom main bottom snippet -->
+</div></article><!-- start custom main bottom snippet -->
 
 <!-- end custom main bottom snippet -->
 </div>
@@ -1028,68 +926,6 @@ window.Lazyload.js([SOURCES.jquery, PAHTS.search_js], function() {
 /*(function () {
 
 })();*/
-</script><script>
-  /* toc must before affix, since affix need to konw toc' height. */(function() {
-  var SOURCES = window.TEXT_VARIABLES.sources;
-  var TOC_SELECTOR = window.TEXT_VARIABLES.site.toc.selectors;
-  window.Lazyload.js(SOURCES.jquery, function() {
-    var $window = $(window);
-    var $articleContent = $('.js-article-content');
-    var $tocRoot = $('.js-toc-root'), $col2 = $('.js-col-aside');
-    var toc;
-    var tocDisabled = false;
-    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
-    var hasToc = $articleContent.find(TOC_SELECTOR).length > 0;
-
-    function disabled() {
-      return $col2.css('display') === 'none' || !hasToc;
-    }
-
-    tocDisabled = disabled();
-
-    toc = $tocRoot.toc({
-      selectors: TOC_SELECTOR,
-      container: $articleContent,
-      scrollTarget: hasSidebar ? '.js-page-main' : null,
-      scroller: hasSidebar ? '.js-page-main' : null,
-      disabled: tocDisabled
-    });
-
-    $window.on('resize', window.throttle(function() {
-      tocDisabled = disabled();
-      toc && toc.setOptions({
-        disabled: tocDisabled
-      });
-    }, 100));
-
-  });
-})();
-(function() {
-  var SOURCES = window.TEXT_VARIABLES.sources;
-  window.Lazyload.js(SOURCES.jquery, function() {
-    var $window = $(window), $pageFooter = $('.js-page-footer');
-    var $pageAside = $('.js-page-aside');
-    var affix;
-    var tocDisabled = false;
-    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
-
-    affix = $pageAside.affix({
-      offsetBottom: $pageFooter.outerHeight(),
-      scrollTarget: hasSidebar ? '.js-page-main' : null,
-      scroller: hasSidebar ? '.js-page-main' : null,
-      scroll: hasSidebar ? $('.js-page-main').children() : null,
-      disabled: tocDisabled
-    });
-
-    $window.on('resize', window.throttle(function() {
-      affix && affix.setOptions({
-        disabled: tocDisabled
-      });
-    }, 100));
-
-    window.pageAsideAffix = affix;
-  });
-})();
 </script><script>
   window.Lazyload.js(['https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js', 'https://cdn.bootcss.com/Chart.js/2.7.2/Chart.bundle.min.js'], function() {
     var $canvas = null, $this = null, _ctx = null, _text = '';
