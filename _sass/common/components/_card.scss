@@ -14,6 +14,36 @@
   }
 }
 
+.card_wide {
+  max-width: 24rem;
+  border-radius: map-get($base, border-radius);
+  @include box-shadow();
+  @include transition(box-shadow map-get($animation, duration) map-get($animation, timing-function));
+  & > :first-child {
+    border-top-left-radius: map-get($base, border-radius);
+    border-top-right-radius: map-get($base, border-radius);
+  }
+  & > :last-child {
+    border-bottom-right-radius: map-get($base, border-radius);
+    border-bottom-left-radius: map-get($base, border-radius);
+  }
+}
+
+.card_super_wide {
+  max-width: 54rem;
+  border-radius: map-get($base, border-radius);
+  @include box-shadow();
+  @include transition(box-shadow map-get($animation, duration) map-get($animation, timing-function));
+  & > :first-child {
+    border-top-left-radius: map-get($base, border-radius);
+    border-top-right-radius: map-get($base, border-radius);
+  }
+  & > :last-child {
+    border-bottom-right-radius: map-get($base, border-radius);
+    border-bottom-left-radius: map-get($base, border-radius);
+  }
+}
+
 .cell {
   & > .card {
     max-width: unset;
@@ -76,6 +106,9 @@
   }
 }
 
+
+
+
 .card--clickable {
   cursor: pointer;
   @include hover() {
@@ -88,6 +121,22 @@
   }
   @include transition(map-get($clickable, transition));
 }
+
+
+.card--clickable {
+  cursor: pointer;
+  @include hover() {
+    @include box-shadow(2);
+    .card__image {
+      & > img {
+        height: inherit;
+      }
+    }
+  }
+  @include transition(map-get($clickable, transition));
+}
+
+
 
 .card--flat {
   @include box-shadow(0);

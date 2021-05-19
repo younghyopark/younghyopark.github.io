@@ -717,6 +717,14 @@ input:focus { outline: none; }
 .card > :first-child { border-top-left-radius: 0.4rem; border-top-right-radius: 0.4rem; }
 .card > :last-child { border-bottom-right-radius: 0.4rem; border-bottom-left-radius: 0.4rem; }
 
+.card_wide { max-width: 24rem; border-radius: 0.4rem; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.23), 0 1px 3px rgba(0, 0, 0, 0.08), 0 6px 12px rgba(0, 0, 0, 0.02); -webkit-transition: box-shadow 0.4s ease-in-out; transition: box-shadow 0.4s ease-in-out; }
+.card_wide > :first-child { border-top-left-radius: 0.4rem; border-top-right-radius: 0.4rem; }
+.card_wide > :last-child { border-bottom-right-radius: 0.4rem; border-bottom-left-radius: 0.4rem; }
+
+.card_super_wide { max-width: 54rem; border-radius: 0.4rem; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.23), 0 1px 3px rgba(0, 0, 0, 0.08), 0 6px 12px rgba(0, 0, 0, 0.02); -webkit-transition: box-shadow 0.4s ease-in-out; transition: box-shadow 0.4s ease-in-out; }
+.card_super_wide > :first-child { border-top-left-radius: 0.4rem; border-top-right-radius: 0.4rem; }
+.card_super_wide > :last-child { border-bottom-right-radius: 0.4rem; border-bottom-left-radius: 0.4rem; }
+
 .cell > .card { max-width: unset; }
 
 .card__content { padding: 0.5rem 1rem; }
@@ -739,6 +747,10 @@ input:focus { outline: none; }
 .card__image > .overlay--full { top: 0; bottom: 0; }
 .card__image > .overlay, .card__image > .overlay--dark { background-color: rgba(0, 0, 0, 0.4); }
 .card__image > .overlay--light { background: rgba(255, 255, 255, 0.4); }
+
+.card--clickable { cursor: pointer; -webkit-transition: all 0.2s ease-in-out; transition: all 0.2s ease-in-out; }
+.root[data-is-touch="false"] .card--clickable:hover { box-shadow: 0 8px 16px rgba(0, 0, 0, 0.23), 0 2px 6px rgba(0, 0, 0, 0.08), 0 12px 24px rgba(0, 0, 0, 0.02); }
+.root[data-is-touch="false"] .card--clickable:hover .card__image > img { height: inherit; }
 
 .card--clickable { cursor: pointer; -webkit-transition: all 0.2s ease-in-out; transition: all 0.2s ease-in-out; }
 .root[data-is-touch="false"] .card--clickable:hover { box-shadow: 0 8px 16px rgba(0, 0, 0, 0.23), 0 2px 6px rgba(0, 0, 0, 0.08), 0 12px 24px rgba(0, 0, 0, 0.02); }

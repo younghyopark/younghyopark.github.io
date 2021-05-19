@@ -1,10 +1,10 @@
 <!DOCTYPE html><html lang="en">
   <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[RL Research] Multi Reward for Robot Arm Manipluation Task - Younghyo Park</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[RL Research] Multi Reward for Robot Arm Manipluation Task (1) - Younghyo Park</title>
 
 <meta name="description" content="MotivationOne of the most popular applications of reinforcement learning is done for robot arm manipulation tasks. Motion planning of a robot arm can be done...">
-<link rel="canonical" href="http://139.59.110.180:4000/2021/05/15/ddpg.html"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
+<link rel="canonical" href="http://112.171.107.155:4000/2021/05/15/ddpg.html"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
 <!--<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
 
 <meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
@@ -336,15 +336,15 @@ fill="#000000" stroke="none">
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
 <!-- end custom main top snippet -->
-<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[RL Research] Multi Reward for Robot Arm Manipluation Task</h1></header><span class="split-space">&nbsp;</span>
+<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[RL Research] Multi Reward for Robot Arm Manipluation Task (1)</h1></header><span class="split-space">&nbsp;</span>
           <a class="edit-on-github"
             title="Edit on Github"
             href="https://github.com/younghyopark/younghyopark.github.io/tree/main/_posts/2021-05-15-ddpg.md">
-            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[RL Research] Multi Reward for Robot Arm Manipluation Task"><div class="article__info clearfix"><ul class="left-col menu"><li>
+            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[RL Research] Multi Reward for Robot Arm Manipluation Task (1)"><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
                 href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
             </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>May 15, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-05-15T00:00:00+00:00">
+            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-05-15T00:00:00+09:00">
     <meta itemprop="keywords" content="Reinforcement-Learning"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
 
 <!-- end custom article top snippet -->
@@ -358,12 +358,12 @@ fill="#000000" stroke="none">
 
 <p>However, considering that reward engineering is the process of injecting human/domain knowledge into the RL system, it might be reasonable to expect the system to monotonously improve as we hand out more hints: <strong>multiple hand-engineered reward functions</strong>. If have such a solution, we may at least get rid of the problem of deciding which reward to use: we may use multiple possible reward functions all at once for training. Fortunately, there are multiple literatures dealing with multiple-reward reinforcement learning (multi-reward RL), basically tackling the case where the value function for a given state is no longer a scalar, but a vector, each of its element corresponding to the expected cumulative rewards for different reward functions.</p>
 
-<p>Hybrid Reward Architecture (HRA), for instance, uses a multi-output DQN to take the advantage of multiple rewards to facilitate the training and boost the performance. However, its original paper have mainly tested its effect on binary rewards based on multiple goals, not for multiple hand-engineered reward functions. Also, many papers dealing with multi-reward problems rather used a finite-action space environment, which can’t be directly applied to robot manipulation problems. Thus, for this project, I want to assess whether using multiple reward functions does improve the performance of RL system, and propose a proper solution to do so. To summarize, I will:</p>
+<p>Hybrid Reward Architecture (HRA), for instance, uses a multi-output DQN to take the advantage of multiple rewards to facilitate the training and boost the performance. However, its original paper have mainly tested its effect on binary rewards based on multiple goals, not for multiple hand-engineered reward functions. Also, many papers dealing with multi-reward problems rather used a finite-action space environment using DQN, which can’t be directly applied to robot manipulation problems. Thus, for this project, I want to assess whether using multiple reward functions does improve the performance of RL system, especially those has infinite action space (e.g. robot manipulation task) and propose a proper solution to make it happen. To summarize, I will:</p>
 
 <ol>
   <li>Assess the effect of various reward functions for various robot manipulation tasks in terms of success rate and convergence speed</li>
-  <li>Assess the effect of using multi-reward at once on robot arm manipulation task using various multi-reward RL algorithms</li>
-  <li>Develop an algorithm that suits robot-arm manipulation task with multiple reward functions</li>
+  <li>Assess the effect of <strong>using multi-reward on robot arm manipulation task</strong> in a single-shot process using off-policy multi-reward RL algorithms</li>
+  <li>Develop an multi-RL training algorithm that facilitates robot-arm manipulation task training</li>
 </ol>
 
 <h2 id="review--ddpg-algorithm">Review : DDPG Algorithm</h2>
@@ -589,9 +589,12 @@ fill="#000000" stroke="none">
     <p><strong>Dense Scalar Reward</strong> (baseline)</p>
 
     <p>One may instead use a dense-version of reward, basically the negative distance from current state to goal position.</p>
+  </li>
+</ul>
 
 \[r(\mathbf{s,g}) = - \|s-g\|_2\]
-  </li>
+
+<ul>
   <li>
     <p><strong>Distance based Vector Reward</strong></p>
 
@@ -603,7 +606,7 @@ fill="#000000" stroke="none">
 
 \[\mathbf{d}= \begin{bmatrix} (s_x- g_x)^2 \\ (s_y - g_y)^2 \\ (s_z - g_z)^2 \end{bmatrix}\]
 
-    <p>Of course, there might be <strong>many more possible vector type reward functions</strong>, which we will go through in the later part of the research, we first have to check whether my naive DDPG + multiRL implementation indeed does a decent job of training the model. Doing so, we will use the vector reward defined above as a baseline experiment.</p>
+    <p>Of course, there might be <strong>many more possible vector type reward functions</strong>, which we will go through in the later part of the research. But we first have to check whether my <strong>naive DDPG + multiRL implementation</strong> indeed does a decent job of training the model. Doing so, we will use the vector reward defined above as a baseline experiment.</p>
   </li>
 </ul>
 
@@ -611,86 +614,89 @@ fill="#000000" stroke="none">
 
 <ul>
   <li>
-    <p>DDPG + HER (Sparse Reward)</p>
+    <p><strong>DDPG + HER (Sparse Reward)</strong></p>
 
-    <center><iframe src="https://player.vimeo.com/video/551607232" width="522" height="360" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
+    <center><iframe src="https://player.vimeo.com/video/551607232" width="400" height="300" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
   </li>
   <li>
-    <p>DDPG + HER (Dense Reward)</p>
+    <p><strong>DDPG + HER (Dense Reward)</strong></p>
   </li>
 </ul>
 
-<center><iframe src="https://player.vimeo.com/video/552231980" width="526" height="360" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
+<center><iframe src="https://player.vimeo.com/video/552231980" width="400" height="300" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
 
 <ul>
-  <li>DDPG + HER + MultiRL</li>
+  <li><strong>DDPG + HER + MultiRL</strong></li>
 </ul>
 
-<center><iframe src="https://player.vimeo.com/video/551607782" width="522" height="360" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
+<center><iframe src="https://player.vimeo.com/video/551607782" width="400" height="300" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
 
 <ul>
   <li>
-    <p>Learning Curve</p>
+    <p><strong>Learning Curve</strong></p>
 
-    <center><img src="https://live.staticflickr.com/65535/51188546151_e6da9955fe_o.png" alt="image-20210519121053637" style="zoom:50%;" /></center>
+    <center><img src="https://live.staticflickr.com/65535/51188546151_e6da9955fe_o.png" alt="image-20210519121053637" style="zoom:45%;" /></center>
   </li>
 </ul>
 
-<p class="gray_no_border">Well, reach task is quite a simple task, so nothing interesting to observe here. But there seems to be some difference between sparse reward and dense (raw-distance) reward in terms of the quality of final trained model. While the original model trained with a sparse reward stops trying to do better when the gripper reaches near the certain boundary around the goal position, the model trained with distance based reward (both desne / multiRL) constantly tries to precisely align the gripper right near the goal position.</p>
+<p class="gray_no_border">Well, reach task is quite a simple task, so nothing interesting to observe here. But there seems to be some difference between sparse reward and dense (raw-distance) reward in terms of the <strong>quality of final trained model</strong>. While the original model trained with a sparse reward stops trying to do better when the gripper reaches near the certain boundary around the goal position, the model trained with distance based reward (both desne / multiRL) constantly tries to precisely align the gripper right near the goal position.</p>
 
 <h3 id="push-task">Push Task</h3>
 
 <ul>
   <li>
-    <p>DDPG + HER (Sparse reward)</p>
+    <p><strong>DDPG + HER (Sparse reward)</strong></p>
 
-    <center><iframe src="https://player.vimeo.com/video/551589477" width="522" height="360" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
+    <center><iframe src="https://player.vimeo.com/video/551589477" width="400" height="300" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
   </li>
   <li>
-    <p>DDPG + HER (Dense reward)</p>
+    <p><strong>DDPG + HER (Dense reward)</strong></p>
 
-    <center></center>
-    <iframe src="https://player.vimeo.com/video/552233237" width="522" height="360" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe>
-    <p>&lt;/center&gt;</p>
+    <center><iframe src="https://player.vimeo.com/video/552233237" width="400" height="300" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
   </li>
   <li>
-    <p>DDPG + HER + MultiRL</p>
+    <p><strong>DDPG + HER + MultiRL</strong></p>
 
-    <center><iframe src="https://player.vimeo.com/video/551589485" width="522" height="360" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
+    <center><iframe src="https://player.vimeo.com/video/551589485" width="400" height="300" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
   </li>
   <li>
     <p><strong>Learning Curve Comparison</strong></p>
   </li>
 </ul>
 
-<center><img src="https://live.staticflickr.com/65535/51187835122_321117581e_o.png" alt="image-20210519120437611" style="zoom:50%;" /></center>
+<center><img src="https://live.staticflickr.com/65535/51187835122_321117581e_o.png" alt="image-20210519120437611" style="zoom:45%;" /></center>
 
-<p class="info">For Push operation, although the baseline DDPG+HER method trains the model pretty well, but we can see that the usage of multiple reward functions makes the robot to <strong>precisely align the object with the goal</strong>, compared to the baseline training method.</p>
+<p class="gray_no_border">Something interesting could be observed during Push task training. Both in terms of final performance and training speed, <strong>sparse reward was the best choice</strong> compared to others. Meanwhile, if we compare a single (scalar) dense reward and multiple vector reward, <strong>multiple reward seems to train the model faster</strong>, but the final performance converged to a similar level.</p>
 
 <h3 id="pick-and-place-task">Pick And Place Task</h3>
 
 <ul>
-  <li>
-    <p><strong>DDPG + HER (Sparse reward)</strong></p>
-
-    <p>Trained the network for 50 epochs, 50 samples collected per epoch, updated the network 40 times per epoch.</p>
-  </li>
+  <li><strong>DDPG + HER (Sparse reward)</strong></li>
 </ul>
 
-<center><iframe src="https://player.vimeo.com/video/551589466" width="522" height="360" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
+<center><iframe src="https://player.vimeo.com/video/551589466" width="400" height="300" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
+
+<ul>
+  <li><strong>DDPG + HER (Dense reward)</strong></li>
+</ul>
+
+<center><iframe src="https://player.vimeo.com/video/552275496" width="400" height="300" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
+
+<ul>
+  <li><strong>DDPG + HER + MultiRL</strong></li>
+</ul>
+
+<center><iframe src="https://player.vimeo.com/video/551589506" width="400" height="300" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
 
 <ul>
   <li>
-    <p><strong>DDPG + HER (Dense reward)</strong></p>
-  </li>
-  <li>
-    <p><strong>DDPG + HER + MultiRL</strong></p>
+    <p><strong>Learning Curve</strong></p>
+
+    <center><img src="https://live.staticflickr.com/65535/51188124932_259662c439_o.png" alt="image-20210519155817122" style="zoom:45%;" /></center>
   </li>
 </ul>
 
-<center><iframe src="https://player.vimeo.com/video/551589506" width="522" height="360" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
-
-<p>Unfortuantely, for Pick And Place operation, multi-reward RL doesn’t seem to be that efficient. It seems like, since the reward still exists even when the episode were not able to succeed to achieve its goal, the RL training algorithm seems to be stalling during its training phase at sub-optimal point. <strong>Note that, in MultiRL phase,</strong> the robot doesn’t try to lift-up the object when the goal is in the air: this may be due to the fact that the reward is still (sufficiently) maximized only with the action that centers the only the x-y dimension between the object and goal position.</p>
+<p class="gray_no_border">Unfortuantely, for Pick And Place operation, multi-reward RL doesn’t seem to be that efficient, but still better than simple distance-based scalar dense reward. It seems like, since dense reward gives some amount of reward to the agent even when the episode were not able to succeed to achieve its goal, unlike the situation for sparse reward, the RL training algorithm seems to be <strong>stalling during its training phase at sub-optimal point</strong>. Note that, in MultiRL phase, the robot <strong>doesn’t try to lift-up the object</strong> when the goal point is up in the air: this may be due to the fact that the reward is still (sufficiently) maximized without the <strong>lifting action</strong>.</p>
 
 <h3 id="slide-task">Slide Task</h3>
 
@@ -698,31 +704,133 @@ fill="#000000" stroke="none">
   <li><strong>DDPG + HER (Sparse reward)</strong></li>
 </ul>
 
-<center><iframe src="https://player.vimeo.com/video/551589491" width="522" height="360" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
+<center><iframe src="https://player.vimeo.com/video/551589491" width="400" height="300" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
 
-<p>Using the same reward function we used for Pick And Place operation, with longer training epochs (200), baseline DDPG + HER doesn’t seem to work well: the model frequently makes some non-sense mistake, pushing down the puck and making it to fall off the table.</p>
+<ul>
+  <li><strong>DDPG + HER (Dense reward)</strong></li>
+</ul>
+
+<center><iframe src="https://player.vimeo.com/video/552475636" width="400" height="300" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
 
 <ul>
   <li><strong>DDPG + HER + MultiRL</strong></li>
 </ul>
 
-<center><iframe src="https://player.vimeo.com/video/551589500" width="522" height="360" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
+<center><iframe src="https://player.vimeo.com/video/551589500" width="400" height="300" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe></center>
 
-<p>Although success rate is similar (or slightly low) compared to the baseline DDPG + HER experiment, above demo video using multiple reward functions shows no non-sense actions: it is only suffering from low accuracy.</p>
+<ul>
+  <li>
+    <p><strong>Learning Curve</strong></p>
+
+    <center><img src="https://live.staticflickr.com/65535/51190399049_47baf29973_o.png" alt="image-20210520013452286" style="zoom:45%;" /></center>
+  </li>
+</ul>
+
+<p class="gray_no_border">In terms of both learning rate and success rate, three cases are quite similar. However, if we look at the demo video, we can see that the agent trained with sparse reward are often making some non-sense operations: pushing the puck down to the table, and making it drop out. On the other hand, agent trained with dense rewards (both scalar/vector rewards) doesn’t show such behavior.</p>
 
 <h2 id="remarks">Remarks</h2>
 
 <ul>
-  <li>First of all, we can see that vector-type reward (multiple rewards) based on goal / achieved position basically seems to work fine in most cases.</li>
+  <li>
+    <p>First of all, we can see that vector-type reward (multiple rewards) based on goal / achieved position basically seems to work fine in most cases. <strong>(At least success rate is increasing as training proceeds)</strong></p>
+  </li>
   <li>Recall, that I altered the original DDPG algorithm to
     <ol>
-      <li>make the critic give out vector-type Q-values (each element corresponding to each reward function)</li>
-      <li>defined the loss function</li>
+      <li>
+        <p>make the critic give out vector-type Q-values (each element corresponding to each reward function)</p>
+      </li>
+      <li>
+        <p>update the critic network using the loss function based on vector-form Q-function output / target</p>
+
+\[\theta ^Q \leftarrow \arg\min_{\theta^Q}\frac{1}{N} \sum_i \big [ y_i - Q(s_i,a_i | \theta^Q)\big ]^2\]
+      </li>
     </ol>
   </li>
-  <li>However, for some tasks, especially the <strong>Pick And Place</strong> task, usage of multiple rewards ruined the model’s performance compared to the baseline training method.</li>
-  <li>However,</li>
+  <li>
+    <p>However, my implementation of DDPG+multiRL trained the agent way slower than the sparse reward version, and its final performance was not that remarkable as well.</p>
+  </li>
+  <li>One interesting thing to observe was that, when it comes to comparing between <strong>single (scalar) dense reward</strong> and <strong>multiple (vector-type) dense reward</strong>, latter one was always better in terms of both training speed and final performance.</li>
 </ul>
+
+<h2 id="what-was-the-problem">What was the problem?</h2>
+
+<h3 id="sparse-vs-dense-reward">Sparse vs Dense reward</h3>
+
+<p>We may speculate that dense rewards should be better at training the agent than sparse rewards, in so many reasons. However, our result above seems like a counter-example. Is our result in fact disproving the common notion about the dense reward, or was our simple distnace based reward function was just not delicate/careful enough? In fact, this <strong>phenomenon of poor performance with dense rewards was clearly stated in the original HER paper</strong>.</p>
+
+<h3 id="review-the-original-her-paper">Review the original HER Paper</h3>
+
+<center><img src="https://live.staticflickr.com/65535/51190072989_2687da1821_o.png" alt="image-20210519224011962" style="zoom:30%;" /></center>
+
+<p>In <strong>section 4.4</strong> of the original HER paper,  authors consider the effect of <strong>reward shaping</strong> when used along side with HER. In their case, they considered the reward function with the shape</p>
+
+\[r(\mathbf{s,a,g}) = \lambda \|\mathbf{g-s}_{\text{object}}\|^p -    \|\mathbf{g-s}'_{\text{object}}\|^p\]
+
+<p>where $\lambda\in {0,1}, \ p \in {1,2}$ are the hyperparameters and $\mathbf{s’}$ is the environment state after the execution of $(\mathbf{s,a})$. For instance, when choosing $(\lambda, p)=(0,2)$,</p>
+
+\[r(\mathbf{s,a,g}) =  - \|\mathbf{g-s}'_{\text{object}}\|^2\]
+
+<p>we are penalizing the distance between the achieved state and goal, similar to the scalar dense reward we used above. Well, not surprisingly, authors also observed the same problem we have seen previously: both original DDPG and DDPG+HER algorithm performed strikingly poor compared to sparse reward.</p>
+
+<center><img src="https://live.staticflickr.com/65535/51189546188_6e84a16b1c_o.png" alt="image-20210519225344363" style="zoom:35%;" /></center>
+
+<p>Authors speculate the reasons for this phenomenon as..</p>
+
+<ol>
+  <li>
+    <p>the optimization problem of <strong>maximizing the shaped reward function</strong> may not be equivalent to the problem of <strong>maximizing the success rate</strong> (which is determined by checking whether the object is within some radius from the goal at the end of the episode)</p>
+  </li>
+  <li>
+    <p>Shaped reward functions sometimes <strong>incentivize inappropriate behaviours</strong>. (e.g. moving the box in a wrong direction)</p>
+
+    <p>As a matter of fact, we can see that (for <strong>PickAndPlace-v1</strong> env), when the agent is trained with dense reward, the agent does not even try to pick the object in their gripper, but just slide it on the table to get near the goal point. Of course, this action choice also increases the reward (based on reward), but it is obviously not the optimal action - <strong>just pick the damn object, right?</strong></p>
+  </li>
+</ol>
+
+<div style="width: 100%;">
+    <div style="width: 33%; height: 300px; float: left;"> 
+  <center><img src="https://live.staticflickr.com/65535/51190499100_bb7545e329_o.gif" alt="pick-and-place-sprase-example" style="zoom:50%;" />
+    <figcaption>Trained with Sparse Reward</figcaption>
+  </center>
+   </div>
+    <div style="width: 33%; height: 300px; float: left;"> 
+   <center><img src="https://live.staticflickr.com/65535/51190185459_07169bf54d_o.gif" alt="pick-and-place-dense-example" style="zoom:50%;" />
+   <figcaption>Trained with Dense Reward</figcaption>
+   </center>
+	</div>
+    <div style="width: 33%; height: 300px; float: left; "> 
+    <center><img src="https://live.staticflickr.com/65535/51188743472_eb4e98e896_o.gif" alt="pick-and-place-multi-example" style="zoom:50%;" />
+   <figcaption>Trained with Multi(Vector) Reward</figcaption>
+   </center>
+	</div>
+</div>
+
+<p>Authors also stated that..</p>
+
+<p class="info">“above results suggest that domain-agnostic reward shaping does not work well. Of course for every problem there exists a reward which makes it easy, but <strong>designing such shaped rewards requires a lot of domain knowledge</strong> and may in some cases not be much easier than directly scripting the policy.”</p>
+
+<p>which actually was the very motivation of this research form the beginning: if <strong>shaping a single reward function is that difficult</strong>, why don’t we just <strong>stack a bunch of possible simple rewards</strong> and feed them to the agent all at the same time and enhance the training?</p>
+
+<p>Unfortunately, my naive implementation of combining the idea of multi-reward to DDPG algorithm <strong>enhanced neither the training speed or the final performance</strong>.</p>
+
+<h2 id="what-next">What Next?</h2>
+
+<h3 id="possible-approaches">Possible Approaches</h3>
+
+<p>We can take several different approaches at this point, which each of them might lead this research to quite different direction.</p>
+
+<ol>
+  <li>Try more <strong>sophisticated reward shaping</strong> \(\rightarrow\) this research then transforms into a reward engineering research for robot manipulation task, which I personally think less persuasive/interesting. But still a possible approach.</li>
+  <li>Try <strong>different training schemes</strong>, while fixing the shape of rewards, and improve the performance. \(\rightarrow\) this approach seems more appropriate according to my proposal/motivation, and I’m currently trying some new  method of <strong>DDPG+multiRL</strong>.</li>
+</ol>
+
+<h3 id="at-the-end-of-the-day-i-want-to">At the end of the day, I want to..</h3>
+
+<p>Remember the final section of original HER paper? They tested out their algorithm on actual physical robot. (They estimated the goal position using CNN networks)</p>
+
+<center><img src="https://live.staticflickr.com/65535/51190712690_6303eabddb_o.png" alt="image-20210520014536294" style="zoom:50%;" /></center>
+
+<p>At the final stage of my research, I want to test out my algorithm on real physical robot (if that’s possible in current LAB situation.)</p>
 
 </div><section class="article__sharing d-print-none"></section><br/>
   
@@ -745,7 +853,7 @@ fill="#000000" stroke="none">
       })();
   </script>
 
-  <div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-05-15T00:00:00+00:00"><!-- start custom article footer snippet -->
+  <div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-05-15T00:00:00+09:00"><!-- start custom article footer snippet -->
 
 <!-- end custom article footer snippet -->
 <div class="article__license"><div class="license">
