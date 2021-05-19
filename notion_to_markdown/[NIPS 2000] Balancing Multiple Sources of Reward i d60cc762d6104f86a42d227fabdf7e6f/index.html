@@ -1,0 +1,1278 @@
+<!DOCTYPE html><html lang="en">
+  <head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[NIPS 2000] Balancing Multiple Sources of Reward in Reinforcement Learning - Younghyo Park</title>
+
+<meta name="description" content="For many problems, the reward signal is not a single scalar, but has multiple scalar components. Creating a single reward value by combining the multiple com...">
+<link rel="canonical" href="https://younghyopark.github.io/notion_to_markdown/%5BNIPS%202000%5D%20Balancing%20Multiple%20Sources%20of%20Reward%20i%20d60cc762d6104f86a42d227fabdf7e6f/"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
+<!--<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
+
+<meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
+
+<meta name="theme-color" content="#ffffff"> -->
+
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+<!-- end favicons snippet --><link rel="stylesheet" href="/assets/css/main.css"><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.15.1/css/all.css" ><!-- start custom head snippets -->
+
+<!-- end custom head snippets -->
+<script>(function() {
+  window.isArray = function(val) {
+    return Object.prototype.toString.call(val) === '[object Array]';
+  };
+  window.isString = function(val) {
+    return typeof val === 'string';
+  };
+
+  window.hasEvent = function(event) {
+    return 'on'.concat(event) in window.document;
+  };
+
+  window.isOverallScroller = function(node) {
+    return node === document.documentElement || node === document.body || node === window;
+  };
+
+  window.isFormElement = function(node) {
+    var tagName = node.tagName;
+    return tagName === 'INPUT' || tagName === 'SELECT' || tagName === 'TEXTAREA';
+  };
+
+  window.pageLoad = (function () {
+    var loaded = false, cbs = [];
+    window.addEventListener('load', function () {
+      var i;
+      loaded = true;
+      if (cbs.length > 0) {
+        for (i = 0; i < cbs.length; i++) {
+          cbs[i]();
+        }
+      }
+    });
+    return {
+      then: function(cb) {
+        cb && (loaded ? cb() : (cbs.push(cb)));
+      }
+    };
+  })();
+})();
+(function() {
+  window.throttle = function(func, wait) {
+    var args, result, thisArg, timeoutId, lastCalled = 0;
+
+    function trailingCall() {
+      lastCalled = new Date;
+      timeoutId = null;
+      result = func.apply(thisArg, args);
+    }
+    return function() {
+      var now = new Date,
+        remaining = wait - (now - lastCalled);
+
+      args = arguments;
+      thisArg = this;
+
+      if (remaining <= 0) {
+        clearTimeout(timeoutId);
+        timeoutId = null;
+        lastCalled = now;
+        result = func.apply(thisArg, args);
+      } else if (!timeoutId) {
+        timeoutId = setTimeout(trailingCall, remaining);
+      }
+      return result;
+    };
+  };
+})();
+(function() {
+  var Set = (function() {
+    var add = function(item) {
+      var i, data = this._data;
+      for (i = 0; i < data.length; i++) {
+        if (data[i] === item) {
+          return;
+        }
+      }
+      this.size ++;
+      data.push(item);
+      return data;
+    };
+
+    var Set = function(data) {
+      this.size = 0;
+      this._data = [];
+      var i;
+      if (data.length > 0) {
+        for (i = 0; i < data.length; i++) {
+          add.call(this, data[i]);
+        }
+      }
+    };
+    Set.prototype.add = add;
+    Set.prototype.get = function(index) { return this._data[index]; };
+    Set.prototype.has = function(item) {
+      var i, data = this._data;
+      for (i = 0; i < data.length; i++) {
+        if (this.get(i) === item) {
+          return true;
+        }
+      }
+      return false;
+    };
+    Set.prototype.is = function(map) {
+      if (map._data.length !== this._data.length) { return false; }
+      var i, j, flag, tData = this._data, mData = map._data;
+      for (i = 0; i < tData.length; i++) {
+        for (flag = false, j = 0; j < mData.length; j++) {
+          if (tData[i] === mData[j]) {
+            flag = true;
+            break;
+          }
+        }
+        if (!flag) { return false; }
+      }
+      return true;
+    };
+    Set.prototype.values = function() {
+      return this._data;
+    };
+    return Set;
+  })();
+
+  window.Lazyload = (function(doc) {
+    var queue = {js: [], css: []}, sources = {js: {}, css: {}}, context = this;
+    var createNode = function(name, attrs) {
+      var node = doc.createElement(name), attr;
+      for (attr in attrs) {
+        if (attrs.hasOwnProperty(attr)) {
+          node.setAttribute(attr, attrs[attr]);
+        }
+      }
+      return node;
+    };
+    var end = function(type, url) {
+      var s, q, qi, cbs, i, j, cur, val, flag;
+      if (type === 'js' || type ==='css') {
+        s = sources[type], q = queue[type];
+        s[url] = true;
+        for (i = 0; i < q.length; i++) {
+          cur = q[i];
+          if (cur.urls.has(url)) {
+            qi = cur, val = qi.urls.values();
+            qi && (cbs = qi.callbacks);
+            for (flag = true, j = 0; j < val.length; j++) {
+              cur = val[j];
+              if (!s[cur]) {
+                flag = false;
+              }
+            }
+            if (flag && cbs && cbs.length > 0) {
+              for (j = 0; j < cbs.length; j++) {
+                cbs[j].call(context);
+              }
+              qi.load = true;
+            }
+          }
+        }
+      }
+    };
+    var load = function(type, urls, callback) {
+      var s, q, qi, node, i, cur,
+        _urls = typeof urls === 'string' ? new Set([urls]) : new Set(urls), val, url;
+      if (type === 'js' || type ==='css') {
+        s = sources[type], q = queue[type];
+        for (i = 0; i < q.length; i++) {
+          cur = q[i];
+          if (_urls.is(cur.urls)) {
+            qi = cur;
+            break;
+          }
+        }
+        val = _urls.values();
+        if (qi) {
+          callback && (qi.load || qi.callbacks.push(callback));
+          callback && (qi.load && callback());
+        } else {
+          q.push({
+            urls: _urls,
+            callbacks: callback ? [callback] : [],
+            load: false
+          });
+          for (i = 0; i < val.length; i++) {
+            node = null, url = val[i];
+            if (s[url] === undefined) {
+              (type === 'js' ) && (node = createNode('script', { src: url }));
+              (type === 'css') && (node = createNode('link', { rel: 'stylesheet', href: url }));
+              if (node) {
+                node.onload = (function(type, url) {
+                  return function() {
+                    end(type, url);
+                  };
+                })(type, url);
+                (doc.head || doc.body).appendChild(node);
+                s[url] = false;
+              }
+            }
+          }
+        }
+      }
+    };
+    return {
+      js: function(url, callback) {
+        load('js', url, callback);
+      },
+      css: function(url, callback) {
+        load('css', url, callback);
+      }
+    };
+  })(this.document);
+})();
+</script><script>
+  (function() {
+    var TEXT_VARIABLES = {
+      version: '2.2.6',
+      sources: {
+        font_awesome: 'https://cdn.bootcdn.net/ajax/libs/font-awesome/5.15.1/css/all.css',
+        jquery: 'https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js',
+        leancloud_js_sdk: '//cdn.jsdelivr.net/npm/leancloud-storage@3.13.2/dist/av-min.js',
+        chart: 'https://cdn.bootcss.com/Chart.js/2.7.2/Chart.bundle.min.js',
+        gitalk: {
+          js: 'https://cdn.bootcss.com/gitalk/1.2.2/gitalk.min.js',
+          css: 'https://cdn.bootcss.com/gitalk/1.2.2/gitalk.min.css'
+        },
+        valine: 'https://unpkg.com/valine/dist/Valine.min.js',
+        mathjax: 'https://cdn.bootcss.com/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML',
+        mermaid: 'https://cdn.bootcss.com/mermaid/8.0.0-rc.8/mermaid.min.js'
+      },
+      site: {
+        toc: {
+          selectors: 'h2,h3'
+        }
+      },
+      paths: {
+        search_js: '/assets/search.js'
+      }
+    };
+    window.TEXT_VARIABLES = TEXT_VARIABLES;
+  })();
+</script>
+</head>
+  <body>
+    <div class="root" data-is-touch="false">
+      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport has-aside cell cell--auto">
+
+      <div class="page__main-inner"><div class="page__header d-print-none"><header class="header"><div class="main">
+      <div class="header__title">
+        <div class="header__brand"><?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+ "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+ width="1000.000000pt" height="1000.000000pt" viewBox="0 0 1000.000000 1000.000000"
+ preserveAspectRatio="xMidYMid meet">
+<metadata>
+Created by potrace 1.11, written by Peter Selinger 2001-2013
+</metadata>
+<g transform="translate(0.000000,1000.000000) scale(0.100000,-0.100000)"
+fill="#000000" stroke="none">
+<path d="M2670 9345 c-306 -42 -613 -197 -826 -417 -162 -167 -254 -315 -329
+-530 -31 -88 -41 -107 -61 -112 -70 -18 -275 -116 -368 -176 -145 -95 -308
+-255 -404 -398 -78 -116 -172 -318 -196 -423 -48 -212 -46 -69 -46 -2770 0
+-1771 3 -2542 11 -2592 51 -334 177 -587 408 -817 188 -188 405 -313 646 -374
+191 -48 65 -46 2994 -46 2987 0 2786 -4 3011 56 428 113 808 469 957 899 l38
+108 105 37 c316 111 582 333 758 635 43 74 115 245 138 330 45 161 44 114 44
+2780 0 2209 -2 2534 -15 2624 -77 511 -449 951 -947 1120 -244 82 52 75 -3053
+77 -2230 2 -2789 -1 -2865 -11z m4640 -1467 c105 -27 183 -54 251 -88 264
+-134 455 -378 517 -665 16 -75 17 -247 17 -2605 0 -2883 9 -2611 -90 -2818
+-129 -270 -343 -448 -640 -534 l-80 -23 -2795 0 -2795 0 -79 24 c-44 12 -87
+27 -95 31 -9 5 -50 25 -92 44 -264 123 -459 378 -526 687 -17 80 -18 208 -18
+2594 l0 2510 22 87 c72 282 229 499 459 636 104 62 269 117 389 131 45 5 1249
+8 2785 7 2474 -2 2711 -3 2770 -18z"/>
+<path d="M2865 7415 c-499 -70 -930 -402 -1105 -853 -73 -188 -92 -295 -91
+-508 1 -319 110 -603 327 -854 153 -177 361 -319 577 -396 78 -27 79 -27 73
+-58 -3 -17 -13 -76 -21 -131 -8 -55 -35 -210 -59 -345 -25 -135 -50 -283 -56
+-330 -13 -97 -23 -110 -84 -110 -60 0 -179 -25 -287 -59 -292 -94 -565 -355
+-674 -646 -103 -274 -81 -611 57 -865 88 -162 238 -322 384 -409 87 -51 241
+-116 330 -138 103 -26 421 -25 524 1 332 84 618 321 758 627 56 124 98 343 89
+468 l-5 77 182 48 c99 27 257 69 349 93 92 25 169 44 171 42 2 -2 18 -32 35
+-67 45 -89 111 -190 183 -278 75 -94 226 -243 282 -281 22 -15 59 -42 81 -59
+65 -50 233 -140 340 -182 142 -56 177 -67 290 -91 299 -61 570 -54 875 24 150
+39 412 164 540 259 30 23 66 48 80 57 39 25 231 218 278 279 172 223 275 441
+329 696 24 116 27 150 27 334 1 177 -2 220 -22 319 -31 150 -46 197 -97 316
+-40 90 -57 125 -120 234 -11 18 -47 70 -79 115 -353 484 -958 758 -1564 708
+-297 -25 -607 -130 -840 -286 l-82 -55 -137 96 c-76 53 -190 132 -253 176
+-141 98 -146 102 -133 119 35 43 100 258 122 405 29 189 -4 455 -79 652 -82
+213 -267 450 -465 596 -290 214 -672 310 -1030 260z m445 -465 c345 -100 581
+-338 670 -675 29 -111 29 -289 1 -399 -58 -223 -187 -412 -364 -533 -90 -63
+-140 -88 -242 -123 -111 -39 -192 -52 -315 -53 -375 0 -702 201 -860 528 -93
+193 -111 401 -54 621 33 129 121 278 227 385 120 122 309 224 483 263 104 23
+354 16 454 -14z m881 -1933 c162 -112 313 -218 318 -223 2 -2 -10 -20 -26 -41
+-165 -211 -290 -524 -324 -813 -11 -99 -7 -340 7 -415 l6 -30 -189 -48 c-103
+-26 -264 -67 -357 -92 -94 -24 -170 -43 -171 -42 -31 53 -142 186 -189 227
+-94 81 -164 130 -243 170 -48 24 -89 44 -89 45 -1 0 9 59 22 130 13 72 35 200
+49 285 13 85 40 242 60 349 19 107 35 196 35 198 0 2 17 3 38 3 44 0 180 22
+272 44 194 46 406 155 560 289 36 31 70 57 76 57 6 0 71 -42 145 -93z m1959
+-33 c168 -28 340 -98 495 -201 541 -360 715 -1052 404 -1606 -245 -437 -739
+-696 -1249 -656 -338 27 -632 166 -865 411 -141 148 -251 343 -300 533 -41
+159 -43 413 -6 570 19 76 71 218 107 288 81 157 262 355 422 461 194 128 365
+187 632 220 63 8 263 -3 360 -20z m-3514 -1609 c234 -45 432 -221 497 -442 63
+-214 2 -439 -163 -603 -128 -129 -288 -193 -475 -193 -183 0 -323 55 -455 180
+-130 122 -194 269 -192 444 1 159 66 309 186 428 166 163 378 229 602 186z"/>
+</g>
+</svg>
+<a title="Your Site Description
+" href="/">Younghyo Park</a></div><button class="button button--secondary button--circle search-button js-search-toggle"><i class="fas fa-search"></i></button></div><nav class="navigation">
+        <ul><li class="navigation__item"><a href="/about.html">About</a></li><li class="navigation__item"><a href="/projects.html">Projects</a></li><li class="navigation__item"><a href="/study.html">Study</a></li><li class="navigation__item"><a href="/archive.html">Archive</a></li><li><button class="button button--secondary button--circle search-button js-search-toggle"><i class="fas fa-search"></i></button></li></ul>
+      </nav></div>
+  </header>
+</div><div class="page__content"><div class ="main"><div class="grid grid--reverse">
+
+              <div class="col-aside d-print-none js-col-aside"><aside class="page__aside js-page-aside"><div class="toc-aside js-toc-root"></div>
+</aside></div>
+
+              <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
+
+<!-- end custom main top snippet -->
+<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[NIPS 2000] Balancing Multiple Sources of Reward in Reinforcement Learning</h1></header><span class="split-space">&nbsp;</span>
+          <a class="edit-on-github"
+            title="Edit on Github"
+            href="https://github.com/younghyopark/younghyopark.github.io/tree/main/_posts/2021-04-12-balancing-multiple-reward-sources.md">
+            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[NIPS 2000] Balancing Multiple Sources of Reward in Reinforcement Learning"><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
+            </li><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Multi-Reward%2FObjective">Multi-Reward/Objective</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 12, 2021</span>
+            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-12T00:00:00+09:00">
+    <meta itemprop="keywords" content="Reinforcement-Learning,Multi-Reward/Objective"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
+
+<!-- end custom article top snippet -->
+<div class="article__content" itemprop="articleBody"><p>For many problems, the reward signal is not a single scalar, but has multiple scalar components. <strong>Creating a single reward value by combining the multiple components can throw anway vial information</strong> and can lead to incorrect solutions!</p>
+
+<p>This paper <strong>discuss a multiple reward source</strong> problem, and the problems of applying traditional RL algorithm.</p>
+
+<h2 id="introduction">Introduction</h2>
+
+<h3 id="traditional-rl-framework-vs-real-world-scenario">Traditional RL framework vs Real-world scenario</h3>
+
+<ul>
+  <li>traditional RL receive scalar value reward every step</li>
+  <li>However, this single value can be problematic.</li>
+  <li>
+    <p>First, consider this situation:</p>
+
+    <p>Home entertainment system that automatically selects a television program to suit their tastes!</p>
+
+    <ul>
+      <li>
+        <p>a typical / traditional reward function might be :</p>
+
+\[r_{\text{trad}} = \text{Total number of people paying attention to the system}\]
+      </li>
+      <li>However, there’s a problem. Why?</li>
+      <li>A single information of $r_{\text{trad}}=2$ does not contain the information of  “<strong>WHO EXACTLY</strong> are those two people?”</li>
+      <li>in this case, multiple rewards come from <strong>“different users”</strong></li>
+    </ul>
+  </li>
+  <li>
+    <p>In other cases, multiple rewards come from “different goals”.</p>
+
+    <p>Elevator Scheduling have multiple goals
+  1) maximize people serviced per minute 
+  2) minimize average waiting time</p>
+
+    <ul>
+      <li>for these cases, <strong>we might want to update the ‘ratio / importance’ between different goals,</strong> without completely retraining the solution from scratch.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="problem-setup">Problem Setup</h3>
+
+<ul>
+  <li>working on POMDP problem, discrete actions, discrete observations</li>
+  <li>$x(t), a(t) \leftarrow$ observation and action</li>
+  <li>$\pi(x,a)$  ← probabiolity the agent will take action $a$ when observing $x$.</li>
+  <li>$R_s^\pi$  is the expected return from source $s$ for following policy $\pi$</li>
+  <li>assume that the algorithm <strong>knows the set of sources</strong> present at each time step</li>
+</ul>
+
+<p>Goal is to produce an algorithm that will produce a policy, based on <strong>previous experience and sources present</strong>. Reward is now a triplet!</p>
+
+<h2 id="balancing-multiple-rewards">Balancing Multiple Rewards</h2>
+
+<h3 id="1-policy-votes">1. Policy Votes</h3>
+
+<ul>
+  <li>
+    <p>authors introduce the concept of vote!</p>
+
+\[\text{given state }x, \ \text{reward source }s\rightarrow \text{vote for action }a = v_s (x,a)\]
+
+    <ul>
+      <li>
+        <p>of course, their vote for actions will sum to 1</p>
+
+\[\sum_a v_s (x,a) = 1\]
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>Using this multiple reward’s vote, they create a policy</p>
+
+\[\pi(x,a)  = \frac{\sum_s \alpha_s (x)v_s(x,a)}{\sum_s \alpha_s (x)}\]
+
+    <p>it is basically counting the <strong>“continuous” votes</strong> to create a single policy.</p>
+
+    <ul>
+      <li>
+        <p>$\alpha_s (x)$  → how much effort source $s$ is putting into affecting the policy for observation $x$</p>
+
+        <p>observation $x$ 에 따라, source $s$ 에 따라 각자에게 주어진 투표권의 비중이 다른데, 
+  하나의 source $s$ 는 자신의 투표권을 여러 observation $x$ 에 조금씩 나눠서 행사할 수 있음. 다시 말해, source 간의 scaling 문제를 해결하기 위해, 각 source별로 <strong>“동등한 크기의 투표권”</strong>을 배정했다고 이해하면 좋을 것 같음.</p>
+
+\[\sum_ x\alpha_s (x)=1\]
+      </li>
+      <li>
+        <p>실제로 선거에서 유권자가 자신의 목소리를 내기 위해 투표를 하는 것처럼, 각 reward source는 자신의 vote $v_s (x,a)$ 를 학습하면서 자신의 reward를 maximize하기 위해 노력할 것.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>However, this is still problematic: vote $v_s(x,a)$ is affected by the existence of other sources $s$.</p>
+
+    <blockquote>
+      <p>각 유권자(source)가 다른 유권자들의 눈치를 보면서 투표를 한다는 건데 (<strong>자신의 true reward function에 대해서 거짓말을 하는 것</strong>) → 이것의 문제는, 다른 유권자들이 투표 후에 (training 후에) 이민을 가버리거나 할 수 있다는 것. 그러면 눈치를 본 이유가 없어지잖음..</p>
+
+      <p>예를 들어서, action space $\mathcal{A} = {a_1, a_2 }$, rewared source ${s_1, s_2 }$ 인 상황이라고 해보자.</p>
+
+      <p>이 때 reward source $s_1$ 은 어느 state $x$ 에서건 $a_1$ 을 선호한다 치고, 
+reward source $s_2$ 는 어느 state $x$ 에서건 $a_1$ 과 $a_2$ 를 같은 선호도로 동등하게 선호한다 해보자.</p>
+
+      <p>그럼 각 source가 vote를 결정(training 할 때,) 
+$s_1$은 무조건 $(v_s (x,a_1), v_s (x,a_2)) = (1,0)$ 이라는 표를 던질테니,
+$s_2$ 는 $s_1$ 의 눈치를 보고 (지가 실제로 원하는 것은 $(0.5,0.5)$  이므로) $(0,1)$ 을 던진다는 것.</p>
+
+      <p>문제는 $s_1$ 이 만약에 없어졌을 경우임. (해당 reward function을 고려하지 않기로 했을 때)
+그럼 남는 $s_2$는 (training을 다시 하지 않는 한) $a_2$ 만 선택하고 살아야 하는 처지에 놓이는 것..</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>따라서, 이 policy vote scheme은</p>
+
+    <p><strong>“does not provide a description of the source’s preferences which would allow for the removal or addition of sources.”</strong></p>
+  </li>
+</ul>
+
+<h3 id="2-returns-as-preferences">2. Returns as Preferences</h3>
+
+<ul>
+  <li>
+    <p>reward source $s$ 끼리의 직접적인 비교가 어렵다하지만, (scaling issue 때문)
+하나의 reward source 안에서는 policy 비교가 여전히 가능함</p>
+
+\[R_s ^{\pi_1} &gt; R_s ^{\pi_2}\]
+
+    <p>이면 $s$는 $\pi_1$ 을 $\pi_2$ 보다 선호하는 것.</p>
+  </li>
+  <li>하지만 여전히 이러한 각 reward source별 ‘preference’를 source별로 얼마나, 어떻게 weighting 할지는 또 다른 문제임.</li>
+  <li>“But we can limit (using the voting scheme) how much one source’s preference can override another source’s preference!</li>
+</ul>
+
+<p>근데 이건 game theory 에서 nash equilibrium 을 찾는 문제와 동일. 다른 source(player)의 선택(voting / playing) 이 자신의 reward (gain) 을 결정하는데, 모든 source가 만족하는 최적의 조합을 찾으려면 → <strong>no single player can change its playing (voting) and achieve a gain (increase in their reward)</strong> → <strong>nash equilibrium!</strong></p>
+
+<h2 id="multiple-reward-source-algorithm">Multiple Reward Source Algorithm</h2>
+
+<h3 id="return-parametrization">Return Parametrization</h3>
+
+<ul>
+  <li>
+    <p>First, authors parameterize the estimated return of $\hat {R}_s ^\pi$ using parameters $a_s, b_s, \beta_s (x) ,p_s (x,a)$ → This is a KL-divergence form</p>
+
+\[\hat{R}_s ^\pi = a_s \sum_x \beta_s (x) \sum_a p_s(x,a) \log \frac{p_s(x,a)}{\pi(x,a)} + b_s\]
+  </li>
+  <li>
+    <p>잘 뜯어보면 얘네는 cumulative return function을 linear로 근사했는데</p>
+
+\[\hat R_s ^\pi = a_s m + b_s\]
+
+    <p>while</p>
+
+\[m = \sum_x \beta_s (x) \sum_a p_s(x,a) \log \frac{p_s(x,a)}{\pi(x,a)}\]
+  </li>
+  <li>
+    <p>$m$ 을 잘 뜯어보면 target vote와 $\pi$ 사이의 KL divergence 임. $\sum \beta_s (x) = 1$ 일테고.</p>
+
+    <p>이건 나중에  neural network 로 대체될 가능성 아주 농후..</p>
+  </li>
+  <li>
+    <p>그니까 말하자면, 각 source의 reward를 다음과 같이 design/approximate 한다는 것.</p>
+
+    <p>최종적으로 선택된 policy $\pi(x,a)$  가 내가 진정 원하는 action’s probability distribution $p_s(x,a)$ 와 비슷하면 높은 reward, 아니면 낮은 reward.</p>
+  </li>
+  <li>
+    <p>여기서 헷갈리면 안되는 것이, $p_s (x,a)$랑 $v_s (x,a)$의 차이.</p>
+
+    <blockquote>
+      <p>“while $v_s(x,a)$ is the policy vote for observation $x$ for source $s$, $p_s(x,a)$ is the preferred policy for observation $x$ for source $s$.”</p>
+    </blockquote>
+
+    <p>이라고 적혀있는데, 이를 다시 풀어서 쓰면</p>
+
+    <p>$p_s(x,a)$ : 유권자의 진짜 욕망
+  $v_s (x,a)$ : 유권자의 진짜 욕망을 실현하기 위한 전략적 선택이 담긴 voting</p>
+
+    <p>$p_s (x,a)$  는 source $s$ 별로 fix 되어 있는 것이고,
+  $v_s (x,a)$는 조절 가능한 것인데, 이것을 조절함으로써 전체 policy $\pi(x,a)$ 가 결정이 되는 것.</p>
+  </li>
+  <li>
+    <p>How do we estimate the real $p_s(x,a) ?$ → <strong>linear least-squares method based on the experiences of different policies and empirical returns</strong></p>
+  </li>
+</ul>
+
+<h3 id="best-responce-algorithm">Best responce Algorithm</h3>
+
+<ul>
+  <li>일단 nash equilibrium을 찾기 전에 각 source에게 최적화된 $v_s(x,a)$ 부터 먼저 찾아야 됨.</li>
+  <li>각 source가 원하는 것은 위에서 parameterize된 reward를 maximize 하는 것. 뭐를 조절함으로써? 자신의 vote를 조절함으로써.</li>
+  <li>
+    <p>“We need to find the set of $\alpha_s(x)$ and $v_s(x,a)$ to maximize $R_s^\pi$ , which is the same as minimizing</p>
+
+\[\sum_x \beta_s (x) \sum_a p_s (x,a) \log \frac{\sum_{s'}\alpha_{s'}(x)v_{s'}(x)}{\sum_{s'}\alpha_{s'}(x)}\]
+  </li>
+  <li>minimization problem  은 gradient descent 를 하던, 직접 미분을 하던.. 알아서…</li>
+</ul>
+
+<h3 id="nash-equilibrium-algorithm">Nash Equilibrium Algorithm</h3>
+
+<ul>
+  <li>nash equilibrium을 찾는 전형적인 iterative algorithm을 적용 → iterate to an equiilibrium by repeatedly finding the best response for each source and simulataneously replacing the old solution with the new best responses.</li>
+</ul>
+
+<p>Easily adjust the nash equilibrium when a player (reward source) is added or removed. 
+(In contrast to the conventional RL training algorithm that has to be trained from scratch)</p>
+
+<h2 id="results">Results</h2>
+
+<p><img src="Untitled.png" alt="Untitled.png" /></p>
+
+<p><img src="Untitled%201.png" alt="Untitled%201.png" /></p>
+
+<ul>
+  <li>Constructing a reward signal that is the sum of the source’s rewards does not lead to a good solution.</li>
+  <li>if we remove one source, the agent automatically adapts to the ideal policy for the reamining source (just a few nash equilibrium finding iteration)</li>
+</ul>
+</div><section class="article__sharing d-print-none"></section><br/>
+  
+  <div id="disqus_thread"></div>
+  <script>
+      /**
+      *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+      *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+      /*
+      var disqus_config = function () {
+      this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+      };
+      */
+      (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://younghyopark-github-io.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+      })();
+  </script>
+
+  <div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-04-12T00:00:00+09:00"><!-- start custom article footer snippet -->
+
+<!-- end custom article footer snippet -->
+<div class="article__license"><div class="license">
+    <p>This work is licensed under a <a itemprop="license" rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">Attribution-NonCommercial 4.0 International</a> license.
+      <a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">
+        <img alt="Attribution-NonCommercial 4.0 International" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" />
+      </a>
+    </p>
+  </div></div><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</footer>
+<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/notion_to_markdown/%5BPaper%20Review%5D%20Deconstructing%20Lottery%20Tickets%20Zero%20256c0f5ba9d2483cb37e197122f85459/">[NIPS 2019] Deconstructing Lottery Tickets: Zeros, Signs, and the Supermask</a></div><div class="next"><span>NEXT</span><a href="/notion_to_markdown/%5BJAIR%202013%5D%20A%20Survey%20of%20Multi-Objective%20Sequential%202596a1a7dc934dbc9ed305d644b17155/">[JAIR 2013] A Survey of Multi-Objective Sequential Decision-Making</a></div></div></div>
+
+</div>
+
+<script>(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    $(function() {
+      var $this ,$scroll;
+      var $articleContent = $('.js-article-content');
+      var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+      var scroll = hasSidebar ? '.js-page-main' : 'html, body';
+      $scroll = $(scroll);
+
+      $articleContent.find('.highlight').each(function() {
+        $this = $(this);
+        $this.attr('data-lang', $this.find('code').attr('data-lang'));
+      });
+      $articleContent.find('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]').each(function() {
+        $this = $(this);
+        $this.append($('<a class="anchor d-print-none" aria-hidden="true"></a>').html('<i class="fas fa-anchor"></i>'));
+      });
+      $articleContent.on('click', '.anchor', function() {
+        $scroll.scrollToAnchor('#' + $(this).parent().attr('id'), 400);
+      });
+    });
+  });
+})();
+</script>
+</div><section class="page__comments d-print-none"></section></article><!-- start custom main bottom snippet -->
+
+<!-- end custom main bottom snippet -->
+</div>
+            </div></div></div><div class="page__footer d-print-none">
+<footer class="footer py-4 js-page-footer">
+  <div class="main"><div itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Younghyo Park"><meta itemprop="url" content="/younghyopark.github.io"><meta itemprop="description" content="I'm currently undergoing a B.S. course in Seoul National University, majoring in Mechanical Engineering. I'm interested in Robotics, Control and Machine Learning. Besides that, I love traveling, playing piano and learning new stuffs."><div class="footer__author-links"><div class="author-links">
+  <ul class="menu menu--nowrap menu--inline"><link itemprop="url" href="younghyopark.github.io"><li title="Send me an Email.">
+      <a class="button button--circle mail-button" itemprop="email" href="mailto:parkyh9492@snu.ac.kr" target="_blank">
+        <i class="fas fa-envelope"></i>
+      </a><li title="Follow me on Github.">
+        <a class="button button--circle github-button" itemprop="sameAs" href="https://github.com/younghyopark.github.io" target="_blank">
+          <div class="icon"><svg fill="#000000" width="24px" height="24px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path class="svgpath" data-index="path_0" fill="#272636" d="M0 525.2c0 223.6 143.3 413.7 343 483.5 26.9 6.8 22.8-12.4 22.8-25.4l0-88.7c-155.3 18.2-161.5-84.6-172-101.7-21.1-36-70.8-45.2-56-62.3 35.4-18.2 71.4 4.6 113.1 66.3 30.2 44.7 89.1 37.2 119 29.7 6.5-26.9 20.5-50.9 39.7-69.6C248.8 728.2 181.7 630 181.7 513.2c0-56.6 18.7-108.7 55.3-150.7-23.3-69.3 2.2-128.5 5.6-137.3 66.5-6 135.5 47.6 140.9 51.8 37.8-10.2 80.9-15.6 129.1-15.6 48.5 0 91.8 5.6 129.8 15.9 12.9-9.8 77-55.8 138.8-50.2 3.3 8.8 28.2 66.7 6.3 135 37.1 42.1 56 94.6 56 151.4 0 117-67.5 215.3-228.8 243.7 26.9 26.6 43.6 63.4 43.6 104.2l0 128.8c0.9 10.3 0 20.5 17.2 20.5C878.1 942.4 1024 750.9 1024 525.3c0-282.9-229.3-512-512-512C229.1 13.2 0 242.3 0 525.2L0 525.2z" />
+</svg>
+</div>
+        </a>
+      </li></ul>
+</div>
+</div>
+    </div><div class="site-info mt-2">
+      <div>© Younghyo Park 2021,
+        Powered by <a title="Jekyll is a simple, blog-aware, static site generator." href="http://jekyllrb.com/">Jekyll</a> & <a
+        title="TeXt is a super customizable Jekyll theme." href="https://github.com/kitian616/jekyll-TeXt-theme">TeXt Theme</a>.
+      </div>
+    </div>
+  </div>
+</footer>
+</div></div>
+    </div><script>(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $body = $('body'), $window = $(window);
+    var $pageRoot = $('.js-page-root'), $pageMain = $('.js-page-main');
+    var activeCount = 0;
+    function modal(options) {
+      var $root = this, visible, onChange, hideWhenWindowScroll = false;
+      var scrollTop;
+      function setOptions(options) {
+        var _options = options || {};
+        visible = _options.initialVisible === undefined ? false : show;
+        onChange = _options.onChange;
+        hideWhenWindowScroll = _options.hideWhenWindowScroll;
+      }
+      function init() {
+        setState(visible);
+      }
+      function setState(isShow) {
+        if (isShow === visible) {
+          return;
+        }
+        visible = isShow;
+        if (visible) {
+          activeCount++;
+          scrollTop = $(window).scrollTop() || $pageMain.scrollTop();
+          $root.addClass('modal--show');
+          $pageMain.scrollTop(scrollTop);
+          activeCount === 1 && ($pageRoot.addClass('show-modal'), $body.addClass('of-hidden'));
+          hideWhenWindowScroll && window.hasEvent('touchstart') && $window.on('scroll', hide);
+          $window.on('keyup', handleKeyup);
+        } else {
+          activeCount > 0 && activeCount--;
+          $root.removeClass('modal--show');
+          $window.scrollTop(scrollTop);
+          activeCount === 0 && ($pageRoot.removeClass('show-modal'), $body.removeClass('of-hidden'));
+          hideWhenWindowScroll && window.hasEvent('touchstart') && $window.off('scroll', hide);
+          $window.off('keyup', handleKeyup);
+        }
+        onChange && onChange(visible);
+      }
+      function show() {
+        setState(true);
+      }
+      function hide() {
+        setState(false);
+      }
+      function handleKeyup(e) {
+        // Char Code: 27  ESC
+        if (e.which ===  27) {
+          hide();
+        }
+      }
+      setOptions(options);
+      init();
+      return {
+        show: show,
+        hide: hide,
+        $el: $root
+      };
+    }
+    $.fn.modal = modal;
+  });
+})();
+</script><div class="modal modal--overflow page__search-modal d-print-none js-page-search-modal"><script>
+(function () {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    // search panel
+    var search = (window.search || (window.search = {}));
+    var useDefaultSearchBox = window.useDefaultSearchBox === undefined ?
+      true : window.useDefaultSearchBox ;
+
+    var $searchModal = $('.js-page-search-modal');
+    var $searchToggle = $('.js-search-toggle');
+    var searchModal = $searchModal.modal({ onChange: handleModalChange, hideWhenWindowScroll: true });
+    var modalVisible = false;
+    search.searchModal = searchModal;
+
+    var $searchBox = null;
+    var $searchInput = null;
+    var $searchClear = null;
+
+    function getModalVisible() {
+      return modalVisible;
+    }
+    search.getModalVisible = getModalVisible;
+
+    function handleModalChange(visible) {
+      modalVisible = visible;
+      if (visible) {
+        search.onShow && search.onShow();
+        useDefaultSearchBox && $searchInput[0] && $searchInput[0].focus();
+      } else {
+        search.onShow && search.onHide();
+        useDefaultSearchBox && $searchInput[0] && $searchInput[0].blur();
+        setTimeout(function() {
+          useDefaultSearchBox && ($searchInput.val(''), $searchBox.removeClass('not-empty'));
+          search.clear && search.clear();
+          window.pageAsideAffix && window.pageAsideAffix.refresh();
+        }, 400);
+      }
+    }
+
+    $searchToggle.on('click', function() {
+      modalVisible ? searchModal.hide() : searchModal.show();
+    });
+    // Char Code: 83  S, 191 /
+    $(window).on('keyup', function(e) {
+      if (!modalVisible && !window.isFormElement(e.target || e.srcElement) && (e.which === 83 || e.which === 191)) {
+        modalVisible || searchModal.show();
+      }
+    });
+
+    if (useDefaultSearchBox) {
+      $searchBox = $('.js-search-box');
+      $searchInput = $searchBox.children('input');
+      $searchClear = $searchBox.children('.js-icon-clear');
+      search.getSearchInput = function() {
+        return $searchInput.get(0);
+      };
+      search.getVal = function() {
+        return $searchInput.val();
+      };
+      search.setVal = function(val) {
+        $searchInput.val(val);
+      };
+
+      $searchInput.on('focus', function() {
+        $(this).addClass('focus');
+      });
+      $searchInput.on('blur', function() {
+        $(this).removeClass('focus');
+      });
+      $searchInput.on('input', window.throttle(function() {
+        var val = $(this).val();
+        if (val === '' || typeof val !== 'string') {
+          search.clear && search.clear();
+        } else {
+          $searchBox.addClass('not-empty');
+          search.onInputNotEmpty && search.onInputNotEmpty(val);
+        }
+      }, 400));
+      $searchClear.on('click', function() {
+        $searchInput.val(''); $searchBox.removeClass('not-empty');
+        search.clear && search.clear();
+      });
+    }
+  });
+})();
+</script><div class="search search--dark">
+  <div class="main">
+    <div class="search__header">Search</div>
+    <div class="search-bar">
+      <div class="search-box js-search-box">
+        <div class="search-box__icon-search"><i class="fas fa-search"></i></div>
+        <input type="text" />
+        <div class="search-box__icon-clear js-icon-clear">
+          <a><i class="fas fa-times"></i></a>
+        </div>
+      </div>
+      <button class="button button--theme-dark button--pill search__cancel js-search-toggle">
+        Cancel</button>
+    </div>
+    <div class="search-result js-search-result"></div>
+  </div>
+</div>
+<script>var SOURCES = window.TEXT_VARIABLES.sources;
+var PAHTS = window.TEXT_VARIABLES.paths;
+window.Lazyload.js([SOURCES.jquery, PAHTS.search_js], function() {
+  var search = (window.search || (window.search = {}));
+  var searchData = window.TEXT_SEARCH_DATA || {};
+
+  function memorize(f) {
+    var cache = {};
+    return function () {
+      var key = Array.prototype.join.call(arguments, ',');
+      if (key in cache) return cache[key];
+      else return cache[key] = f.apply(this, arguments);
+    };
+  }
+
+  /// search
+  function searchByQuery(query) {
+    var i, j, key, keys, cur, _title, result = {};
+    keys = Object.keys(searchData);
+    for (i = 0; i < keys.length; i++) {
+      key = keys[i];
+      for (j = 0; j < searchData[key].length; j++) {
+        cur = searchData[key][j], _title = cur.title;
+        if ((result[key] === undefined || result[key] && result[key].length < 4 )
+          && _title.toLowerCase().indexOf(query.toLowerCase()) >= 0) {
+          if (result[key] === undefined) {
+            result[key] = [];
+          }
+          result[key].push(cur);
+        }
+      }
+    }
+    return result;
+  }
+
+  var renderHeader = memorize(function(header) {
+    return $('<p class="search-result__header">' + header + '</p>');
+  });
+
+  var renderItem = function(index, title, url) {
+    return $('<li class="search-result__item" data-index="' + index + '"><a class="button" href="' + url + '">' + title + '</a></li>');
+  };
+
+  function render(data) {
+    if (!data) { return null; }
+    var $root = $('<ul></ul>'), i, j, key, keys, cur, itemIndex = 0;
+    keys = Object.keys(data);
+    for (i = 0; i < keys.length; i++) {
+      key = keys[i];
+      $root.append(renderHeader(key));
+      for (j = 0; j < data[key].length; j++) {
+        cur = data[key][j];
+        $root.append(renderItem(itemIndex++, cur.title, cur.url));
+      }
+    }
+    return $root;
+  }
+
+  // search box
+  var $result = $('.js-search-result'), $resultItems;
+  var lastActiveIndex, activeIndex;
+
+  function clear() {
+    $result.html(null);
+    $resultItems = $('.search-result__item'); activeIndex = 0;
+  }
+  function onInputNotEmpty(val) {
+    $result.html(render(searchByQuery(val)));
+    $resultItems = $('.search-result__item'); activeIndex = 0;
+    $resultItems.eq(0).addClass('active');
+  }
+
+  search.clear = clear;
+  search.onInputNotEmpty = onInputNotEmpty;
+
+  function updateResultItems() {
+    lastActiveIndex >= 0 && $resultItems.eq(lastActiveIndex).removeClass('active');
+    activeIndex >= 0 && $resultItems.eq(activeIndex).addClass('active');
+  }
+
+  function moveActiveIndex(direction) {
+    var itemsCount = $resultItems ? $resultItems.length : 0;
+    if (itemsCount > 1) {
+      lastActiveIndex = activeIndex;
+      if (direction === 'up') {
+        activeIndex = (activeIndex - 1 + itemsCount) % itemsCount;
+      } else if (direction === 'down') {
+        activeIndex = (activeIndex + 1 + itemsCount) % itemsCount;
+      }
+      updateResultItems();
+    }
+  }
+
+  // Char Code: 13  Enter, 37  ⬅, 38  ⬆, 39  ➡, 40  ⬇
+  $(window).on('keyup', function(e) {
+    var modalVisible = search.getModalVisible && search.getModalVisible();
+    if (modalVisible) {
+      if (e.which === 38) {
+        modalVisible && moveActiveIndex('up');
+      } else if (e.which === 40) {
+        modalVisible && moveActiveIndex('down');
+      } else if (e.which === 13) {
+        modalVisible && $resultItems && activeIndex >= 0 && $resultItems.eq(activeIndex).children('a')[0].click();
+      }
+    }
+  });
+
+  $result.on('mouseover', '.search-result__item > a', function() {
+    var itemIndex = $(this).parent().data('index');
+    itemIndex >= 0 && (lastActiveIndex = activeIndex, activeIndex = itemIndex, updateResultItems());
+  });
+});
+</script>
+</div></div>
+
+
+<script>(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    function scrollToAnchor(anchor, duration, callback) {
+      var $root = this;
+      $root.animate({ scrollTop: $(anchor).position().top }, duration, function() {
+        window.history.replaceState(null, '', window.location.href.split('#')[0] + anchor);
+        callback && callback();
+      });
+    }
+    $.fn.scrollToAnchor = scrollToAnchor;
+  });
+})();
+(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    function affix(options) {
+      var $root = this, $window = $(window), $scrollTarget, $scroll,
+        offsetBottom = 0, scrollTarget = window, scroll = window.document, disabled = false, isOverallScroller = true,
+        rootTop, rootLeft, rootHeight, scrollBottom, rootBottomTop,
+        hasInit = false, curState;
+
+      function setOptions(options) {
+        var _options = options || {};
+        _options.offsetBottom && (offsetBottom = _options.offsetBottom);
+        _options.scrollTarget && (scrollTarget = _options.scrollTarget);
+        _options.scroll && (scroll = _options.scroll);
+        _options.disabled !== undefined && (disabled = _options.disabled);
+        $scrollTarget = $(scrollTarget);
+        isOverallScroller = window.isOverallScroller($scrollTarget[0]);
+        $scroll = $(scroll);
+      }
+      function preCalc() {
+        top();
+        rootHeight = $root.outerHeight();
+        rootTop = $root.offset().top + (isOverallScroller ? 0 :  $scrollTarget.scrollTop());
+        rootLeft = $root.offset().left;
+      }
+      function calc(needPreCalc) {
+        needPreCalc && preCalc();
+        scrollBottom = $scroll.outerHeight() - offsetBottom - rootHeight;
+        rootBottomTop = scrollBottom - rootTop;
+      }
+      function top() {
+        if (curState !== 'top') {
+          $root.removeClass('fixed').css({
+            left: 0,
+            top: 0
+          });
+          curState = 'top';
+        }
+      }
+      function fixed() {
+        if (curState !== 'fixed') {
+          $root.addClass('fixed').css({
+            left: rootLeft + 'px',
+            top: 0
+          });
+          curState = 'fixed';
+        }
+      }
+      function bottom() {
+        if (curState !== 'bottom') {
+          $root.removeClass('fixed').css({
+            left: 0,
+            top: rootBottomTop + 'px'
+          });
+          curState = 'bottom';
+        }
+      }
+      function setState() {
+        var scrollTop = $scrollTarget.scrollTop();
+        if (scrollTop >= rootTop && scrollTop <= scrollBottom) {
+          fixed();
+        } else if (scrollTop < rootTop) {
+          top();
+        } else {
+          bottom();
+        }
+      }
+      function init() {
+        if(!hasInit) {
+          var interval, timeout;
+          calc(true); setState();
+          // run calc every 100 millisecond
+          interval = setInterval(function() {
+            calc();
+          }, 100);
+          timeout = setTimeout(function() {
+            clearInterval(interval);
+          }, 45000);
+          window.pageLoad.then(function() {
+            setTimeout(function() {
+              clearInterval(interval);
+              clearTimeout(timeout);
+            }, 3000);
+          });
+          $scrollTarget.on('scroll', function() {
+            disabled || setState();
+          });
+          $window.on('resize', function() {
+            disabled || (calc(true), setState());
+          });
+          hasInit = true;
+        }
+      }
+
+      setOptions(options);
+      if (!disabled) {
+        init();
+      }
+      $window.on('resize', window.throttle(function() {
+        init();
+      }, 200));
+      return {
+        setOptions: setOptions,
+        refresh: function() {
+          calc(true, { animation: false }); setState();
+        }
+      };
+    }
+    $.fn.affix = affix;
+  });
+})();
+(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    function toc(options) {
+      var $root = this, $window = $(window), $scrollTarget, $scroller, $tocUl = $('<ul class="toc toc--ellipsis"></ul>'), $tocLi, $headings, $activeLast, $activeCur,
+        selectors = 'h1,h2,h3', container = 'body', scrollTarget = window, scroller = 'html, body', disabled = false,
+        headingsPos, scrolling = false, hasRendered = false, hasInit = false;
+
+      function setOptions(options) {
+        var _options = options || {};
+        _options.selectors && (selectors = _options.selectors);
+        _options.container && (container = _options.container);
+        _options.scrollTarget && (scrollTarget = _options.scrollTarget);
+        _options.scroller && (scroller = _options.scroller);
+        _options.disabled !== undefined && (disabled = _options.disabled);
+        $headings = $(container).find(selectors).filter('[id]');
+        $scrollTarget = $(scrollTarget);
+        $scroller = $(scroller);
+      }
+      function calc() {
+        headingsPos = [];
+        $headings.each(function() {
+          headingsPos.push(Math.floor($(this).position().top));
+        });
+      }
+      function setState(element, disabled) {
+        var scrollTop = $scrollTarget.scrollTop(), i;
+        if (disabled || !headingsPos || headingsPos.length < 1) { return; }
+        if (element) {
+          $activeCur = element;
+        } else {
+          for (i = 0; i < headingsPos.length; i++) {
+            if (scrollTop >= headingsPos[i]) {
+              $activeCur = $tocLi.eq(i);
+            } else {
+              $activeCur || ($activeCur = $tocLi.eq(i));
+              break;
+            }
+          }
+        }
+        $activeLast && $activeLast.removeClass('active');
+        ($activeLast = $activeCur).addClass('active');
+      }
+      function render() {
+        if(!hasRendered) {
+          $root.append($tocUl);
+          $headings.each(function() {
+            var $this = $(this);
+            $tocUl.append($('<li></li>').addClass('toc-' + $this.prop('tagName').toLowerCase())
+              .append($('<a></a>').text($this.text()).attr('href', '#' + $this.prop('id'))));
+          });
+          $tocLi = $tocUl.children('li');
+          $tocUl.on('click', 'a', function(e) {
+            e.preventDefault();
+            var $this = $(this);
+            scrolling = true;
+            setState($this.parent());
+            $scroller.scrollToAnchor($this.attr('href'), 400, function() {
+              scrolling = false;
+            });
+          });
+        }
+        hasRendered = true;
+      }
+      function init() {
+        var interval, timeout;
+        if(!hasInit) {
+          render(); calc(); setState(null, scrolling);
+          // run calc every 100 millisecond
+          interval = setInterval(function() {
+            calc();
+          }, 100);
+          timeout = setTimeout(function() {
+            clearInterval(interval);
+          }, 45000);
+          window.pageLoad.then(function() {
+            setTimeout(function() {
+              clearInterval(interval);
+              clearTimeout(timeout);
+            }, 3000);
+          });
+          $scrollTarget.on('scroll', function() {
+            disabled || setState(null, scrolling);
+          });
+          $window.on('resize', window.throttle(function() {
+            if (!disabled) {
+              render(); calc(); setState(null, scrolling);
+            }
+          }, 100));
+        }
+        hasInit = true;
+      }
+
+      setOptions(options);
+      if (!disabled) {
+        init();
+      }
+      $window.on('resize', window.throttle(function() {
+        init();
+      }, 200));
+      return {
+        setOptions: setOptions
+      };
+    }
+    $.fn.toc = toc;
+  });
+})();
+/*(function () {
+
+})();*/
+</script><script>
+  /* toc must before affix, since affix need to konw toc' height. */(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  var TOC_SELECTOR = window.TEXT_VARIABLES.site.toc.selectors;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window);
+    var $articleContent = $('.js-article-content');
+    var $tocRoot = $('.js-toc-root'), $col2 = $('.js-col-aside');
+    var toc;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+    var hasToc = $articleContent.find(TOC_SELECTOR).length > 0;
+
+    function disabled() {
+      return $col2.css('display') === 'none' || !hasToc;
+    }
+
+    tocDisabled = disabled();
+
+    toc = $tocRoot.toc({
+      selectors: TOC_SELECTOR,
+      container: $articleContent,
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      tocDisabled = disabled();
+      toc && toc.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+  });
+})();
+(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window), $pageFooter = $('.js-page-footer');
+    var $pageAside = $('.js-page-aside');
+    var affix;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+
+    affix = $pageAside.affix({
+      offsetBottom: $pageFooter.outerHeight(),
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      scroll: hasSidebar ? $('.js-page-main').children() : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      affix && affix.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+    window.pageAsideAffix = affix;
+  });
+})();
+</script><script>
+  window.Lazyload.js(['https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js', 'https://cdn.bootcss.com/Chart.js/2.7.2/Chart.bundle.min.js'], function() {
+    var $canvas = null, $this = null, _ctx = null, _text = '';
+    $('.language-chart').each(function(){
+      $this = $(this);
+      $canvas = $('<canvas></canvas>');
+      _text = $this.text();
+      $this.text('').append($canvas);
+      _ctx = $canvas.get(0).getContext('2d');
+      (_ctx && _text) && (new Chart(_ctx, JSON.parse(_text)) && $this.attr('data-processed', true));
+    });
+  });
+</script>
+<script type="text/x-mathjax-config">
+	var _config = { tex2jax: {
+		inlineMath: [['$','$'], ['\\(','\\)']]
+	}};_config.TeX = { equationNumbers: { autoNumber: "all" } };MathJax.Hub.Config(_config);
+</script>
+<script type="text/javascript" src="https://cdn.bootcss.com/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  window.Lazyload.js('https://cdn.bootcss.com/mermaid/8.0.0-rc.8/mermaid.min.js', function() {
+    mermaid.initialize({
+      startOnLoad: true
+    });
+    mermaid.init(undefined, '.language-mermaid');
+  });
+</script>
+
+    </div>
+    <script>(function () {
+  var $root = document.getElementsByClassName('root')[0];
+  if (window.hasEvent('touchstart')) {
+    $root.dataset.isTouch = true;
+    document.addEventListener('touchstart', function(){}, false);
+  }
+})();
+</script>
+  </body>
+</html>
+

@@ -1,0 +1,1457 @@
+<!DOCTYPE html><html lang="en">
+  <head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[AIRE 2020] A comprehensive survey on model compression and acceleration - Younghyo Park</title>
+
+<meta name="description" content="PruningMotivation      Primary motive of pruning is to reduce the storage requirement of the DL model and make it storage-friendly.    → Pruning parameters f...">
+<link rel="canonical" href="https://younghyopark.github.io/notion_to_markdown/A%20comprehensive%20survey%20on%20model%20compression%20and%20ac%204c3c4286b4ba4b30ac64f7813827a86e/"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
+<!--<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
+
+<meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
+
+<meta name="theme-color" content="#ffffff"> -->
+
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+<!-- end favicons snippet --><link rel="stylesheet" href="/assets/css/main.css"><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.15.1/css/all.css" ><!-- start custom head snippets -->
+
+<!-- end custom head snippets -->
+<script>(function() {
+  window.isArray = function(val) {
+    return Object.prototype.toString.call(val) === '[object Array]';
+  };
+  window.isString = function(val) {
+    return typeof val === 'string';
+  };
+
+  window.hasEvent = function(event) {
+    return 'on'.concat(event) in window.document;
+  };
+
+  window.isOverallScroller = function(node) {
+    return node === document.documentElement || node === document.body || node === window;
+  };
+
+  window.isFormElement = function(node) {
+    var tagName = node.tagName;
+    return tagName === 'INPUT' || tagName === 'SELECT' || tagName === 'TEXTAREA';
+  };
+
+  window.pageLoad = (function () {
+    var loaded = false, cbs = [];
+    window.addEventListener('load', function () {
+      var i;
+      loaded = true;
+      if (cbs.length > 0) {
+        for (i = 0; i < cbs.length; i++) {
+          cbs[i]();
+        }
+      }
+    });
+    return {
+      then: function(cb) {
+        cb && (loaded ? cb() : (cbs.push(cb)));
+      }
+    };
+  })();
+})();
+(function() {
+  window.throttle = function(func, wait) {
+    var args, result, thisArg, timeoutId, lastCalled = 0;
+
+    function trailingCall() {
+      lastCalled = new Date;
+      timeoutId = null;
+      result = func.apply(thisArg, args);
+    }
+    return function() {
+      var now = new Date,
+        remaining = wait - (now - lastCalled);
+
+      args = arguments;
+      thisArg = this;
+
+      if (remaining <= 0) {
+        clearTimeout(timeoutId);
+        timeoutId = null;
+        lastCalled = now;
+        result = func.apply(thisArg, args);
+      } else if (!timeoutId) {
+        timeoutId = setTimeout(trailingCall, remaining);
+      }
+      return result;
+    };
+  };
+})();
+(function() {
+  var Set = (function() {
+    var add = function(item) {
+      var i, data = this._data;
+      for (i = 0; i < data.length; i++) {
+        if (data[i] === item) {
+          return;
+        }
+      }
+      this.size ++;
+      data.push(item);
+      return data;
+    };
+
+    var Set = function(data) {
+      this.size = 0;
+      this._data = [];
+      var i;
+      if (data.length > 0) {
+        for (i = 0; i < data.length; i++) {
+          add.call(this, data[i]);
+        }
+      }
+    };
+    Set.prototype.add = add;
+    Set.prototype.get = function(index) { return this._data[index]; };
+    Set.prototype.has = function(item) {
+      var i, data = this._data;
+      for (i = 0; i < data.length; i++) {
+        if (this.get(i) === item) {
+          return true;
+        }
+      }
+      return false;
+    };
+    Set.prototype.is = function(map) {
+      if (map._data.length !== this._data.length) { return false; }
+      var i, j, flag, tData = this._data, mData = map._data;
+      for (i = 0; i < tData.length; i++) {
+        for (flag = false, j = 0; j < mData.length; j++) {
+          if (tData[i] === mData[j]) {
+            flag = true;
+            break;
+          }
+        }
+        if (!flag) { return false; }
+      }
+      return true;
+    };
+    Set.prototype.values = function() {
+      return this._data;
+    };
+    return Set;
+  })();
+
+  window.Lazyload = (function(doc) {
+    var queue = {js: [], css: []}, sources = {js: {}, css: {}}, context = this;
+    var createNode = function(name, attrs) {
+      var node = doc.createElement(name), attr;
+      for (attr in attrs) {
+        if (attrs.hasOwnProperty(attr)) {
+          node.setAttribute(attr, attrs[attr]);
+        }
+      }
+      return node;
+    };
+    var end = function(type, url) {
+      var s, q, qi, cbs, i, j, cur, val, flag;
+      if (type === 'js' || type ==='css') {
+        s = sources[type], q = queue[type];
+        s[url] = true;
+        for (i = 0; i < q.length; i++) {
+          cur = q[i];
+          if (cur.urls.has(url)) {
+            qi = cur, val = qi.urls.values();
+            qi && (cbs = qi.callbacks);
+            for (flag = true, j = 0; j < val.length; j++) {
+              cur = val[j];
+              if (!s[cur]) {
+                flag = false;
+              }
+            }
+            if (flag && cbs && cbs.length > 0) {
+              for (j = 0; j < cbs.length; j++) {
+                cbs[j].call(context);
+              }
+              qi.load = true;
+            }
+          }
+        }
+      }
+    };
+    var load = function(type, urls, callback) {
+      var s, q, qi, node, i, cur,
+        _urls = typeof urls === 'string' ? new Set([urls]) : new Set(urls), val, url;
+      if (type === 'js' || type ==='css') {
+        s = sources[type], q = queue[type];
+        for (i = 0; i < q.length; i++) {
+          cur = q[i];
+          if (_urls.is(cur.urls)) {
+            qi = cur;
+            break;
+          }
+        }
+        val = _urls.values();
+        if (qi) {
+          callback && (qi.load || qi.callbacks.push(callback));
+          callback && (qi.load && callback());
+        } else {
+          q.push({
+            urls: _urls,
+            callbacks: callback ? [callback] : [],
+            load: false
+          });
+          for (i = 0; i < val.length; i++) {
+            node = null, url = val[i];
+            if (s[url] === undefined) {
+              (type === 'js' ) && (node = createNode('script', { src: url }));
+              (type === 'css') && (node = createNode('link', { rel: 'stylesheet', href: url }));
+              if (node) {
+                node.onload = (function(type, url) {
+                  return function() {
+                    end(type, url);
+                  };
+                })(type, url);
+                (doc.head || doc.body).appendChild(node);
+                s[url] = false;
+              }
+            }
+          }
+        }
+      }
+    };
+    return {
+      js: function(url, callback) {
+        load('js', url, callback);
+      },
+      css: function(url, callback) {
+        load('css', url, callback);
+      }
+    };
+  })(this.document);
+})();
+</script><script>
+  (function() {
+    var TEXT_VARIABLES = {
+      version: '2.2.6',
+      sources: {
+        font_awesome: 'https://cdn.bootcdn.net/ajax/libs/font-awesome/5.15.1/css/all.css',
+        jquery: 'https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js',
+        leancloud_js_sdk: '//cdn.jsdelivr.net/npm/leancloud-storage@3.13.2/dist/av-min.js',
+        chart: 'https://cdn.bootcss.com/Chart.js/2.7.2/Chart.bundle.min.js',
+        gitalk: {
+          js: 'https://cdn.bootcss.com/gitalk/1.2.2/gitalk.min.js',
+          css: 'https://cdn.bootcss.com/gitalk/1.2.2/gitalk.min.css'
+        },
+        valine: 'https://unpkg.com/valine/dist/Valine.min.js',
+        mathjax: 'https://cdn.bootcss.com/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML',
+        mermaid: 'https://cdn.bootcss.com/mermaid/8.0.0-rc.8/mermaid.min.js'
+      },
+      site: {
+        toc: {
+          selectors: 'h2,h3'
+        }
+      },
+      paths: {
+        search_js: '/assets/search.js'
+      }
+    };
+    window.TEXT_VARIABLES = TEXT_VARIABLES;
+  })();
+</script>
+</head>
+  <body>
+    <div class="root" data-is-touch="false">
+      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport has-aside cell cell--auto">
+
+      <div class="page__main-inner"><div class="page__header d-print-none"><header class="header"><div class="main">
+      <div class="header__title">
+        <div class="header__brand"><?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+ "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+ width="1000.000000pt" height="1000.000000pt" viewBox="0 0 1000.000000 1000.000000"
+ preserveAspectRatio="xMidYMid meet">
+<metadata>
+Created by potrace 1.11, written by Peter Selinger 2001-2013
+</metadata>
+<g transform="translate(0.000000,1000.000000) scale(0.100000,-0.100000)"
+fill="#000000" stroke="none">
+<path d="M2670 9345 c-306 -42 -613 -197 -826 -417 -162 -167 -254 -315 -329
+-530 -31 -88 -41 -107 -61 -112 -70 -18 -275 -116 -368 -176 -145 -95 -308
+-255 -404 -398 -78 -116 -172 -318 -196 -423 -48 -212 -46 -69 -46 -2770 0
+-1771 3 -2542 11 -2592 51 -334 177 -587 408 -817 188 -188 405 -313 646 -374
+191 -48 65 -46 2994 -46 2987 0 2786 -4 3011 56 428 113 808 469 957 899 l38
+108 105 37 c316 111 582 333 758 635 43 74 115 245 138 330 45 161 44 114 44
+2780 0 2209 -2 2534 -15 2624 -77 511 -449 951 -947 1120 -244 82 52 75 -3053
+77 -2230 2 -2789 -1 -2865 -11z m4640 -1467 c105 -27 183 -54 251 -88 264
+-134 455 -378 517 -665 16 -75 17 -247 17 -2605 0 -2883 9 -2611 -90 -2818
+-129 -270 -343 -448 -640 -534 l-80 -23 -2795 0 -2795 0 -79 24 c-44 12 -87
+27 -95 31 -9 5 -50 25 -92 44 -264 123 -459 378 -526 687 -17 80 -18 208 -18
+2594 l0 2510 22 87 c72 282 229 499 459 636 104 62 269 117 389 131 45 5 1249
+8 2785 7 2474 -2 2711 -3 2770 -18z"/>
+<path d="M2865 7415 c-499 -70 -930 -402 -1105 -853 -73 -188 -92 -295 -91
+-508 1 -319 110 -603 327 -854 153 -177 361 -319 577 -396 78 -27 79 -27 73
+-58 -3 -17 -13 -76 -21 -131 -8 -55 -35 -210 -59 -345 -25 -135 -50 -283 -56
+-330 -13 -97 -23 -110 -84 -110 -60 0 -179 -25 -287 -59 -292 -94 -565 -355
+-674 -646 -103 -274 -81 -611 57 -865 88 -162 238 -322 384 -409 87 -51 241
+-116 330 -138 103 -26 421 -25 524 1 332 84 618 321 758 627 56 124 98 343 89
+468 l-5 77 182 48 c99 27 257 69 349 93 92 25 169 44 171 42 2 -2 18 -32 35
+-67 45 -89 111 -190 183 -278 75 -94 226 -243 282 -281 22 -15 59 -42 81 -59
+65 -50 233 -140 340 -182 142 -56 177 -67 290 -91 299 -61 570 -54 875 24 150
+39 412 164 540 259 30 23 66 48 80 57 39 25 231 218 278 279 172 223 275 441
+329 696 24 116 27 150 27 334 1 177 -2 220 -22 319 -31 150 -46 197 -97 316
+-40 90 -57 125 -120 234 -11 18 -47 70 -79 115 -353 484 -958 758 -1564 708
+-297 -25 -607 -130 -840 -286 l-82 -55 -137 96 c-76 53 -190 132 -253 176
+-141 98 -146 102 -133 119 35 43 100 258 122 405 29 189 -4 455 -79 652 -82
+213 -267 450 -465 596 -290 214 -672 310 -1030 260z m445 -465 c345 -100 581
+-338 670 -675 29 -111 29 -289 1 -399 -58 -223 -187 -412 -364 -533 -90 -63
+-140 -88 -242 -123 -111 -39 -192 -52 -315 -53 -375 0 -702 201 -860 528 -93
+193 -111 401 -54 621 33 129 121 278 227 385 120 122 309 224 483 263 104 23
+354 16 454 -14z m881 -1933 c162 -112 313 -218 318 -223 2 -2 -10 -20 -26 -41
+-165 -211 -290 -524 -324 -813 -11 -99 -7 -340 7 -415 l6 -30 -189 -48 c-103
+-26 -264 -67 -357 -92 -94 -24 -170 -43 -171 -42 -31 53 -142 186 -189 227
+-94 81 -164 130 -243 170 -48 24 -89 44 -89 45 -1 0 9 59 22 130 13 72 35 200
+49 285 13 85 40 242 60 349 19 107 35 196 35 198 0 2 17 3 38 3 44 0 180 22
+272 44 194 46 406 155 560 289 36 31 70 57 76 57 6 0 71 -42 145 -93z m1959
+-33 c168 -28 340 -98 495 -201 541 -360 715 -1052 404 -1606 -245 -437 -739
+-696 -1249 -656 -338 27 -632 166 -865 411 -141 148 -251 343 -300 533 -41
+159 -43 413 -6 570 19 76 71 218 107 288 81 157 262 355 422 461 194 128 365
+187 632 220 63 8 263 -3 360 -20z m-3514 -1609 c234 -45 432 -221 497 -442 63
+-214 2 -439 -163 -603 -128 -129 -288 -193 -475 -193 -183 0 -323 55 -455 180
+-130 122 -194 269 -192 444 1 159 66 309 186 428 166 163 378 229 602 186z"/>
+</g>
+</svg>
+<a title="Your Site Description
+" href="/">Younghyo Park</a></div><button class="button button--secondary button--circle search-button js-search-toggle"><i class="fas fa-search"></i></button></div><nav class="navigation">
+        <ul><li class="navigation__item"><a href="/about.html">About</a></li><li class="navigation__item"><a href="/projects.html">Projects</a></li><li class="navigation__item"><a href="/study.html">Study</a></li><li class="navigation__item"><a href="/archive.html">Archive</a></li><li><button class="button button--secondary button--circle search-button js-search-toggle"><i class="fas fa-search"></i></button></li></ul>
+      </nav></div>
+  </header>
+</div><div class="page__content"><div class ="main"><div class="grid grid--reverse">
+
+              <div class="col-aside d-print-none js-col-aside"><aside class="page__aside js-page-aside"><div class="toc-aside js-toc-root"></div>
+</aside></div>
+
+              <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
+
+<!-- end custom main top snippet -->
+<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[AIRE 2020] A comprehensive survey on model compression and acceleration</h1></header><span class="split-space">&nbsp;</span>
+          <a class="edit-on-github"
+            title="Edit on Github"
+            href="https://github.com/younghyopark/younghyopark.github.io/tree/main/_posts/2021-03-16-comprehensive-survey-compression.md">
+            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[AIRE 2020] A comprehensive survey on model compression and acceleration"><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Model-Compression">Model-Compression</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Mar 16, 2021</span>
+            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-03-16T00:00:00+09:00">
+    <meta itemprop="keywords" content="Model-Compression"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
+
+<!-- end custom article top snippet -->
+<div class="article__content" itemprop="articleBody"><p><img src="Untitled.png" alt="Untitled.png" /></p>
+
+<h2 id="pruning">Pruning</h2>
+
+<h3 id="motivation">Motivation</h3>
+
+<ul>
+  <li>
+    <p>Primary motive of pruning is to reduce the storage requirement of the DL model and make it storage-friendly.</p>
+
+    <p>→ Pruning parameters from the dense layer helps in making the model smaller.</p>
+  </li>
+  <li>
+    <p><strong>Pruning also helps to reduce the overfitting problem of the NNs.</strong></p>
+
+    <p>I personally consider this as the key motivation of applying pruning (and other model compression methods) to improve the performance of outlier detection.</p>
+  </li>
+  <li>
+    <p>A model can be pruned either during or after the training.</p>
+  </li>
+</ul>
+
+<h3 id="types-of-pruning">Types of Pruning</h3>
+
+<ol>
+  <li><strong>Weight Pruning</strong> : prunes out (zeros out) the weight connections if they are below some predefined threshold</li>
+  <li><strong>Neuron Pruning</strong> : remove the individual neurons if they are redundant → all the incoming and outgoing connection of the neuron is removed</li>
+  <li><strong>Filter Pruning</strong> : remove the filters that are ranked less important → importance of filters can be calculated by L1/L2 norm</li>
+  <li><strong>Layer Pruning</strong> : from a very deep network, some of the layers can also be pruned.</li>
+</ol>
+
+<h3 id="pruning-for-fc-layers">Pruning for FC layers</h3>
+
+<ol>
+  <li><strong>LeCun et al. (1990)</strong> first introduces the idea of feed-forward network pruning
+    <ul>
+      <li>suggested the removal of the weights based on their <strong>saliency</strong> (if the removal of the weight parameter has a small effect on the training error)</li>
+      <li>authors said that <strong>small magnitude weights</strong> have less impact on the training error, and thus have small saliency.</li>
+    </ul>
+
+    <p>To determine the saliency (and lead to above observation), LeCun et al introduced a method called <strong>“Optimal Brain Damage (OBD)”</strong> which second derivative of the obejctive function is used with respect to the parameters.</p>
+
+    <ul>
+      <li>Saliency $s_k$  is calculated by $s_k  = h_{kk} u_k ^2 / 2$ where $u_k$  is weight parameter, $h_{kk}$ is the second-order derivatives for the parameter.</li>
+      <li>effect on accuracy and training will be least if <strong>small-magnitude parameters</strong> are eliminated</li>
+      <li>Network needs few times of re-training to gain a considerable accuracy again.</li>
+    </ul>
+  </li>
+  <li><strong>Hassibi and Strok (1993)</strong> proposed another method of FC layer pruning.
+    <ul>
+      <li>authors claimed that eliminating small magnitude weights can eliminate wrong weight connections!</li>
+    </ul>
+
+    <p>They say that <strong>small magnitude weights</strong> can also be necessary for lowering the error!</p>
+
+    <ul>
+      <li>propose a method of <strong>“Optimal Brain Surgeon (OBS)”</strong> which showed that the Hessian matrix is in fact non-diagonal.</li>
+    </ul>
+  </li>
+  <li><strong><a href="https://link.springer.com/content/pdf/10.1023/A:1009639214138.pdf">Suzuki et al (2001)</a></strong> remove the network connections based on their influence on the error
+    <ul>
+      <li>remove the network based on their influence on the error, and retrain the network using back-propagation</li>
+      <li><strong>Checkout the exact algorithm here</strong>
+        <ol>
+          <li>Train a large enough NN until $E \leq E_P$</li>
+          <li>Remove the $r$ th unit virtually and calculate $E^{(r)}$</li>
+          <li>If every unit is examined by removing it virtually and calculating $E^{(r)}$, then go to Step 4, else go back to Step 2.</li>
+          <li>Remove the $a$th unit where $E^{(a)}$ is the minimum among $E^{(r)}$s.</li>
+          <li>Retraing the NN, which has been removed of the $a$ th unit, by back-propagation</li>
+          <li>If $E \leq E_p$ ; then memorize the weights and the structure, and go back to step 2, else replace the network by the previous one, and finish the steps.</li>
+        </ol>
+      </li>
+    </ul>
+  </li>
+  <li><strong><a href="https://arxiv.org/pdf/1507.06149.pdf">Srinivas and Babu (2015)</a></strong> instead remove neruons which are determined as redundant
+    <ul>
+      <li>Which neuron is redundant? author answers - Similar neurons are redundant.</li>
+      <li>
+        <p>Authors found out that not only single weight being equal to zero create redundancy in the network, equal weights also create redundancies</p>
+
+        <p>→ If two weight sets W1 and W2 are similar, then one of them can be removed</p>
+      </li>
+      <li>
+        <p>To find out and prune those, authors prune the weights which changes the output neuron activations the least, removing a set of weights at once.</p>
+
+        <center><img src="Untitled%201.png" width="500" /></center>
+      </li>
+    </ul>
+  </li>
+  <li><strong><a href="https://arxiv.org/pdf/1611.01427.pdf">Ardakani et al. (2016)</a></strong> just randomly remove (zeros out) the connections
+    <ul>
+      <li>
+        <p>Considering the network layer with weight $\mathbf{W}$ and bias $\mathbf{b}$</p>
+
+\[\mathbf{y} = \texttt{nn.ReLU} (\mathbf{Wx+b})\]
+
+        <p>authors introduce the sparse weight matrix $\mathbf{W}_s$</p>
+
+\[\mathbf{W}_s = \mathbf{W} \cdot \mathbf{M}\]
+
+        <p>where $\mathbf{M}$ is called as a “Mask matrix” which is a random binary matrix.</p>
+      </li>
+      <li>
+        <p>Now, we can generate a sparse fc layer by replacing $\mathbf{W}$ with $\mathbf{W}_s$</p>
+
+\[\mathbf{y} = \texttt{nn.ReLU} (\mathbf{W_s x+b})\]
+      </li>
+      <li>
+        <p>How do we generate this “Mask matrix” $\mathbf{M}$?</p>
+
+        <p>→ Application of <strong>Linear Feedback Shift Register</strong> (LFSR)</p>
+
+        <p><img src="Untitled%202.png" alt="Untitled%202.png" /></p>
+      </li>
+      <li>
+        <p>Then, retrain the network!</p>
+        <ul>
+          <li>
+            <p>Checkout the specific algorithm here</p>
+
+            <p><img src="Untitled%203.png" alt="Untitled%203.png" /></p>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><strong><a href="https://openreview.net/pdf?id=HJIY0E9ge">Babaeizadeh et al (2017)</a></strong> propose NoiseOut algorithm.
+    <ul>
+      <li>Removal of neurons from the network takes place based on the <strong>correlation</strong> among activations of neurons in the inner layers</li>
+      <li>Remove one of the two neurons with strongly correlated activations</li>
+    </ul>
+  </li>
+  <li>Some other algorithms <strong>replace</strong> the FC layer with another type of layer
+    <ul>
+      <li><a href="https://arxiv.org/abs/1412.7149">Yang et al (2015)</a> replaces the FC layer with Adaptive Fastfood transform</li>
+      <li>NIN and GoogleNet replaces FC layer with global average pooling layer</li>
+    </ul>
+  </li>
+</ol>
+
+<h2 id="quantization">Quantization</h2>
+
+<h3 id="motivation-1">Motivation</h3>
+
+<ul>
+  <li>
+    <p>Most of the DNNs store their weights using a 32-bit floating point numbers</p>
+
+    <p>→ Reducing the number of bits can lead to significant reduction in necessary operations / size of the model</p>
+  </li>
+  <li>
+    <p>Quantization can be considered as a gradual thought process</p>
+    <ol>
+      <li>Quantization of weights</li>
+      <li>Quantization of gradient / activation</li>
+    </ol>
+  </li>
+</ul>
+
+<h3 id="types-of-quantization">Types of Quantization</h3>
+
+<ul>
+  <li>Weights can be quantized to 16-bit, 8-bit, 4-bit or even with 1-bit (binary)</li>
+  <li>
+    <p>Creating a cluster of weights</p>
+
+    <p>→ all the weights which fall into the same cluster can share the same weight value</p>
+
+    <p>→ we only need to fine-tune the shared weights instead of 32-bit full precision weights</p>
+  </li>
+  <li>
+    <p><strong>Quantization can be applied during / after the training of network</strong></p>
+
+    <p>→ Qunatization after training : applied to reduce inference time and energy</p>
+
+    <p>→ Quantization during training : applied to reduce the network size, make the training efficient</p>
+  </li>
+</ul>
+
+<h3 id="quantization-during-training">Quantization During Training</h3>
+
+<ol>
+  <li><a href="https://www.cs.toronto.edu/~hinton/absps/JMLRdropout.pdf"><strong>Soudry et al. (2014)</strong></a> (which, by the way, is a popular paper that proposed the method of dropout) presented expectation back-propagation (EBP) algorithm which can be used to train a multi-layer NN with disccrete weights</li>
+  <li><strong><a href="https://arxiv.org/pdf/1504.04788.pdf">Chen et al. (2015)</a></strong> proposed HashedNets, which implemented the concept of shared weight
+    <ul>
+      <li>Concept of hash function is used to group the weight connection into hash buckets randomly</li>
+      <li>
+        <p>All weight connections belonging to the same hash bucket share the same parameter</p>
+
+        <p>(All weight connections grouped to $i$th hash bucket share the same weight $\mathbf{w}_i$ )</p>
+      </li>
+      <li>Shared weight of each connection is determined by a hash function</li>
+    </ul>
+
+    <center><img src="Untitled%204.png" width="500" /></center>
+  </li>
+  <li><a href="https://arxiv.org/pdf/1511.00363.pdf"><strong>Courbariaux et al. (2015)</strong></a> introduces BinaryConnect, in which weights are restricted to have only two values (-1 or +1) → change the matrix-accumulation operation inside the neuron to a simple accumulation.
+    <ul>
+      <li>
+        <p>Transforms the real-valued weights into binary weights stochastically as:</p>
+
+        <center><img src="Untitled%205.png" width="300" /></center>
+      </li>
+      <li>
+        <p>Note that real-valued weight is used during back propagation &amp; parameter update</p>
+
+        <p><img src="Untitled%206.png" alt="Untitled%206.png" /></p>
+      </li>
+    </ul>
+  </li>
+  <li><a href="https://arxiv.org/abs/1602.02830"><strong>Hubara et al. (2016)</strong></a> proposed Binarized Neural Network (BNN)
+    <ul>
+      <li>
+        <p>Weight <strong>and activations</strong> are constrained to have the values between +1 and -1.</p>
+
+        <p>Recall that <strong>BinaryConnect did not binarize the activations</strong>!</p>
+      </li>
+      <li>To that end, activation function is set as a sign function</li>
+      <li>
+        <p>To back-propagate the sign function, authors approximate it as Htanh function.</p>
+
+        <center><img src="Untitled%207.png" width="400" /></center>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><a href="https://openreview.net/pdf?id=BkrSv0lA-"><strong>Hou et al. (2017)</strong></a> introduce a loss-aware binarization shceme that considers the effect of binarization on the loss.</p>
+
+    <p>Authors claim that earlier quantization techniques do not consider the quantization effect on the <strong>objective loss function</strong>!</p>
+
+    <ul>
+      <li>Authors consider the loss explicitly during quantization and obtain the quantization thresholds and scaling parameter by solving an optimization problem of the loss.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Meanwhile, <a href="https://arxiv.org/pdf/1511.06488.pdf"><strong>Sung et al. (2015)</strong></a> finds out that <strong>“bigger models are resilient to quantization while the smaller networks are less resilient to quantization”.</strong></p>
+
+    <center><img src="Untitled%208.png" width="600" /></center>
+  </li>
+  <li>
+    <p>Also, ReLU activation function, innately unbounded, may require high-bit precision, making the quantization difficult. This can be solved by using a clipping activation function. However, this introduces an interesting problem:</p>
+
+    <p><strong>What is the optimal clipping value for the clip function</strong> to replace ReLU function?</p>
+
+    <p>To answer this question, <a href="https://arxiv.org/abs/1805.06085"><strong>Choi et al. (2018)</strong></a> finds the otpimal qunatization scale $\alpha$ during training, at the same time, implementing a new clipping function called PACT.</p>
+
+    <center><img src="Untitled%209.png" width="400" /></center>
+  </li>
+</ol>
+
+<h3 id="quantization-after-training-for-efficient-inference">Quantization After Training (for Efficient Inference)</h3>
+
+<ol>
+  <li><a href="https://arxiv.org/pdf/1412.6115.pdf"><strong>Gong et al. (2015)</strong></a> applied vector quantization to compress the DNNs
+    <ul>
+      <li>Authors assess two classes of methods for compressing the parameters in FC layers</li>
+      <li>First is Matrix Factorization Methods : Singular-Value Decomposition (SVD)</li>
+      <li>Second is Vector Qunatization Methods
+        <ol>
+          <li>
+            <p>Binarization : given the parameter $\mathbf{W}$, we take the sign of the matrix</p>
+
+\[\mathbf{W}_{ij} = \begin{cases}1 &amp; \text{if } \mathbf{W}_{ij} \geq 0 ,\\ -1 &amp; \text{if } \mathbf{W}_{ij} &lt; 0  \end{cases}\]
+          </li>
+          <li>
+            <p>Scalar Quantization using K-means (KM) : for $\mathbf{W} \in \R^{m\times n}$ , flatten it to $\mathbf{w} \in \R^{mn}$ and perform k-means clustering to the values</p>
+
+\[\min \sum_{i} ^{mn} \sum_j^k \|w_i - c_j \|_2 ^2\]
+
+            <p>where each value in $\mathbf{w}$ is assigned to a cluster index → Given $k$ centers we only need $\log_2 (k)$ bits to encode the centers.</p>
+
+            <p>Despite the simplicity of this approach, authors claim that this approach gives <strong>surprisingly good performance</strong> for compressing parameters!</p>
+          </li>
+          <li>
+            <p>Product Qunatization (PQ) : partition the vector space into many disjoint subspaces, and perform quantization in each subspace!</p>
+
+            <p>→ Specifically, given the matrix $\mathbf{W}$, we partition it column-wise into several submatrices</p>
+
+\[\mathbf{W}= [\mathbf{W}^1, \mathbf{W}^2, \cdots, \mathbf{W}^s]\]
+
+            <p>and then perform k-mena clustering to each submatrix $\mathbf{W}^i$</p>
+          </li>
+          <li>
+            <p>Residual Quantization (RQ) : qunatize the vectors into $k$ centers and then recursively qunatize the residuals!
+  → Given a set of vectors $\mathbf{w}_i$ , $i \in 1, \cdots, m$ at the first stage, quantize them into $k$ different vectors using k-means clustering → Next, compute the residual $\mathbf{r}_z ^1$  between $\mathbf{w}_z$ and first code $\mathbf{c}_j^1$ → k-means cluster the residual $\mathbf{r}_z^1$ → repeat the same procedure</p>
+
+            <p>→ Final vector representation is</p>
+
+\[\hat {\mathbf{w}}_z = \mathbf{c}_j ^1 + \mathbf{c}_j ^2 + \cdots + \mathbf{c}_j ^t\]
+
+            <center><img src="Untitled%2010.png" width="600" /></center>
+          </li>
+        </ol>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><strong><a href="https://arxiv.org/pdf/1510.00149.pdf">Han et al. (2016)</a></strong> combines several model compression techniques : proposing three-stage pipeline of <strong>pruning → quantization → Huffman coding</strong></p>
+
+    <center><img src="Untitled%2011.png" width="600" /></center>
+  </li>
+  <li>
+    <p><a href=""><strong>Zhou et al. (2017)</strong></a> improved the prediction accuracy of quantized NN by balancing the distribution of quantized values using histogram equalization.</p>
+
+    <p><a href="Balanced_Quantization__An_Effective_and_Efficient_Approach_to_Quantized_Neural_Networks.pdf">Balanced Quantization_ An Effective and Efficient Approach to Quantized Neural Networks.pdf</a></p>
+  </li>
+</ol>
+
+<h2 id="knowledge-distillation">Knowledge Distillation</h2>
+
+<p>Note that <strong>most of below KD methods cannot be directly applied to non-classifier networks. → Developing KD algorithms that can be applied to autoencoder type networks may be an interesting approach to take.</strong></p>
+
+<ol>
+  <li><a href="https://dl.acm.org/doi/pdf/10.1145/1150402.1150464"><strong>Bucilua et al. (2006)</strong></a> first introduced the concept of knowledge transfer.</li>
+  <li><strong><a href="https://arxiv.org/pdf/1312.6184.pdf">Ba and Caruana (2014)</a></strong> further extended the idea of KD
+    <ul>
+      <li>First train a large DNN with conventional cross-entropy objective function</li>
+      <li>Next, shallow neural network is trained by minimizing the squared difference between the logits produced by the bigger model and logist produced by the smaller model.</li>
+    </ul>
+  </li>
+  <li>
+    <p><strong><a href="https://arxiv.org/pdf/1503.02531.pdf">Hinton et al. (2015)</a></strong> introduced the concept of temperature $T$ to generate softer logits</p>
+
+\[q_i = \frac{\exp (z_i /T)}{\sum_j \exp (z_j /T)}\]
+
+    <center><img src="Untitled%2012.png" width="600" /></center>
+  </li>
+  <li>
+    <p><a href="https://arxiv.org/pdf/1412.6550.pdf"><strong>Romero et al. (2015)</strong></a> uses the teacher network’s middle layer as hints to guide the training of smaller student model.</p>
+
+    <center><img src="Untitled%2013.png" width="600" /></center>
+
+    <ul>
+      <li>Defining $P_S = \text{softmax}(\mathbf{a}_S)$ and $P_T = \text{softmax}(\mathbf{a}_T)$</li>
+      <li>
+        <p>Temperature technique is also applied as well</p>
+
+\[P_S^ \tau  = \text{softmax}(\frac{\mathbf{a}_S}{\tau})\]
+      </li>
+      <li>
+        <p>Student network is trained to optimize the following loss function</p>
+
+\[\mathcal{L}_{DK}(\mathbf{W_S})= \mathcal{H}(\mathbf{y_{true}}, P_S) + \lambda \mathcal{H}(P_T^\tau , P_S^\tau)\]
+      </li>
+      <li>
+        <p>Also, hint-based training objective is defined by</p>
+
+        <center><img src="Untitled%2014.png" width="400" /></center>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><a href="https://arxiv.org/pdf/1802.04977.pdf"><strong>Kim et al. (2018)</strong></a> states that, “if the teacher’s knowledge is directly provided to a student model without any explanation, then a student cannot learn it properly”. To that end, authors translate (paraphrase) the knowledge into simpler terms using convolutional module.</p>
+
+    <center><img src="Untitled%2015.png" width="600" /></center>
+
+    <ul>
+      <li>
+        <p>Reading above figure’s explanation, one might instantaneously wonder <strong>“how is the paraphraser trained unsupervisedly”</strong> before the FT?</p>
+
+        <p>→ Trains the paraphraser network $P(\cdot)$ , which is basically an convolutional autoencoder but the dimensionality reduction happens <strong>channelwise</strong>, not on the spatial dimension.</p>
+
+\[\mathcal{L}_{rec}= \|x- P(x)\|^2\]
+      </li>
+      <li>
+        <p>Then, how is the translator trained? According to the paper, <strong>“the translator is trained jointly with the student network”</strong> so that the student network can learn the paraphrased information from the teacher network.</p>
+
+        <p>→ To that end, student network is trained by the sum of two loss terms</p>
+
+\[\mathcal{L}_{\texttt{student}} = \mathcal{L}_{\texttt{cls}}+\beta \mathcal{L}_{\texttt{FT}}\]
+
+        <p>→ First is classification loss, $\mathcal{L}_{\texttt{cls}} = \mathcal{H}(S(I_x), y)$</p>
+
+        <p>→ Second is the factor transfor (FT) loss (intutivie form)</p>
+
+\[\mathcal{L}_{\texttt{FT}} = \Big \|\frac{F_T}{\|F_T\|^2 } - \frac{F_S}{\|F_S\|^2} \Big \|_p\]
+      </li>
+    </ul>
+  </li>
+  <li><a href="https://arxiv.org/pdf/1806.04606.pdf"><strong>Lan et al. (2018)</strong></a> trains a student model and teacher model simultaneously, unlike any other KD methods.</li>
+  <li><a href="http://proceedings.mlr.press/v80/srinivas18a/srinivas18a.pdf"><strong>Sirnivas and Flueret (2018)</strong></a> showed that matching the Jacobian between student and teacher networks can be an alternative solution of knowledge transfer/distillation.</li>
+</ol>
+
+<h2 id="low-rank-factorization">Low-rank factorization</h2>
+
+<p>Most of the low-rank factorization methods are further developed to work better on CNNs. Only those which can also be applied to FC layers are listed below.</p>
+
+<p>Low-rank factorization compresses a weight matrix $A$ with $m\times n$ dimension having rank $r$ to a smaller dimension matrices. <strong>Singular Value Decomposition (SVD)</strong> is a popular method to do so.</p>
+
+<ol>
+  <li><a href="http://www.vikas.sindhwani.org/lowRank.pdf"><strong>Saniath et al. (2013)</strong></a> uses SVD on the final weight layer to reduce the parameters!</li>
+  <li>
+    <p><a href="https://arxiv.org/pdf/1509.06569.pdf"><strong>Novikov et al. (2015)</strong></a> uses a compact multilinear format (Tensor-Train format) to represent the FC weight matrix using few parameters while keeping enough flexilbity to performa signal transformations.</p>
+
+    <p>cf) learn about <strong>Tensor Train Decomposition</strong> <a href="https://bayesgroup.github.io/team/arodomanov/tt_hse16_slides.pdf">[link]</a></p>
+  </li>
+</ol>
+</div><section class="article__sharing d-print-none"></section><br/>
+  
+  <div id="disqus_thread"></div>
+  <script>
+      /**
+      *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+      *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+      /*
+      var disqus_config = function () {
+      this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+      this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+      };
+      */
+      (function() { // DON'T EDIT BELOW THIS LINE
+      var d = document, s = d.createElement('script');
+      s.src = 'https://younghyopark-github-io.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+      })();
+  </script>
+
+  <div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-03-16T00:00:00+09:00"><!-- start custom article footer snippet -->
+
+<!-- end custom article footer snippet -->
+<div class="article__license"><div class="license">
+    <p>This work is licensed under a <a itemprop="license" rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">Attribution-NonCommercial 4.0 International</a> license.
+      <a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">
+        <img alt="Attribution-NonCommercial 4.0 International" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" />
+      </a>
+    </p>
+  </div></div><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</footer>
+<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/notion_to_markdown/%5BPaper%20Review%5D%20Neural%20Discrete%20Representation%20Lear%20bd407a55549646a2a73e1aa2d5b6cd61/">[NIPS 2017] Neural Discrete Representation Learning</a></div><div class="next"><span>NEXT</span><a href="/notion_to_markdown/%5BPaper%20Review%5D%20What%E2%80%99s%20Hidden%20in%20a%20Randomly%20Weighte%20a4b62c1371134df789f399dbc3f6e284/">[CVPR 2020] What’s Hidden in a Randomly Weighted Neural Network?</a></div></div></div>
+
+</div>
+
+<script>(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    $(function() {
+      var $this ,$scroll;
+      var $articleContent = $('.js-article-content');
+      var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+      var scroll = hasSidebar ? '.js-page-main' : 'html, body';
+      $scroll = $(scroll);
+
+      $articleContent.find('.highlight').each(function() {
+        $this = $(this);
+        $this.attr('data-lang', $this.find('code').attr('data-lang'));
+      });
+      $articleContent.find('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]').each(function() {
+        $this = $(this);
+        $this.append($('<a class="anchor d-print-none" aria-hidden="true"></a>').html('<i class="fas fa-anchor"></i>'));
+      });
+      $articleContent.on('click', '.anchor', function() {
+        $scroll.scrollToAnchor('#' + $(this).parent().attr('id'), 400);
+      });
+    });
+  });
+})();
+</script>
+</div><section class="page__comments d-print-none"></section></article><!-- start custom main bottom snippet -->
+
+<!-- end custom main bottom snippet -->
+</div>
+            </div></div></div><div class="page__footer d-print-none">
+<footer class="footer py-4 js-page-footer">
+  <div class="main"><div itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Younghyo Park"><meta itemprop="url" content="/younghyopark.github.io"><meta itemprop="description" content="I'm currently undergoing a B.S. course in Seoul National University, majoring in Mechanical Engineering. I'm interested in Robotics, Control and Machine Learning. Besides that, I love traveling, playing piano and learning new stuffs."><div class="footer__author-links"><div class="author-links">
+  <ul class="menu menu--nowrap menu--inline"><link itemprop="url" href="younghyopark.github.io"><li title="Send me an Email.">
+      <a class="button button--circle mail-button" itemprop="email" href="mailto:parkyh9492@snu.ac.kr" target="_blank">
+        <i class="fas fa-envelope"></i>
+      </a><li title="Follow me on Github.">
+        <a class="button button--circle github-button" itemprop="sameAs" href="https://github.com/younghyopark.github.io" target="_blank">
+          <div class="icon"><svg fill="#000000" width="24px" height="24px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path class="svgpath" data-index="path_0" fill="#272636" d="M0 525.2c0 223.6 143.3 413.7 343 483.5 26.9 6.8 22.8-12.4 22.8-25.4l0-88.7c-155.3 18.2-161.5-84.6-172-101.7-21.1-36-70.8-45.2-56-62.3 35.4-18.2 71.4 4.6 113.1 66.3 30.2 44.7 89.1 37.2 119 29.7 6.5-26.9 20.5-50.9 39.7-69.6C248.8 728.2 181.7 630 181.7 513.2c0-56.6 18.7-108.7 55.3-150.7-23.3-69.3 2.2-128.5 5.6-137.3 66.5-6 135.5 47.6 140.9 51.8 37.8-10.2 80.9-15.6 129.1-15.6 48.5 0 91.8 5.6 129.8 15.9 12.9-9.8 77-55.8 138.8-50.2 3.3 8.8 28.2 66.7 6.3 135 37.1 42.1 56 94.6 56 151.4 0 117-67.5 215.3-228.8 243.7 26.9 26.6 43.6 63.4 43.6 104.2l0 128.8c0.9 10.3 0 20.5 17.2 20.5C878.1 942.4 1024 750.9 1024 525.3c0-282.9-229.3-512-512-512C229.1 13.2 0 242.3 0 525.2L0 525.2z" />
+</svg>
+</div>
+        </a>
+      </li></ul>
+</div>
+</div>
+    </div><div class="site-info mt-2">
+      <div>© Younghyo Park 2021,
+        Powered by <a title="Jekyll is a simple, blog-aware, static site generator." href="http://jekyllrb.com/">Jekyll</a> & <a
+        title="TeXt is a super customizable Jekyll theme." href="https://github.com/kitian616/jekyll-TeXt-theme">TeXt Theme</a>.
+      </div>
+    </div>
+  </div>
+</footer>
+</div></div>
+    </div><script>(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $body = $('body'), $window = $(window);
+    var $pageRoot = $('.js-page-root'), $pageMain = $('.js-page-main');
+    var activeCount = 0;
+    function modal(options) {
+      var $root = this, visible, onChange, hideWhenWindowScroll = false;
+      var scrollTop;
+      function setOptions(options) {
+        var _options = options || {};
+        visible = _options.initialVisible === undefined ? false : show;
+        onChange = _options.onChange;
+        hideWhenWindowScroll = _options.hideWhenWindowScroll;
+      }
+      function init() {
+        setState(visible);
+      }
+      function setState(isShow) {
+        if (isShow === visible) {
+          return;
+        }
+        visible = isShow;
+        if (visible) {
+          activeCount++;
+          scrollTop = $(window).scrollTop() || $pageMain.scrollTop();
+          $root.addClass('modal--show');
+          $pageMain.scrollTop(scrollTop);
+          activeCount === 1 && ($pageRoot.addClass('show-modal'), $body.addClass('of-hidden'));
+          hideWhenWindowScroll && window.hasEvent('touchstart') && $window.on('scroll', hide);
+          $window.on('keyup', handleKeyup);
+        } else {
+          activeCount > 0 && activeCount--;
+          $root.removeClass('modal--show');
+          $window.scrollTop(scrollTop);
+          activeCount === 0 && ($pageRoot.removeClass('show-modal'), $body.removeClass('of-hidden'));
+          hideWhenWindowScroll && window.hasEvent('touchstart') && $window.off('scroll', hide);
+          $window.off('keyup', handleKeyup);
+        }
+        onChange && onChange(visible);
+      }
+      function show() {
+        setState(true);
+      }
+      function hide() {
+        setState(false);
+      }
+      function handleKeyup(e) {
+        // Char Code: 27  ESC
+        if (e.which ===  27) {
+          hide();
+        }
+      }
+      setOptions(options);
+      init();
+      return {
+        show: show,
+        hide: hide,
+        $el: $root
+      };
+    }
+    $.fn.modal = modal;
+  });
+})();
+</script><div class="modal modal--overflow page__search-modal d-print-none js-page-search-modal"><script>
+(function () {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    // search panel
+    var search = (window.search || (window.search = {}));
+    var useDefaultSearchBox = window.useDefaultSearchBox === undefined ?
+      true : window.useDefaultSearchBox ;
+
+    var $searchModal = $('.js-page-search-modal');
+    var $searchToggle = $('.js-search-toggle');
+    var searchModal = $searchModal.modal({ onChange: handleModalChange, hideWhenWindowScroll: true });
+    var modalVisible = false;
+    search.searchModal = searchModal;
+
+    var $searchBox = null;
+    var $searchInput = null;
+    var $searchClear = null;
+
+    function getModalVisible() {
+      return modalVisible;
+    }
+    search.getModalVisible = getModalVisible;
+
+    function handleModalChange(visible) {
+      modalVisible = visible;
+      if (visible) {
+        search.onShow && search.onShow();
+        useDefaultSearchBox && $searchInput[0] && $searchInput[0].focus();
+      } else {
+        search.onShow && search.onHide();
+        useDefaultSearchBox && $searchInput[0] && $searchInput[0].blur();
+        setTimeout(function() {
+          useDefaultSearchBox && ($searchInput.val(''), $searchBox.removeClass('not-empty'));
+          search.clear && search.clear();
+          window.pageAsideAffix && window.pageAsideAffix.refresh();
+        }, 400);
+      }
+    }
+
+    $searchToggle.on('click', function() {
+      modalVisible ? searchModal.hide() : searchModal.show();
+    });
+    // Char Code: 83  S, 191 /
+    $(window).on('keyup', function(e) {
+      if (!modalVisible && !window.isFormElement(e.target || e.srcElement) && (e.which === 83 || e.which === 191)) {
+        modalVisible || searchModal.show();
+      }
+    });
+
+    if (useDefaultSearchBox) {
+      $searchBox = $('.js-search-box');
+      $searchInput = $searchBox.children('input');
+      $searchClear = $searchBox.children('.js-icon-clear');
+      search.getSearchInput = function() {
+        return $searchInput.get(0);
+      };
+      search.getVal = function() {
+        return $searchInput.val();
+      };
+      search.setVal = function(val) {
+        $searchInput.val(val);
+      };
+
+      $searchInput.on('focus', function() {
+        $(this).addClass('focus');
+      });
+      $searchInput.on('blur', function() {
+        $(this).removeClass('focus');
+      });
+      $searchInput.on('input', window.throttle(function() {
+        var val = $(this).val();
+        if (val === '' || typeof val !== 'string') {
+          search.clear && search.clear();
+        } else {
+          $searchBox.addClass('not-empty');
+          search.onInputNotEmpty && search.onInputNotEmpty(val);
+        }
+      }, 400));
+      $searchClear.on('click', function() {
+        $searchInput.val(''); $searchBox.removeClass('not-empty');
+        search.clear && search.clear();
+      });
+    }
+  });
+})();
+</script><div class="search search--dark">
+  <div class="main">
+    <div class="search__header">Search</div>
+    <div class="search-bar">
+      <div class="search-box js-search-box">
+        <div class="search-box__icon-search"><i class="fas fa-search"></i></div>
+        <input type="text" />
+        <div class="search-box__icon-clear js-icon-clear">
+          <a><i class="fas fa-times"></i></a>
+        </div>
+      </div>
+      <button class="button button--theme-dark button--pill search__cancel js-search-toggle">
+        Cancel</button>
+    </div>
+    <div class="search-result js-search-result"></div>
+  </div>
+</div>
+<script>var SOURCES = window.TEXT_VARIABLES.sources;
+var PAHTS = window.TEXT_VARIABLES.paths;
+window.Lazyload.js([SOURCES.jquery, PAHTS.search_js], function() {
+  var search = (window.search || (window.search = {}));
+  var searchData = window.TEXT_SEARCH_DATA || {};
+
+  function memorize(f) {
+    var cache = {};
+    return function () {
+      var key = Array.prototype.join.call(arguments, ',');
+      if (key in cache) return cache[key];
+      else return cache[key] = f.apply(this, arguments);
+    };
+  }
+
+  /// search
+  function searchByQuery(query) {
+    var i, j, key, keys, cur, _title, result = {};
+    keys = Object.keys(searchData);
+    for (i = 0; i < keys.length; i++) {
+      key = keys[i];
+      for (j = 0; j < searchData[key].length; j++) {
+        cur = searchData[key][j], _title = cur.title;
+        if ((result[key] === undefined || result[key] && result[key].length < 4 )
+          && _title.toLowerCase().indexOf(query.toLowerCase()) >= 0) {
+          if (result[key] === undefined) {
+            result[key] = [];
+          }
+          result[key].push(cur);
+        }
+      }
+    }
+    return result;
+  }
+
+  var renderHeader = memorize(function(header) {
+    return $('<p class="search-result__header">' + header + '</p>');
+  });
+
+  var renderItem = function(index, title, url) {
+    return $('<li class="search-result__item" data-index="' + index + '"><a class="button" href="' + url + '">' + title + '</a></li>');
+  };
+
+  function render(data) {
+    if (!data) { return null; }
+    var $root = $('<ul></ul>'), i, j, key, keys, cur, itemIndex = 0;
+    keys = Object.keys(data);
+    for (i = 0; i < keys.length; i++) {
+      key = keys[i];
+      $root.append(renderHeader(key));
+      for (j = 0; j < data[key].length; j++) {
+        cur = data[key][j];
+        $root.append(renderItem(itemIndex++, cur.title, cur.url));
+      }
+    }
+    return $root;
+  }
+
+  // search box
+  var $result = $('.js-search-result'), $resultItems;
+  var lastActiveIndex, activeIndex;
+
+  function clear() {
+    $result.html(null);
+    $resultItems = $('.search-result__item'); activeIndex = 0;
+  }
+  function onInputNotEmpty(val) {
+    $result.html(render(searchByQuery(val)));
+    $resultItems = $('.search-result__item'); activeIndex = 0;
+    $resultItems.eq(0).addClass('active');
+  }
+
+  search.clear = clear;
+  search.onInputNotEmpty = onInputNotEmpty;
+
+  function updateResultItems() {
+    lastActiveIndex >= 0 && $resultItems.eq(lastActiveIndex).removeClass('active');
+    activeIndex >= 0 && $resultItems.eq(activeIndex).addClass('active');
+  }
+
+  function moveActiveIndex(direction) {
+    var itemsCount = $resultItems ? $resultItems.length : 0;
+    if (itemsCount > 1) {
+      lastActiveIndex = activeIndex;
+      if (direction === 'up') {
+        activeIndex = (activeIndex - 1 + itemsCount) % itemsCount;
+      } else if (direction === 'down') {
+        activeIndex = (activeIndex + 1 + itemsCount) % itemsCount;
+      }
+      updateResultItems();
+    }
+  }
+
+  // Char Code: 13  Enter, 37  ⬅, 38  ⬆, 39  ➡, 40  ⬇
+  $(window).on('keyup', function(e) {
+    var modalVisible = search.getModalVisible && search.getModalVisible();
+    if (modalVisible) {
+      if (e.which === 38) {
+        modalVisible && moveActiveIndex('up');
+      } else if (e.which === 40) {
+        modalVisible && moveActiveIndex('down');
+      } else if (e.which === 13) {
+        modalVisible && $resultItems && activeIndex >= 0 && $resultItems.eq(activeIndex).children('a')[0].click();
+      }
+    }
+  });
+
+  $result.on('mouseover', '.search-result__item > a', function() {
+    var itemIndex = $(this).parent().data('index');
+    itemIndex >= 0 && (lastActiveIndex = activeIndex, activeIndex = itemIndex, updateResultItems());
+  });
+});
+</script>
+</div></div>
+
+
+<script>(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    function scrollToAnchor(anchor, duration, callback) {
+      var $root = this;
+      $root.animate({ scrollTop: $(anchor).position().top }, duration, function() {
+        window.history.replaceState(null, '', window.location.href.split('#')[0] + anchor);
+        callback && callback();
+      });
+    }
+    $.fn.scrollToAnchor = scrollToAnchor;
+  });
+})();
+(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    function affix(options) {
+      var $root = this, $window = $(window), $scrollTarget, $scroll,
+        offsetBottom = 0, scrollTarget = window, scroll = window.document, disabled = false, isOverallScroller = true,
+        rootTop, rootLeft, rootHeight, scrollBottom, rootBottomTop,
+        hasInit = false, curState;
+
+      function setOptions(options) {
+        var _options = options || {};
+        _options.offsetBottom && (offsetBottom = _options.offsetBottom);
+        _options.scrollTarget && (scrollTarget = _options.scrollTarget);
+        _options.scroll && (scroll = _options.scroll);
+        _options.disabled !== undefined && (disabled = _options.disabled);
+        $scrollTarget = $(scrollTarget);
+        isOverallScroller = window.isOverallScroller($scrollTarget[0]);
+        $scroll = $(scroll);
+      }
+      function preCalc() {
+        top();
+        rootHeight = $root.outerHeight();
+        rootTop = $root.offset().top + (isOverallScroller ? 0 :  $scrollTarget.scrollTop());
+        rootLeft = $root.offset().left;
+      }
+      function calc(needPreCalc) {
+        needPreCalc && preCalc();
+        scrollBottom = $scroll.outerHeight() - offsetBottom - rootHeight;
+        rootBottomTop = scrollBottom - rootTop;
+      }
+      function top() {
+        if (curState !== 'top') {
+          $root.removeClass('fixed').css({
+            left: 0,
+            top: 0
+          });
+          curState = 'top';
+        }
+      }
+      function fixed() {
+        if (curState !== 'fixed') {
+          $root.addClass('fixed').css({
+            left: rootLeft + 'px',
+            top: 0
+          });
+          curState = 'fixed';
+        }
+      }
+      function bottom() {
+        if (curState !== 'bottom') {
+          $root.removeClass('fixed').css({
+            left: 0,
+            top: rootBottomTop + 'px'
+          });
+          curState = 'bottom';
+        }
+      }
+      function setState() {
+        var scrollTop = $scrollTarget.scrollTop();
+        if (scrollTop >= rootTop && scrollTop <= scrollBottom) {
+          fixed();
+        } else if (scrollTop < rootTop) {
+          top();
+        } else {
+          bottom();
+        }
+      }
+      function init() {
+        if(!hasInit) {
+          var interval, timeout;
+          calc(true); setState();
+          // run calc every 100 millisecond
+          interval = setInterval(function() {
+            calc();
+          }, 100);
+          timeout = setTimeout(function() {
+            clearInterval(interval);
+          }, 45000);
+          window.pageLoad.then(function() {
+            setTimeout(function() {
+              clearInterval(interval);
+              clearTimeout(timeout);
+            }, 3000);
+          });
+          $scrollTarget.on('scroll', function() {
+            disabled || setState();
+          });
+          $window.on('resize', function() {
+            disabled || (calc(true), setState());
+          });
+          hasInit = true;
+        }
+      }
+
+      setOptions(options);
+      if (!disabled) {
+        init();
+      }
+      $window.on('resize', window.throttle(function() {
+        init();
+      }, 200));
+      return {
+        setOptions: setOptions,
+        refresh: function() {
+          calc(true, { animation: false }); setState();
+        }
+      };
+    }
+    $.fn.affix = affix;
+  });
+})();
+(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    function toc(options) {
+      var $root = this, $window = $(window), $scrollTarget, $scroller, $tocUl = $('<ul class="toc toc--ellipsis"></ul>'), $tocLi, $headings, $activeLast, $activeCur,
+        selectors = 'h1,h2,h3', container = 'body', scrollTarget = window, scroller = 'html, body', disabled = false,
+        headingsPos, scrolling = false, hasRendered = false, hasInit = false;
+
+      function setOptions(options) {
+        var _options = options || {};
+        _options.selectors && (selectors = _options.selectors);
+        _options.container && (container = _options.container);
+        _options.scrollTarget && (scrollTarget = _options.scrollTarget);
+        _options.scroller && (scroller = _options.scroller);
+        _options.disabled !== undefined && (disabled = _options.disabled);
+        $headings = $(container).find(selectors).filter('[id]');
+        $scrollTarget = $(scrollTarget);
+        $scroller = $(scroller);
+      }
+      function calc() {
+        headingsPos = [];
+        $headings.each(function() {
+          headingsPos.push(Math.floor($(this).position().top));
+        });
+      }
+      function setState(element, disabled) {
+        var scrollTop = $scrollTarget.scrollTop(), i;
+        if (disabled || !headingsPos || headingsPos.length < 1) { return; }
+        if (element) {
+          $activeCur = element;
+        } else {
+          for (i = 0; i < headingsPos.length; i++) {
+            if (scrollTop >= headingsPos[i]) {
+              $activeCur = $tocLi.eq(i);
+            } else {
+              $activeCur || ($activeCur = $tocLi.eq(i));
+              break;
+            }
+          }
+        }
+        $activeLast && $activeLast.removeClass('active');
+        ($activeLast = $activeCur).addClass('active');
+      }
+      function render() {
+        if(!hasRendered) {
+          $root.append($tocUl);
+          $headings.each(function() {
+            var $this = $(this);
+            $tocUl.append($('<li></li>').addClass('toc-' + $this.prop('tagName').toLowerCase())
+              .append($('<a></a>').text($this.text()).attr('href', '#' + $this.prop('id'))));
+          });
+          $tocLi = $tocUl.children('li');
+          $tocUl.on('click', 'a', function(e) {
+            e.preventDefault();
+            var $this = $(this);
+            scrolling = true;
+            setState($this.parent());
+            $scroller.scrollToAnchor($this.attr('href'), 400, function() {
+              scrolling = false;
+            });
+          });
+        }
+        hasRendered = true;
+      }
+      function init() {
+        var interval, timeout;
+        if(!hasInit) {
+          render(); calc(); setState(null, scrolling);
+          // run calc every 100 millisecond
+          interval = setInterval(function() {
+            calc();
+          }, 100);
+          timeout = setTimeout(function() {
+            clearInterval(interval);
+          }, 45000);
+          window.pageLoad.then(function() {
+            setTimeout(function() {
+              clearInterval(interval);
+              clearTimeout(timeout);
+            }, 3000);
+          });
+          $scrollTarget.on('scroll', function() {
+            disabled || setState(null, scrolling);
+          });
+          $window.on('resize', window.throttle(function() {
+            if (!disabled) {
+              render(); calc(); setState(null, scrolling);
+            }
+          }, 100));
+        }
+        hasInit = true;
+      }
+
+      setOptions(options);
+      if (!disabled) {
+        init();
+      }
+      $window.on('resize', window.throttle(function() {
+        init();
+      }, 200));
+      return {
+        setOptions: setOptions
+      };
+    }
+    $.fn.toc = toc;
+  });
+})();
+/*(function () {
+
+})();*/
+</script><script>
+  /* toc must before affix, since affix need to konw toc' height. */(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  var TOC_SELECTOR = window.TEXT_VARIABLES.site.toc.selectors;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window);
+    var $articleContent = $('.js-article-content');
+    var $tocRoot = $('.js-toc-root'), $col2 = $('.js-col-aside');
+    var toc;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+    var hasToc = $articleContent.find(TOC_SELECTOR).length > 0;
+
+    function disabled() {
+      return $col2.css('display') === 'none' || !hasToc;
+    }
+
+    tocDisabled = disabled();
+
+    toc = $tocRoot.toc({
+      selectors: TOC_SELECTOR,
+      container: $articleContent,
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      tocDisabled = disabled();
+      toc && toc.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+  });
+})();
+(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window), $pageFooter = $('.js-page-footer');
+    var $pageAside = $('.js-page-aside');
+    var affix;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+
+    affix = $pageAside.affix({
+      offsetBottom: $pageFooter.outerHeight(),
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      scroll: hasSidebar ? $('.js-page-main').children() : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      affix && affix.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+    window.pageAsideAffix = affix;
+  });
+})();
+</script><script>
+  window.Lazyload.js(['https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js', 'https://cdn.bootcss.com/Chart.js/2.7.2/Chart.bundle.min.js'], function() {
+    var $canvas = null, $this = null, _ctx = null, _text = '';
+    $('.language-chart').each(function(){
+      $this = $(this);
+      $canvas = $('<canvas></canvas>');
+      _text = $this.text();
+      $this.text('').append($canvas);
+      _ctx = $canvas.get(0).getContext('2d');
+      (_ctx && _text) && (new Chart(_ctx, JSON.parse(_text)) && $this.attr('data-processed', true));
+    });
+  });
+</script>
+<script type="text/x-mathjax-config">
+	var _config = { tex2jax: {
+		inlineMath: [['$','$'], ['\\(','\\)']]
+	}};_config.TeX = { equationNumbers: { autoNumber: "all" } };MathJax.Hub.Config(_config);
+</script>
+<script type="text/javascript" src="https://cdn.bootcss.com/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  window.Lazyload.js('https://cdn.bootcss.com/mermaid/8.0.0-rc.8/mermaid.min.js', function() {
+    mermaid.initialize({
+      startOnLoad: true
+    });
+    mermaid.init(undefined, '.language-mermaid');
+  });
+</script>
+
+    </div>
+    <script>(function () {
+  var $root = document.getElementsByClassName('root')[0];
+  if (window.hasEvent('touchstart')) {
+    $root.dataset.isTouch = true;
+    document.addEventListener('touchstart', function(){}, false);
+  }
+})();
+</script>
+  </body>
+</html>
+
