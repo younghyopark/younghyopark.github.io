@@ -1,10 +1,10 @@
 <!DOCTYPE html><html lang="en">
   <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[NIPS 2017] Hybrid Reward Architecture for Reinforcement Learning  - Younghyo Park</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[Optimization] Multi Objective Optimization - Younghyo Park</title>
 
-<meta name="description" content="Horde vs HRA vs UVFA  Horde architecture learns multiple general value functions(GVFs), each corresponding to different reward functions and other question f...">
-<link rel="canonical" href="http://localhost:4000/notion_to_markdown/%5BNIPS%202017%5D%20Hybrid%20Reward%20Architecture%20for%20Reinfor%20ec4b86df520441bab17567b05419da01/"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
+<meta name="description" content="Multi-objective OptimizationProblem DefinitionLet’s first consider an unconstrained multiobjective optimization problem.\[\min _{x\in \mathbb{R}^n } F(x) = \...">
+<link rel="canonical" href="http://localhost:4000/2021/06/03/multi-objective-optimization.html"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
 <!--<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
 
 <meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
@@ -336,147 +336,93 @@ fill="#000000" stroke="none">
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
 <!-- end custom main top snippet -->
-<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[NIPS 2017] Hybrid Reward Architecture for Reinforcement Learning </h1></header><span class="split-space">&nbsp;</span>
+<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[Optimization] Multi Objective Optimization</h1></header><span class="split-space">&nbsp;</span>
           <a class="edit-on-github"
             title="Edit on Github"
-            href="https://github.com/younghyopark/younghyopark.github.io/tree/main/_posts/2021-04-13-hybrid-reward-architecture.md">
-            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[NIPS 2017] Hybrid Reward Architecture for Reinforcement Learning "><div class="article__info clearfix"><ul class="left-col menu"><li>
+            href="https://github.com/younghyopark/younghyopark.github.io/tree/main/_posts/2021-06-03-multi-objective-optimization.md">
+            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[Optimization] Multi Objective Optimization"><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
                 href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
             </li><li>
               <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Multi-Reward%2FObjective">Multi-Reward/Objective</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 13, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-13T00:00:00+09:00">
-    <meta itemprop="keywords" content="Reinforcement-Learning,Multi-Reward/Objective"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
+                href="/archive.html?tag=Optimization">Optimization</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Jun 03, 2021</span>
+            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-06-03T00:00:00+09:00">
+    <meta itemprop="keywords" content="Reinforcement-Learning,Optimization"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
 
 <!-- end custom article top snippet -->
-<div class="article__content" itemprop="articleBody"><p><br /></p>
-<center>
-<iframe width="560" height="315" src="https://www.youtube.com/embed/DYNy7Fvonro" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></center>
+<div class="article__content" itemprop="articleBody"><h2 id="multi-objective-optimization">Multi-objective Optimization</h2>
 
-<h2 id="horde-vs-hra-vs-uvfa">Horde vs HRA vs UVFA</h2>
+<h3 id="problem-definition">Problem Definition</h3>
 
-<ul>
-  <li>Horde architecture learns multiple general value functions(GVFs), each corresponding to different reward functions and other question functions, using multiple demons.</li>
-  <li>UVFA tries to generalize the value functions across different task and goals.</li>
-  <li>
-    <p>HRA, on the other hand, decomposes the reward function into $n$ different reward functions, with the intent to solve a <strong>SINGLE, but COMPLEX</strong> task.</p>
+<p>Let’s first consider an unconstrained multiobjective optimization problem.</p>
 
-    <p>Reward 가 너무 sparse하거나 function이 너무 high-dimensional일 경우 문제 해결이 어려움 → too much state component들에 dependent한 reward function을 여러 개의 small reward function (dependent on less state components) 들의 합으로 해석함</p>
+\[\min _{x\in \mathbb{R}^n } F(x) = \min _{x\in \mathbb{R}^n } {\begin{pmatrix}  f_1 (x)   \\ \vdots \\ f_k (x) \end{pmatrix} }\]
 
-    <p>→ Reward Function Decomposition 이라는 topic도 therefore closely related!</p>
-  </li>
-</ul>
+<p>Function \(F\) is the objective function, but one thing is different: it’s now a <strong>vector</strong>, not scalar. In contrast to single objective optimization problems, there exists no total order of the objective function values in \(\mathbb{R}^k\), \(k\geq 2\). Therefore, the comparison of values is should be defined in a different way.</p>
 
-<h2 id="proposed-method">Proposed Method</h2>
+<h3 id="defining-the-inequality">Defining the Inequality</h3>
 
-<ul>
-  <li>
-    <p>Let’s decompose the reward function $R_{env}$ into $n$ reward functions!</p>
+<p>Let \(v,w \in \mathbb{R}^k\) . The vector $v$ is less than $w$ if \(v_i &lt; w_i\) for all \(i \in \{1, \cdots, k\}\).</p>
 
-\[R_{env} (s,a,s') = \sum_{k=1}^n  R_k(s,a,s')\]
+\[v &lt; _p w \iff v_i &lt;w_i \ \text{ for }\  \forall i \in \{1, \cdots, k\}\]
 
-    <p>and train separate RL agent on each of these reward functions.</p>
-  </li>
-  <li>
-    <p>Because agent $k$ has its own reward function, it has also its own Q-value function, $Q_k$.</p>
+<h3 id="dominance--pareto-optimal--pareto-set">Dominance / Pareto Optimal / Pareto Set</h3>
 
-    <p>In general, different agents can share multiple lower-level layers of deep Q-network. Hence, authors use a single vector $\theta$ to describe the combined weights of the agents!</p>
-  </li>
-  <li>
-    <p>Combined network that represents all $Q$-value functions = <strong>Hybrid Reward Architecture</strong></p>
+<p>(a) A point $x^\star \in \mathbb{R}^n$ dominates a point $x\in \mathbb{R}^n$ if $F(x^\star) \leq _p F(x)$ and $F(x^\star) \not = F(x)$.</p>
 
-\[Q_{\text{HRA}}(s,a;\theta) = \sum_{k=1}^n Q_k (s,a;\theta)\]
-  </li>
-  <li>
-    <p>The collection of agents can be viewed as a single agent with multiple heads!</p>
+<p>(b) A point $x^\star \in \mathbb{R}^n $ is called (globally) <strong>Pareto optimal</strong> if there exists no point $x \in \mathbb{R}^n $ dominating $x^\star$. The image $F(x^\star)$ of a (globally) Pareto optimal point $x^\star$ is called a (globally) Pareto optimal value.</p>
 
-    <p>Lower-level layer는 고정되어 있는 상태에서 higher-level layer들의 weight들만 각 reward function에 대해 달라지는 것임.</p>
-  </li>
-  <li>
-    <p>Loss function associated with HRA</p>
+<p>(c) <strong>Non-dominated solution set</strong> : given a set of solutions, the non-dominated solution set is a set of all the solutions that are not dominated by any member of the solution set.</p>
 
-\[\begin{aligned} \mathcal{L}_i (\theta_i ) &amp; = \mathbb{E}_{s,a,r,s'}\bigg [ \sum_{k=1}^n (y_{k,i} - Q_k (s,a;\theta_i ))^2 \bigg ] , \\ \text{with }  &amp; y_{k,i} = R_k (s,a,s') + \gamma \max_{a'} Q_k (s',a'; \theta_{k-1}) \end{aligned}\]
-  </li>
-  <li>
-    <p>To that end, we get an optimal weight $\theta^\star$</p>
+<p>(d) The set of <strong>non-dominated</strong> points is called the Pareto set $\mathcal{P}_S$, its image the Pareto front $\mathcal{P}_F$.</p>
 
-\[Q_k ^\star (s,a) = Q_k (s,a;\theta^\star)\]
+<p><img src="https://live.staticflickr.com/65535/51220899302_e3901842bc_o.png" alt="image-20210603131428244" style="zoom:30%;" /></p>
 
-    <p>where</p>
-
-\[Q_{\text{HRA}}^\star(s,a) := \sum_{k=1}^n Q_k^\star (s,a)\]
-  </li>
-</ul>
-
-<p>Resulting $Q_{\text{HRA}}^\star$ is different from $Q_{env}^\star$  which is generated by $R_{env}$.</p>
-
-<center><img src="Untitled.png" width="400" /></center>
-
-<h2 id="whats-good-about-hra">What’s good about HRA?</h2>
+<h3 id="goals-of-multi-objective">Goals of Multi-objective</h3>
 
 <ul>
-  <li>Easily exploit more domain knowledge!
-    <ol>
-      <li>Remove irrelevant features : reward에 영향을 주지 않는 feature들은 과감히 배제시켜버릴 수 있음</li>
-      <li>Identifying terminal states : terminal state에 대해서는 학습을 하지 않도록 refrain 시켜 weight들이 오로지 meaningful 한 non-terminal state을 estimate 하는데 사용되도록 할 수 있음</li>
-      <li>Using pseudo-reward functions : 실제 environment reward function을 decompose하는 것이 아니라, pseudo-reward function 을 사용하여 $\theta$ 를 update할 수도 있음.</li>
-    </ol>
-  </li>
+  <li>Find set of solutions as close as possible to Pareto-optimal front!</li>
+  <li>Find a set of solutions as divserse as possible!</li>
 </ul>
 
-<h2 id="experiments">Experiments</h2>
+<h2 id="necessary-condition-for-optimality">Necessary condition for optimality</h2>
 
-<h3 id="experiment-setting--fruit-collection-task">Experiment Setting : Fruit Collection Task</h3>
+<h3 id="kkt-condition">KKT condition</h3>
 
-<ul>
-  <li>10x10 격자에 과일들이 놓임</li>
-  <li>과일들이 놓일 수 있는 위치는 10개가 있고, each episode마다 과일들은 랜덤한 5개 위치에 놓임</li>
-  <li>agent는 랜덤한 위치에서 시작하고</li>
-  <li>과일을 하나 먹을 때마다 reward +1 이 주어짐</li>
-  <li>
-    <p>each episode는 과일 5개를 다 먹거나 300 step 이 지나면 끝남</p>
-  </li>
-  <li>이 문제를 일반적인 DQN 으로 풀었을 때와 HRA로 풀었을 때 두 가지를 비교했음.</li>
-  <li>HRA의 경우 → reward function을 10개의 다른 small-reward function으로 decompose했음, one per possible fruit location.</li>
-  <li><strong>HRA network 의 실제 구성</strong>
-    <ul>
-      <li>input = 110 binary code (100 for encoding the agent’s position, and the remaining 10 for encoding whether the fruit is in each of the possible positions)</li>
-      <li>FC layer 110 → 250 → (10 heads of) 4   (each consisting of the action values of 4 actions)</li>
-      <li>Mean of all heads is computed through a final linear layer  (with fixed weights 1)</li>
-    </ul>
-  </li>
-</ul>
+<p>Let $x^\star$ be a Pareto point of multi-objective optimization problem. Then, there exist nonnegative scalars $\alpha_1, \cdots, \alpha_k \geq 0$ such that</p>
 
-<center><img src="Untitled%201.png" width="400" /></center>
+\[\sum_{i=1}^k \alpha_i = 1 \text{ and } \sum_{i=1}^k \alpha_i \nabla f_i(x^\star) =0\]
 
-<p>위 그림에서, DQN은 맨 마지막 layer에서 나온 reward 를 가지고 loss function을 minimize한다면, HRA는 그 직전 layer에서 나온 reward (vector)들을 가지고 each agent들을 업데이트하는 것.</p>
+<p>Note that this is only a <strong>necessary condition</strong> for a point $x^\star$ to be Pareto-point, and the set of points satisfying the KKT optimality condition is called the set of <strong>substationary points</strong> \(\mathcal{P}_{S,sub}\).</p>
 
-<ul>
-  <li>
-    <p>여기서 HRA+3 에 주목하고 싶은데, decomposing the existing reward (fruit-related) 에 더해서 pseudo-reward 를 추가한 실험임. <strong>(reward is given when the agent GOT TO the predefined 10 places)</strong></p>
+<h3 id="descent-direction">Descent Direction</h3>
 
-    <p>→ 그 장소에 과일이 없더라도 뭔가를 배울 수 있음</p>
-  </li>
-</ul>
+<p>To identify a descent direction $q(x)$ for which all objectives are non-increasing, i.e.:</p>
 
-<center><img src="Untitled%202.png" width="600" /></center>
+\[\nabla f_i (x) \cdot q(x) \leq 0, \ \ \ i= 1, \cdots, k\]
 
-<ul>
-  <li>그 결과 DQN보다 HRA를 썼을 때 훨씬 더 학습을 잘 했다는 것을 볼 수 있음. 특히, pseudo-reward를 썼을 때의 효과는 아주 강력했는데, 아무것도 쓰지 않는 상태와 비교해 아주 빠르게 학습을 완료함을 볼 수 있음.</li>
-</ul>
+<p>One way to compute a descent direction is to solve the auxillary optimization problem:</p>
 
-<h3 id="mspac-man">Ms.Pac-Man</h3>
+\[\min_{\alpha \in \mathbb{R}^k}  \bigg \{ \Big \|\sum_{i=1}^k \alpha_i \nabla f_i (x) \Big \|_2 ^2 \ \Big | \ \alpha_i \geq 0 , i = 1, \cdots, k , \sum_{i=1}^k \alpha_i =1 \bigg \}\]
 
-<ul>
-  <li>
-    <p>이 논문은 Ms.Pac-Man 게임에서 SOTA를 찍었다고 해서 꽤나 유명세를 탄 논문인데, 뭐 결론은 (전혀 놀랍지 않게도) HRA가 DQN보다 잘한다는 것이었음.</p>
-  </li>
-  <li>
-    <p>reward function이 복잡해? → small reward function으로 쪼개세요!</p>
-  </li>
-</ul>
+<p>Then, if we define</p>
+
+\[q(x)= - \sum_{i=1}^k  \hat{\alpha}_i \nabla f_i (x),\]
+
+<p>where $\hat{\alpha}$ is the solution of the optimization problem above, we can either say $q(x)=0$ and $x$ satisfies the KKT optimality condition, or $q(x)=0$ is a descent direction for all objectives $f_1(x), \cdots, f_k(x)$ in $x$.</p>
+
+\[\nabla f_i (x) \cdot \bigg ( -\sum_{i=1}^k \hat{\alpha}_i \nabla f_i (x) \bigg ) \leq 0\]
+
+<p>prf) Define
+\(K(x) = \bigg \{ \sum_{i=1}^k \alpha_i \nabla f_i(x) , \alpha_i \geq 0, i=1, \cdots, n, \sum_{i=1}^n \alpha_i =1 \bigg \},\)</p>
+
+<p>and assume that $0 \not \in K(x)$ for any fixed \(x \in \mathbb{R}^n\). Furthermore, assume that there exists a vector $v(x) \in K(x)$ with \(q(x)^T v(x) \leq 0\). Then, we obtain the following properties of the vectors $\lambda(q(x)-v(x))$, $0\leq \lambda \leq 1$:</p>
+
+<p>(a) \((v(x) + \lambda(q(x)-v(x))) \in K(x)\) for all $0\leq \lambda \leq 1$;</p>
+
+<p>(b) \(q(x)^T (\lambda(q(x)-v(x))) &gt;0\),  for all $0&lt;\lambda \leq 1$.</p>
+
 </div><section class="article__sharing d-print-none"></section><br/>
   
   <div id="disqus_thread"></div>
@@ -498,7 +444,7 @@ fill="#000000" stroke="none">
       })();
   </script>
 
-  <div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-04-13T00:00:00+09:00"><!-- start custom article footer snippet -->
+  <div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-06-03T00:00:00+09:00"><!-- start custom article footer snippet -->
 
 <!-- end custom article footer snippet -->
 <div class="article__license"><div class="license">
@@ -509,7 +455,7 @@ fill="#000000" stroke="none">
     </p>
   </div></div><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </footer>
-<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/notion_to_markdown/%5BNIPS%202017%5D%20Hindsight%20Experience%20Replay%206daf8b2ade014cf58ea2d223723e0390/">[NIPS 2017] Hindsight Experience Replay </a></div><div class="next"><span>NEXT</span><a href="/notion_to_markdown/%5BICML%202015%5D%20Universal%20Value%20Function%20Approximators%207120334d6860455c801cd9284c92970b/">[ICML 2015] Universal Value Function Approximators</a></div></div></div>
+<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2021/05/19/ddpg-her-multirl-2.html">[RL Research] Multi Reward for Robot Arm Manipluation Task (2)</a></div><div class="next"><span>NEXT</span><a href="/2021/06/03/multi-task-learning-as-objective-optimization.html">[Paper Review] Multi-Task Learning as Multi-Objective Optimization</a></div></div></div>
 
 </div>
 
