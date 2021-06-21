@@ -1,10 +1,10 @@
 <!DOCTYPE html><html lang="en">
   <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[Paper Review] Multi-Task Learning as Multi-Objective Optimization - Younghyo Park</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>[macOS Tips] App Specific Dark/Light Mode - Younghyo Park</title>
 
-<meta name="description" content="This paper was published in NIPS (2018).IntroductionStein’s Paradox      Stein’s Paradox : When solving the task of estimating the means of three or more Gau...">
-<link rel="canonical" href="http://localhost:4000/2021/06/03/multi-task-learning-as-objective-optimization.html"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
+<meta name="description" content="ProblemmacOS allows you to change the Dark Mode behavior in the settings &gt; general panel.However, you cannot set its behavior for specific apps.If you pre...">
+<link rel="canonical" href="http://localhost:4000/2021/06/14/mac-tips-2.html"><link rel="alternate" type="application/rss+xml" title="Younghyo Park" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ -->
 <!--<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
 
 <meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
@@ -336,236 +336,44 @@ fill="#000000" stroke="none">
               <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
 
 <!-- end custom main top snippet -->
-<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[Paper Review] Multi-Task Learning as Multi-Objective Optimization</h1></header><span class="split-space">&nbsp;</span>
+<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>[macOS Tips] App Specific Dark/Light Mode</h1></header><span class="split-space">&nbsp;</span>
           <a class="edit-on-github"
             title="Edit on Github"
-            href="https://github.com/younghyopark/younghyopark.github.io/tree/main/_posts/2021-06-03-multi-task-learning-as-objective-optimization.md">
-            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[Paper Review] Multi-Task Learning as Multi-Objective Optimization"><div class="article__info clearfix"><ul class="left-col menu"><li>
+            href="https://github.com/younghyopark/younghyopark.github.io/tree/main/_posts/2021-06-14-mac-tips-2.md">
+            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="[macOS Tips] App Specific Dark/Light Mode"><div class="article__info clearfix"><ul class="left-col menu"><li>
               <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Optimization">Optimization</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Deep-Learning">Deep-Learning</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Jun 03, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-06-03T00:00:00+09:00">
-    <meta itemprop="keywords" content="Reinforcement-Learning,Optimization,Deep-Learning"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
+                href="/archive.html?tag=macOS-Tips">macOS-Tips</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Jun 14, 2021</span>
+            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-06-14T00:00:00+09:00">
+    <meta itemprop="keywords" content="macOS-Tips"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
 
 <!-- end custom article top snippet -->
-<div class="article__content" itemprop="articleBody"><p>This paper was published in NIPS (2018).</p>
+<div class="article__content" itemprop="articleBody"><h2 id="problem">Problem</h2>
 
-<h2 id="introduction">Introduction</h2>
+<p>macOS allows you to change the <strong>Dark Mode</strong> behavior in the settings &gt; general panel.</p>
 
-<h3 id="steins-paradox">Stein’s Paradox</h3>
+<center>
+<img src="https://cln.sh/E9yhBd/download" style="zoom:50%" />
+</center>
 
-<ul>
-  <li>
-    <p>Stein’s Paradox : When solving the task of estimating the means of three or more Gaussian random variables, it is better to use samples from all of them rather than to estimate them separately.</p>
+<p>However, you cannot set its behavior for specific apps.</p>
 
-    <p class="gray_no_border"><strong>Stein’s example</strong> (or <strong>phenomenon</strong> or <strong>paradox</strong>), in <a href="https://en.wikipedia.org/wiki/Decision_theory">decision theory</a> and <a href="https://en.wikipedia.org/wiki/Estimation_theory">estimation theory</a>, is the phenomenon that when three or more parameters are estimated simultaneously, there exist combined <a href="https://en.wikipedia.org/wiki/Estimator">estimators</a> more accurate on average (that is, having lower expected <a href="https://en.wikipedia.org/wiki/Mean_squared_error">mean squared error</a>) than any method that handles the parameters separately. It is named after <a href="https://en.wikipedia.org/wiki/Charles_Stein_(statistician)">Charles Stein</a> of <a href="https://en.wikipedia.org/wiki/Stanford_University">Stanford University</a>, who discovered the phenomenon in 1955.</p>
-  </li>
-  <li>
-    <p>Stein’s paradox was an early motivation for multi-task learning (MTL)</p>
-  </li>
-  <li>
-    <p>“Even seemingly unrelated real world tasks have strong dependencies due to the shared processes that give rise to the data.” $\rightarrow$ motivates the use of multiple tasks as an inductive bais in learning systems.</p>
-  </li>
-</ul>
+<p>If you prefer <strong>Dark Mode</strong> on everything else , but prefer <strong>Light Mode</strong> on <em>VS Code</em>, there’s nothing you can do on the settings panel.</p>
 
-<h3 id="two-approaches-of-mtl-system">Two Approaches of MTL System</h3>
+<h2 id="solution">Solution</h2>
+<p>vIn that case,</p>
 
 <ol>
-  <li><strong>Weighted Sum Approach</strong></li>
-</ol>
-
-<ul>
-  <li>Weighted sum approach is widely used.</li>
-  <li>However, this may only work when the tasks are not competing, which may not always be the case.</li>
-  <li>MTL with conflicting objectives requires modeling of the trade-off between tasks, which is beyond what a linear combination achieves.</li>
-</ul>
-
-<ol>
-  <li><strong>Pareto Optimal</strong>
-    <ul>
-      <li>find a solution that are not dominated by any others.</li>
-      <li>Such solutions are said to be Pareto optimal.</li>
-    </ul>
+  <li>Find the exact name of the app you want to disable DarkMode.</li>
+  <li>Execute the following code on Terminal, replacing the “Texpad” app to whatever app you like to <strong>always prefer Light Mode</strong>.
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> osascript <span class="nt">-e</span> <span class="s1">'id of app "Texpad"'</span>
+</code></pre></div>    </div>
+  </li>
+  <li>If you found the id of the app, execute the following code replacing the &lt;Bundle Identifier&gt; to the id app you obtained above.
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> defaults write &lt;Bundle Identifier&gt; NSRequiresAquaSystemAppearance <span class="nt">-bool</span> Yes
+</code></pre></div>    </div>
   </li>
 </ol>
-
-<h3 id="finding-the-pareto-optimal--multi-objective-optimization-moo">Finding the Pareto-Optimal : Multi-Objective Optimization (MOO)</h3>
-
-<ul>
-  <li>Variety of algorithms of MOO exist.</li>
-  <li>One such approach is the <strong>multiple-gradient descent algorithm (MGDA)</strong>, which uses gradient-based optimization and provably converges to a point on the Pareto set.</li>
-  <li>
-    <p>MGDA is well suited for multi-task learning with deep networks = use gradients of each task and solve an optimization problem to decide on an update over the shared parameters.</p>
-  </li>
-  <li>However, MGDA has some downsides as well:
-    <ol>
-      <li>does not do well for high-dimensional gradients</li>
-      <li>require explicit computation of gradients per task (multiplies the training time by the number of tasks)</li>
-    </ol>
-  </li>
-</ul>
-
-<h3 id="contribution">Contribution</h3>
-
-<ul>
-  <li>
-    <p>Propose a new optimizer : <strong>Frank-Wolfe-based optimizer</strong> that scales to high-dimensional problems.</p>
-  </li>
-  <li>
-    <p>Exact algorithm for multi-objective optimization of deep networks with negligible computational overhead.</p>
-  </li>
-  <li>
-    <p>Test on three different problems:</p>
-
-    <ol>
-      <li>
-        <p>multi-digit classification (MultiMNIST)</p>
-
-        <center><img src="https://live.staticflickr.com/65535/51222812939_ea8837b083_o.png" alt="image-20210603190428819" style="zoom:50%;" /></center>
-      </li>
-      <li>
-        <p>multi-label classification with CelebA dataset</p>
-      </li>
-      <li>
-        <p>Scene understanding : multiple tasks of semantic segmentation, instance segmentation, and depth estimation.</p>
-      </li>
-    </ol>
-  </li>
-</ul>
-
-<h2 id="related-work">Related Work</h2>
-
-<h3 id="multi-task-learning">Multi-Task Learning</h3>
-
-<ol>
-  <li>Hard Parameter Sharing : subset of parameters is shared between tasks while other parameters are task-specific.</li>
-  <li>Soft Parameter Sharing : all parameters are task-specific but they are jointly constrained via Bayesian priors.</li>
-</ol>
-
-<h3 id="multi-objective-optimization">Multi-Objective Optimization</h3>
-
-<p>Multi-objective optimization optimizes a set of possibly contrasting objectives. Among many approaches, one may use <strong>gradient-based multi-objective optimization</strong>. These methods use multi-objective KKT conditions and find a <strong>descent direction that decreases all objectives</strong>. This approach was extended to stochastic gradient descent by few papers.</p>
-
-<h2 id="problem-formulation">Problem Formulation</h2>
-
-<h3 id="multi-task-learning-mtl-problem">Multi-Task Learning (MTL) Problem</h3>
-
-<ul>
-  <li>
-    <p>Input space $\mathcal{X}$ and a collection of task spaces \(\{ \mathcal{Y}^t \}_{t\in [T]}\), such that large dataset of i.i.d. data points \(\{\mathbf{x}_i, y_i^1, \cdots, y_i^T \}_{i \in [N]}\) is given where $T$ is the number of tasks, \(N\) is the number of data points, and $y_i^t$ is the label of the $t$-th task for the $i$th data point.</p>
-  </li>
-  <li>
-    <p>Weighted sum-approach tries to solve the problem of</p>
-
-\[\min_{\theta^{sh}, \theta^1, \cdots, \theta^T} \sum_{t=1}^T c^t \hat{\mathcal{L}}^t (\theta ^{sh}, \theta^t )\]
-
-    <p>where $\theta^{sh}$ is the shared parameters and $\theta^t$ is the task-specific parameters. $c^t$ isthe weight per task (either predefined or not, static or dynamic). Loss is defined as</p>
-
-\[\hat{\mathcal{L}}^t (\theta^{sh}, \theta^t) = \frac{1}{N} \sum_i \mathcal{L}(f^t (\mathbf{x}_i; \theta^{sh}, \theta^t),  y_i^t )\]
-
-    <p class="info">Although the weighted sum formulation is intuitively appealing, it typically either requires an expensive grid search over various scalings or the use of a heuristic.</p>
-  </li>
-  <li>
-    <p>Alternatively, MTL can be formulated as a multi-objective optimization. We specify the multi-objective optimization formulation of MTL using a vector-valued loss $\mathbf{L}$.</p>
-
-\[\min_{\theta^{sh}, \theta^1, \cdots, \theta^T} \mathbf{L}(\theta^{sh}, \theta^1, \cdots, \theta^T) = \min_{\theta^{sh}, \theta^1, \cdots, \theta^T} \begin{bmatrix} \hat{ \mathcal{L}}^1 (\theta^{sh}, \theta^1)\\ \hat{ \mathcal{L}}^2 (\theta^{sh}, \theta^1) \\ \vdots \\  \hat{ \mathcal{L}}^T (\theta^{sh}, \theta^1)  \end{bmatrix}\]
-  </li>
-</ul>
-
-<h3 id="pareto-optimality-for-mtl">Pareto-Optimality for MTL</h3>
-
-<ol>
-  <li>
-    <p>A solution $\theta$ dominates a solution $\bar{\theta}$ if $\hat {\mathcal{L}}^t (\theta^{sh}, \theta^t) \leq \hat{\mathcal{L}}^t (\bar \theta^{sh}, \bar \theta^t)$ for all tasks $t$ and</p>
-
-\[\mathbf{L}(\theta^{sh}, \theta^1, \cdots, \theta^T) \not = \mathbf{L}(\bar \theta^{sh}, \bar \theta^1, \cdots, \bar \theta^T)\]
-  </li>
-  <li>
-    <p>A solution $\theta^\star$ is called <strong>Pareto optimal</strong> if there exists no solution $\theta$ that dominates $\theta^\star$.</p>
-  </li>
-</ol>
-
-<p class="info">Set of pareto optimal solutions is called the Pareto set (\(\mathcal{P}_\theta\)) and its image is called the Pareto front (\(\mathcal{P}_\mathbf{L} = \{\mathbf{L}(\theta) \}_{\theta \in \mathcal{P}_\theta}\)</p>
-
-<h3 id="multiple-gradient-descent-algorithm-mgda">Multiple-Gradient Descent Algorithm (MGDA)</h3>
-
-<p>MGDA leverageas the KKT conditions, which are necessary for optimality. We now state the KKT conditions for both task-specific and shared parameters:</p>
-
-<ul>
-  <li>There exist $\alpha^1, \cdots, \alpha^T \geq 0$ such that $\sum_{t=1}^T \alpha^t =1$ and $\sum_{t=1}^T \alpha^t \nabla_{\theta^{sh}} \hat{\mathcal{L}}^t (\theta^{sh}, \theta^t)=0$</li>
-  <li>For all tasks $t$, \(\nabla_{\theta^t} \hat{\mathcal{L}}^t (\theta^{sh}, \theta^t)=0\)</li>
-</ul>
-
-<p>Using above KKT optimality condition, we can compute the gradient descent step. Consider the optimization problem (QP)</p>
-
-<center><img src="https://live.staticflickr.com/65535/51222134846_5a973b2e34_o.png" alt="image-20210603202143774" style="zoom:40%;" /></center>
-
-<p>Desideri (2012) showed that either the solution to this optimization problem is</p>
-
-<ol>
-  <li>0 and the resulting point satisfies the KKT conditions above</li>
-  <li>solution gives a <strong>descent direction that improves all tasks</strong>.</li>
-</ol>
-
-<p>Thus, the resulting gradient descent step can be computed by</p>
-
-\[- \sum_{t=1}^T \hat{\alpha}^t \nabla_{\theta^{sh}} \hat{\mathcal{L}}(\theta^{sh}, \theta^t)\]
-
-<h3 id="solving-the-optimization-problem-qp-for-dual-task">Solving the Optimization Problem (QP) for Dual Task</h3>
-
-<center><img src="https://live.staticflickr.com/65535/51222134846_5a973b2e34_o.png" alt="image-20210603202143774" style="zoom:40%;" /></center>
-
-<ul>
-  <li>
-    <p>Consider two task situation ($T=2$)</p>
-
-\[\min_{\alpha\in [0,1]}  \ \Big \| \alpha \nabla_{\theta^{sh}} \hat{\mathcal{L}}^1 (\theta^{sh}, \theta^1)+ (1-\alpha)\nabla_{\theta^{sh}}\hat{\mathcal{L}}^2 (\theta^{sh}, \theta^2) \Big \|_2 ^2\]
-
-    <p>which is basically a problem of</p>
-
-\[\min_{\alpha \in [0,1]} \ \Big \| \alpha v_1 + (1-\alpha)v_2 \Big \|\]
-
-    <p>which can be analytically solved by</p>
-
-\[\hat{\alpha} = \bigg [ \frac{(v_2 - v_1)^T v_2}{\|v_2 - v_1 \|_2 ^2}\bigg ] _{+, ^1_T}\]
-
-    <p>where \([\cdot]_+,^1_T\) represents the clipping to $[0,1]$.</p>
-
-\[[a]_+,^1_T = \max (\min(a,1),0)\]
-
-    <center><img src="https://live.staticflickr.com/65535/51222162061_c8749db462_o.png" alt="image-20210603204216330" style="zoom:40%;" /></center>
-  </li>
-</ul>
-
-<h3 id="extending-it-to-multiple-tasks--frank-wolfe-algorithm">Extending it to multiple tasks : Frank-Wolfe algorithm</h3>
-
-<p>Frank-wolfe algorithm solves the constrained optimization problem</p>
-
-\[\begin{aligned}
-\min_x &amp; \ \ f(x) \\
-\text{s.t.}&amp; \ \ x \in C
-\end{aligned}\]
-
-<p>without projection procedure, unlike any other (sub-)gradient methods.</p>
-
-<ol>
-  <li>Compute \(\mathbf{s}^t \in \arg \min_{s\in C} \nabla f(\mathbf{x}^t)^T \mathbf{s}\)</li>
-  <li>Set \(\mathbf{w}^{t+1} = (1-\eta_t) \mathbf{x}^t  + \eta _t \mathbf{s}^t\)</li>
-</ol>
-
-<center><img src="https://live.staticflickr.com/65535/51222421853_db15c532fd_o.png" alt="image-20210603211405039" style="zoom:50%;" /></center>
-
-<center><img src="https://live.staticflickr.com/65535/51221502477_ec7744318c_o.png" alt="image-20210603211656511" style="zoom:50%;" /></center>
-
-<h2 id="final-algorithm">Final Algorithm</h2>
-
-<center><img src="https://live.staticflickr.com/65535/51223288850_c0f43c8e86_o.png" alt="image-20210603211848665" style="zoom:40%;" /></center>
 
 </div><section class="article__sharing d-print-none"></section><br/>
   
@@ -588,7 +396,7 @@ fill="#000000" stroke="none">
       })();
   </script>
 
-  <div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-06-03T00:00:00+09:00"><!-- start custom article footer snippet -->
+  <div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2021-06-14T00:00:00+09:00"><!-- start custom article footer snippet -->
 
 <!-- end custom article footer snippet -->
 <div class="article__license"><div class="license">
@@ -599,7 +407,7 @@ fill="#000000" stroke="none">
     </p>
   </div></div><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </footer>
-<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2021/06/03/multi-objective-optimization.html">[Optimization] Multi Objective Optimization</a></div></div></div>
+<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2021/04/29/scrl-16.html">[RL Theory] Actor-Critic Algorithm</a></div></div></div>
 
 </div>
 

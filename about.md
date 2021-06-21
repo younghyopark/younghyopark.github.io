@@ -84,11 +84,13 @@ You can checkout the PDF version of my Curriculum Vitae [here](/assets/Younghyo_
   - **2014 Mar - 2016 Feb** Gyeonggi Science High School for the Gifted 
 
 ### <i class="fas fa-microscope"></i> Research Experiences
+- **2021 Jul - 2021 Aug** [Dynamics Robotics System Lab](https://dyros.snu.ac.kr), **AI Research Intern**
+  - Topic : Development of Parking Spot Detection algorithm for autonomous vehicle parking system
+  - Funded by [SNU Artificial Intellignece Institue](https://aiis.snu.ac.kr)
 - **2021 Mar - 2021 Jun** [Interactive & Networked Robotics Laboratory](https://www.inrol.snu.ac.kr), **Research Intern**
   - Topic : Development of multi-reward DDPG algorithm for robot-arm manipulation tasks
 - **2020 Sep - 2021 Aug** [Robotics Laboratory](https://sites.google.com/robotics.snu.ac.kr/fcp/), **Graduation Thesis Research Project**
   - Topic : Enhancing Outlier Detection Performance via Autoencoder Pruning
-
 - **2020 Sep - 2021 Feb** [Robotics Laboratory](https://sites.google.com/robotics.snu.ac.kr/fcp/), **Research Intern**
   - Topic : Robot Collision Detection using Unsupervised Anomaly Detection Algorithm (Advisor Frank C. Park)
 - **2020 Jul - 2021 Jan** [Saige Research](https://saigeresearch.ai), **Machine Learning Research Intern**

@@ -337,103 +337,6 @@ fill="#000000" stroke="none">
 
 <!-- end custom main top snippet -->
 <article itemscope itemtype="http://schema.org/WebPage"><header style="display:none;"><h1>Home</h1></header><meta itemprop="headline" content="Home"><meta itemprop="author" content="Younghyo Park"/><div class="js-article-content"><div class="layout--articles"><div class="article-list items items--divided"><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2021/04/21/scrl-10.html"><h2 itemprop="headline" class="item__header">[RL Theory] Temporal Difference Learning</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Review : Fixed Point Problems
-
-Bellman Equations
-
-Recall, that both policy evaluation and optimality equation is a fixed point problem.
-
-
-  
-    Policy Evaluation
-
-\[v = \mathcal{T}^\pi v\]
-
-    or equivalently
-  
-
-
-\[v(s) = r(s, \pi(s)) + \gamma \sum_{s' \in S} p(s' \vert s, \pi(s) ) v(s')\]
-
-
-  Optimality Equation
-
-
-\[v = \mathcal{T}v\]
-
-or eq...</div><p><a href="/2021/04/21/scrl-10.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Theory%2FSurvey">Theory/Survey</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 21, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-21T00:00:00+09:00">
-    <meta itemprop="keywords" content="Reinforcement-Learning,Lecture-Note,Theory/Survey"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2021/04/20/scrl-9.html"><h2 itemprop="headline" class="item__header">[RL Theory] Stochastic Approximation</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">Review: MDP Problem
-
-Bellman Equations
-
-Recall, that both policy evaluation and optimality equation is a fixed point problem.
-
-
-  
-    Policy Evaluation
-
-\[v = \mathcal{T}^\pi v\]
-
-    or equivalently
-  
-
-
-\[v(s) = r(s, \pi(s)) + \gamma \sum_{s' \in S} p(s' \vert s, \pi(s) ) v(s')\]
-
-
-  
-    Optimality Equation
-
-\[v = \mathcal{T}v\]
-
-    or equi...</div><p><a href="/2021/04/20/scrl-9.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Theory%2FSurvey">Theory/Survey</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 20, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-20T00:00:00+09:00">
-    <meta itemprop="keywords" content="Reinforcement-Learning,Lecture-Note,Theory/Survey"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
-          <header><a href="/2021/04/20/scrl-8.html"><h2 itemprop="headline" class="item__header">[RL Theory] Q-function</h2></a></header>
-          <div class="item__description"><div class="article__content" itemprop="description articleBody">State-Action Value Functions
-
-In this post, we’re going to define an important concept that is widely used in both MDP and RL.
-
-Definition
-The optimal Q-function $Q^\star(s,a)$ is the maximum expected return starting from state $s$, taking action $a$:
-
-\[Q^\star(s,a) := \max_\pi Q^\pi (s,a) = \max_\pi \mathbb{E} ^\pi \bigg [ \sum_{t=0}^\infty \g...</div><p><a href="/2021/04/20/scrl-8.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
-            </li><li>
-              <a class="button button--secondary button--pill button--sm"
-                href="/archive.html?tag=Theory%2FSurvey">Theory/Survey</a>
-            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 20, 2021</span>
-            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-20T00:00:00+09:00">
-    <meta itemprop="keywords" content="Reinforcement-Learning,Lecture-Note,Theory/Survey"></div>
-      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
           <header><a href="/2021/04/20/scrl-7.html"><h2 itemprop="headline" class="item__header">[RL Theory] Linear Programming Approach</h2></a></header>
           <div class="item__description"><div class="article__content" itemprop="description articleBody">Iteration based vs Optimization based
 
@@ -540,10 +443,86 @@ Assume that $S, A$ are finite sets. Then, the deterministic Marko...</div><p><a 
             </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 19, 2021</span>
             </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-19T00:00:00+09:00">
     <meta itemprop="keywords" content="Reinforcement-Learning,Lecture-Note,Theory/Survey"></div>
+      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
+          <header><a href="/2021/04/19/scrl-3.html"><h2 itemprop="headline" class="item__header">[RL Theory] Finite Horizon MDP (1)</h2></a></header>
+          <div class="item__description"><div class="article__content" itemprop="description articleBody">Finite-Horizon MDP
+
+Problem Definition
+
+Instead of $\gamma$, we set the length of the horizon as $T$. Thus, a finite-horizon MDP is a tuple $\langle T,S,A,P,R \rangle$, consisting of
+
+
+  $T$ : length of horizon
+  everything else is the same.
+
+
+Our goal is to find the optimal policy that maximizes the expected cumulative reward:
+
+\[\max_{\pi \in ...</div><p><a href="/2021/04/19/scrl-3.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Reinforcement-Learning">Reinforcement-Learning</a>
+            </li><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
+            </li><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Theory%2FSurvey">Theory/Survey</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 19, 2021</span>
+            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-19T00:00:00+09:00">
+    <meta itemprop="keywords" content="Reinforcement-Learning,Lecture-Note,Theory/Survey"></div>
+      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
+          <header><a href="/notion_to_markdown/opt-lecture-7/"><h2 itemprop="headline" class="item__header">[Optimization] KKT Optimality Condition</h2></a></header>
+          <div class="item__description"><div class="article__content" itemprop="description articleBody">Characterizing the Optimality
+
+How should we characterize the conditions for optimality?
+
+What are the necessary and sufficient conditions for
+
+\[x: \text{primal feasible point}\\
+(\lambda, \nu) : \text{dual feasible point}\]
+
+to be optimal?
+
+Complementary slackness
+
+Suppose that strong duality holds, and (somehow) the primal and dual optimal va...</div><p><a href="/notion_to_markdown/opt-lecture-7/">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Optimization">Optimization</a>
+            </li><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=Lecture-Note">Lecture-Note</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 19, 2021</span>
+            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-19T00:00:00+09:00">
+    <meta itemprop="keywords" content="Optimization,Lecture-Note"></div>
+      </article><article class="item" itemscope itemtype="http://schema.org/BlogPosting"><div class="item__content">
+          <header><a href="/2021/04/19/mac-tips-1.html"><h2 itemprop="headline" class="item__header">[macOS Tips] App Specific New Tab/Window Preference</h2></a></header>
+          <div class="item__description"><div class="article__content" itemprop="description articleBody">Problem
+
+macOS allows you to change the prefer tabs behavior in the settings &gt; general panel.
+
+
+
+However, the option they give is quite black and white.
+
+
+
+If you prefer new tabs on Preview , but prefer new windows on Finder or Safari, there’s nothing you can do on the settings panel.
+
+Solution
+
+In that case,
+
+
+  revert the prefer tabs settin...</div><p><a href="/2021/04/19/mac-tips-1.html">Read more</a></p></div><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=macOS-Tips">macOS-Tips</a>
+            </li></ul><ul class="right-col menu"><li><i class="far fa-calendar-alt"></i> <span>Apr 19, 2021</span>
+            </li></ul></div><meta itemprop="author" content="Younghyo Park"/><meta itemprop="datePublished" content="2021-04-19T00:00:00+09:00">
+    <meta itemprop="keywords" content="macOS-Tips"></div>
       </article></div>
 </div><br/>
 
-<div class="layout--home"><div class="pagination"><p>47 post articles, 6 pages.</p>
+<div class="layout--home"><div class="pagination"><p>44 post articles, 6 pages.</p>
     <div class="pagination__menu">
       <ul class="menu menu--nowrap"><li><a class="button button--secondary button--circle" href="/page2">
             <i class="fas fa-angle-left"></i>
