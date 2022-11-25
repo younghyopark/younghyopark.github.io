@@ -22,7 +22,7 @@ Hello, thanks for stopping by! 👋
 
 I'm a Robotics Research Scientist in NAVER LABS, working on machine/reinforcement learning algorithms for robotic manipulation tasks.
 
-My research interest mainly lies in data-driven approach for robotic manipulation tasks: 
+My research interest mainly lies in **data-driven approach for robotic manipulation tasks**: 
 grasping, learning from demonstrations, unsupervised reinforcement learning (skill discovery) for manipulation tasks.
 
 I received my bachelor's degree (*Summa Cum Laude*) in Mechanical Engineering at Seoul National University in 2022.
