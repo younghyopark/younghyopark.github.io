@@ -2,7 +2,7 @@
 layout: about
 title: about
 permalink: /
-subtitle: Robotics Machine Learning Engineer @<a href='https://naverlabs.com'>NAVER LABS</a>.
+subtitle: Robotics Machine Learning Engineer @<a href='https://naverlabs.com/en/'>NAVER LABS</a>.
 
 profile:
   align: right
@@ -20,7 +20,7 @@ social: true  # includes social icons at the bottom of the page
 
 Hello, thanks for stopping by! 👋
 
-I'm a Robotics Research Scientist at [NAVER LABS](https://naverlabs.com), developing machine/reinforcement learning algorithms for robotic manipulation tasks. 
+I'm a Robotics Research Scientist at [NAVER LABS](https://naverlabs.com/en/), developing machine/reinforcement learning algorithms for robotic manipulation tasks. 
 
 I received my bachelor's degree (*Summa Cum Laude*) in Mechanical Engineering at Seoul National University.
 
