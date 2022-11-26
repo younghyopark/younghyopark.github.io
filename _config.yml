@@ -7,7 +7,7 @@ first_name: Younghyo
 # middle_name: 
 last_name: Park
 email: parkyh9492@snu.ac.kr
-description:  # the ">" symbol means to ignore newlines until "footer_text:"
+description:  Hello, thanks for stopping by! 👋 I'm a Robotics Research Scientist at NAVER LABS, developing machine/reinforcement learning algorithms for robotic manipulation tasks.  # the ">" symbol means to ignore newlines until "footer_text:"
 footer_text: 
 keywords: jekyll, jekyll-theme, academic-website, portfolio-website  # add your own keywords or leave empty
 
@@ -108,7 +108,7 @@ bing_site_verification:  # out your bing-site-verification ID (Bing Webmaster)
 
 blog_name:  # blog_name will be displayed in your blog page
 blog_nav_title:  # your blog must have a title for it to be displayed in the nav bar
-blog_description: a simple whitespace theme for academics
+blog_description: Hello, thanks for stopping by! 👋 I'm a Robotics Research Scientist at NAVER LABS, developing machine/reinforcement learning algorithms for robotic manipulation tasks. 
 permalink: 
 
 # Pagination
