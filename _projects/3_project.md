@@ -31,6 +31,8 @@ Please find [https://sites.google.com/view/safe-skill](https://sites.google.com/
 
 ### Discovery of Safe Manipulation Skills 
 
+The skills discovered without safety constraints constantly pushes the object outside the robot's reachable workspaceand applies excessive forces to the environment. On the other hand, with skills discovered by SGSD, the object is gracefully manipulated without any excessive forces applied to the robot, while at the same time remaining within the reachable workspace. From these results, we could validate that **diverse and useful safe skills can be successfully learned entirely from scratch using SGSD**.
+
 <div class="row">
     <div class="col-sm mt-3 mt-md-0">
         {% include figure.html path="assets/arto/ICRA2023_SGSD_video_final.gif" title="example image" class="img-fluid rounded z-depth-1" %}
@@ -40,6 +42,8 @@ Please find [https://sites.google.com/view/safe-skill](https://sites.google.com/
 <br>
 
 ### Downstream Task Solving
+
+In this section, we show that skills discovered by SGSD can be temporarily composed to solve various contact-rich downstream manipulation tasks while satisfying the safety constraints. **Here we highlight again that we do not require training of any safety-related information during downstream task training phase.** 
 
 <div class="row">
     <div class="col-sm mt-3 mt-md-0">
