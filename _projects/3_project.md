@@ -29,6 +29,16 @@ Please find [https://sites.google.com/view/safe-skill](https://sites.google.com/
 
 
 
+### Discovery of Safe Manipulation Skills 
+
+<div class="row">
+    <div class="col-sm mt-3 mt-md-0">
+        {% include figure.html path="assets/arto/ICRA2023_SGSD_video_final.gif" title="example image" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
+
+<br>
+
 ### Downstream Task Solving
 
 <div class="row">
