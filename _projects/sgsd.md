@@ -7,11 +7,16 @@ importance: 2
 category: academic
 ---
 
+> **Presented at NeurIPS 2022: Robot-Learning Workshop** \
+> **Submitted to ICRA 2023 (Under-Review)**
+
+
 ### Abstract
 
 Recent progress in unsupervised skill discovery algorithms has shown great promise in learning an extensive collection of behaviors without extrinsic supervision. On the other hand, safety is one of the most critical factors for real-world robot applications. As skill discovery methods typically encourage exploratory and dynamic behaviors, it can often be the case that a large portion of learned skills remains too dangerous and unsafe. In this paper, we introduce the novel problem of safe skill discovery, which aims at learning, in a task-agnostic fashion, a repertoire of reusable skills that is inherently safe to be composed for solving downstream tasks. We propose **Safety-Guaranteed Skill Discovery (SGSD)**, an algorithm that learns a latent-conditioned skill-policy, regularized with a safety-critic modeling
 a user-defined safety definition. Using the pretrained safe skill repertoire, hierarchical reinforcement learning can solve downstream tasks without the need of explicit consideration of safety during training and testing. We evaluate our algorithm on a collection of force-controlled robotic manipulation tasks in simulation and show promising downstream task performance with safety guarantees.
 Please find [https://sites.google.com/view/safe-skill](https://sites.google.com/view/safe-skill) for supplementary videos.
+
 
 <br>
 
@@ -64,3 +69,6 @@ In this section, we show that skills discovered by SGSD can be temporarily compo
 <br>
 
 
+
+
+<!-- <br> -->
