@@ -15,6 +15,8 @@ category: academic
 
 ### Presentation at IROS 2022 Award Session
 
+<center>
+<b>Winner</b> of IROS 2022 Best Entertainment & Amusement Paper Award!</center>
 <center><iframe width="700" height="400" src="https://www.youtube.com/embed/2DCkyE0l0aI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></center>
 
 <br>
