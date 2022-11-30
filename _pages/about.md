@@ -25,6 +25,6 @@ I'm a Robotics Research Scientist at [NAVER LABS](https://naverlabs.com/en/), de
 I received my bachelor's degree (*Summa Cum Laude*) in Mechanical Engineering at Seoul National University.
 
 My research interest mainly lies in **data-driven approach for robotic manipulation tasks**: 
-learning from demonstrations, unsupervised reinforcement learning (skill discovery) for manipulation tasks i.e,. grapsing/non-prehensile manipulation of rigid/deformable objects.
+learning from demonstrations, unsupervised reinforcement learning (skill discovery) for manipulation tasks i.e,. grasping/non-prehensile manipulation of rigid/deformable objects.
 
 Besides that, I love traveling, playing piano and learning new stuffs. 
