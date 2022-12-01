@@ -6,7 +6,7 @@ subtitle: Robotics Machine Learning Engineer @<a href='https://naverlabs.com/en/
 
 profile:
   align: right
-  image: prof_pic.jpg
+  image: profile_pic3.png
   image_circular: false # crops the image to make it circular
   # address: >
   #   <p>555 your office number</p>
