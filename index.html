@@ -1,0 +1,237 @@
+<!DOCTYPE HTML>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+  <title>Younghyo Park</title>
+  
+  <meta name="author" content="Younghyo Park">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link rel="stylesheet" type="text/css" href="stylesheet.css">
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🦾</text></svg>">
+</head>
+
+<body>
+  <table style="width:100%;max-width:800px;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+    <tr style="padding:0px">
+      <td style="padding:0px">
+        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+          <tr style="padding:0px">
+            <td style="padding:2.5%;width:63%;vertical-align:middle">
+              <p style="text-align:center">
+                <name>Younghyo Park</name>
+              </p>
+              <p>I am currently a Robotics Research Scientist at <a href="https://naverlabs.com/en/">NAVER LABS</a>. I am developing machine/reinforcement learning algorithms to make robot arms like <a href="https://www.naverlabs.com/en/ambidex">AMBIDEX</a> perform complex manipulation tasks like cooking a ramen in real-world. </p>
+              <p>I will soon be starting my Ph.D. program at <a href="https://csail.mit.edu/">MIT CSAIL</a> starting 2023 Fall, working with Professor <a href="https://people.csail.mit.edu/pulkitag/">Pulkit Agrawal</a>. I received my bachelors degree (Summa Cum Laude) in Mechanical Engineering at Seoul National University.</p>
+  
+              <p style="text-align:center">
+                <a href="mailto:younghyo@mit.edu">Email</a> &nbsp/&nbsp
+                <a href="data/Younghyo_Park_CV.pdf">CV</a> &nbsp/&nbsp
+                <a href="https://twitter.com/younghyo_park">Twitter</a> 
+              </p>
+            </td>
+            <td style="padding:2.0%;width:30%;max-width:30%">
+              <a><img style="width:100%;max-width:100%" alt="profile photo" src="images/profile_pic7.png" class="hoverZoomLink"></a>
+            </td>
+          </tr>
+        </tbody></table>
+        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+            <tr>
+            <td style="padding:20px;width:100%;vertical-align:middle">
+              <heading>Research</heading>
+              <p>
+                My dream is to see robots performing all sorts of complex, long-horizon and contact-rich manipulation tasks in real-world, just like we humans do everyday. 
+                One <strong>scalable</strong> way to fulfill this dream is to pretrain robots with  
+                (a) a repertoire of reusable low-level motor control skills and 
+                (b) an intelligence that can temporally or spatially compose such skills to complete any given unseen tasks. 
+              </p>
+              <p>
+                What kind of low-level manipulation skills should we pretrain in advance, and how should we train them? 
+                With such reusable repertoire of skills, how should train an intelligence that can orchestrate them to perform longer-horizon tasks? Let's find out.</p>
+              <p>
+                * denotes equal contribution.
+              </p>
+
+            </td>
+          </tr>
+        </tbody></table>
+        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+				
+    
+    <tr onmouseout="zipnerf_stop()" onmouseover="zipnerf_start()">
+      <td style="padding:20px;width:25%;vertical-align:middle">
+        <div class="one">
+          <div class="two" id='zipnerf_image'><video  width=100% height=100% muted autoplay loop>
+          <source src="images/SASD_personal_web.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+          </video></div>
+          <img src='images/SASD_still2.png' width="100%" >
+        </div>
+        <script type="text/javascript">
+          function zipnerf_start() {
+            document.getElementById('zipnerf_image').style.opacity = "1";
+          }
+
+          function zipnerf_stop() {
+            document.getElementById('zipnerf_image').style.opacity = "0";
+          }
+          zipnerf_stop()
+        </script>
+      </td>
+      <td style="padding:20px;width:75%;vertical-align:middle">
+        <a href="https://safe-skill.github.io/">
+          <papertitle>Safety-Aware Unsupervised Skill Discovery</papertitle>
+        </a>
+        <br>
+        <a href="mailto:sunin.kim@naverlabs.com">Sunin Kim</a>*, <a href="https://scholar.google.com/citations?user=aa1mE8cAAAAJ&hl=en&oi=ao">Jaewoon Kwon</a>*, <a href="https://scholar.google.co.kr/citations?user=ZBGLua0AAAAJ&hl=en">Taeyoon Lee</a>*, 
+        <strong>Younghyo Park*</strong>, <a href="https://scholar.google.com/citations?user=XneKjCsAAAAJ&hl=en&oi=ao">Julien Perez</a>
+        <br>
+        <em>ICRA</em>, 2023
+        <br>
+        <a href="https://safe-skill.github.io/">project page</a>
+        /
+        <a href="https://youtu.be/h58P6czMQh4">video</a>
+        <p></p>
+        <p>
+        An algorithm that can discover diverse and useful set of skills from scratch that is inherently safe to be composed for unseen downstream tasks. 
+        Considering safety during skill discovery phase is a must when solving safety-critical downstream tasks.
+        </p>
+      </td>
+    </tr>
+    <!-- bgcolor="#ffffd0" -->
+		
+    <tr onmouseout="db3d_stop()" onmouseover="db3d_start()" >
+      <td style="padding:20px;width:25%;vertical-align:middle">
+        <div class="one">
+          <div class="two" id='db3d_image'><video  width=100% height=100% muted autoplay loop>
+          <source src="images/ARTO_personal_web.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+          </video></div>
+          <img src='images/ARTO_personal_still.png' width="160">
+        </div>
+        <script type="text/javascript">
+          function db3d_start() {
+            document.getElementById('db3d_image').style.opacity = "1";
+          }
+
+          function db3d_stop() {
+            document.getElementById('db3d_image').style.opacity = "0";
+          }
+          db3d_stop()
+        </script>
+      </td>
+      <td style="padding:20px;width:75%;vertical-align:middle">
+				<a href="https://drawing-robot.github.io/">
+          <papertitle>Robot Learning to Paint from Demonstrations</papertitle>
+        </a>
+        <br>
+        <strong>Younghyo Park*</strong>, <a href="https://www.linkedin.com/in/seunghun-jeon-559a971b2">Seunghoon Jeon</a>*, <a href="https://scholar.google.co.kr/citations?user=ZBGLua0AAAAJ&hl=en">Taeyoon Lee</a>  <br>
+        <em>IROS</em>, 2022 <font color="red"><strong>(Winner: Best Entertainment & Aumesement Paper Award)</strong></font>
+        <br>
+				<a href="https://drawing-robot.github.io/">project page</a> / 
+        <a href="https://youtu.be/2DCkyE0l0aI">video</a> /
+				<a href="https://naverlabs.com/storyDetail/245">story</a> /
+				<a href="https://youtu.be/7z-S1Bu6XPo">interview</a> / 
+				<a href="https://ieeexplore.ieee.org/abstract/document/9981633">paper</a>
+        <p></p>
+        <p>Drawing robot ARTO-1 performs complex drawings in real-world by learning low-level stroke drawing skills, requiring delicate force control, from human demonstrations. This approach eases the planning required to actually perform an artistic drawing.</p>
+      </td>
+    </tr>
+
+    
+
+<tr onmouseout="dreamfusion_stop()" onmouseover="dreamfusion_start()">
+  <td style="padding:20px;width:25%;vertical-align:middle">
+    <div class="one">
+      <div class="two" id='dreamfusion_image'>
+        <img src='images/col_detection2.png' width="160"></div>
+    <img src='images/col_detection2.png' width="160">
+    </div>
+    <script type="text/javascript">
+      function dreamfusion_start() {
+        document.getElementById('dreamfusion_image').style.opacity = "1";
+      }
+
+      function dreamfusion_stop() {
+        document.getElementById('dreamfusion_image').style.opacity = "0";
+      }
+      dreamfusion_stop()
+    </script>
+  </td>
+  <td style="padding:20px;width:75%;vertical-align:middle">
+    <a href="https://younghyopark.me/">
+      <papertitle>Collision detection for robot manipulators using unsupervised anomaly detection algorithms
+      </papertitle>
+    </a>
+    <br>
+    <a href="https://scholar.google.com/citations?user=f7Rr7tcAAAAJ&hl=en&oi=ao">Kyumin Park</a>,
+    <strong>Younghyo Park</strong>, <a href="https://swyoon.github.io/">Sangwoong Yoon</a>, <a href="https://sites.google.com/robotics.snu.ac.kr/fcp/">Frank C. Park</a>
+    <br>
+    <em>Transactions on Mechatronics</em>, 2021 
+    <br>
+    <a href="https://ieeexplore.ieee.org/document/9600832">paper</a>
+    <p></p>
+    <p>
+    We detect collisions for robot manipulators using unsupervised anomaly detection methods. Compared to supervised approach, this approach does not require collisions datasets and even detect unseen collision types. 
+    </p>
+  </td>
+</tr>
+
+<tr onmouseout="alignerf_stop()" onmouseover="alignerf_start()">
+  <td style="padding:20px;width:25%;vertical-align:middle">
+    <div class="one">
+      <div class="two" id='alignerf_image'><video  width=100% height=100% muted autoplay loop>
+        <source src="images/detection.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+        </video></div>
+        <img src='images/detection-still.png' width="160">
+    </div>
+    <script type="text/javascript">
+      function alignerf_start() {
+        document.getElementById('alignerf_image').style.opacity = "1";
+      }
+
+      function alignerf_stop() {
+        document.getElementById('alignerf_image').style.opacity = "0";
+      }
+      alignerf_stop()
+    </script>
+  </td>
+  <td style="padding:20px;width:75%;vertical-align:middle">
+    <a href="https://link.springer.com/chapter/10.1007/978-3-030-97672-9_26">
+      <papertitle>Deep Learning Based Parking Slot Detection and Tracking: PSDT-Net</papertitle>
+    </a>
+    <br>
+    <strong>Younghyo Park</strong>, <a href="https://scholar.google.co.kr/citations?user=j8EB4g0AAAAJ&hl=ko">Joonwoo Ahn</a>, <a href="https://scholar.google.co.kr/citations?user=XtKmE78AAAAJ&hl=en">Jaeheung Park</a>
+    <br>
+    <em>ICRITA</em>, 2022
+    <br>
+    <a href="https://link.springer.com/chapter/10.1007/978-3-030-97672-9_26">paper</a>
+    <p></p>
+    <p>
+    Performs real-time parking slot detection and tracking for autonomous parking systems. 
+    </p>
+  </td>
+</tr>
+
+
+		  
+
+        </tbody></table>
+
+				
+        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+          <tr>
+            <td style="padding:0px">
+              <br>
+              <p style="text-align:right;font-size:small;">
+                Check out Jon Barron's <a href="https://github.com/jonbarron/jonbarron_website">repository</a> for the template of this website.
+              </p>
+            </td>
+          </tr>
+        </tbody></table>
+      </td>
+    </tr>
+  </table>
+</body>
+
+</html>
