@@ -42,24 +42,26 @@
               <p style="text-align:center">
                 <name>Younghyo Park</name>
               </p>
-              <p>I am a first-year Ph.D. student in <a href="https://eecs.mit.edu/">EECS</a> at <a href="https://csail.mit.edu/">MIT CSAIL</a>, 
+              <p>I am a second-year Ph.D. student in <a href="https://eecs.mit.edu/">EECS</a> at <a href="https://csail.mit.edu/">MIT CSAIL</a>, 
                 advised by Professor <a href="https://people.csail.mit.edu/pulkitag/">Pulkit Agrawal</a>.
-	      </p>
+	            </p>
 
-                <p>I received my Bachelors degree (Summa Cum Laude) in Mechanical Engineering at <a href="https://snu.ac.kr">Seoul National University</a>.
+              <p>I received my Bachelors degree (Summa Cum Laude) in Mechanical Engineering at <a href="https://snu.ac.kr">Seoul National University</a>.
                   
               Previously, I was a full-time research scientist at <a href="https://naverlabs.com/en/">NAVER LABS</a>, 
                 developing machine/reinforcement learning algorithms to make robot arms like 
-              <a href="https://www.naverlabs.com/en/ambidex">AMBIDEX</a> perform various daily tasks. I also spent some time at <a href="https://saige.ai/">Saige Research</a> as an undergraduate research intern. </p>
+              <a href="https://www.naverlabs.com/en/ambidex">AMBIDEX</a> perform various daily tasks. I also spent some time at <a href="https://saige.ai/">Saige Research</a> as an undergraduate research intern.</p>
               <!-- <p>I will soon be starting my Ph.D. program at <a href="https://csail.mit.edu/">MIT CSAIL</a> starting 2023 Fall, 
                 working with Professor <a href="https://people.csail.mit.edu/pulkitag/">Pulkit Agrawal</a>. 
                 I received my bachelors degree (Summa Cum Laude) in Mechanical Engineering at Seoul National University.</p> -->
-  
+              
               <p style="text-align:center">
                 <a href="mailto:younghyo@mit.edu">Email</a> &nbsp/&nbsp
                 <a href="data/Younghyo_Park_CV.pdf">CV</a> &nbsp/&nbsp
+                <a href="https://scholar.google.com/citations?user=eEYGjdMAAAAJ&hl=en">Google Scholar</a> &nbsp/&nbsp
                 <a href="https://twitter.com/younghyo_park">Twitter</a> 
               </p>
+
             </td>
             <td style="padding:2.0%;width:30%;max-width:30%">
               <a><img style="width:100%;max-width:100%" alt="profile photo" src="images/IMG_0524.jpeg" class="hoverZoomLink"></a>
@@ -79,13 +81,46 @@
               </p>
               <p>
                 What kind of low-level manipulation skills should we pretrain in advance, and how should we train them? 
-                With such reusable repertoire of skills, how should we train an intelligence that can orchestrate them to perform longer-horizon tasks? My upcoming works will mainly address these questions! </p>
+                With such reusable repertoire of skills, how should we train an intelligence 
+                that can orchestrate them to perform longer-horizon tasks? My upcoming works will mainly address these questions! </p>
                 <p>
                   * denotes equal contribution.
                 </p>
-                  </td>
+            </td>
           </tr>
         </tbody></table>
+
+        <table style="width:100%;border:0px;border-spacing:0px;border-collapse:collapse;margin-right:auto;margin-left:auto;margin-bottom:-25px"><tbody>
+          <tr>
+          <td style="padding:20px;width:100%;vertical-align:middle">
+            <heading>Teaching</heading>
+          </td>
+        </tr>
+      </tbody></table>
+
+      <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;">
+        <tbody>
+          <tr>
+            <td style="padding:20px;width:75%;vertical-align:middle">
+              <a href="https://github.com/Improbable-AI/VisionProTeleop">
+                <papertitle>[2025 IAP]  Modern-Robot Learning: Hands-on Tutorial</papertitle>
+              </a>
+              <br>
+              <strong>Younghyo Park</strong>, <a href="https://fang-haoshu.github.io/">Haoshu Fang</a>, <a href="https://people.csail.mit.edu/pulkitag/">Pulkit Agrawal</a>
+              <br>
+              <a href="https://modern-robot-learning.github.io/">course website (6.S186)</a>
+              /
+              <a href="https://youtube.com/playlist?list=PLikvwLlAc2PhZWoA1D5x29bl-fB6uaeJY&si=SBOJmEe9IpmE3_N8">lecture videos</a>
+              <p></p>
+              <p>
+                This course provides a practical introduction to training robots using data-driven methods. 
+                Key topics include data collection methods for robotics, policy training methods, and using simulated environments for robot learning. 
+                Throughout the course, students will have hands-on experience to collect robot data, train policies, and evaluate its performance. 
+              </p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
         
         <table style="width:100%;border:0px;border-spacing:0px;border-collapse:collapse;margin-right:auto;margin-left:auto;margin-bottom:-25px"><tbody>
@@ -151,6 +186,50 @@
 
     <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
 				
+
+      <tr onmouseout="zipnerf_stop()" onmouseover="zipnerf_start()">
+        <td style="padding:20px;width:25%;vertical-align:middle">
+          <div class="one">
+            <div class="two" id='zipnerf_image'><video  width=100% height=100% muted autoplay loop>
+            <source src="images/dart_personal_web 1_31.50.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+            </video></div>
+            <img src='images/env_shaping_web.png' width="100%" >
+          </div>
+          <script type="text/javascript">
+            function zipnerf_start() {
+              document.getElementById('zipnerf_image').style.opacity = "1";
+            }
+            function zipnerf_stop() {
+              document.getElementById('zipnerf_image').style.opacity = "0";
+            }
+            zipnerf_stop()
+          </script>
+        </td>
+        <td style="padding:20px;width:75%;vertical-align:middle">
+          <a href="https://dexhub.ai/project">
+            <papertitle>DexHub and DART: Infrastructure for Internet-Scale Robot Data Collection</papertitle>
+          </a>
+          <br>
+          <strong>Younghyo Park</strong>, <a href="mailto:jagdeep@mit.edu">Jagdeep Bhatia</a>,  <a href="mailto:ankile@mit.edu">Lars Ankile</a>,  <a href="https://people.csail.mit.edu/pulkitag/">Pulkit Agrawal</a>
+          <br>
+          <em>arXiv</em>, 2024 
+          <br>
+          <a href="https://dexhub.ai/project">project page</a>
+          /
+          <a href="https://x.com/younghyo_park/status/1815986042098348163">twitter</a>
+          <p></p>
+          <p>
+            DART is a teleoperation platform that leverages cloud-based simulation and augmented reality (AR) to revolutionize robotic data collection. 
+            It enables higher data collection throughput with reduced physical fatigue and facilitates robust policy transfer to real-world scenarios. 
+            All datasets are stored in the DexHub cloud database, providing an ever-growing resource for robot learning.
+          </p>
+        </td>
+      </tr>
+
+
+
+
 
       <tr onmouseout="zipnerf_stop()" onmouseover="zipnerf_start()">
         <td style="padding:20px;width:25%;vertical-align:middle">
