@@ -1,0 +1,163 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Blog - Younghyo Park</title>
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2RCCCZEBV7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-2RCCCZEBV7');
+  </script>
+
+  <meta name="author" content="Younghyo Park">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link rel="stylesheet" type="text/css" href="stylesheet.css">
+  <link rel="stylesheet" type="text/css" href="blog.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🦾</text></svg>">
+
+  <!-- MathJax for math rendering -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        ignoreHtmlClass: 'tex2jax_ignore',
+        processHtmlClass: 'tex2jax_process'
+      }
+    };
+  </script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <!-- Marked.js for markdown parsing -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <!-- Highlight.js for code syntax highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@younghyo_park" />
+  <meta name="twitter:title" content="Blog - Younghyo Park" />
+  <meta name="twitter:description" content="Academic blog posts on robotics and AI" />
+  <meta name="twitter:image" content="https://raw.githubusercontent.com/younghyopark/younghyopark.github.io/new/images/new_younghyo4.jpeg" />
+
+  <meta property="og:type" content="website" />
+  <meta id="og-title" property="og:title" content="Blog - Younghyo Park" />
+  <meta property="og:description" content="Academic blog posts on robotics and AI" />
+  <meta property="og:url" content="https://younghyopark.me/blog.html" />
+  <meta property="og:image" content="https://raw.githubusercontent.com/younghyopark/younghyopark.github.io/new/images/new_younghyo4.jpeg" />
+</head>
+
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <h1 class="site-title">
+          <a href="index.html">Younghyo Park</a>
+          <span class="site-subtitle">Robotics PhD student at MIT CSAIL</span>
+        </h1>
+        <nav class="nav">
+          <a href="index.html">Home</a>
+          <a href="blog.html" class="active">Blog</a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Main content -->
+    <main class="main">
+      <div class="left-column">
+        <!-- Full profile, shown on listing page -->
+        <aside class="profile-sidebar">
+          <div class="profile-pic-container">
+            <img src="images/new_younghyo4.jpeg" alt="Younghyo Park profile photo" class="profile-pic">
+          </div>
+          <div class="profile-summary">
+            <div class="profile-name">Younghyo Park</div>
+            <div class="profile-role">Robotics PhD student at MIT CSAIL</div>
+            <div class="profile-desc">
+              I am a second-year Ph.D. student in <a href="https://eecs.mit.edu/">EECS</a> at <a href="https://csail.mit.edu/">MIT CSAIL</a>, advised by Professor <a href="https://people.csail.mit.edu/pulkitag/">Pulkit Agrawal</a>.<br><br>
+              I received my Bachelors degree (Summa Cum Laude) in Mechanical Engineering at <a href="https://snu.ac.kr">Seoul National University</a>. Previously, I was a full-time research scientist at <a href="https://naverlabs.com/en/">NAVER LABS</a>, developing machine/reinforcement learning algorithms to make robot arms like <a href="https://www.naverlabs.com/en/ambidex">AMBIDEX</a> perform various daily tasks. I also spent some time at <a href="https://saige.ai/">Saige Research</a> as an undergraduate research intern.
+            </div>
+            <div class="profile-links">
+              <a href="mailto:younghyo@mit.edu">Email</a> /
+              <a href="data/Younghyo_Park_CV.pdf">CV</a> /
+              <a href="https://scholar.google.com/citations?user=eEYGjdMAAAAJ&hl=en">Google Scholar</a> /
+              <a href="https://twitter.com/younghyo_park">Twitter</a> /
+              <a href="blog.html">Blog</a>
+            </div>
+          </div>
+        </aside>
+
+        <!-- TOC, shown on post page -->
+        <div id="toc-sidebar" class="toc-sidebar" style="display: none;">
+          <div class="toc-title">Table of Contents</div>
+          <ul id="toc-list" class="toc-list">
+            <!-- TOC items will be generated here -->
+          </ul>
+        </div>
+
+        <!-- Compact profile, shown on post page below TOC -->
+        <aside class="compact-profile" style="display: none;">
+          <img src="images/new_younghyo4.jpeg" alt="Younghyo Park profile photo" class="compact-profile-pic">
+          <div class="compact-profile-name">Younghyo Park</div>
+          <div class="compact-profile-role">Robotics PhD student at MIT CSAIL</div>
+          <div class="compact-profile-links">
+            <a href="mailto:younghyo@mit.edu">Email</a> /
+            <a href="https://scholar.google.com/citations?user=eEYGjdMAAAAJ&hl=en">Scholar</a> /
+            <a href="https://twitter.com/younghyo_park">Twitter</a>
+          </div>
+        </aside>
+      </div>
+
+      <div class="right-column">
+        <!-- Blog listing page -->
+        <div id="blog-listing" class="blog-listing">
+          <div id="posts-container" class="posts-container">
+            <!-- Posts will be loaded here -->
+          </div>
+          <div id="wip-caution" class="wip-caution" style="display:none;"></div>
+        </div>
+  
+        <!-- Individual blog post page -->
+        <div id="blog-post" class="blog-post" style="display: none;">
+          <div class="post-header">
+            <a href="blog.html" class="back-link">← Back to Blog</a>
+            <h1 id="post-title" class="post-title"></h1>
+            <div class="post-meta">
+              <span id="post-date" class="post-date"></span>
+              <span id="post-author" class="post-author"></span>
+            </div>
+            <div id="post-tags" class="post-tags"></div>
+          </div>
+          <div id="post-content" class="post-content">
+            <!-- Post content will be loaded here -->
+          </div>
+          <div class="post-footer">
+            <div id="comment-section">
+              <h3>Comments</h3>
+              <div id="giscus-container"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>&copy; 2025 Younghyo Park. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <script src="blog.js"></script>
+</body>
+</html>
