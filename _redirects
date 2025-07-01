@@ -1,5 +1,0 @@
-# Redirect /blog to blog.html
-/blog    /blog.html   200
-
-# Handle individual blog post URLs
-/blog/*  /blog.html   200 

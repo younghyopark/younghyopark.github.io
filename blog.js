@@ -137,51 +137,22 @@ class Blog {
   }
 
   handleRouting() {
-    const path = window.location.pathname;
-    
-    // If someone visits blog.html directly, redirect to /blog
-    if (path === '/blog.html') {
-      window.history.replaceState({}, '', '/blog');
-    }
-    
-    const slug = this.extractSlugFromPath(path);
-    
-    if (slug) {
-      this.showPost(slug);
+    const hash = window.location.hash.slice(1);
+    if (hash) {
+      this.showPost(hash);
     } else {
       this.showBlogListing();
     }
 
     // Handle browser back/forward
     window.addEventListener('popstate', () => {
-      const path = window.location.pathname;
-      const slug = this.extractSlugFromPath(path);
-      if (slug) {
-        this.showPost(slug);
+      const hash = window.location.hash.slice(1);
+      if (hash) {
+        this.showPost(hash);
       } else {
         this.showBlogListing();
       }
     });
-  }
-
-  extractSlugFromPath(path) {
-    // Extract slug from paths like /blog/post-slug
-    const blogPath = '/blog';
-    if (path.startsWith(blogPath + '/')) {
-      return path.substring(blogPath.length + 1);
-    }
-    return null;
-  }
-
-  navigateToPost(slug) {
-    const newPath = `/blog/${slug}`;
-    window.history.pushState({}, '', newPath);
-    this.showPost(slug);
-  }
-
-  navigateToBlogListing() {
-    window.history.pushState({}, '', '/blog');
-    this.showBlogListing();
   }
 
   showBlogListing() {
@@ -200,7 +171,7 @@ class Blog {
   showPost(slug) {
     const post = this.posts.find(p => p.slug === slug);
     if (!post) {
-      this.navigateToBlogListing();
+      this.showBlogListing();
       return;
     }
 
@@ -213,6 +184,7 @@ class Blog {
     document.getElementById('toc-sidebar').style.display = 'block';
     document.querySelector('.compact-profile').style.display = 'block';
 
+    window.location.hash = slug;
     this.renderPost(post);
   }
 
@@ -232,7 +204,7 @@ class Blog {
       return;
     }
     container.innerHTML = postsToShow.map(post => `
-      <div class="post-card" onclick="blog.navigateToPost('${post.slug}')">
+      <div class="post-card" onclick="blog.showPost('${post.slug}')">
         <h3>${post.title}</h3>
         ${post.excerpt ? `<div class="post-excerpt">${post.excerpt}</div>` : ''}
         <div class="post-meta">
