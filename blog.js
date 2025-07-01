@@ -23,7 +23,9 @@ class Blog {
         return hljs.highlightAuto(code).value;
       },
       breaks: true,
-      gfm: true
+      gfm: true,
+      sanitize: false,
+      pedantic: false
     });
 
     // Load posts and handle routing
@@ -253,47 +255,60 @@ class Blog {
 
   generateTOC(content) {
     const headings = content.querySelectorAll('h1, h2, h3, h4, h5, h6');
-    const tocItems = [];
+    if (headings.length === 0) return [];
     
+    const tocItems = [];
+    let lastByLevel = {};
+
+    // Find the minimum heading level to treat as root
+    const minLevel = Math.min(...Array.from(headings).map(h => parseInt(h.tagName.charAt(1))));
+
     headings.forEach((heading, index) => {
-      // Generate unique ID for the heading
       const id = `heading-${index}`;
       heading.id = id;
-      
       const level = parseInt(heading.tagName.charAt(1));
-      const text = heading.textContent;
+      const item = { id, text: heading.textContent, level, children: [], element: heading };
+
+      lastByLevel[level] = item;
       
-      tocItems.push({
-        id,
-        text,
-        level,
-        element: heading
-      });
+      if (level === minLevel) {
+        // Treat minimum level as root
+        tocItems.push(item);
+      } else {
+        // Find the closest parent of a lower level
+        for (let l = level - 1; l >= minLevel; l--) {
+          if (lastByLevel[l]) {
+            lastByLevel[l].children.push(item);
+            break;
+          }
+        }
+      }
     });
-    
+
     return tocItems;
   }
 
   renderTOC(tocItems) {
     const tocList = document.getElementById('toc-list');
     const tocSidebar = document.getElementById('toc-sidebar');
-    
     if (tocItems.length === 0) {
       tocSidebar.classList.remove('visible');
       return;
     }
-    
-    tocList.innerHTML = tocItems.map(item => `
-      <li>
-        <a href="#${item.id}" 
-           class="toc-h${item.level}" 
-           data-id="${item.id}"
-           onclick="blog.scrollToHeading('${item.id}'); return false;">
-          ${item.text}
-        </a>
-      </li>
-    `).join('');
-    
+
+    function renderItems(items) {
+      return `<ul>${items.map(item => `
+        <li>
+          <a href="#${item.id}" class="toc-h${item.level}" data-id="${item.id}"
+             onclick="blog.scrollToHeading('${item.id}'); return false;">
+            ${item.text}
+          </a>
+          ${item.children && item.children.length > 0 ? renderItems(item.children) : ''}
+        </li>
+      `).join('')}</ul>`;
+    }
+
+    tocList.innerHTML = renderItems(tocItems);
     tocSidebar.classList.add('visible');
   }
 
@@ -308,16 +323,27 @@ class Blog {
   }
 
   updateActiveTOCItem() {
-    const tocItems = this.tocItems;
-    if (tocItems.length === 0) return;
+    if (this.tocItems.length === 0) return;
     
+    // Flatten the nested tocItems to get all headings
+    const flattenTocItems = (items) => {
+      let result = [];
+      items.forEach(item => {
+        result.push(item);
+        if (item.children && item.children.length > 0) {
+          result = result.concat(flattenTocItems(item.children));
+        }
+      });
+      return result;
+    };
+    
+    const allTocItems = flattenTocItems(this.tocItems);
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const windowHeight = window.innerHeight;
     
     let activeItem = null;
     
-    for (let i = tocItems.length - 1; i >= 0; i--) {
-      const item = tocItems[i];
+    for (let i = allTocItems.length - 1; i >= 0; i--) {
+      const item = allTocItems[i];
       const element = item.element;
       const rect = element.getBoundingClientRect();
       
@@ -368,6 +394,20 @@ class Blog {
       if (img.src.startsWith('assets/')) {
         img.src = img.src; // Keep as is for now
       }
+    });
+
+    // Execute any script tags in the content
+    const scripts = contentContainer.querySelectorAll('script');
+    scripts.forEach(script => {
+      const newScript = document.createElement('script');
+      if (script.src) {
+        newScript.src = script.src;
+        newScript.async = script.async;
+        newScript.charset = script.charset || 'utf-8';
+      } else {
+        newScript.textContent = script.textContent;
+      }
+      script.parentNode.replaceChild(newScript, script);
     });
 
     // Generate and render TOC

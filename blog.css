@@ -359,6 +359,12 @@
   margin: 0;
 }
 
+.toc-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
 .toc-list li {
   margin-bottom: 6px;
 }
@@ -387,27 +393,31 @@
   padding-left: 6px;
 }
 
-.toc-list .toc-h2 {
+.toc-list .toc-h1 {
   padding-left: 0;
 }
 
-.toc-list .toc-h3 {
+.toc-list .toc-h2 {
   padding-left: 12px;
+}
+
+.toc-list .toc-h3 {
+  padding-left: 24px;
   font-size: 12px;
 }
 
 .toc-list .toc-h4 {
-  padding-left: 24px;
-  font-size: 11px;
-}
-
-.toc-list .toc-h5 {
   padding-left: 36px;
   font-size: 11px;
 }
 
-.toc-list .toc-h6 {
+.toc-list .toc-h5 {
   padding-left: 48px;
+  font-size: 11px;
+}
+
+.toc-list .toc-h6 {
+  padding-left: 60px;
   font-size: 11px;
 }
 
@@ -505,7 +515,38 @@
   height: auto;
   border-radius: 4px;
   margin: 15px 0;
+  display: block;
   /* box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); */
+}
+
+/* Image width control classes */
+.post-content img.width-25 { width: 25%; }
+.post-content img.width-30 { width: 30%; }
+.post-content img.width-40 { width: 40%; }
+.post-content img.width-50 { width: 50%; }
+.post-content img.width-60 { width: 60%; }
+.post-content img.width-70 { width: 70%; }
+.post-content img.width-75 { width: 75%; }
+.post-content img.width-80 { width: 80%; }
+.post-content img.width-90 { width: 90%; }
+.post-content img.width-100 { width: 100%; }
+
+/* Center images by default when width is specified */
+.post-content img[style*="width"],
+.post-content img[class*="width"] {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Embedded HTML content styling */
+.post-content .iframely-embed,
+.post-content .iframely-responsive {
+  margin: 20px 0;
+}
+
+.post-content div[class*="embed"],
+.post-content div[class*="iframe"] {
+  margin: 20px 0;
 }
 
 .post-content table {
