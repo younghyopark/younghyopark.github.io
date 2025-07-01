@@ -96,6 +96,28 @@
             </div>
           </div>
         </aside>
+        <!-- Filter controls moved below profile -->
+        <div id="filter-controls" class="filter-controls">
+          <div class="search-container">
+            <input type="text" 
+                   id="search-input" 
+                   class="search-input" 
+                   placeholder="Search posts..." 
+                   oninput="blog.applyFilters()">
+            <span class="search-icon">🔍</span>
+          </div>
+          <div class="filter-tags-container">
+            <div id="filter-tags" class="filter-tags">
+              <!-- Tag filter buttons will be generated here -->
+            </div>
+            <button id="clear-filters" class="clear-filters-btn" onclick="blog.clearFilters()" style="display: none;">
+              Clear Filters
+            </button>
+          </div>
+          <div id="filter-status" class="filter-status" style="display: none;">
+            <!-- Filter status will be shown here -->
+          </div>
+        </div>
 
         <!-- TOC, shown on post page -->
         <div id="toc-sidebar" class="toc-sidebar" style="display: none;">

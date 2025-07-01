@@ -109,72 +109,23 @@
   background: #f9f9f9;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  padding: 0;
-  margin-bottom: 25px;
-  overflow: hidden;
-}
-
-.filter-toggle {
-  width: 100%;
-  background: none;
-  border: none;
-  padding: 16px 20px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 14px;
-  font-weight: 500;
-  color: #333;
-  transition: all 0.2s ease;
-  text-align: left;
-}
-
-.filter-toggle:hover {
-  background: rgba(23, 114, 208, 0.05);
-}
-
-.filter-toggle-icon {
-  font-size: 16px;
-  opacity: 0.7;
-}
-
-.filter-toggle-text {
-  flex: 1;
-}
-
-.filter-toggle-arrow {
-  font-size: 12px;
-  transition: transform 0.2s ease;
-  color: #666;
-}
-
-.filter-controls.expanded .filter-toggle-arrow {
-  transform: rotate(180deg);
-}
-
-.filter-controls.expanded .filter-toggle {
-  background: rgba(23, 114, 208, 0.05);
-  border-bottom: 1px solid #e0e0e0;
-}
-
-.filter-content {
-  padding: 20px;
-  border-top: 1px solid #e0e0e0;
-  background: #f9f9f9;
+  padding: 14px 18px 10px 18px;
+  margin-bottom: 16px;
 }
 
 .search-container {
   position: relative;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
+  max-width: 420px;
 }
 
 .search-input {
   width: 100%;
-  padding: 12px 40px 12px 12px;
+  max-width: 400px;
+  padding: 8px 36px 8px 10px;
   border: 1px solid #ddd;
   border-radius: 6px;
-  font-size: 14px;
+  font-size: 15px;
   background: white;
   transition: border-color 0.2s ease;
   box-sizing: border-box;
@@ -188,7 +139,7 @@
 
 .search-icon {
   position: absolute;
-  right: 12px;
+  right: 10px;
   top: 50%;
   transform: translateY(-50%);
   color: #999;
@@ -199,21 +150,22 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
+  margin-bottom: 0;
 }
 
 .filter-label {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   color: #333;
-  margin-right: 10px;
+  margin-right: 8px;
   white-space: nowrap;
 }
 
 .filter-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 4px;
   flex: 1;
 }
 
@@ -223,12 +175,13 @@
   background: white;
   border: 1px solid #ddd;
   color: #666;
-  padding: 6px 12px;
-  border-radius: 20px;
+  padding: 4px 14px;
+  border-radius: 16px;
   font-size: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
   user-select: none;
+  margin-bottom: 0;
 }
 
 .filter-tag:hover {
@@ -253,12 +206,13 @@
   background: #f0f0f0;
   border: 1px solid #ddd;
   color: #666;
-  padding: 6px 12px;
+  padding: 4px 10px;
   border-radius: 4px;
   font-size: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
+  margin-left: 8px;
 }
 
 .clear-filters-btn:hover {
@@ -279,16 +233,17 @@
 .posts-container {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
 .post-card {
   border: 1px solid #e0e0e0;
   border-radius: 6px;
-  padding: 20px;
+  padding: 18px 22px;
   transition: all 0.2s ease;
   cursor: pointer;
   background: white;
+  margin-bottom: 0;
 }
 
 .post-card:hover {
@@ -678,15 +633,6 @@
 
   /* Filter controls responsive */
   .filter-controls {
-    margin-bottom: 20px;
-  }
-
-  .filter-toggle {
-    padding: 14px 15px;
-    font-size: 13px;
-  }
-
-  .filter-content {
     padding: 15px;
   }
 
@@ -935,18 +881,4 @@
   font-size: 20px;
   margin-bottom: 20px;
   color: #333;
-}
-
-.filter-toggle.has-active-filters {
-  background: rgba(23, 114, 208, 0.1);
-  border-bottom: 2px solid #1772d0;
-}
-
-.filter-toggle.has-active-filters .filter-toggle-icon {
-  color: #1772d0;
-}
-
-.filter-toggle.has-active-filters .filter-toggle-text {
-  color: #1772d0;
-  font-weight: 600;
 } 

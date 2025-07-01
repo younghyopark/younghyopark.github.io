@@ -8,7 +8,6 @@ class Blog {
     this.searchTerm = '';
     this.selectedTags = new Set();
     this.allTags = new Map(); // Map to store tag counts
-    this.filtersExpanded = false;
     this.init();
   }
 
@@ -177,7 +176,6 @@ class Blog {
     this.renderTagFilters();
     this.updateClearFiltersButton();
     this.updateFilterStatus();
-    this.updateFilterToggleText();
     
     this.renderBlogListing();
   }
@@ -457,7 +455,6 @@ class Blog {
         this.generateTagData();
         this.renderTagFilters();
         this.updateTagButtonStates();
-        this.updateFilterToggleText();
         
         this.renderBlogListing();
       }
@@ -530,9 +527,6 @@ class Blog {
     // Update filter status
     this.updateFilterStatus();
 
-    // Update toggle button text
-    this.updateFilterToggleText();
-
     // Re-render the blog listing with filters applied
     this.renderBlogListing();
   }
@@ -587,7 +581,6 @@ class Blog {
     // Update UI
     this.updateClearFiltersButton();
     this.updateFilterStatus();
-    this.updateFilterToggleText();
 
     // Re-render
     this.renderBlogListing();
@@ -622,49 +615,6 @@ class Blog {
 
       return true;
     });
-  }
-
-  toggleFilters() {
-    this.filtersExpanded = !this.filtersExpanded;
-    
-    const filterControls = document.getElementById('filter-controls');
-    const filterContent = document.getElementById('filter-content');
-    const toggleText = document.querySelector('.filter-toggle-text');
-    
-    if (this.filtersExpanded) {
-      filterControls.classList.add('expanded');
-      filterContent.style.display = 'block';
-      toggleText.textContent = 'Hide Filters';
-    } else {
-      filterControls.classList.remove('expanded');
-      filterContent.style.display = 'none';
-      toggleText.textContent = 'Filter Posts';
-    }
-  }
-
-  updateFilterToggleText() {
-    const toggleText = document.querySelector('.filter-toggle-text');
-    const toggleButton = document.getElementById('filter-toggle');
-    if (!toggleText || !toggleButton) return;
-
-    const hasActiveFilters = this.searchTerm || this.selectedTags.size > 0;
-    
-    // Update visual state
-    if (hasActiveFilters) {
-      toggleButton.classList.add('has-active-filters');
-    } else {
-      toggleButton.classList.remove('has-active-filters');
-    }
-    
-    // Update text
-    if (hasActiveFilters && !this.filtersExpanded) {
-      const filterCount = (this.searchTerm ? 1 : 0) + this.selectedTags.size;
-      toggleText.textContent = `Filter Posts (${filterCount} active)`;
-    } else if (this.filtersExpanded) {
-      toggleText.textContent = 'Hide Filters';
-    } else {
-      toggleText.textContent = 'Filter Posts';
-    }
   }
 }
 
