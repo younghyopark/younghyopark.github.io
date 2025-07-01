@@ -165,18 +165,17 @@ class Blog {
     // Show blog listing and hide single post view
     document.getElementById('blog-listing').style.display = 'block';
     document.getElementById('blog-post').style.display = 'none';
-
+    // Show filter controls in listing view
+    document.getElementById('filter-controls').style.display = 'block';
     // Configure left sidebar for listing view
     document.querySelector('.profile-sidebar').style.display = 'block';
     document.getElementById('toc-sidebar').style.display = 'none';
     document.querySelector('.compact-profile').style.display = 'none';
-    
     // Initialize filters
     this.generateTagData();
     this.renderTagFilters();
     this.updateClearFiltersButton();
     this.updateFilterStatus();
-    
     this.renderBlogListing();
   }
 
@@ -186,16 +185,15 @@ class Blog {
       this.showBlogListing();
       return;
     }
-
     // Show single post view and hide blog listing
     document.getElementById('blog-listing').style.display = 'none';
     document.getElementById('blog-post').style.display = 'block';
-    
+    // Hide filter controls in post view
+    document.getElementById('filter-controls').style.display = 'none';
     // Configure left sidebar for post view
     document.querySelector('.profile-sidebar').style.display = 'none';
     document.getElementById('toc-sidebar').style.display = 'block';
     document.querySelector('.compact-profile').style.display = 'block';
-
     window.location.hash = slug;
     this.renderPost(post);
   }
