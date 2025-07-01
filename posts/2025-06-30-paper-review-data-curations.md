@@ -10,7 +10,9 @@ publish: false
 
 # Introduction
 
-Hello 
+> Less is more? Quality over Quantity. 
+
+
 
 # Data Curation Methods
 

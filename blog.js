@@ -5,6 +5,10 @@ class Blog {
     this.currentPost = null;
     this.tocItems = [];
     this.showWIP = false;
+    this.searchTerm = '';
+    this.selectedTags = new Set();
+    this.allTags = new Map(); // Map to store tag counts
+    this.filtersExpanded = false;
     this.init();
   }
 
@@ -64,6 +68,9 @@ class Blog {
 
     // Sort posts by date (newest first)
     this.posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    // Generate tag data for filtering
+    this.generateTagData();
   }
 
   parsePost(content, slug) {
@@ -165,6 +172,13 @@ class Blog {
     document.getElementById('toc-sidebar').style.display = 'none';
     document.querySelector('.compact-profile').style.display = 'none';
     
+    // Initialize filters
+    this.generateTagData();
+    this.renderTagFilters();
+    this.updateClearFiltersButton();
+    this.updateFilterStatus();
+    this.updateFilterToggleText();
+    
     this.renderBlogListing();
   }
 
@@ -191,7 +205,14 @@ class Blog {
   renderBlogListing() {
     const container = document.getElementById('posts-container');
     const wipCaution = document.getElementById('wip-caution');
+    
+    // Get base posts (published or including WIP)
     let postsToShow = this.posts.filter(post => post.publish || this.showWIP);
+    
+    // Apply filters
+    const filteredPosts = this.filterPosts(postsToShow);
+    
+    // Handle WIP caution
     if (this.showWIP) {
       wipCaution.style.display = 'block';
       wipCaution.textContent = "Caution: You are viewing work-in-progress posts. You've been lucky enough to discover this mode! Refresh the page to return to the public view.";
@@ -199,11 +220,25 @@ class Blog {
       wipCaution.style.display = 'none';
       wipCaution.textContent = '';
     }
-    if (postsToShow.length === 0) {
-      container.innerHTML = '<p>No blog posts found.</p>';
+    
+    // Handle empty results
+    if (filteredPosts.length === 0) {
+      const hasFilters = this.searchTerm || this.selectedTags.size > 0;
+      if (hasFilters) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 40px 20px; color: #666;">
+            <p style="font-size: 18px; margin-bottom: 10px;">No posts found matching your filters</p>
+            <p style="font-size: 14px;">Try adjusting your search terms or removing some tag filters.</p>
+          </div>
+        `;
+      } else {
+        container.innerHTML = '<p>No blog posts found.</p>';
+      }
       return;
     }
-    container.innerHTML = postsToShow.map(post => `
+    
+    // Render filtered posts
+    container.innerHTML = filteredPosts.map(post => `
       <div class="post-card" onclick="blog.showPost('${post.slug}')">
         <h3>${post.title}</h3>
         ${post.excerpt ? `<div class="post-excerpt">${post.excerpt}</div>` : ''}
@@ -417,9 +452,219 @@ class Blog {
     window.addEventListener('keydown', (e) => {
       if (e.shiftKey && (e.key === 'W' || e.key === 'w')) {
         this.showWIP = !this.showWIP;
+        
+        // Regenerate tag data since WIP posts might have different tags
+        this.generateTagData();
+        this.renderTagFilters();
+        this.updateTagButtonStates();
+        this.updateFilterToggleText();
+        
         this.renderBlogListing();
       }
     });
+  }
+
+  generateTagData() {
+    this.allTags.clear();
+    
+    // Count tags from all published posts (or WIP if showing them)
+    const postsToCount = this.posts.filter(post => post.publish || this.showWIP);
+    
+    postsToCount.forEach(post => {
+      post.tags.forEach(tag => {
+        this.allTags.set(tag, (this.allTags.get(tag) || 0) + 1);
+      });
+    });
+  }
+
+  renderTagFilters() {
+    const tagContainer = document.getElementById('filter-tags');
+    if (!tagContainer) return;
+
+    // Sort tags by count (descending) then alphabetically
+    const sortedTags = Array.from(this.allTags.entries())
+      .sort((a, b) => {
+        if (b[1] !== a[1]) return b[1] - a[1]; // Sort by count first
+        return a[0].localeCompare(b[0]); // Then alphabetically
+      });
+
+    tagContainer.innerHTML = sortedTags.map(([tag, count]) => `
+      <span class="filter-tag" 
+            data-tag="${tag}" 
+            onclick="blog.toggleTag('${tag}')">
+        ${tag}
+        <span class="tag-count">(${count})</span>
+      </span>
+    `).join('');
+  }
+
+  toggleTag(tag) {
+    if (this.selectedTags.has(tag)) {
+      this.selectedTags.delete(tag);
+    } else {
+      this.selectedTags.add(tag);
+    }
+    this.updateTagButtonStates();
+    this.applyFilters();
+  }
+
+  updateTagButtonStates() {
+    document.querySelectorAll('.filter-tag').forEach(button => {
+      const tag = button.getAttribute('data-tag');
+      if (this.selectedTags.has(tag)) {
+        button.classList.add('active');
+      } else {
+        button.classList.remove('active');
+      }
+    });
+  }
+
+  applyFilters() {
+    // Get search term
+    const searchInput = document.getElementById('search-input');
+    this.searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : '';
+
+    // Show/hide clear filters button
+    this.updateClearFiltersButton();
+
+    // Update filter status
+    this.updateFilterStatus();
+
+    // Update toggle button text
+    this.updateFilterToggleText();
+
+    // Re-render the blog listing with filters applied
+    this.renderBlogListing();
+  }
+
+  updateClearFiltersButton() {
+    const clearButton = document.getElementById('clear-filters');
+    if (!clearButton) return;
+
+    const hasActiveFilters = this.searchTerm || this.selectedTags.size > 0;
+    clearButton.style.display = hasActiveFilters ? 'block' : 'none';
+  }
+
+  updateFilterStatus() {
+    const statusElement = document.getElementById('filter-status');
+    if (!statusElement) return;
+
+    const hasActiveFilters = this.searchTerm || this.selectedTags.size > 0;
+    
+    if (!hasActiveFilters) {
+      statusElement.style.display = 'none';
+      return;
+    }
+
+    let statusText = 'Active filters: ';
+    const filters = [];
+    
+    if (this.searchTerm) {
+      filters.push(`Search: "${this.searchTerm}"`);
+    }
+    
+    if (this.selectedTags.size > 0) {
+      filters.push(`Tags: ${Array.from(this.selectedTags).join(', ')}`);
+    }
+
+    statusText += filters.join(' | ');
+    statusElement.textContent = statusText;
+    statusElement.style.display = 'block';
+  }
+
+  clearFilters() {
+    // Clear search
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) {
+      searchInput.value = '';
+    }
+    this.searchTerm = '';
+
+    // Clear selected tags
+    this.selectedTags.clear();
+    this.updateTagButtonStates();
+
+    // Update UI
+    this.updateClearFiltersButton();
+    this.updateFilterStatus();
+    this.updateFilterToggleText();
+
+    // Re-render
+    this.renderBlogListing();
+  }
+
+  filterPosts(posts) {
+    return posts.filter(post => {
+      // Apply search filter
+      if (this.searchTerm) {
+        const searchableText = [
+          post.title,
+          post.excerpt,
+          post.content,
+          post.author,
+          ...post.tags
+        ].join(' ').toLowerCase();
+        
+        if (!searchableText.includes(this.searchTerm)) {
+          return false;
+        }
+      }
+
+      // Apply tag filter
+      if (this.selectedTags.size > 0) {
+        const hasSelectedTag = Array.from(this.selectedTags).some(selectedTag => 
+          post.tags.includes(selectedTag)
+        );
+        if (!hasSelectedTag) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  }
+
+  toggleFilters() {
+    this.filtersExpanded = !this.filtersExpanded;
+    
+    const filterControls = document.getElementById('filter-controls');
+    const filterContent = document.getElementById('filter-content');
+    const toggleText = document.querySelector('.filter-toggle-text');
+    
+    if (this.filtersExpanded) {
+      filterControls.classList.add('expanded');
+      filterContent.style.display = 'block';
+      toggleText.textContent = 'Hide Filters';
+    } else {
+      filterControls.classList.remove('expanded');
+      filterContent.style.display = 'none';
+      toggleText.textContent = 'Filter Posts';
+    }
+  }
+
+  updateFilterToggleText() {
+    const toggleText = document.querySelector('.filter-toggle-text');
+    const toggleButton = document.getElementById('filter-toggle');
+    if (!toggleText || !toggleButton) return;
+
+    const hasActiveFilters = this.searchTerm || this.selectedTags.size > 0;
+    
+    // Update visual state
+    if (hasActiveFilters) {
+      toggleButton.classList.add('has-active-filters');
+    } else {
+      toggleButton.classList.remove('has-active-filters');
+    }
+    
+    // Update text
+    if (hasActiveFilters && !this.filtersExpanded) {
+      const filterCount = (this.searchTerm ? 1 : 0) + this.selectedTags.size;
+      toggleText.textContent = `Filter Posts (${filterCount} active)`;
+    } else if (this.filtersExpanded) {
+      toggleText.textContent = 'Hide Filters';
+    } else {
+      toggleText.textContent = 'Filter Posts';
+    }
   }
 }
 
