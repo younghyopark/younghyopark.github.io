@@ -1,6 +1,6 @@
 ---
 title: "Dexterous Manipulation and Locomotion"
-date: "2025-02-01"
+date: "2023-08-09"
 author: "Improbable AI Lab"
 tags: ["guide", "how-to", "blogging", "meta"]
 excerpt: "A step-by-step guide for adding new blog posts, with examples of images, equations, and formatting."
