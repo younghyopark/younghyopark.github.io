@@ -383,7 +383,7 @@ class Blog {
     script.setAttribute('data-category-id', 'DIC_kwDOIEeQxc4CsRvw');
     // --- END OF CONFIGURATION ---
 
-    script.setAttribute('data-mapping', 'pathname');
+    script.setAttribute('data-mapping', 'url');
     script.setAttribute('data-strict', '1');
     script.setAttribute('data-reactions-enabled', '1');
     script.setAttribute('data-emit-metadata', '0');
