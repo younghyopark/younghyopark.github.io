@@ -42,8 +42,8 @@ class Blog {
         slug: '2023-09-20-locomotion-and-dex-manip'
       },
       {
-        file: 'posts/2023-08-27-trip-to-maine',
-        slug: '2023-08-27-trip-to-maine'
+        file: 'posts/2025-06-30-paper-review-data-curations.md',
+        slug: '2025-06-30-paper-review-data-curations'
       }
       // Add more posts here as you create them
     ];
