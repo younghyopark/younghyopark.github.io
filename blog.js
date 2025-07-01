@@ -393,6 +393,23 @@ class Blog {
     script.setAttribute('data-lang', 'en');
 
     container.appendChild(script);
+
+    // Listen for Giscus messages to refresh when comment is posted
+    const messageListener = (event) => {
+      if (event.origin !== 'https://giscus.app') return;
+      
+      if (event.data && event.data.giscus && event.data.giscus.discussion) {
+        // Comment was posted or discussion updated, refresh after a short delay
+        setTimeout(() => {
+          this.loadComments(post);
+        }, 1000);
+      }
+    };
+
+    // Remove existing listener to prevent duplicates
+    window.removeEventListener('message', this.giscusMessageListener);
+    this.giscusMessageListener = messageListener;
+    window.addEventListener('message', messageListener);
   }
 
   setupWIPToggle() {
