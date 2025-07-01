@@ -41,8 +41,8 @@ class Blog {
         slug: '2025-02-01-how-to-write-blog-posts'
       },
       {
-        file: 'posts/2023-09-20-locomotion-and-dex-manip',
-        slug: '2023-09-20-locomotion-and-dex-manip'
+        file: 'posts/dex-manip-from-locomotion.md',
+        slug: 'dex-manip-from-locomotion'
       },
       {
         file: 'posts/2025-06-30-paper-review-data-curations.md',
