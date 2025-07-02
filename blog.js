@@ -39,10 +39,6 @@ class Blog {
     // Define your blog posts here
     const blogPosts = [
       {
-        file: 'posts/2025-02-01-how-to-write-blog-posts.md',
-        slug: '2025-02-01-how-to-write-blog-posts'
-      },
-      {
         file: 'posts/dex-manip-from-locomotion.md',
         slug: 'dex-manip-from-locomotion'
       },
