@@ -83,7 +83,7 @@ class Blog {
         tags: [],
         excerpt: '',
         content: content,
-        html: marked.parse(content),
+        html: this.processQuoteTags(marked.parse(content)),
         publish: true
       };
     }
@@ -135,7 +135,7 @@ class Blog {
       excerpt: metadata.excerpt || '',
       featured: metadata.featured === 'true',
       content: markdownContent,
-      html: marked.parse(markdownContent),
+      html: this.processQuoteTags(marked.parse(markdownContent)),
       publish: publish
     };
   }
@@ -648,6 +648,16 @@ class Blog {
       }
 
       return true;
+    });
+  }
+
+  // Process quote tags in markdown content
+  processQuoteTags(content) {
+    // Replace <quote> tags with proper HTML structure
+    return content.replace(/<quote>([\s\S]*?)<\/quote>/g, (match, quoteContent) => {
+      // Process the content inside the quote tags with markdown
+      const processedContent = marked.parse(quoteContent.trim());
+      return `<quote>${processedContent}</quote>`;
     });
   }
 }
