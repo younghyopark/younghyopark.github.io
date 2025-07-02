@@ -1,8 +1,8 @@
 ---
 title: "Dexterous Manipulation and Locomotion"
 date: "2023-08-09"
-author: "Improbable AI Lab"
-tags: ["guide", "how-to", "blogging", "meta"]
+author: "Younghyo Park"
+tags: ["dexterity", "robotics", "research"] 
 excerpt: "Exploring how techniques from quadruped locomotion can be adapted for dexterous manipulation, and vice versa."
 featured: false
 publish: true
