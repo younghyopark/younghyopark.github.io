@@ -45,6 +45,10 @@ class Blog {
       {
         file: 'posts/2025-06-30-paper-review-data-curations.md',
         slug: '2025-06-30-paper-review-data-curations'
+      },
+      {
+        file: 'posts/2025-09-01-where-am-i.md',
+        slug: '2025-09-01-where-am-i'
       }
       // Add more posts here as you create them
     ];
