@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>VisionOS Apps for Robot Data Collection</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --accent: #750014;
+    }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+        Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+      background: #fff;
+      color: #222;
+      line-height: 1.6;
+    }
+    .page {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 40px 16px 80px;
+    }
+    header {
+      margin-bottom: 32px;
+    }
+    h1 {
+      font-size: 2.1rem;
+      margin: 0 0 4px;
+      font-weight: 700;
+    }
+    .subtitle {
+      color: #555;
+      font-size: 0.95rem;
+    }
+    .apps-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 22px;
+    }
+    @media (min-width: 720px) {
+      .apps-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+    .app-card {
+      background: #fff;
+      border: 1px solid rgba(0,0,0,0.03);
+      border-radius: 18px;
+      box-shadow: 0 14px 35px rgba(15, 23, 42, 0.02);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .thumb-wrap {
+      background: #ddd;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      position: relative;
+    }
+    .thumb-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .icon-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.5);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+      background: white;
+    }
+    .icon-badge img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .app-body {
+      padding: 16px 16px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .app-title-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
+    .app-title {
+      font-weight: 600;
+      font-size: 1rem;
+      line-height: 1.3;
+    }
+    .pill {
+      background: rgba(117, 0, 20, 0.08);
+      color: var(--accent);
+      font-size: 0.6rem;
+      font-weight: 600;
+      border-radius: 9999px;
+      padding: 4px 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+    }
+    .app-sub {
+      font-size: 0.8rem;
+      color: #666;
+    }
+    .app-desc {
+      font-size: 0.78rem;
+      color: #333;
+      margin-top: 3px;
+    }
+    .links {
+      display: flex;
+      gap: 10px;
+      margin-top: auto;
+      padding-top: 10px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      font-size: 0.7rem;
+      font-weight: 600;
+      border-radius: 9999px;
+      padding: 6px 12px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      border-color: transparent;
+    }
+    .btn-secondary {
+      color: #333;
+      background: #f7f7f7;
+    }
+    footer {
+      margin-top: 48px;
+      font-size: 0.75rem;
+      color: #888;
+    }
+    .section-header {
+      margin-top: 48px;
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin: 0 0 4px;
+    }
+    .section-subtitle {
+      font-size: 0.85rem;
+      color: #666;
+    }
+    .api-section {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(0,0,0,0.08);
+    }
+    .api-section-title {
+      font-weight: 600;
+      font-size: 0.8rem;
+      margin-bottom: 10px;
+      color: #666;
+    }
+    .usage-example {
+      background: #f9f9f9;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 12px;
+    }
+    /* Hide example usage on mobile */
+    @media (max-width: 719px) {
+      .usage-example {
+        display: none;
+      }
+      .apps-grid {
+        gap: 16px;
+      }
+    }
+    .usage-title {
+      font-weight: 600;
+      font-size: 0.75rem;
+      margin-bottom: 8px;
+      color: #555;
+    }
+    .usage-example pre {
+      background: #fff;
+      border: 1px solid rgba(0,0,0,0.06);
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      margin: 0;
+      overflow-x: auto;
+      line-height: 1.5;
+    }
+    a { color: var(--accent); }
+    
+    /* Syntax highlighting for code blocks */
+    code[class*="language-"],
+    pre[class*="language-"] {
+      color: #383a42;
+      text-align: left;
+      white-space: pre;
+      word-spacing: normal;
+      word-break: normal;
+      tab-size: 4;
+    }
+    .token.comment { color: #a0a1a7; font-style: italic; }
+    .token.string { color: #50a14f; }
+    .token.keyword { color: #a626a4; }
+    .token.function { color: #4078f2; }
+    .token.number { color: #986801; }
+    .token.operator { color: #0184bc; }
+    .token.class-name { color: #c18401; }
+  </style>
+  <script>
+    // Simple Python syntax highlighting
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('code.language-python').forEach(function(block) {
+        let code = block.textContent;
+        let html = '';
+        let lines = code.split('\n');
+        
+        lines.forEach(function(line, lineIdx) {
+          let result = '';
+          let i = 0;
+          
+          while (i < line.length) {
+            // Check for comments
+            if (line[i] === '#') {
+              result += '<span class="token comment">' + escapeHtml(line.substring(i)) + '</span>';
+              break;
+            }
+            // Check for strings
+            else if (line[i] === '"' || line[i] === "'") {
+              let quote = line[i];
+              let stringEnd = i + 1;
+              while (stringEnd < line.length) {
+                if (line[stringEnd] === quote && line[stringEnd - 1] !== '\\') {
+                  stringEnd++;
+                  break;
+                }
+                stringEnd++;
+              }
+              result += '<span class="token string">' + escapeHtml(line.substring(i, stringEnd)) + '</span>';
+              i = stringEnd;
+            }
+            // Regular code
+            else {
+              let nextSpecial = line.length;
+              for (let j = i; j < line.length; j++) {
+                if (line[j] === '"' || line[j] === "'" || line[j] === '#') {
+                  nextSpecial = j;
+                  break;
+                }
+              }
+              let segment = line.substring(i, nextSpecial);
+              segment = escapeHtml(segment);
+              segment = segment.replace(/\b(from|import|while|True|False|def|class|return|if|else|for|in|as)\b/g, '<span class="token keyword">$1</span>');
+              segment = segment.replace(/\b([A-Z][a-zA-Z0-9_]*)\b/g, '<span class="token class-name">$1</span>');
+              segment = segment.replace(/\b([a-z_][a-zA-Z0-9_]*)\s*(?=\()/g, '<span class="token function">$1</span>');
+              result += segment;
+              i = nextSpecial;
+            }
+          }
+          
+          html += result + '\n';
+        });
+        
+        block.innerHTML = html;
+      });
+      
+      function escapeHtml(text) {
+        return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      }
+    });
+  </script>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <h1>VisionOS Apps for Robot Data Collection</h1>
+      <p class="subtitle">
+        Teleoperation, tracking, and MuJoCo — the same stack, packaged for different audiences.
+        Source: <a href="https://apps.apple.com/us/vision/search?term=younghyo%20park" target="_blank" rel="noreferrer">App Store search</a>.
+      </p>
+    </header>
+
+    <section class="apps-grid">
+
+      <!-- Tracking Streamer -->
+      <article class="app-card">
+        <div class="thumb-wrap">
+          <img src="https://is1-ssl.mzstatic.com/image/thumb/PurpleSource122/v4/e6/05/a6/e605a61f-658f-7a74-e937-c4910e203791/8ce454f4-89db-4036-978c-e66de7f340b2_Screenshot-03-06-2024-20.17.38.png/1296x730bb.webp"
+               alt="Tracking Streamer screenshot" />
+          <div class="icon-badge">
+            <img src="https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/ff/d8/e5/ffd8e568-e65a-bac5-03e4-c2a6ebbb8e1f/AppIcon.lsr/96x96bb.webp"
+                 alt="Tracking Streamer app icon" />
+          </div>
+        </div>
+        <div class="app-body">
+          <div class="app-title-row">
+            <div>
+              <div class="app-title">Tracking Streamer</div>
+              <div class="app-sub">Stream your movement</div>
+            </div>
+          </div>
+          <p class="app-desc">
+            This app streams head / wrist / hand tracking to any Python client.
+          </p>
+          <div class="links">
+            <a class="btn btn-primary" href="https://apps.apple.com/us/vision/search?term=younghyo%20park" target="_blank" rel="noreferrer">View on App Store</a>
+            <a class="btn btn-secondary" href="https://pypi.org/project/avp-stream/" target="_blank" rel="noreferrer">PyPI Package</a>
+          </div>
+          <div class="api-section">
+            <div class="api-section-title">Python API</div>
+            <pre style="background: #f5f5f5; padding: 8px 12px; border-radius: 6px; font-size: 0.75rem; margin: 0 0 8px 0; overflow-x: auto;"><code>pip install avp_stream</code></pre>
+            <div class="usage-example">
+              <div class="usage-title">Example Usage</div>
+              <pre><code class="language-python">from avp_stream import VisionProStreamer
+avp_ip = "10.31.181.201"   # example IP 
+s = VisionProStreamer(ip = avp_ip, record = True)
+
+while True:
+    r = s.latest
+    print(r['head'], r['right_wrist'], r['right_fingers'])</code></pre>
+            </div>
+          </div>
+        </div>
+      </article>
+
+
+
+
+      <!-- DART -->
+      <article class="app-card">
+        <div class="thumb-wrap">
+          <img src="https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/72/7c/4b/727c4b93-b3b7-9e52-8aeb-0bc1d8f51507/Screenshot-02-04-2025-16.11.44.png/1296x730bb.webp"
+               alt="DART: Robot Teleoperation screenshot" />
+          <div class="icon-badge">
+            <img src="https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/27/8e/24/278e24de-a444-a0f4-a099-0b51845a5071/AppIcon.lsr/96x96bb.webp"
+                 alt="DART app icon" />
+          </div>
+        </div>
+        <div class="app-body">
+          <div class="app-title-row">
+            <div>
+              <div class="app-title">DART: Robot Teleoperation</div>
+              <div class="app-sub">Teleoperate robots in AR</div>
+            </div>
+          </div>
+          <p class="app-desc">
+            Gamified version of robot data collection; runs MuJoCo locally on Vision Pro, uses hand tracking + RealityKit.
+            For broader audiences while sharing the same tech stack.
+          </p>
+          <div class="links">
+            <a class="btn btn-primary" href="https://apps.apple.com/us/vision/search?term=younghyo%20park" target="_blank" rel="noreferrer">View on App Store</a>
+          </div>
+        </div>
+      </article>
+
+
+      <!-- MuJoCo AR Viewer -->
+      <article class="app-card">
+        <div class="thumb-wrap">
+          <img src="https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/18/29/45/182945a4-38c0-20a1-3621-cff447af6cf7/Screenshot-11-04-2025-20.03.12.png/1296x730bb.webp"
+               alt="MuJoCo AR Viewer screenshot" />
+          <div class="icon-badge">
+            <img src="https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/91/a6/ed/91a6ed49-6cd8-1c64-4174-ab98b43fb3d4/AppIcon.lsr/96x96bb.webp"
+                 alt="MuJoCo AR Viewer app icon" />
+          </div>
+        </div>
+        <div class="app-body">
+          <div class="app-title-row">
+            <div>
+              <div class="app-title">MuJoCo AR Viewer</div>
+              <div class="app-sub">Developer tools for roboticists</div>
+            </div>
+          </div>
+                    <p class="app-desc">
+            A developer-facing AR front-end for MuJoCo: same AR/hand-tracking backbone, but tuned for
+            people who want a Python API and use it for their own simulation environments.
+          </p>
+          <div class="links">
+            <a class="btn btn-primary" href="https://apps.apple.com/us/vision/search?term=younghyo%20park" target="_blank" rel="noreferrer">View on App Store</a>
+            <a class="btn btn-secondary" href="https://pypi.org/project/mujoco-ar-viewer/" target="_blank" rel="noreferrer">PyPI Package</a>
+          </div>
+          <div class="api-section">
+            <div class="api-section-title">Python API</div>
+            <pre style="background: #f5f5f5; padding: 8px 12px; border-radius: 6px; font-size: 0.75rem; margin: 0 0 8px 0; overflow-x: auto;"><code>pip install mujoco-ar-viewer</code></pre>
+            <div class="usage-example">
+              <div class="usage-title">Example Usage</div>
+              <pre><code class="language-python">from mujoco_arviewer import MJARViewer
+import mujoco
+
+# path to mujoco XML 
+xml_path = "path/to/your/model.xml"
+
+# Set up your MuJoCo simulation
+model = mujoco.MjModel.from_xml_path(xml_path)
+data = mujoco.MjData(model)
+
+# Initialize the AR viewer with your device's IP
+# Device's IP will be presented when you launch the app 
+viewer = MJARViewer(avp_ip="192.168.1.100", \
+                    enable_hand_tracking = True)
+# Send a MuJoCo model to the AR device
+# (Linux Only) it will automatically convert to USD
+viewer.load_scene(xml_path) 
+# Register the model and data with the viewer
+viewer.register(model, data)
+
+# Simulation loop
+while True:
+    # (Optional) access hand tracking results 
+    hand_tracking = viewer.get_hand_tracking()  
+    # (Optional) map hand tracking to mujoco ctrl 
+    data.ctrl = hand2ctrl(hand_tracking)
+
+    # Step the simulation 
+    mujoco.mj_step(model, data)
+    # Sync with AR device 
+    viewer.sync()</code></pre>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <footer>
+      Last updated: Nov 2025. Replace the App Store search link with per-app URLs if/when you want.
+    </footer>
+  </div>
+</body>
+</html>
