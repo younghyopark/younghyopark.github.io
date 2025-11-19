@@ -49,6 +49,10 @@ class Blog {
       {
         file: 'posts/2025-09-01-where-am-i.md',
         slug: '2025-09-01-where-am-i'
+      },
+      {
+        file: 'posts/2025-11-19-boston-dynamics-webinar-review.md',
+        slug: '2025-11-19-boston-dynamics-webinar-review'
       }
       // Add more posts here as you create them
     ];
