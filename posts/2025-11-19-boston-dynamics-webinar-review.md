@@ -66,9 +66,9 @@ Alberto’s observations from visiting many factories:
   - Each specialized solution only covers a **narrow slice** of the task space.
   - Updating or extending these systems is very expensive.
 
-He defines a “lighthouse” example task (the type of problem they target):
+  He defines a “lighthouse” example task (the type of problem they target):
 
-> A worker reaches into a bin of bolts with one hand, picks a bolt, grabs a powered screwdriver with the other hand, inserts the bolt into the tool, then screws it **underneath the car roof**, possibly using the off-hand to brace the body for balance.
+  > A worker reaches into a bin of bolts with one hand, picks a bolt, grabs a powered screwdriver with the other hand, inserts the bolt into the tool, then screws it **underneath the car roof**, possibly using the off-hand to brace the body for balance.
 
 - This illustrates:
   - **Bimanual coordination**.

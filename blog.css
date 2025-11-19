@@ -333,6 +333,16 @@
 .post-content {
   line-height: 1.6;
   color: #333;
+  font-size: 120%;
+}
+
+/* Override global base (14px) inside article to inherit the larger base */
+.post-content p,
+.post-content a,
+.post-content li,
+.post-content td,
+.post-content th {
+  font-size: 1em;
 }
 
 /* Table of Contents */
@@ -436,27 +446,37 @@
 }
 
 .post-content h1 {
-  font-size: 24px;
+  font-size: 29px;
   border-bottom: 2px solid #e0e0e0;
   padding-bottom: 8px;
   margin-top: 30px;
 }
 
 .post-content h2 {
-  font-size: 20px;
+  font-size: 24px;
   border-bottom: 1px solid #e0e0e0;
   padding-bottom: 6px;
   margin-top: 25px;
 }
 
 .post-content h3 {
-  font-size: 18px;
+  font-size: 22px;
   margin-top: 20px;
 }
 
 .post-content h4 {
-  font-size: 16px;
+  font-size: 19px;
   margin-top: 18px;
+}
+
+.post-content h5 {
+  font-size: 17px;
+  margin-top: 16px;
+}
+
+.post-content h6 {
+  font-size: 15px;
+  margin-top: 14px;
 }
 
 .post-content p {
@@ -466,13 +486,33 @@
 
 .post-content ul,
 .post-content ol {
-  margin-bottom: 15px;
-  padding-left: 20px;
+  margin-top: 0;              /* remove UA default top margin */
+  margin-bottom: 12px;        /* consistent spacing after lists */
+  padding-left: 20px;         /* indent */
+  font-size: 1em;
 }
 
 .post-content li {
+  margin: 6px 0;              /* equal top/bottom spacing */
+  line-height: 1.6;           /* match paragraph line-height */
+  font-size: 1em;
+}
+
+/* Nested lists: slight top margin for separation from parent item */
+.post-content li > ul,
+.post-content li > ol {
+  margin-top: 6px;
   margin-bottom: 6px;
-  line-height: 1.5;
+}
+
+/* Reduce extra gap when list items contain paragraphs */
+.post-content li p {
+  margin-top: 0;
+  margin-bottom: 4px;
+}
+
+.post-content li > p:last-child {
+  margin-bottom: 0;
 }
 
 .post-content blockquote {
@@ -483,6 +523,7 @@
   background: #f9f9f9;
   padding: 8px 16px;
   border-radius: 0 4px 4px 0;
+  font-size: 1.1em;
 }
 
 /* Quote block styling for <quote> tags */
@@ -498,6 +539,7 @@
   font-style: normal;
   color: #333;
   line-height: 1.6;
+  font-size: 1.1em;
 }
 
 .post-content quote::before {
@@ -561,7 +603,7 @@
   padding: 2px 4px;
   border-radius: 3px;
   font-family: 'Courier New', monospace;
-  font-size: 12px;
+  font-size: 14px;
   color: #d63384;
 }
 
@@ -578,7 +620,7 @@
   background: none;
   padding: 0;
   color: #333;
-  font-size: 13px;
+  font-size: 16px;
 }
 
 .post-content img {
@@ -624,7 +666,7 @@
   width: 100%;
   border-collapse: collapse;
   margin: 15px 0;
-  font-size: 13px;
+  font-size: 16px;
 }
 
 .post-content th,
@@ -651,6 +693,14 @@
 .post-content a:hover {
   color: #f09228;
   text-decoration: underline;
+}
+
+/* Ensure bold/italic text size matches body size */
+.post-content strong,
+.post-content b,
+.post-content em,
+.post-content i {
+  font-size: 1em;
 }
 
 /* Math equations */

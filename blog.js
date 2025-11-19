@@ -229,8 +229,8 @@ class Blog {
       if (hasFilters) {
         container.innerHTML = `
           <div style="text-align: center; padding: 40px 20px; color: #666;">
-            <p style="font-size: 18px; margin-bottom: 10px;">No posts found matching your filters</p>
-            <p style="font-size: 14px;">Try adjusting your search terms or removing some tag filters.</p>
+            <p style="font-size: 22px; margin-bottom: 10px;">No posts found matching your filters</p>
+            <p style="font-size: 17px;">Try adjusting your search terms or removing some tag filters.</p>
           </div>
         `;
       } else {
