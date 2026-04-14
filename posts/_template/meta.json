@@ -1,0 +1,9 @@
+{
+  "title": "Your Post Title",
+  "date": "2026-01-01",
+  "author": "Younghyo Park",
+  "tags": [],
+  "excerpt": "A short description that appears on the blog listing.",
+  "thumbnail": "thumb.png",
+  "publish": false
+}

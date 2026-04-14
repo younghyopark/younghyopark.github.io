@@ -42,7 +42,7 @@
               <p style="text-align:center">
                 <name>Younghyo Park</name>
               </p>
-              <p>I am a second-year Ph.D. student in <a href="https://eecs.mit.edu/">EECS</a> at <a href="https://csail.mit.edu/">MIT CSAIL</a>, 
+              <p>I am a Ph.D. student in <a href="https://eecs.mit.edu/">EECS</a> at <a href="https://csail.mit.edu/">MIT CSAIL</a>,
                 advised by Professor <a href="https://people.csail.mit.edu/pulkitag/">Pulkit Agrawal</a>.
 	            </p>
 
@@ -73,12 +73,57 @@
           <tr>
             <td style="padding:20px;width:100%;vertical-align:middle">
               <heading>Recent News</heading>
-              <ul style="margin-top: 10px; margin-bottom: 10px;">
-                <!-- Example news item: <li>June 2024: Presented at XYZ Conference.</li> -->
-              </ul>
-              <p style="margin: 0 0 18px 0; font-size: 1em; font-weight: normal; text-align: left; color: #222;">
-                <span style="color: #888; font-size: 0.95em; margin-right: 8px;">[2025 June 15]</span><span style="font-size: 1.1em; vertical-align: middle;">🚀</span> I started a <a href="https://younghyopark.me/blog" style="color: #1772d0; text-decoration: underline;">blog</a> where I share thoughts and tutorials on robotics, AI, and research life. Check it out!
-              </p>
+              <div class="news-wrap" id="news-wrap">
+                <div class="news-list" id="news-list">
+                  <p class="news-item">
+                    <span class="news-date">[2026 Apr 14]</span><span style="font-size: 1.1em; vertical-align: middle;">📄</span> New preprint! <a href="https://younghyopark.me/tune-to-learn" style="text-decoration: underline;">Tune to Learn</a> is out on <a href="https://arxiv.org/abs/2604.02523" style="text-decoration: underline;">arXiv</a> — we show how controller gains shape the inductive bias of policy learning. See the <a href="https://x.com/younghyo_park/status/2041863607332307118" style="text-decoration: underline;">twitter thread</a> for a quick overview.
+                  </p>
+                  <p class="news-item">
+                    <span class="news-date">[2025 Dec 28]</span><span style="font-size: 1.1em; vertical-align: middle;">🛠️</span> Updated <a href="https://github.com/Improbable-AI/VisionProTeleop" style="text-decoration: underline;">VisionProTeleop</a> with a latency fix in the streaming pipeline.
+                  </p>
+                  <p class="news-item">
+                    <span class="news-date">[2025 Jun 15]</span><span style="font-size: 1.1em; vertical-align: middle;">🚀</span> I started a <a href="https://younghyopark.me/blog" style="text-decoration: underline;">blog</a> where I share thoughts and tutorials on robotics, AI, and research life. Check it out!
+                  </p>
+                  <p class="news-item">
+                    <span class="news-date">[2025 May 20]</span><span style="font-size: 1.1em; vertical-align: middle;">✈️</span> Traveling to <em>ICRA 2025</em> in Atlanta to give an oral talk on <a href="https://younghyopark.me/dexhub" style="text-decoration: underline;">DART</a>.
+                  </p>
+                  <p class="news-item">
+                    <span class="news-date">[2024 Jul 24]</span><span style="font-size: 1.1em; vertical-align: middle;">🎤</span> Gave an oral talk at <em>ICML 2024</em> in Vienna on <a href="https://auto-env-shaping.github.io/" style="text-decoration: underline;">Automatic Environment Shaping is the Next Frontier in RL</a> (Top 5%).
+                  </p>
+                  <p class="news-item">
+                    <span class="news-date">[2023 Aug]</span><span style="font-size: 1.1em; vertical-align: middle;">🎓</span> Left <a href="https://naverlabs.com/en/" style="text-decoration: underline;">NAVER LABS</a> and started a new journey as a PhD student at <a href="https://csail.mit.edu/" style="text-decoration: underline;">MIT CSAIL</a>, working with Professor <a href="https://people.csail.mit.edu/pulkitag/" style="text-decoration: underline;">Pulkit Agrawal</a>.
+                  </p>
+                </div>
+                <div class="news-fade" id="news-fade"></div>
+              </div>
+              <button type="button" class="news-toggle" id="news-toggle" onclick="toggleNews()">Show more</button>
+              <script type="text/javascript">
+                function toggleNews() {
+                  var wrap = document.getElementById('news-wrap');
+                  var list = document.getElementById('news-list');
+                  var btn = document.getElementById('news-toggle');
+                  var expanded = list.classList.toggle('expanded');
+                  wrap.classList.toggle('expanded', expanded);
+                  btn.firstChild.nodeValue = expanded ? 'Show less' : 'Show more';
+                }
+                (function() {
+                  var list = document.getElementById('news-list');
+                  var btn = document.getElementById('news-toggle');
+                  var fade = document.getElementById('news-fade');
+                  var items = list.querySelectorAll('.news-item');
+                  if (items.length < 3) {
+                    btn.style.display = 'none';
+                    fade.style.display = 'none';
+                    list.style.maxHeight = 'none';
+                    return;
+                  }
+                  var listTop = list.getBoundingClientRect().top;
+                  var third = items[2];
+                  var thirdRect = third.getBoundingClientRect();
+                  var collapsed = (thirdRect.top - listTop) + (thirdRect.height * 0.5);
+                  list.style.setProperty('--news-collapsed-height', collapsed + 'px');
+                })();
+              </script>
             </td>
           </tr>
         </tbody></table>
@@ -86,20 +131,31 @@
             <tr>
             <td style="padding:20px;width:100%;vertical-align:middle">
               <heading>Research Vision</heading>
+              <span style="color: #888; font-size: 0.85em; margin-left: 8px;">(last updated Apr 2026)</span>
               <p>
-                My dream is to see robots performing all sorts of complex, 
-                long-horizon and contact-rich manipulation tasks in real-world, just like we humans do everyday. 
-                One <strong>scalable</strong> way to acheive this dream is to pretrain robots with  
-                (a) a repertoire of reusable low-level motor control skills and 
-                (b) an intelligence that can temporally or spatially compose such skills to complete any given unseen tasks. 
+                I want a world where robots can perform every dexterous manipulation task a five-year-old can do with their two hands —
+                and where building such a system is genuinely easy, not a multi-year research effort.
+                Some argue we can get there by following the same playbook that drove rapid progress in vision and language.
+                I'm not so sure.
               </p>
               <p>
-                What kind of low-level manipulation skills should we pretrain in advance, and how should we train them? 
-                With such reusable repertoire of skills, how should we train an intelligence 
-                that can orchestrate them to perform longer-horizon tasks? My upcoming works will mainly address these questions! </p>
-                <p>
-                  * denotes equal contribution.
-                </p>
+                I believe robot learning is fundamentally different from language or vision.
+                A robot is inherently interdisciplinary — a tightly coupled system of hardware, controllers, sensor configurations, data collection interfaces, and learning algorithms —
+                and changing any one of them rewires how the others behave.
+                This makes robotics much closer to biology than to modern ML:
+                the real scientific question isn't just <em>which model is best</em>,
+                but how these many interacting pieces shape what a robot can ultimately learn.
+                And we're still in the early days of building that kind of <strong>science</strong>.
+              </p>
+              <p>
+                My research aims to build this missing science.
+                I develop <strong>open-source infrastructure</strong> that the community uses to collect and process robot data at scale,
+                and I use that infrastructure to run <strong>controlled empirical studies</strong> that reveal
+                how under-examined design choices — from low-level controller gains to data collection interfaces —
+                fundamentally determine learning outcomes.
+                The goal is a future where training a robot to perform a new task is
+                <strong>less art and prayer, more engineering</strong>: principled, scalable, and reproducible.
+              </p>
             </td>
           </tr>
         </tbody></table>
@@ -124,7 +180,7 @@
               <br>
               <a href="https://modern-robot-learning.github.io/">course website (6.S186)</a>
               /
-              <a href="https://apps.apple.com/us/app/tracking-streamer/id6478969032">lecture videos</a>
+              <a href="https://youtube.com/playlist?list=PLikvwLlAc2PhZWoA1D5x29bl-fB6uaeJY">lecture videos</a>
               <p></p>
               <p>
                 This course provides a practical introduction to training robots using data-driven methods. 
@@ -140,7 +196,10 @@
         <table style="width:100%;border:0px;border-spacing:0px;border-collapse:collapse;margin-right:auto;margin-left:auto;margin-bottom:-25px"><tbody>
           <tr>
           <td style="padding:20px;width:100%;vertical-align:middle">
-            <heading>Open-source Projects</heading>
+            <heading>Open-source Software</heading>
+            <p>
+              I'm passionate about building open-source tools that empower the robotics community and streamline the robot development experience.
+            </p>
           </td>
         </tr>
       </tbody></table>
@@ -169,7 +228,7 @@
           </td>
           <td style="padding:20px;width:75%;vertical-align:middle">
             <a href="https://github.com/Improbable-AI/VisionProTeleop">
-              <papertitle>Using Apple Vision Pro to Control and Train Robots</papertitle>
+              <papertitle>VisionProTeleop</papertitle>
             </a>
             <br>
             <strong>Younghyo Park</strong>, <a href="https://people.csail.mit.edu/pulkitag/">Pulkit Agrawal</a>
@@ -184,22 +243,94 @@
             <a href="data/using_vision_pro_to_control_and_train_robots.pdf">short paper</a>
             <p></p>
             <p>
-            An app for Apple Vision Pro that can stream user's head / wrist / finger tracking results to any machines connected to the same network. This can be used to (a) teleoperate robots using human motions and (b) collect datasets of humans navigating and manipulating the real-world!
+            A complete ecosystem for using Apple Vision Pro in robotics research — stream hand/head tracking from Vision Pro, send video/audio/simulation back for real-world teleoperation, simulation teleoperation, and egocentric dataset recording.
             </p>
           </td>
         </tr>
+
+        <tr>
+          <td style="padding:20px;width:25%;vertical-align:middle">
+            <img src='images/aiofranka.png' width="100%" >
+          </td>
+          <td style="padding:20px;width:75%;vertical-align:middle">
+            <a href="https://github.com/Improbable-AI/aiofranka">
+              <papertitle>aiofranka</papertitle>
+            </a>
+            <br>
+            <a href="https://github.com/Improbable-AI/aiofranka">github</a>
+            /
+            <a href="https://improbableai.com/aiofranka">docs</a>
+            <p></p>
+            <p>
+            An asyncio-based Python library for controlling Franka Emika robots. Provides a high-level, asynchronous interface combining pylibfranka for 1kHz torque control, MuJoCo for kinematics/dynamics, and Ruckig for smooth trajectory generation.
+            </p>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding:20px;width:25%;vertical-align:middle">
+            <video width="100%" muted autoplay loop playsinline>
+              <source src="images/aprilcube-square.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </td>
+          <td style="padding:20px;width:75%;vertical-align:middle">
+            <a href="https://github.com/younghyopark/aprilcube">
+              <papertitle>aprilcube</papertitle>
+            </a>
+            <br>
+            <strong>Younghyo Park</strong>
+            <br>
+            <a href="https://github.com/younghyopark/aprilcube">github</a>
+            <p></p>
+            <p>
+            Generate 3D-printable cubes with ArUco or AprilTag fiducial markers on all six faces, then detect their full 6-DoF pose from a single camera image. A two-part pipeline: a generator that produces multi-color 3MF files ready for dual-color 3D printing, and a detector that estimates rotation and translation given camera intrinsics.
+            </p>
+          </td>
+        </tr>
+
           </table>
 
       <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;margin-bottom:-25px"><tbody>
         <tr>
         <td style="padding:20px;width:100%;vertical-align:middle">
           <heading>Publications</heading>
+          <p style="font-size: 0.95em; color: #666; margin-top: 8px;">* denotes equal contribution.</p>
     </td>
       </tr>
     </tbody></table>
 
     <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
 				
+
+      <tr>
+        <td style="padding:20px;width:25%;vertical-align:middle">
+          <video width="100%" muted autoplay loop playsinline>
+            <source src="images/tune-to-learn-gif.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        </td>
+        <td style="padding:20px;width:75%;vertical-align:middle">
+          <a href="https://younghyopark.me/tune-to-learn">
+            <papertitle>Tune to Learn: How Controller Gains Shape Policy Learning</papertitle>
+          </a>
+          <br>
+          <a href="https://abronars.github.io/">Antonia Bronars*</a>, <strong>Younghyo Park*</strong>, <a href="https://people.csail.mit.edu/pulkitag/">Pulkit Agrawal</a>
+          <br>
+          <em>arXiv</em>, 2026
+          <br>
+          <a href="https://younghyopark.me/tune-to-learn">project page</a>
+          /
+          <a href="https://arxiv.org/abs/2604.02523">paper</a>
+          /
+          <a href="https://x.com/younghyo_park/status/2041863607332307118">twitter</a>
+          <p></p>
+          <p>
+            We show that controller gains shape the inductive bias of different policy learning paradigms, and identify gain regimes that maximize learnability for behavior cloning, reinforcement learning, and sim-to-real transfer.
+          </p>
+          <p style="font-size: 0.9em; color: #666;">* equal contribution, order determined by coin flip</p>
+        </td>
+      </tr>
 
       <tr onmouseout="zipnerf_stop()" onmouseover="zipnerf_start()">
         <td style="padding:20px;width:25%;vertical-align:middle">
@@ -221,7 +352,7 @@
           </script>
         </td>
         <td style="padding:20px;width:75%;vertical-align:middle">
-          <a href="https://dexhub.ai/project">
+          <a href="https://younghyopark.me/dexhub">
             <papertitle>DART: Dexterous Augmented Reality Teleoperation Platform
               for Large-Scale Robot Data Collection in Simulation</papertitle>
           </a>
@@ -230,7 +361,7 @@
           <br>
           <em>ICRA</em>, 2025
           <br>
-          <a href="https://dexhub.ai/project">project page</a>
+          <a href="https://younghyopark.me/dexhub">project page</a>
           /
           <a href="https://x.com/younghyo_park/status/1815986042098348163">twitter</a>
           <p></p>

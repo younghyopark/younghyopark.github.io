@@ -1,0 +1,402 @@
+/* ═══════════════════════════════════════════════════════════════
+   Blog Post — Base Stylesheet
+   Matches the tune-to-learn project page design language.
+   Include via: <link rel="stylesheet" href="/shared/post-base.css">
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── CSS Custom Properties ────────────────────────────────── */
+:root {
+  --primary:      #222;
+  --bg:           #ffffff;
+  --bg-alt:       #fafafa;
+  --text:         #1a1a1a;
+  --text-muted:   #777;
+  --text-light:   #999;
+  --border:       #e0e0e0;
+
+  --font-sans:  'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono:  'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+
+  --max-width:    900px;
+  --radius:       4px;
+}
+
+/* ── Reset & Base ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text);
+  background: var(--bg);
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Content container ────────────────────────────────────── */
+.post-body {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+/* ── Post title header ────────────────────────────────────── */
+.post-header {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.post-header .post-title {
+  font-size: clamp(1.5rem, 3.5vw, 2.1rem);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin: 0 0 0.65rem;
+}
+
+.post-header .post-meta {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.post-header .post-meta .sep {
+  color: var(--border);
+}
+
+/* ── Links ────────────────────────────────────────────────── */
+a {
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--border);
+  text-underline-offset: 2px;
+  transition: text-decoration-color .15s;
+}
+a:hover {
+  text-decoration-color: var(--text);
+}
+
+/* ── Headings ─────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+h1 {
+  font-size: 1.725rem;
+  margin: 2.5rem 0 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+h1::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+h2 {
+  font-size: 1.35rem;
+  margin: 2.25rem 0 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+h2::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+h3 {
+  font-size: 1.15rem;
+  margin: 1.75rem 0 0.65rem;
+}
+
+h4 {
+  font-size: 1.05rem;
+  margin: 1.5rem 0 0.5rem;
+}
+
+/* ── Paragraphs ───────────────────────────────────────────── */
+p {
+  margin: 0 0 1rem;
+  line-height: 1.7;
+}
+
+/* ── Lists ────────────────────────────────────────────────── */
+ul, ol {
+  margin: 0 0 1rem;
+  padding-left: 1.5rem;
+}
+
+li {
+  margin: 0.35rem 0;
+  line-height: 1.65;
+}
+
+li > ul, li > ol {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+/* ── Blockquote ───────────────────────────────────────────── */
+blockquote {
+  margin: 1.25rem 0;
+  padding: 0.75rem 1.25rem;
+  border-left: 3px solid var(--border);
+  color: var(--text-muted);
+  font-style: italic;
+  background: var(--bg-alt);
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Quote tag (orange accent) ────────────────────────────── */
+quote {
+  display: block;
+  margin: 1.5rem 0;
+  padding: 1rem 1.25rem;
+  border-left: 3px solid #e8a04c;
+  background: #fdf8f0;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  color: var(--text);
+  font-style: normal;
+  line-height: 1.65;
+}
+quote p { margin: 0; }
+quote p:not(:last-child) { margin-bottom: 0.75rem; }
+
+/* ── Horizontal rule ──────────────────────────────────────── */
+hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2rem 0;
+}
+
+/* ── Code ─────────────────────────────────────────────────── */
+code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background: var(--bg-alt);
+  padding: 0.15em 0.4em;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+pre {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  margin: 1.25rem 0;
+  line-height: 1.5;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  border: none;
+  font-size: 0.85rem;
+}
+
+/* ── Images ───────────────────────────────────────────────── */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius);
+}
+
+/* ── Tables ───────────────────────────────────────────────── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.25rem 0;
+  font-size: 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+th, td {
+  padding: 0.6rem 0.85rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+th {
+  background: var(--bg-alt);
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+/* ── Figures ──────────────────────────────────────────────── */
+figure {
+  margin: 1.5rem 0;
+  text-align: center;
+}
+
+figure img {
+  margin: 0 auto;
+}
+
+figcaption {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* ── Iframe embeds (YouTube, iframely, etc.) ──────────────── */
+iframe {
+  max-width: 100%;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+.iframely-embed {
+  margin: 1.25rem 0;
+}
+
+/* ── Width utility classes for images ─────────────────────── */
+img.width-25 { width: 25%; margin-left: auto; margin-right: auto; }
+img.width-30 { width: 30%; margin-left: auto; margin-right: auto; }
+img.width-40 { width: 40%; margin-left: auto; margin-right: auto; }
+img.width-50 { width: 50%; margin-left: auto; margin-right: auto; }
+img.width-60 { width: 60%; margin-left: auto; margin-right: auto; }
+img.width-70 { width: 70%; margin-left: auto; margin-right: auto; }
+img.width-75 { width: 75%; margin-left: auto; margin-right: auto; }
+img.width-80 { width: 80%; margin-left: auto; margin-right: auto; }
+img.width-90 { width: 90%; margin-left: auto; margin-right: auto; }
+img.width-100 { width: 100%; }
+
+/* ── Strong / emphasis ────────────────────────────────────── */
+strong { font-weight: 600; }
+
+/* ── Interactive selector ────────────────────────────────── */
+.axis-selector {
+  margin: 1.5rem 0;
+}
+
+.axis-selector .axis-group {
+  margin-bottom: 1rem;
+}
+
+.axis-selector .axis-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+}
+
+.axis-selector .axis-options {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.axis-selector .axis-btn {
+  padding: 0.45rem 1rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.axis-selector .axis-btn:hover {
+  border-color: var(--text-muted);
+}
+
+.axis-selector .axis-btn.active {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: #fff;
+}
+
+.cell-content {
+  display: none;
+}
+
+.cell-content.visible {
+  display: block;
+}
+
+.cell-prompt {
+  text-align: center;
+  color: var(--text-muted);
+  font-style: italic;
+  margin: 1.5rem 0;
+}
+
+/* ── Collapsible details ─────────────────────────────────── */
+details {
+  margin: 1rem 0;
+  padding: 0.75rem 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-alt);
+}
+
+details summary {
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--text);
+  user-select: none;
+}
+
+details summary::marker {
+  color: var(--text-muted);
+}
+
+details[open] summary {
+  margin-bottom: 0.75rem;
+}
+
+details p:last-child {
+  margin-bottom: 0;
+}
+
+
+
+@media (max-width: 480px) {
+  .post-body {
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  h1 { font-size: 1.4rem; }
+  h2 { font-size: 1.15rem; }
+}

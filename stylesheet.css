@@ -129,3 +129,85 @@ name {
 span.highlight {
   background-color: #ffffd0;
 }
+/* Allow simpler HTML <mark> usage for highlights */
+mark {
+  background-color: #ffffd0;
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+.news-wrap {
+  position: relative;
+  margin-top: 10px;
+}
+
+.news-list {
+  max-height: var(--news-collapsed-height, 80px);
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+}
+
+.news-list.expanded {
+  max-height: 2000px;
+}
+
+.news-list .news-item {
+  margin: 0 0 8px 0;
+  font-size: 1em;
+  line-height: 1.35;
+  text-align: left;
+  color: #222;
+}
+
+.news-list .news-item:last-child {
+  margin-bottom: 0;
+}
+
+.news-list .news-date {
+  color: #888;
+  font-size: 0.95em;
+  margin-right: 8px;
+}
+
+.news-fade {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 22px;
+  background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1));
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.news-wrap.expanded .news-fade {
+  opacity: 0;
+}
+
+.news-toggle {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 0;
+  background: none;
+  border: none;
+  color: #1772d0;
+  font-family: inherit;
+  font-size: 0.95em;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.news-toggle:hover {
+  color: #f09228;
+  text-decoration: underline;
+}
+
+.news-toggle::after {
+  content: " ▾";
+  font-size: 0.85em;
+}
+
+.news-wrap.expanded .news-toggle::after {
+  content: " ▴";
+}

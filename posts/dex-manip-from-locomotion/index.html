@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dexterous Manipulation and Locomotion - Younghyo Park</title>
+
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Dexterous Manipulation and Locomotion" />
+  <meta property="og:description" content="Exploring how techniques from quadruped locomotion can be adapted for dexterous manipulation, and vice versa." />
+  <meta property="og:url" content="https://younghyopark.me/posts/dex-manip-from-locomotion/" />
+  <meta property="og:image" content="https://raw.githubusercontent.com/younghyopark/younghyopark.github.io/new/images/new_younghyo4.jpeg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@younghyo_park" />
+  <meta name="twitter:title" content="Dexterous Manipulation and Locomotion" />
+  <meta name="twitter:description" content="Exploring how techniques from quadruped locomotion can be adapted for dexterous manipulation, and vice versa." />
+  <meta name="twitter:image" content="https://raw.githubusercontent.com/younghyopark/younghyopark.github.io/new/images/new_younghyo4.jpeg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/shared/post-base.css">
+  <script src="/shared/post-nav.js"></script>
+</head>
+<body>
+<div class="post-body">
+
+<div class="post-header">
+  <h1 class="post-title">Dexterous Manipulation and Locomotion</h1>
+  <div class="post-meta">
+    <span>2023-08-09</span>
+    <span class="sep">&middot;</span>
+    <span>Younghyo Park</span>
+  </div>
+</div>
+
+<h1>Motivation</h1>
+
+<img src="Untitled.png" alt="Locomotion and manipulation comparison">
+
+<p>Although it seems like a totally different class of work in robotics, Locomotion and Dexterous Manipulation in fact has some weird similarities &mdash; both work with a similar hardware (set of multiple identical kinematic chains) and the nature of the task itself (making selective contacts with an object to achieve the goal) is also similar in a bigger sense. If we attach conventional manipulators on top of this, we can again observe a similarity &mdash; quadruped + arm is in fact analogous to a manipulator + dexterous hand gripper.</p>
+
+<img src="Untitled%201.png" alt="Analogy diagram">
+
+<p>Of course there are huge differences in detail, but still, it's similar enough to make one wonder <strong>"What kind of lessons can we take from quadruped locomotion for dexterous manipulation, and even vice-versa?"</strong></p>
+
+<p>In fact, I'm already seeing some papers with a similar motivation &mdash; the one from Malik's group that adapts the idea of RMA (Rapid Motor Adaptation) for dexterous manipulation, which was mainly a technique used for locomotion.</p>
+
+<div class="iframely-embed"><div class="iframely-responsive" style="height: 140px; padding-bottom: 0;"><a href="https://proceedings.mlr.press/v205/qi23a.html" data-iframely-url="https://cdn.iframe.ly/api/iframe?url=https%3A%2F%2Fproceedings.mlr.press%2Fv205%2Fqi23a.html&key=c83ccbd468865921bb411be91b22b1bb"></a></div></div><script async src="https://cdn.iframe.ly/embed.js" charset="utf-8"></script>
+
+<p>This discussion aims to brainstorm together about the things that one can learn and adapt from one another &mdash; <strong>techniques from locomotion domain that can be applied to dexterous manipulation, and vice-versa.</strong></p>
+
+<h1>Differences</h1>
+
+<table>
+  <tr><th></th><th>Dexterous Manipulation</th><th>Locomotion</th></tr>
+  <tr><td>contact made with</td><td>diverse (graspable) objects</td><td>diverse terrains</td></tr>
+  <tr><td>diversity handled with</td><td>dataset of objects (e.g. parts of ShapeNet)</td><td>procedural random terrain generation</td></tr>
+  <tr><td>contact location</td><td>all parts of hand &mdash; finger tips, fingers, palm</td><td>usually only with their round feet</td></tr>
+  <tr><td>gravity direction</td><td>entire SO(3), especially when attached to arm</td><td>generally downwards</td></tr>
+  <tr><td>degrees of freedom</td><td>16 dof (4 &times; 4 for each finger)</td><td>12 dof (4 &times; 3 for each leg)</td></tr>
+  <tr><td>typical state inputs</td><td>depth + proprioceptive (visual crucial)</td><td>proprioceptive (mostly don't require visual)</td></tr>
+  <tr><td>Rewards during RL</td><td>tracking explicit spatial goals (e.g. SE(3) poses)</td><td>tracking time-derivatives (e.g. body velocity)</td></tr>
+  <tr><td>Sim2Real &mdash; DR</td><td>randomizes object friction, size, mass, joint params</td><td>randomizes terrain, ground friction, body mass/com</td></tr>
+  <tr><td>Sim2Real &mdash; SysID</td><td>robot dynamics sysID with massively parallel sim</td><td>RMA (online sysID/adaptation at test-time)</td></tr>
+  <tr><td>RL techniques</td><td>student-teacher learning</td><td>student-teacher learning, curriculum learning</td></tr>
+  <tr><td>failure recovery</td><td>&mdash;</td><td>separate policy for recovery from fallen states</td></tr>
+</table>
+
+<h2>Terrain Generations vs Object Datasets</h2>
+
+<p>Locomotion policies are trained over randomized terrains generated by heuristic algorithms (e.g. Perlin noise for 2D heightmaps, diamond square for fractal terrains). They rely on <strong>"terrain generation algorithms"</strong> rather than a fixed dataset.</p>
+
+<div class="iframely-embed"><div class="iframely-responsive" style="height: 140px; padding-bottom: 0;"><a href="https://arxiv.org/abs/2208.07681" data-iframely-url="https://cdn.iframe.ly/api/iframe?url=https%3A%2F%2Farxiv.org%2Fabs%2F2208.07681&key=c83ccbd468865921bb411be91b22b1bb"></a></div></div><script async src="https://cdn.iframe.ly/embed.js" charset="utf-8"></script>
+
+<quote>
+<p>Terrains, in the domain of terrain-aware legged locomotion, are typically represented by heightmaps. A traditional method for terrain generation is to use Perlin noise. Although policies can be trained in simulation with such terrains, verifications must be done on real robots after sim-to-real transfer, because using Perlin noise does not lead to realistic heightmaps.</p>
+<p>An emerging way to generate realistic terrains is to use GANs, where a discriminator tries to classify whether a sample comes from the dataset, and a generator tries to cheat the discriminator by generating samples from noises.</p>
+</quote>
+
+<p>The major benefit of terrain generation with explicit parameters is that we can control task difficulty &mdash; which leads to curriculum learning. On the other hand, dexterous manipulation relies on a fixed (but large) dataset of objects. It is natural to ask whether we can use <strong>3D shape generation methods during training, instead of fixed object datasets.</strong></p>
+
+<h2>Rewards</h2>
+
+<img src="Untitled%202.png" alt="Reward comparison">
+
+<p>Comparing Visual Dexterity (Chen et al.) and Rapid Locomotion (Margolis et al.), two observations:</p>
+<ol>
+  <li><strong>Fixed direction of gravity helps the locomotion world a lot.</strong> Visual Dexterity had to add reward terms just to make fingers "touch" the object; Rapid Locomotion did not &mdash; gravity was on their side.</li>
+  <li><strong>Locomotion usually tracks time-derivatives</strong> rather than reaching a far-away spatial goal &mdash; a "shorter-horizon" formulation.</li>
+</ol>
+
+<div class="iframely-embed"><div class="iframely-responsive" style="height: 140px; padding-bottom: 0;"><a href="https://arxiv.org/abs/2308.12517" data-iframely-url="https://cdn.iframe.ly/api/iframe?url=https%3A%2F%2Farxiv.org%2Fabs%2F2308.12517&key=c83ccbd468865921bb411be91b22b1bb"></a></div></div><script async src="https://cdn.iframe.ly/embed.js" charset="utf-8"></script>
+
+<h2>RL techniques: Curriculum Learning</h2>
+
+<p>One major technique behind Rapid Locomotion's robustness was <strong>curriculum learning</strong> &mdash; gradually increasing task complexity. Extending this to dexterous manipulation seems straightforward.</p>
+
+<div class="iframely-embed"><div class="iframely-responsive" style="height: 140px; padding-bottom: 0;"><a href="https://arxiv.org/abs/2203.15172" data-iframely-url="https://cdn.iframe.ly/api/iframe?url=https%3A%2F%2Farxiv.org%2Fabs%2F2203.15172&key=c83ccbd468865921bb411be91b22b1bb"></a></div></div><script async src="https://cdn.iframe.ly/embed.js" charset="utf-8"></script>
+
+<div class="iframely-embed"><div class="iframely-responsive" style="height: 140px; padding-bottom: 0;"><a href="https://arxiv.org/abs/2010.03848" data-iframely-url="https://cdn.iframe.ly/api/iframe?url=https%3A%2F%2Farxiv.org%2Fabs%2F2010.03848&key=c83ccbd468865921bb411be91b22b1bb"></a></div></div><script async src="https://cdn.iframe.ly/embed.js" charset="utf-8"></script>
+
+<h2>Failure Recovery</h2>
+
+<div class="iframely-embed"><div class="iframely-responsive" style="height: 140px; padding-bottom: 0;"><a href="https://arxiv.org/abs/2306.12712" data-iframely-url="https://cdn.iframe.ly/api/iframe?url=https%3A%2F%2Farxiv.org%2Fabs%2F2306.12712&key=c83ccbd468865921bb411be91b22b1bb"></a></div></div><script async src="https://cdn.iframe.ly/embed.js" charset="utf-8"></script>
+
+<p>Dexterous manipulation can adapt a similar system &mdash; regrasping the object when it drops. This might be the one component <em>easier</em> to implement in manipulation than locomotion.</p>
+
+<h2>Sim2Real &mdash; DR</h2>
+
+<img src="Untitled%203.png" alt="Domain randomization comparison 1">
+<img src="Untitled%204.png" alt="Domain randomization comparison 2">
+
+<p>Comparing Visual Dexterity and Rapid Locomotion, domain randomization was applied very similarly. The core components of DR were nearly identical.</p>
+
+<h2>Sim2Real &mdash; SysID</h2>
+
+<p>One key SysID technique from locomotion is <strong>RMA (Rapid Motor Adaptation)</strong> &mdash; abstracting terrain properties as a latent vector and inferring them from action/observation history.</p>
+
+<div class="iframely-embed"><div class="iframely-responsive" style="height: 140px; padding-bottom: 0;"><a href="https://arxiv.org/abs/2107.04034" data-iframely-url="https://cdn.iframe.ly/api/iframe?url=https%3A%2F%2Farxiv.org%2Fabs%2F2107.04034&key=c83ccbd468865921bb411be91b22b1bb"></a></div></div><script async src="https://cdn.iframe.ly/embed.js" charset="utf-8"></script>
+
+<img src="Untitled%205.png" alt="RMA architecture">
+
+<p>Adapting this to dexterous manipulation is straightforward &mdash; and the paper below (also from Malik's group) did exactly that.</p>
+
+<div class="iframely-embed"><div class="iframely-responsive" style="height: 140px; padding-bottom: 0;"><a href="https://proceedings.mlr.press/v205/qi23a.html" data-iframely-url="https://cdn.iframe.ly/api/iframe?url=https%3A%2F%2Fproceedings.mlr.press%2Fv205%2Fqi23a.html&key=c83ccbd468865921bb411be91b22b1bb"></a></div></div><script async src="https://cdn.iframe.ly/embed.js" charset="utf-8"></script>
+
+</div>
+</body>
+</html>

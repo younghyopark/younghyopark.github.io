@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Boston Dynamics Webinar Review - Younghyo Park</title>
+
+  <!-- Open Graph / Social previews -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Boston Dynamics Webinar Review" />
+  <meta property="og:description" content="Boston Dynamic's grounded view on humanoid robots as business models, and research agendas." />
+  <meta property="og:url" content="https://younghyopark.me/posts/boston-dynamics-webinar-review/" />
+  <meta property="og:image" content="https://raw.githubusercontent.com/younghyopark/younghyopark.github.io/new/images/new_younghyo4.jpeg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@younghyo_park" />
+  <meta name="twitter:title" content="Boston Dynamics Webinar Review" />
+  <meta name="twitter:description" content="Boston Dynamic's grounded view on humanoid robots as business models, and research agendas." />
+  <meta name="twitter:image" content="https://raw.githubusercontent.com/younghyopark/younghyopark.github.io/new/images/new_younghyo4.jpeg" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Shared blog post styles + nav -->
+  <link rel="stylesheet" href="/shared/post-base.css">
+  <script src="/shared/post-nav.js"></script>
+</head>
+<body>
+<div class="post-body">
+
+<div class="post-header">
+  <h1 class="post-title">Boston Dynamics Webinar Review</h1>
+  <div class="post-meta">
+    <span>2025-11-19</span>
+    <span class="sep">&middot;</span>
+    <span>Younghyo Park</span>
+  </div>
+</div>
+
+<blockquote>
+This is a written summary / review from the recently released webinar from Boston Dynamics for anyone who doesn't want to sit through an hour-long video.
+</blockquote>
+
+<iframe width="100%" height="500" src="https://www.youtube.com/embed/laexcnaTrDM?si=zMbWOIyc77wVw4vq" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+<h1>1. Participants and Roles</h1>
+
+<ul>
+  <li><strong>Moderator / Product Lead</strong>
+    <ul>
+      <li>Name (as spoken): <em>Aya Durbin</em> (on the Atlas product team).</li>
+      <li>Role: Leads <strong>humanoid application product strategy</strong> for Atlas.</li>
+      <li>Responsibilities:
+        <ul>
+          <li>Decides <strong>where Atlas will first be deployed</strong>.</li>
+          <li>Identifies <strong>which customers and use cases</strong> the robot should target over a long time horizon.</li>
+          <li>Ensures there is a <strong>coherent product roadmap</strong> so that research and development lead to practical, valuable deployments.</li>
+        </ul>
+      </li>
+      <li>Background:
+        <ul>
+          <li>Previously worked at <strong>6 River Systems</strong>, focused on <strong>warehouse robotics</strong>.</li>
+          <li>Experience designing <strong>human&ndash;robot interfaces</strong> and <strong>exception-handling workflows</strong> for AMRs operating alongside people.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><strong>Alberto Rodriguez</strong>
+    <ul>
+      <li>Former <strong>MIT faculty</strong>, joined Boston Dynamics ~<strong>four years ago</strong>.</li>
+      <li>Leads the <strong>Atlas Behavior Team</strong>.</li>
+      <li>Responsibilities:
+        <ul>
+          <li>Defines and implements <strong>AI and behavior strategies</strong> for Atlas.</li>
+          <li>Figures out <strong>how Atlas moves and manipulates objects</strong>, and how customers will specify tasks.</li>
+          <li>Owns the long-term goal of making Atlas a <strong>general-purpose manipulation platform</strong>.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h1>2. Vision: General-Purpose Humanoids and Economic Rationale</h1>
+
+<h2>2.1. Why Humanoids, and Why Now?</h2>
+<ul>
+  <li>Many customers <strong>see the humanoid shape</strong> and instinctively assume it can:
+    <ul>
+      <li>Perform <strong>many types of tasks</strong>.</li>
+      <li>Fit into <strong>existing human environments</strong> without major infrastructure changes.</li>
+    </ul>
+  </li>
+  <li>The <strong>real appeal</strong> is not the human shape per se, but:
+    <ul>
+      <li><strong>Flexibility</strong>: re-tasking the same machine to different jobs.</li>
+      <li><strong>Adaptability</strong>: handling <strong>high variability</strong> in real-world situations.</li>
+    </ul>
+  </li>
+</ul>
+
+<h2>2.2. Factory Visits and the "Lighthouse" Task</h2>
+<p>Alberto's observations from visiting many factories:</p>
+<ul>
+  <li><strong>Tasks are extremely complex</strong>: many operations require <strong>fine motor skills</strong>, multi-step coordination, and dynamic stabilization.</li>
+  <li><strong>Much of this work is still done by humans</strong>, even in advanced factories &mdash; often because automation is <strong>economically unattractive</strong> when built as traditional, highly specialized systems.</li>
+  <li>Example: <strong>Modern car assembly line</strong> &mdash; ~1,000 cars per day, many variants, thousands of parts, enormous <strong>combinatorial variability</strong>.</li>
+</ul>
+
+<p>He defines a "lighthouse" example task:</p>
+<blockquote>
+A worker reaches into a bin of bolts with one hand, picks a bolt, grabs a powered screwdriver with the other hand, inserts the bolt into the tool, then screws it <strong>underneath the car roof</strong>, possibly using the off-hand to brace the body for balance.
+</blockquote>
+
+<p>This illustrates: <strong>bimanual coordination</strong>, <strong>whole-body balancing</strong>, <strong>tool use</strong>, and <strong>working in awkward, constrained spaces</strong>.</p>
+
+<h2>2.3. The Goalpost for Humanoids</h2>
+<ul>
+  <li>Humanoids aim to <strong>directly attack the limitations of hard automation</strong>.</li>
+  <li>Alberto's belief: <strong>no fundamental reason</strong> why such tasks cannot be automated. Hardware is already <strong>physically capable</strong>. Learning-based methods <strong>should be able to scale</strong>.</li>
+</ul>
+
+<h1>3. Reliability and the Three Pillars of Customer Value</h1>
+
+<h2>3.1. Reliability Dimensions</h2>
+<p>From a product perspective, Aya emphasizes <strong>three pillars</strong>:</p>
+<ol>
+  <li><strong>Hardware reliability</strong> &mdash; Robot must physically work for long periods with minimal failures.</li>
+  <li><strong>Behavior reliability</strong> &mdash; The robot must <strong>perform specific tasks repeatably</strong> without frequent errors.</li>
+  <li><strong>Application software reliability</strong> &mdash; Higher-level software that orchestrates workflows, handles edge cases, and provides <strong>predictable operator experience</strong>.</li>
+</ol>
+
+<p>Customers need robots that are <strong>predictable</strong> and <strong>configurable</strong>.</p>
+
+<h1>4. Three Phases of Product Maturation</h1>
+
+<h2>Phase 1 &ndash; Hardware-Limited Development</h2>
+<ul>
+  <li>Main bottleneck: <strong>hardware reliability</strong>.</li>
+  <li><strong>All humanoids today</strong> are in this phase. Atlas is <strong>firmly still in Phase 1</strong>.</li>
+</ul>
+
+<h2>Phase 2 &ndash; Learning from Long-Term Deployments ("The Other Bitter Lesson")</h2>
+<ul>
+  <li>Robots deployed for extended periods reveal <strong>non-obvious product realities</strong>: wrong autonomy levels, poor exception handling, misfit interfaces.</li>
+  <li>Alberto calls this <strong>"the other bitter lesson"</strong>: the customer is always right; your initial product ideas are often wrong.</li>
+</ul>
+
+<h2>Phase 3 &ndash; Large-Scale Hardware Refinement</h2>
+<ul>
+  <li>Scaling to <strong>thousands</strong> of deployed robots reveals <strong>rare failure modes</strong>.</li>
+  <li><strong>Spot</strong>: Phase 3. <strong>Stretch</strong>: ~two years behind. <strong>Atlas</strong>: ~two years behind Stretch, still in Phase 1.</li>
+</ul>
+
+<h1>5. Why Legs? The Legs vs. Wheels Debate</h1>
+
+<h2>5.1. Product View (Aya)</h2>
+<ul>
+  <li><strong>Legs are not needed everywhere</strong>, but the long-term humanoid vision is one robot that can <strong>do almost anything a human can do</strong>.</li>
+  <li>Key requirement: Maintain <strong>positive ROI</strong> for customers.</li>
+</ul>
+
+<h2>5.2. Engineering View (Alberto)</h2>
+<ul>
+  <li><strong>Dynamic stability is no longer the main bottleneck</strong>.</li>
+  <li>Capabilities of legged platforms: <strong>slimmer profile</strong>, <strong>faster turning</strong>.</li>
+  <li>Total actuator count and complexity can be <strong>similar or even higher</strong> for wheeled bases.</li>
+  <li>Outstanding challenge: <strong>Safety certification</strong> for dynamically balancing humanoids.</li>
+</ul>
+
+<h1>6. Why Start in Industrial Manufacturing?</h1>
+
+<ol>
+  <li><strong>Scale</strong> &mdash; Factories offer <strong>large-scale opportunities</strong>.</li>
+  <li><strong>Safety Ramping</strong> &mdash; Manufacturing environments are <strong>structured</strong> and amenable to gradually increasing human&ndash;robot interaction.</li>
+  <li><strong>Variability and "Manipulation Completeness"</strong> &mdash; General assembly lines are close to <strong>"manipulation complete"</strong>.</li>
+</ol>
+
+<h1>7. AI Brains, Large Behavior Models, and Training Strategy</h1>
+
+<h2>7.1. Traditional vs. Learned Behaviors</h2>
+<ol>
+  <li><strong>Classical hierarchical pipeline</strong>: perception &rarr; planning &rarr; control. Problems: <strong>maintenance hell</strong>, <strong>poor scalability</strong>.</li>
+  <li><strong>Learned behavior engines</strong>: replace handcrafted structure with <strong>neural networks</strong> that are <strong>trained, not programmed</strong>.</li>
+</ol>
+
+<h2>7.2. Pre-training vs. Post-training</h2>
+<ul>
+  <li><strong>Post-Training</strong>: teleoperated demonstrations for each specific task at each customer. High performance but a <strong>bottleneck for scaling</strong>.</li>
+  <li><strong>Pre-Training</strong>: Large central model providing a <strong>good initial policy</strong> for any new task &mdash; a <strong>Large Behavior Model (LBM)</strong>.</li>
+</ul>
+
+<h2>7.3. What Does the "AI Brain" Need to Learn?</h2>
+<ol>
+  <li><strong>General locomotion and whole-body movement</strong></li>
+  <li><strong>Spatial perception and visual understanding</strong></li>
+  <li><strong>Environment and asset-specific knowledge</strong></li>
+  <li><strong>Dexterous manipulation and haptics</strong></li>
+</ol>
+
+<h1>8. Teleoperation and Data Collection</h1>
+<ul>
+  <li>Demonstrator <strong>wears a VR headset</strong>, sees from Atlas's perspective in <strong>stereo 3D</strong>, uses <strong>body trackers</strong>.</li>
+  <li>Typically <strong>5&ndash;10 hours of demonstrations</strong> per single behavior.</li>
+  <li>Likely future interfaces: <strong>language-based</strong> task specification, <strong>direct visual demonstration</strong>.</li>
+</ul>
+
+<h1>9. Scaling Training and the Data Flywheel</h1>
+<ol>
+  <li>Deploy to customers.</li>
+  <li>Collect demonstrations and corrections.</li>
+  <li>Improve pre-trained model.</li>
+  <li>Future deployments need less post-training.</li>
+  <li>Scale to more tasks and sites.</li>
+  <li>Repeat, compounding capabilities over time.</li>
+</ol>
+
+<h1>10. Research Pace and Uncertainties</h1>
+<ul>
+  <li>This is likely the <strong>fastest period of progress</strong> robotics has ever seen.</li>
+  <li>The community is betting that generality will <strong>emerge from scale</strong>, but full, robust generality <strong>has not yet been conclusively demonstrated</strong>.</li>
+</ul>
+
+<h1>11. Deployment Scale and Timeline</h1>
+<ul>
+  <li>BD expects <strong>thousands of humanoid robots</strong> in industrial environments within <strong>5&ndash;10 years</strong>.</li>
+  <li>Within <strong>4&ndash;5 years</strong>, Atlas could be roughly where Spot is today in terms of maturity.</li>
+</ul>
+
+<h1>12. Can I Buy an Atlas Now?</h1>
+<ul>
+  <li>Atlas is <strong>not yet a commercial off-the-shelf product</strong>.</li>
+  <li><strong>Hyundai</strong> is the first major early partner.</li>
+  <li>Interested organizations should think <strong>partnership</strong>, not procurement.</li>
+</ul>
+
+<h1>13. Gripper Design and Dexterous Manipulation</h1>
+<ul>
+  <li>Current hand: <strong>three fingers</strong>. Sufficient for most near-term goals.</li>
+  <li>Two major bets: <strong>RL in Simulation</strong> and <strong>Learning from Human Hand Use</strong>.</li>
+</ul>
+
+<h1>14. Overall Takeaways</h1>
+<ul>
+  <li><strong>Humanoids (Atlas) are aimed squarely at general-purpose manipulation</strong>, especially in automotive manufacturing.</li>
+  <li>BD leverages experience from <strong>Spot</strong> and <strong>Stretch</strong>, a structured <strong>three-phase maturity model</strong>, and <strong>teleoperation + simulation-based RL + large behavior models</strong>.</li>
+  <li>Short term: <strong>industrial manufacturing</strong> as the beachhead.</li>
+  <li>Long term: <strong>thousands of humanoids</strong> within 5&ndash;10 years, eventually expanding into <strong>homes and other environments</strong>.</li>
+</ul>
+
+</div>
+</body>
+</html>

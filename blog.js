@@ -2,33 +2,14 @@
 class Blog {
   constructor() {
     this.posts = [];
-    this.currentPost = null;
-    this.tocItems = [];
     this.showWIP = false;
     this.searchTerm = '';
     this.selectedTags = new Set();
-    this.allTags = new Map(); // Map to store tag counts
+    this.allTags = new Map();
     this.init();
   }
 
   async init() {
-    // Configure marked.js for markdown parsing
-    marked.setOptions({
-      highlight: function(code, lang) {
-        if (lang && hljs.getLanguage(lang)) {
-          try {
-            return hljs.highlight(code, { language: lang }).value;
-          } catch (err) {}
-        }
-        return hljs.highlightAuto(code).value;
-      },
-      breaks: true,
-      gfm: true,
-      sanitize: false,
-      pedantic: false
-    });
-
-    // Load posts and handle routing
     await this.loadPosts();
     this.handleRouting();
     this.renderBlogListing();
@@ -36,148 +17,39 @@ class Blog {
   }
 
   async loadPosts() {
-    // Define your blog posts here
-    const blogPosts = [
-      {
-        file: 'posts/dex-manip-from-locomotion.md',
-        slug: 'dex-manip-from-locomotion'
-      },
-      {
-        file: 'posts/2025-06-30-paper-review-data-curations.md',
-        slug: '2025-06-30-paper-review-data-curations'
-      },
-      {
-        file: 'posts/2025-09-01-where-am-i.md',
-        slug: '2025-09-01-where-am-i'
-      },
-      {
-        file: 'posts/2025-11-19-boston-dynamics-webinar-review.md',
-        slug: '2025-11-19-boston-dynamics-webinar-review'
-      }
-      // Add more posts here as you create them
-    ];
+    try {
+      const response = await fetch('posts/manifest.json');
+      const slugs = await response.json();
 
-    // Load each post
-    for (const postInfo of blogPosts) {
-      try {
-        const response = await fetch(postInfo.file);
-        if (response.ok) {
-          const content = await response.text();
-          const post = this.parsePost(content, postInfo.slug);
-          this.posts.push(post);
+      for (const slug of slugs) {
+        try {
+          const metaResponse = await fetch(`posts/${slug}/meta.json`);
+          if (metaResponse.ok) {
+            const meta = await metaResponse.json();
+            this.posts.push({ slug, ...meta });
+          }
+        } catch (error) {
+          console.error(`Error loading meta for ${slug}:`, error);
         }
-      } catch (error) {
-        console.error(`Error loading post ${postInfo.file}:`, error);
       }
+    } catch (error) {
+      console.error('Error loading manifest:', error);
     }
 
     // Sort posts by date (newest first)
     this.posts.sort((a, b) => new Date(b.date) - new Date(a.date));
-    
-    // Generate tag data for filtering
     this.generateTagData();
   }
 
-  parsePost(content, slug) {
-    // Extract frontmatter
-    const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
-    
-    if (!frontmatterMatch) {
-      return {
-        slug,
-        title: 'Untitled Post',
-        date: new Date().toISOString().split('T')[0],
-        author: 'Unknown',
-        tags: [],
-        excerpt: '',
-        content: content,
-        html: this.processQuoteTags(marked.parse(content)),
-        publish: true
-      };
-    }
-
-    const frontmatter = frontmatterMatch[1];
-    const markdownContent = frontmatterMatch[2];
-
-    // Parse frontmatter
-    const metadata = {};
-    frontmatter.split('\n').forEach(line => {
-      const colonIndex = line.indexOf(':');
-      if (colonIndex > 0) {
-        const key = line.substring(0, colonIndex).trim();
-        let value = line.substring(colonIndex + 1).trim();
-        
-        // Remove quotes if present
-        if ((value.startsWith('"') && value.endsWith('"')) || 
-            (value.startsWith("'") && value.endsWith("'"))) {
-          value = value.slice(1, -1);
-        }
-        
-        metadata[key] = value;
-      }
-    });
-
-    // Parse tags
-    let tags = [];
-    if (metadata.tags) {
-      try {
-        tags = JSON.parse(metadata.tags.replace(/'/g, '"'));
-      } catch (e) {
-        // Fallback: split by comma if JSON parsing fails
-        tags = metadata.tags.split(',').map(tag => tag.trim());
-      }
-    }
-
-    // Parse publish field
-    let publish = true;
-    if (typeof metadata.publish !== 'undefined') {
-      publish = String(metadata.publish).toLowerCase() === 'true';
-    }
-
-    return {
-      slug,
-      title: metadata.title || 'Untitled Post',
-      date: metadata.date || new Date().toISOString().split('T')[0],
-      author: metadata.author || 'Unknown',
-      tags: tags,
-      excerpt: metadata.excerpt || '',
-      featured: metadata.featured === 'true',
-      content: markdownContent,
-      html: this.processQuoteTags(marked.parse(markdownContent)),
-      publish: publish
-    };
-  }
-
   handleRouting() {
-    const hash = window.location.hash.slice(1);
-    if (hash) {
-      this.showPost(hash);
-    } else {
-      this.showBlogListing();
-    }
-
-    // Handle browser back/forward
-    window.addEventListener('popstate', () => {
-      const hash = window.location.hash.slice(1);
-      if (hash) {
-        this.showPost(hash);
-      } else {
-        this.showBlogListing();
-      }
-    });
+    this.showBlogListing();
   }
 
   showBlogListing() {
-    // Show blog listing and hide single post view
     document.getElementById('blog-listing').style.display = 'block';
-    document.getElementById('blog-post').style.display = 'none';
-    // Show filter controls in listing view
     document.getElementById('filter-controls').style.display = 'block';
-    // Configure left sidebar for listing view
     document.querySelector('.profile-sidebar').style.display = 'block';
-    document.getElementById('toc-sidebar').style.display = 'none';
-    document.querySelector('.compact-profile').style.display = 'none';
-    // Initialize filters
+
     this.generateTagData();
     this.renderTagFilters();
     this.updateClearFiltersButton();
@@ -185,45 +57,25 @@ class Blog {
     this.renderBlogListing();
   }
 
-  showPost(slug) {
-    const post = this.posts.find(p => p.slug === slug);
-    if (!post) {
-      this.showBlogListing();
-      return;
-    }
-    // Show single post view and hide blog listing
-    document.getElementById('blog-listing').style.display = 'none';
-    document.getElementById('blog-post').style.display = 'block';
-    // Hide filter controls in post view
-    document.getElementById('filter-controls').style.display = 'none';
-    // Configure left sidebar for post view
-    document.querySelector('.profile-sidebar').style.display = 'none';
-    document.getElementById('toc-sidebar').style.display = 'block';
-    document.querySelector('.compact-profile').style.display = 'block';
-    window.location.hash = slug;
-    this.renderPost(post);
+  navigateToPost(slug) {
+    window.location.href = `posts/${slug}/`;
   }
 
   renderBlogListing() {
     const container = document.getElementById('posts-container');
     const wipCaution = document.getElementById('wip-caution');
-    
-    // Get base posts (published or including WIP)
+
     let postsToShow = this.posts.filter(post => post.publish || this.showWIP);
-    
-    // Apply filters
     const filteredPosts = this.filterPosts(postsToShow);
-    
-    // Handle WIP caution
+
     if (this.showWIP) {
       wipCaution.style.display = 'block';
-      wipCaution.textContent = "Caution: You are viewing work-in-progress posts. You've been lucky enough to discover this mode! Refresh the page to return to the public view.";
+      wipCaution.textContent = "Caution: You are viewing work-in-progress posts. Refresh the page to return to the public view.";
     } else {
       wipCaution.style.display = 'none';
       wipCaution.textContent = '';
     }
-    
-    // Handle empty results
+
     if (filteredPosts.length === 0) {
       const hasFilters = this.searchTerm || this.selectedTags.size > 0;
       if (hasFilters) {
@@ -238,281 +90,52 @@ class Blog {
       }
       return;
     }
-    
-    // Render filtered posts
-    container.innerHTML = filteredPosts.map(post => `
-      <div class="post-card" onclick="blog.showPost('${post.slug}')">
+
+    container.innerHTML = '';
+    filteredPosts.forEach((post, index) => {
+      const card = document.createElement('div');
+      card.className = 'post-card' + (index % 2 === 1 ? ' post-card-reverse' : '');
+      card.onclick = () => this.navigateToPost(post.slug);
+
+      if (post.thumbnail) {
+        const img = document.createElement('img');
+        img.className = 'post-thumb';
+        img.src = `posts/${post.slug}/${post.thumbnail}`;
+        card.appendChild(img);
+      } else {
+        const wrap = document.createElement('div');
+        wrap.className = 'post-thumb-wrap';
+        wrap.appendChild(this.renderPatternThumb(post));
+        card.appendChild(wrap);
+      }
+
+      const info = document.createElement('div');
+      info.className = 'post-info';
+      info.innerHTML = `
         <h3>${post.title}</h3>
         ${post.excerpt ? `<div class="post-excerpt">${post.excerpt}</div>` : ''}
-        <div class="post-meta">
-          ${post.date} • ${post.author}
-        </div>
-        ${post.tags.length > 0 ? `
+        <div class="post-meta">${post.date} • ${post.author}</div>
+        ${post.tags && post.tags.length > 0 ? `
           <div class="post-tags">
             ${post.tags.map(tag => `<span class="post-tag">${tag}</span>`).join('')}
           </div>
         ` : ''}
         ${!post.publish ? '<div class="post-wip-label">WIP</div>' : ''}
-      </div>
-    `).join('');
-  }
-
-  generateTOC(content) {
-    const headings = content.querySelectorAll('h1, h2, h3, h4, h5, h6');
-    if (headings.length === 0) return [];
-    
-    const tocItems = [];
-    let lastByLevel = {};
-
-    // Find the minimum heading level to treat as root
-    const minLevel = Math.min(...Array.from(headings).map(h => parseInt(h.tagName.charAt(1))));
-
-    headings.forEach((heading, index) => {
-      const id = `heading-${index}`;
-      heading.id = id;
-      const level = parseInt(heading.tagName.charAt(1));
-      const item = { id, text: heading.textContent, level, children: [], element: heading };
-
-      lastByLevel[level] = item;
-      
-      if (level === minLevel) {
-        // Treat minimum level as root
-        tocItems.push(item);
-      } else {
-        // Find the closest parent of a lower level
-        for (let l = level - 1; l >= minLevel; l--) {
-          if (lastByLevel[l]) {
-            lastByLevel[l].children.push(item);
-            break;
-          }
-        }
-      }
-    });
-
-    return tocItems;
-  }
-
-  renderTOC(tocItems) {
-    const tocList = document.getElementById('toc-list');
-    const tocSidebar = document.getElementById('toc-sidebar');
-    if (tocItems.length === 0) {
-      tocSidebar.classList.remove('visible');
-      return;
-    }
-
-    function renderItems(items) {
-      return `<ul>${items.map(item => `
-        <li>
-          <a href="#${item.id}" class="toc-h${item.level}" data-id="${item.id}"
-             onclick="blog.scrollToHeading('${item.id}'); return false;">
-            ${item.text}
-          </a>
-          ${item.children && item.children.length > 0 ? renderItems(item.children) : ''}
-        </li>
-      `).join('')}</ul>`;
-    }
-
-    tocList.innerHTML = renderItems(tocItems);
-    tocSidebar.classList.add('visible');
-  }
-
-  scrollToHeading(headingId) {
-    const element = document.getElementById(headingId);
-    if (element) {
-      element.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-      });
-    }
-  }
-
-  updateActiveTOCItem() {
-    if (this.tocItems.length === 0) return;
-    
-    // Flatten the nested tocItems to get all headings
-    const flattenTocItems = (items) => {
-      let result = [];
-      items.forEach(item => {
-        result.push(item);
-        if (item.children && item.children.length > 0) {
-          result = result.concat(flattenTocItems(item.children));
-        }
-      });
-      return result;
-    };
-    
-    const allTocItems = flattenTocItems(this.tocItems);
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    
-    let activeItem = null;
-    
-    for (let i = allTocItems.length - 1; i >= 0; i--) {
-      const item = allTocItems[i];
-      const element = item.element;
-      const rect = element.getBoundingClientRect();
-      
-      if (rect.top <= 100) {
-        activeItem = item;
-        break;
-      }
-    }
-    
-    // Update active state
-    document.querySelectorAll('#toc-list a').forEach(link => {
-      link.classList.remove('active');
-    });
-    
-    if (activeItem) {
-      const activeLink = document.querySelector(`#toc-list a[data-id="${activeItem.id}"]`);
-      if (activeLink) {
-        activeLink.classList.add('active');
-      }
-    }
-  }
-
-  renderPost(post) {
-    // Update page and metadata
-    document.title = `${post.title} - Younghyo Park`;
-    document.getElementById('og-title').setAttribute('content', post.title);
-    document.getElementById('post-title').textContent = post.title;
-    document.getElementById('post-date').textContent = post.date;
-    document.getElementById('post-author').textContent = post.author;
-    
-    // Render tags
-    const tagsContainer = document.getElementById('post-tags');
-    if (post.tags.length > 0) {
-      tagsContainer.innerHTML = post.tags.map(tag => 
-        `<span class="post-tag">${tag}</span>`
-      ).join('');
-    } else {
-      tagsContainer.innerHTML = '';
-    }
-
-    // Render content
-    const contentContainer = document.getElementById('post-content');
-    contentContainer.innerHTML = post.html;
-
-    // Process images to handle relative paths
-    const images = contentContainer.querySelectorAll('img');
-    images.forEach(img => {
-      if (img.src.startsWith('assets/')) {
-        img.src = img.src; // Keep as is for now
-      }
-    });
-
-    // Execute any script tags in the content
-    const scripts = contentContainer.querySelectorAll('script');
-    scripts.forEach(script => {
-      const newScript = document.createElement('script');
-      if (script.src) {
-        newScript.src = script.src;
-        newScript.async = script.async;
-        newScript.charset = script.charset || 'utf-8';
-      } else {
-        newScript.textContent = script.textContent;
-      }
-      script.parentNode.replaceChild(newScript, script);
-    });
-
-    // Generate and render TOC
-    this.tocItems = this.generateTOC(contentContainer);
-    this.renderTOC(this.tocItems);
-
-    // Remove existing scroll listener and add new one
-    window.removeEventListener('scroll', this.scrollHandler);
-    this.scrollHandler = () => this.updateActiveTOCItem();
-    window.addEventListener('scroll', this.scrollHandler);
-
-    // Re-render MathJax
-    if (window.MathJax) {
-      MathJax.typesetPromise([contentContainer]).catch((err) => {
-        console.error('MathJax error:', err);
-      });
-    }
-
-    // Highlight code blocks
-    contentContainer.querySelectorAll('pre code').forEach((block) => {
-      hljs.highlightElement(block);
-    });
-
-    // Load Comments
-    this.loadComments(post);
-  }
-
-  loadComments(post) {
-    const container = document.getElementById('giscus-container');
-    // Clear previous instance
-    while (container.firstChild) {
-      container.removeChild(container.firstChild);
-    }
-
-    const script = document.createElement('script');
-    script.src = 'https://giscus.app/client.js';
-    script.async = true;
-    script.crossOrigin = 'anonymous';
-
-    // --- YOUR GISCUS CONFIGURATION ---
-    script.setAttribute('data-repo', 'younghyopark/younghyopark.github.io');
-    script.setAttribute('data-repo-id', 'R_kgDOIEeQxQ'); 
-    script.setAttribute('data-category', 'Blog Comments');
-    script.setAttribute('data-category-id', 'DIC_kwDOIEeQxc4CsRvw');
-    // --- END OF CONFIGURATION ---
-
-    script.setAttribute('data-mapping', 'specific');
-    script.setAttribute('data-term', `${window.location.origin}${window.location.pathname}#${post.slug}`);
-    script.setAttribute('data-strict', '1');
-    script.setAttribute('data-reactions-enabled', '1');
-    script.setAttribute('data-emit-metadata', '0');
-    script.setAttribute('data-input-position', 'bottom');
-    script.setAttribute('data-theme', 'light');
-    script.setAttribute('data-lang', 'en');
-
-    container.appendChild(script);
-
-    // Listen for Giscus messages to refresh when comment is posted
-    const messageListener = (event) => {
-      if (event.origin !== 'https://giscus.app') return;
-      
-      if (event.data && event.data.giscus && event.data.giscus.discussion) {
-        // Comment was posted or discussion updated, refresh after a short delay
-        setTimeout(() => {
-          this.loadComments(post);
-        }, 1000);
-      }
-    };
-
-    // Remove existing listener to prevent duplicates
-    window.removeEventListener('message', this.giscusMessageListener);
-    this.giscusMessageListener = messageListener;
-    window.addEventListener('message', messageListener);
-  }
-
-  setupWIPToggle() {
-    // Listen for Shift+W anywhere on the page
-    window.addEventListener('keydown', (e) => {
-      if (e.shiftKey && (e.key === 'W' || e.key === 'w')) {
-        this.showWIP = !this.showWIP;
-        
-        // Regenerate tag data since WIP posts might have different tags
-        this.generateTagData();
-        this.renderTagFilters();
-        this.updateTagButtonStates();
-        
-        this.renderBlogListing();
-      }
+      `;
+      card.appendChild(info);
+      container.appendChild(card);
     });
   }
 
   generateTagData() {
     this.allTags.clear();
-    
-    // Count tags from all published posts (or WIP if showing them)
     const postsToCount = this.posts.filter(post => post.publish || this.showWIP);
-    
     postsToCount.forEach(post => {
-      post.tags.forEach(tag => {
-        this.allTags.set(tag, (this.allTags.get(tag) || 0) + 1);
-      });
+      if (post.tags) {
+        post.tags.forEach(tag => {
+          this.allTags.set(tag, (this.allTags.get(tag) || 0) + 1);
+        });
+      }
     });
   }
 
@@ -520,16 +143,15 @@ class Blog {
     const tagContainer = document.getElementById('filter-tags');
     if (!tagContainer) return;
 
-    // Sort tags by count (descending) then alphabetically
     const sortedTags = Array.from(this.allTags.entries())
       .sort((a, b) => {
-        if (b[1] !== a[1]) return b[1] - a[1]; // Sort by count first
-        return a[0].localeCompare(b[0]); // Then alphabetically
+        if (b[1] !== a[1]) return b[1] - a[1];
+        return a[0].localeCompare(b[0]);
       });
 
     tagContainer.innerHTML = sortedTags.map(([tag, count]) => `
-      <span class="filter-tag" 
-            data-tag="${tag}" 
+      <span class="filter-tag"
+            data-tag="${tag}"
             onclick="blog.toggleTag('${tag}')">
         ${tag}
         <span class="tag-count">(${count})</span>
@@ -559,24 +181,16 @@ class Blog {
   }
 
   applyFilters() {
-    // Get search term
     const searchInput = document.getElementById('search-input');
     this.searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : '';
-
-    // Show/hide clear filters button
     this.updateClearFiltersButton();
-
-    // Update filter status
     this.updateFilterStatus();
-
-    // Re-render the blog listing with filters applied
     this.renderBlogListing();
   }
 
   updateClearFiltersButton() {
     const clearButton = document.getElementById('clear-filters');
     if (!clearButton) return;
-
     const hasActiveFilters = this.searchTerm || this.selectedTags.size > 0;
     clearButton.style.display = hasActiveFilters ? 'block' : 'none';
   }
@@ -586,7 +200,7 @@ class Blog {
     if (!statusElement) return;
 
     const hasActiveFilters = this.searchTerm || this.selectedTags.size > 0;
-    
+
     if (!hasActiveFilters) {
       statusElement.style.display = 'none';
       return;
@@ -594,78 +208,303 @@ class Blog {
 
     let statusText = 'Active filters: ';
     const filters = [];
-    
-    if (this.searchTerm) {
-      filters.push(`Search: "${this.searchTerm}"`);
-    }
-    
-    if (this.selectedTags.size > 0) {
-      filters.push(`Tags: ${Array.from(this.selectedTags).join(', ')}`);
-    }
-
+    if (this.searchTerm) filters.push(`Search: "${this.searchTerm}"`);
+    if (this.selectedTags.size > 0) filters.push(`Tags: ${Array.from(this.selectedTags).join(', ')}`);
     statusText += filters.join(' | ');
     statusElement.textContent = statusText;
     statusElement.style.display = 'block';
   }
 
   clearFilters() {
-    // Clear search
     const searchInput = document.getElementById('search-input');
-    if (searchInput) {
-      searchInput.value = '';
-    }
+    if (searchInput) searchInput.value = '';
     this.searchTerm = '';
-
-    // Clear selected tags
     this.selectedTags.clear();
     this.updateTagButtonStates();
-
-    // Update UI
     this.updateClearFiltersButton();
     this.updateFilterStatus();
-
-    // Re-render
     this.renderBlogListing();
   }
 
   filterPosts(posts) {
     return posts.filter(post => {
-      // Apply search filter
       if (this.searchTerm) {
         const searchableText = [
           post.title,
           post.excerpt,
-          post.content,
           post.author,
-          ...post.tags
+          ...(post.tags || [])
         ].join(' ').toLowerCase();
-        
-        if (!searchableText.includes(this.searchTerm)) {
-          return false;
-        }
+        if (!searchableText.includes(this.searchTerm)) return false;
       }
 
-      // Apply tag filter
       if (this.selectedTags.size > 0) {
-        const hasSelectedTag = Array.from(this.selectedTags).some(selectedTag => 
-          post.tags.includes(selectedTag)
+        const hasSelectedTag = Array.from(this.selectedTags).some(selectedTag =>
+          post.tags && post.tags.includes(selectedTag)
         );
-        if (!hasSelectedTag) {
-          return false;
-        }
+        if (!hasSelectedTag) return false;
       }
 
       return true;
     });
   }
 
-  // Process quote tags in markdown content
-  processQuoteTags(content) {
-    // Replace <quote> tags with proper HTML structure
-    return content.replace(/<quote>([\s\S]*?)<\/quote>/g, (match, quoteContent) => {
-      // Process the content inside the quote tags with markdown
-      const processedContent = marked.parse(quoteContent.trim());
-      return `<quote>${processedContent}</quote>`;
+  // Analyze text content into continuous parameters
+  analyzeText(text) {
+    const chars = text.toLowerCase().replace(/[^a-z]/g, '');
+    const len = chars.length || 1;
+
+    // Character frequency distribution (26 bins)
+    const freq = new Array(26).fill(0);
+    for (const c of chars) freq[c.charCodeAt(0) - 97]++;
+    for (let i = 0; i < 26; i++) freq[i] /= len;
+
+    // Shannon entropy of character distribution
+    let entropy = 0;
+    for (const f of freq) if (f > 0) entropy -= f * Math.log2(f);
+    entropy /= Math.log2(26); // normalize to 0-1
+
+    // Vowel ratio
+    const vowels = (text.match(/[aeiou]/gi) || []).length;
+    const vowelRatio = vowels / len;
+
+    // Average word length
+    const words = text.split(/\s+/).filter(w => w.length > 0);
+    const avgWordLen = words.reduce((s, w) => s + w.length, 0) / (words.length || 1);
+
+    // Dominant frequency peaks (top 3 characters)
+    const sorted = freq.map((f, i) => [f, i]).sort((a, b) => b[0] - a[0]);
+    const peaks = sorted.slice(0, 3).map(([f, i]) => i / 25); // normalized 0-1
+
+    // Hash for seeding
+    let hash = 0;
+    for (let i = 0; i < text.length; i++) hash = text.charCodeAt(i) + ((hash << 5) - hash);
+
+    return { entropy, vowelRatio, avgWordLen, peaks, freq, hash: Math.abs(hash), len };
+  }
+
+  // Draw a mathematical pattern on a canvas derived from text analysis
+  drawPattern(canvas, params) {
+    const w = canvas.width = 360;
+    const h = canvas.height = 240;
+    const ctx = canvas.getContext('2d');
+
+    const { entropy, vowelRatio, avgWordLen, peaks, hash, freq } = params;
+
+    // Bold, distinct hues — spread across the wheel
+    const hue1 = (peaks[0] * 360 + (hash % 60)) % 360;
+    const hue2 = (hue1 + 60 + peaks[1] * 120) % 360;
+    const hue3 = (hue1 + 180 + peaks[2] * 60) % 360;
+
+    // Pick a pattern type based on content
+    const patternType = hash % 5;
+
+    // Solid colored background
+    ctx.fillStyle = `hsl(${hue1}, 40%, 85%)`;
+    ctx.fillRect(0, 0, w, h);
+
+    if (patternType === 0) {
+      // === CONTOUR FIELD: topographic map feel ===
+      const step = 4;
+      for (let y = 0; y < h; y += step) {
+        for (let x = 0; x < w; x += step) {
+          const nx = x / w;
+          const ny = y / h;
+          const v =
+            Math.sin(nx * (4 + peaks[0] * 12) + ny * (3 + peaks[1] * 8)) *
+            Math.cos(ny * (5 + peaks[2] * 10) - nx * (2 + vowelRatio * 6)) +
+            Math.sin((nx + ny) * (6 + entropy * 8)) * 0.5;
+
+          const band = Math.floor(v * 8) % 2;
+          if (band === 0) {
+            ctx.fillStyle = `hsla(${hue2}, 50%, 65%, 0.5)`;
+            ctx.fillRect(x, y, step, step);
+          }
+        }
+      }
+      // Bold contour lines
+      ctx.lineWidth = 2;
+      for (let level = -3; level <= 3; level++) {
+        ctx.beginPath();
+        ctx.strokeStyle = `hsla(${hue3}, 55%, 45%, 0.6)`;
+        for (let x = 0; x < w; x += 2) {
+          const target = level * 0.3;
+          for (let y = 0; y < h - 1; y++) {
+            const nx = x / w, ny = y / h, ny1 = (y + 1) / h;
+            const v0 = Math.sin(nx * (4 + peaks[0] * 12) + ny * (3 + peaks[1] * 8)) *
+              Math.cos(ny * (5 + peaks[2] * 10) - nx * (2 + vowelRatio * 6)) +
+              Math.sin((nx + ny) * (6 + entropy * 8)) * 0.5;
+            const v1 = Math.sin(nx * (4 + peaks[0] * 12) + ny1 * (3 + peaks[1] * 8)) *
+              Math.cos(ny1 * (5 + peaks[2] * 10) - nx * (2 + vowelRatio * 6)) +
+              Math.sin((nx + ny1) * (6 + entropy * 8)) * 0.5;
+            if ((v0 - target) * (v1 - target) < 0) {
+              ctx.rect(x, y, 2, 2);
+            }
+          }
+        }
+        ctx.stroke();
+      }
+
+    } else if (patternType === 1) {
+      // === SPIROGRAPH: overlapping parametric curves ===
+      for (let c = 0; c < 4; c++) {
+        const a = 2 + peaks[c % 3] * 7;
+        const b = 3 + peaks[(c + 1) % 3] * 5;
+        const d = 0.3 + vowelRatio * 0.5 + c * 0.1;
+        const delta = c * 1.2 + entropy * 3;
+
+        ctx.beginPath();
+        ctx.strokeStyle = `hsla(${(hue1 + c * 70) % 360}, 55%, 50%, 0.7)`;
+        ctx.lineWidth = 2;
+        for (let t = 0; t <= Math.PI * 12; t += 0.03) {
+          const px = w / 2 + (Math.cos(a * t + delta) * (1 - d) + Math.cos(t * b) * d) * w * 0.38;
+          const py = h / 2 + (Math.sin(a * t + delta) * (1 - d) + Math.sin(t * b) * d) * h * 0.38;
+          if (t === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        ctx.stroke();
+      }
+
+    } else if (patternType === 2) {
+      // === WAVE INTERFERENCE: bold moiré ===
+      const imgData = ctx.getImageData(0, 0, w, h);
+      const data = imgData.data;
+      const f1 = 3 + peaks[0] * 15;
+      const f2 = 4 + peaks[1] * 12;
+      const f3 = 2 + peaks[2] * 10;
+      const ang1 = entropy * Math.PI;
+      const ang2 = vowelRatio * Math.PI + 1;
+
+      for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+          const nx = x / w, ny = y / h;
+          const wave1 = Math.sin((nx * Math.cos(ang1) + ny * Math.sin(ang1)) * f1 * Math.PI * 2);
+          const wave2 = Math.sin((nx * Math.cos(ang2) + ny * Math.sin(ang2)) * f2 * Math.PI * 2);
+          const wave3 = Math.sin(Math.sqrt((nx - 0.5) ** 2 + (ny - 0.5) ** 2) * f3 * Math.PI * 2);
+          const v = (wave1 + wave2 + wave3) / 3;
+
+          const idx = (y * w + x) * 4;
+          const r = data[idx], g = data[idx + 1], b = data[idx + 2];
+          const mix = (v + 1) / 2; // 0 to 1
+
+          // Mix with two accent colors
+          const h2r = this._hslChannel(hue2, 55, 45, 'r');
+          const h2g = this._hslChannel(hue2, 55, 45, 'g');
+          const h2b = this._hslChannel(hue2, 55, 45, 'b');
+
+          data[idx] = Math.round(r * (1 - mix * 0.6) + h2r * mix * 0.6);
+          data[idx + 1] = Math.round(g * (1 - mix * 0.6) + h2g * mix * 0.6);
+          data[idx + 2] = Math.round(b * (1 - mix * 0.6) + h2b * mix * 0.6);
+        }
+      }
+      ctx.putImageData(imgData, 0, 0);
+
+    } else if (patternType === 3) {
+      // === GEOMETRIC TILES: bold overlapping shapes ===
+      const shapes = 8 + (hash % 8);
+      for (let i = 0; i < shapes; i++) {
+        const seed = hash * (i + 1);
+        const cx = ((seed >> 4) & 0xFFF) / 0xFFF * w;
+        const cy = ((seed >> 8) & 0xFFF) / 0xFFF * h;
+        const size = 30 + freq[i % 26] * 200;
+        const hue = (hue1 + i * (360 / shapes)) % 360;
+        const shapeType = (seed >> 2) % 3;
+
+        ctx.globalAlpha = 0.35;
+        ctx.fillStyle = `hsl(${hue}, 50%, 60%)`;
+
+        if (shapeType === 0) {
+          // Circle
+          ctx.beginPath();
+          ctx.arc(cx, cy, size / 2, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (shapeType === 1) {
+          // Rounded rect
+          const s = size * 0.8;
+          ctx.beginPath();
+          ctx.roundRect(cx - s / 2, cy - s / 2, s, s, s * 0.2);
+          ctx.fill();
+        } else {
+          // Triangle
+          ctx.beginPath();
+          const angle = (seed % 360) * Math.PI / 180;
+          for (let v = 0; v < 3; v++) {
+            const a = angle + (v * Math.PI * 2) / 3;
+            const px = cx + Math.cos(a) * size / 2;
+            const py = cy + Math.sin(a) * size / 2;
+            if (v === 0) ctx.moveTo(px, py);
+            else ctx.lineTo(px, py);
+          }
+          ctx.closePath();
+          ctx.fill();
+        }
+
+        // Stroke outline
+        ctx.globalAlpha = 0.5;
+        ctx.strokeStyle = `hsl(${hue}, 55%, 40%)`;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+
+    } else {
+      // === DOT MATRIX: halftone-style with varying sizes ===
+      const dotSpacing = 12;
+      const cols = Math.ceil(w / dotSpacing);
+      const rows = Math.ceil(h / dotSpacing);
+
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const nx = c / cols;
+          const ny = r / rows;
+
+          const wave = (
+            Math.sin(nx * (3 + peaks[0] * 10) + ny * (2 + peaks[1] * 8)) +
+            Math.cos((nx - ny) * (4 + peaks[2] * 6)) +
+            Math.sin(Math.sqrt((nx - 0.5) ** 2 + (ny - 0.5) ** 2) * (8 + entropy * 12))
+          ) / 3;
+
+          const size = 1 + (wave + 1) * 3.5;
+          const hue = (hue1 + wave * 60 + 360) % 360;
+
+          ctx.beginPath();
+          ctx.arc(c * dotSpacing + dotSpacing / 2, r * dotSpacing + dotSpacing / 2, size, 0, Math.PI * 2);
+          ctx.fillStyle = `hsla(${hue}, 50%, 50%, 0.7)`;
+          ctx.fill();
+        }
+      }
+    }
+  }
+
+  // Helper: get an RGB channel from HSL
+  _hslChannel(h, s, l, channel) {
+    s /= 100; l /= 100;
+    const k = (n) => (n + h / 30) % 12;
+    const a = s * Math.min(l, 1 - l);
+    const f = (n) => l - a * Math.max(-1, Math.min(k(n) - 3, 9 - k(n), 1));
+    if (channel === 'r') return Math.round(f(0) * 255);
+    if (channel === 'g') return Math.round(f(8) * 255);
+    return Math.round(f(4) * 255);
+  }
+
+  renderPatternThumb(post) {
+    const text = [post.title, post.excerpt || '', ...(post.tags || [])].join(' ');
+    const params = this.analyzeText(text);
+    const canvas = document.createElement('canvas');
+    canvas.className = 'post-thumb';
+    this.drawPattern(canvas, params);
+    return canvas;
+  }
+
+  setupWIPToggle() {
+    window.addEventListener('keydown', (e) => {
+      if (e.shiftKey && (e.key === 'W' || e.key === 'w')) {
+        this.showWIP = !this.showWIP;
+        this.generateTagData();
+        this.renderTagFilters();
+        this.updateTagButtonStates();
+        this.renderBlogListing();
+      }
     });
   }
 }
@@ -673,4 +512,4 @@ class Blog {
 // Initialize blog when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
   window.blog = new Blog();
-}); 
+});

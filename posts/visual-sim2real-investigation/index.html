@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Visual Sim2Real Investigation Journey - Younghyo Park</title>
+
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Visual Sim2Real Investigation Journey" />
+  <meta property="og:description" content="Sim2Real Investigation Journey." />
+  <meta property="og:url" content="https://younghyopark.me/posts/visual-sim2real-investigation/" />
+  <meta property="og:image" content="https://raw.githubusercontent.com/younghyopark/younghyopark.github.io/new/images/new_younghyo4.jpeg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@younghyo_park" />
+  <meta name="twitter:title" content="Visual Sim2Real Investigation Journey" />
+  <meta name="twitter:description" content="Sim2Real Investigation Journey." />
+  <meta name="twitter:image" content="https://raw.githubusercontent.com/younghyopark/younghyopark.github.io/new/images/new_younghyo4.jpeg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/shared/post-base.css">
+  <script src="/shared/post-nav.js"></script>
+</head>
+<body>
+<div class="post-body">
+
+<div class="post-header">
+  <h1 class="post-title">Visual Sim2Real Investigation Journey</h1>
+  <div class="post-meta">
+    <span>2025-06-30</span>
+    <span class="sep">&middot;</span>
+    <span>Younghyo Park</span>
+  </div>
+</div>
+
+<p>Okay, I feel lost. Where am I now?</p>
+
+<p>I was personally very invested in answering these two questions:</p>
+<ol>
+  <li>How far are we from sim-to-real-ing a state-based manipulation policy, trained from scratch, to a real-world executable RGB-based policy without any performance drop?</li>
+  <li>If compensating for such drop in performance inevitably requires real-world data, what kind of data should be collected and how should it be used?</li>
+</ol>
+
+<p>Sim-to-real gap is a complicated interplay between (a) joint dynamics gap, (b) contact dynamics gap, (c) visual appearance gap. We specifically wanted to study the visual gap in isolation.</p>
+
+<h1>Isolating the Visual Gap from the others</h1>
+
+<p>We wanted to build from the ground up, <strong>isolating the visual gap from the other two gaps</strong>. To do so, we aimed to train a state-based policy with zero gap from joint-level and contact-level dynamics.</p>
+
+<p>For a simple object picking task, getting there was pretty easy. We generated the dataset using simple motion planning &mdash; smooth interpolation between current state and target grasp pose:</p>
+
+<img src="assets/joint_positions_timeseries.svg" alt="Joint positions timeseries">
+
+<p>With this dataset, we trained a BC policy and deployed it in real-world with decent success rate, practically no performance drop. The behavior didn't exploit too much of the dynamics, so unmodeled dynamics gaps could be minimized.</p>
+
+<p>It was a blissful ignorance &mdash; whatever transfer happens after this point can all be attributed to the visual gap. We were able to study visual sim2real aspects in isolation. Getting the extrinsics right really does matter a lot, even more than we thought.</p>
+
+<h1>Expanding Tasks via RL</h1>
+
+<p>We wanted more tasks. Motion planning didn't get us far for mug hang, bimanual handover, bimanual object lift. Once more contacts are involved, naive motion planning sucked quick. We decided to use reinforcement learning as a behavior generation tool.</p>
+
+<blockquote>
+In hindsight &mdash; we didn't have to. But the major reason was: in the context of real world data collection dominating robot manipulation learning, sim2real only makes sense for superhuman behaviors that can't be generated from teleoperation. RL in simulation was practically the only proven way to generate such behaviors.
+</blockquote>
+
+<h2>Matching the gain settings for PD controllers</h2>
+
+<p>Our controller settings were super stiff, for good reason &mdash; motion planning needs well-tracking position controllers. But with super stiff settings, RL really struggled to learn useful behaviors.</p>
+
+<p>The default gains in Isaac's FR3 USD configurations are so compliant that joint position <em>targets</em> become merely a shaped form of torque control:</p>
+
+<img src="assets/joint_positions_timeseries_default_fr3.svg" alt="Default FR3 joint positions">
+
+<h2>Compliant controllers are harder to Sim-to-Real</h2>
+
+<h2>Action space matters</h2>
+
+<p>This is what the joint-level trajectories look like if we learn in absolute joint space:</p>
+
+<img src="assets/joint_positions_timeseries_RL.svg" alt="RL joint positions timeseries">
+
+</div>
+</body>
+</html>
