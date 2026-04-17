@@ -68,6 +68,11 @@ a {
   text-decoration: none;
 }
 
+.star-badge {
+  display: inline-block;
+  margin-top: 8px;
+}
+
 a:focus,
 a:hover {
   color: #f09228;
