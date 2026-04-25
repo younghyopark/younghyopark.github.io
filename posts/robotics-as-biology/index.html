@@ -30,6 +30,40 @@
       font-style: normal;
       border-left-width: 4px;
     }
+
+    /* TL;DR / key-takeaways box */
+    .tldr {
+      margin: 0 0 2.5rem;
+      padding: 1.25rem 1.5rem 1rem;
+      background: var(--bg-alt);
+      border-left: 4px solid var(--accent, #d97706);
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
+    .tldr-label {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent, #d97706);
+      margin-bottom: 0.6rem;
+    }
+    .tldr p {
+      margin: 0 0 0.6rem;
+      font-size: 0.95rem;
+    }
+    .tldr ol {
+      margin: 0.5rem 0 0;
+      padding-left: 1.25rem;
+    }
+    .tldr ol li {
+      margin: 0.4rem 0;
+      font-size: 0.95rem;
+      line-height: 1.55;
+    }
+    .tldr ol li strong {
+      color: var(--text);
+    }
   </style>
 </head>
 <body>
@@ -43,6 +77,42 @@
     <span>Younghyo Park</span>
   </div>
 </div>
+
+<aside class="tldr">
+  <span class="tldr-label">TL;DR</span>
+  <p>
+    This is an argument for <strong>academic</strong> robotics labs, not
+    industry. The thesis: robotics looks structurally more like biology than
+    like physics or ML, and biology already worked out how to do science on
+    systems this messy. Four lessons:
+  </p>
+  <ol>
+    <li>
+      <strong>Pick a system that lets you answer the question, not the
+      system you want to deploy on</strong> (Brenner, <em>C. elegans</em>).
+      Don't run your science on the impressive humanoid; run it on the
+      simplest setup where the phenomenon is still real and the noise floor
+      is low enough to see effects. Transfer the understanding back later.
+    </li>
+    <li>
+      <strong>Design experiments to interact, not isolate</strong> (Fisher).
+      Stop running one-at-a-time ablations. Run the factorial cube,
+      randomise eval order, and report rollout-level variance properly.
+    </li>
+    <li>
+      <strong>Look for scaling laws, not point estimates</strong>
+      (Schmidt-Nielsen, Milo &amp; Phillips). Plot performance against your
+      design knobs over orders of magnitude. Fit the exponent. Explain
+      <em>why</em>.
+    </li>
+    <li>
+      <strong>Be honest about what you sacrificed</strong> (Levins). You can
+      pick at most two of {generality, realism, precision}. Name the corner
+      you're playing in. Or attack the same question from multiple corners
+      and look for the result that holds across all of them.
+    </li>
+  </ol>
+</aside>
 
 <h1>1. Why I keep thinking about this</h1>
 
@@ -146,7 +216,7 @@
 </p>
 
 
-<h1>3. Lesson 1: Pick your model organism (Brenner, <em>C. elegans</em>)</h1>
+<h1>3. Lesson 1: Pick a system that lets you answer the question, not the system you want to deploy on (Brenner)</h1>
 
 <p>
   This is the lesson that comes <em>before</em> all the others, and the one
@@ -154,22 +224,17 @@
 </p>
 
 <p>
-  In the mid-1960s, Sydney Brenner was at the LMB in Cambridge, surrounded by
-  the people who had just cracked the genetic code. The next big problem was
-  obvious: how does a genome specify a <em>nervous system</em>? But the molecular
-  biologists of the day were trying to attack it with the same tools that
-  had worked for protein synthesis, and the targets they had at hand
-  (mouse brain, primate cortex) were hopelessly intractable.
+  The single most important thing about Sydney Brenner's choice of
+  <em>Caenorhabditis elegans</em> in the mid-1960s is that he didn't actually
+  care about worms. What he cared about was a much bigger question: how does a
+  genome specify the structure of a nervous system? The worm was the
+  experimental substrate, not the goal. He picked it because it had the
+  phenomenon he wanted to study (a nervous system), and because it was simple
+  enough that he could study that phenomenon exhaustively.
 </p>
 
 <p>
-  Brenner's move was to switch the organism. After looking for something
-  simpler than the standard models, he picked <em>Caenorhabditis elegans</em>:
-  a 1mm soil nematode with about
-  600 cells (roughly half of them neurons), a 3&half;-day life cycle on
-  <em>E. coli</em>, and, crucially, a self-fertilizing
-  hermaphroditic reproductive system that made genetic crosses easy. From his
-  <a href="../../references/Brenner1974.pdf">1974 paper</a>:
+  From his <a href="../../references/Brenner1974.pdf">1974 paper</a>:
 </p>
 
 <blockquote>
@@ -182,45 +247,73 @@
 </blockquote>
 
 <p>
-  The criteria for picking the organism were very explicit: small enough to
-  study exhaustively, complex enough that the answers would generalize,
-  and tractable for the technique you're going to use (genetics, in this case).
-  <em>Drosophila</em> was already a famous model organism; Brenner deliberately
-  moved <em>down</em> the complexity ladder to find one even more amenable to
-  the question he wanted to ask.
+  Read that carefully. He's not saying <em>Drosophila</em> is uninteresting;
+  he's saying it's too complex to <em>completely solve</em>. He's not saying
+  the worm is what he wants to know about; he's saying it's the simplest
+  system in which his question still has bite. The whole strategic move is to
+  deliberately decouple <strong>the system you study</strong> from
+  <strong>the system you ultimately care about</strong>.
 </p>
 
 <p>
-  It worked. The complete cell lineage was traced by Sulston and colleagues
-  by 1983; the connectome of all 302 neurons was published by White, Southgate,
-  Thomson, and Brenner in 1986. Two Nobel prizes have come directly out of
-  worm work (Brenner/Sulston/Horvitz in 2002 for cell-death genetics;
-  Fire/Mello in 2006 for RNAi), and a third (Chalfie's share of the 2008 GFP
-  prize) leaned heavily on it. The whole strategy hinged on the up-front
-  decision of <em>what to study</em>.
+  This is the move I think robotics most needs, and most stubbornly resists.
 </p>
 
 <p>
-  The robotics analog is obvious and, I think, weirdly underdone. The field
-  generally picks platforms based on what's available, what looks impressive
-  in videos, or what the lab next door is using. The criterion that actually
-  matters, <em>is this platform tractable enough that we can run the
-  experiments we want to run, while complex enough that the answers will
-  transfer?</em>, almost never gets debated explicitly.
+  We have a habit of studying the system we want to deploy on, even when the
+  noise floor on that system is so high that we can't actually tell what's
+  going on. We do imitation-learning research on bimanual humanoids because
+  humanoids are exciting. We study sim-to-real on dexterous in-hand
+  reorientation because in-hand reorientation is impressive. We benchmark new
+  architectures on the hardest tasks we can find, because the hardest tasks
+  are what reviewers want to see.
 </p>
 
 <p>
-  In my own work I keep converging on something like a Franka FR3 with a small
-  set of canonical manipulation tasks (block picking, mug hanging, bimanual
-  handover). Not because they're the most exciting tasks anyone could think of,
-  but because they sit at the right point on the tractability/complexity curve
-  for the questions I care about. That's me, half-accidentally, picking a model
-  organism. If we did this on purpose (declared a small set of platforms
-  and tasks as community-level "model organisms" and accumulated deep, comparable
-  experiments on them across labs), I think we'd buy ourselves about a
-  decade of progress. <em>C. elegans</em> biology is not impressive because every
-  paper studied a new worm. It's impressive because every paper studied
-  <em>the same worm</em>, and the cumulative depth of understanding compounded.
+  The trouble is that on those systems, the experimental signal-to-noise
+  ratio is awful. Every rollout is expensive, every comparison is dominated
+  by variance from a hundred uncontrolled sources, and the differences we
+  report are barely separable from chance. We end up running 5 trials per
+  condition, declaring a 4-point success-rate gap a "win," and writing the
+  paper around it. None of that is good science. It's just what's available
+  when you've insisted on doing your science on the hardest possible
+  substrate.
+</p>
+
+<p>
+  The Brenner move is the opposite. <strong>If you want to study a phenomenon,
+  strip down to the simplest system in which that phenomenon is still present
+  and still reproducible, even if it's not the system you ultimately want to
+  deploy on.</strong> Want to study sim-to-real? Don't do it on the
+  impressive task; do it on the simplest task where the gap is still real,
+  where you can run a thousand trials a day, where the variance is small
+  enough to actually see effects. Want to study how policy performance scales
+  with data? Don't spread your budget over a 50-task benchmark; pick one task
+  where you can collect demonstrations cheaply enough to push the data axis
+  over four orders of magnitude. Once you understand the phenomenon in the
+  clean system, transfer the understanding back to the deployment system. The
+  understanding generalises; the noise floor doesn't follow you.
+</p>
+
+<p>
+  This isn't a call to abandon the impressive demos. It's a call to be honest
+  about which experiments are <em>science</em> and which are <em>demo</em>.
+  The demos can stay. We just shouldn't expect them to also be the substrate
+  on which our scientific claims are made.
+</p>
+
+<p>
+  In my own work I keep converging on something like a Franka FR3 with a
+  small set of canonical manipulation tasks. Not because they're the most
+  exciting tasks anyone could think of, but because they're the simplest
+  setups in which the questions I care about (sim-to-real, demonstration
+  curation, controller-policy interaction) are still real, and in which I
+  can run enough trials to actually see effects. That's the Brenner move,
+  made half-accidentally. If we did it on purpose, the field would
+  compound: <em>C. elegans</em> biology is not impressive because every
+  paper studied a new worm; it's impressive because every paper studied
+  <em>the same worm</em>, and a hundred years of cumulative depth landed on
+  one substrate.
 </p>
 
 
@@ -768,11 +861,11 @@
 
 <ul>
   <li>
-    <strong>Pick a model organism, and stick to it.</strong>
-    State up front what platform and task suite you've chosen and <em>why</em>:
-    tractability, complexity, transferability. Make it easy for other
-    labs to compare against the same setup. Resist the temptation to constantly
-    move to a new robot for novelty.
+    <strong>Pick the study system on tractability, not impressiveness.</strong>
+    State up front what platform and task suite you've chosen and
+    <em>why</em>: in particular, why it's simple enough to give clean answers
+    to the question you actually care about. Don't run your scientific claims
+    on the same system you're trying to make a flashy demo on.
   </li>
   <li>
     <strong>Stop varying one thing at a time.</strong>
