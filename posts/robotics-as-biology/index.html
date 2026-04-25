@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Robotics as Biology - Younghyo Park</title>
+
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Robotics as Biology: four lessons from a field that's been here before" />
+  <meta property="og:description" content="Reading Fisher, Brenner, Schmidt-Nielsen, and Levins through the lens of robotics research: model organisms, factorial design, scaling laws, and the generality/realism/precision tradeoff." />
+  <meta property="og:url" content="https://younghyopark.me/posts/robotics-as-biology/" />
+  <meta property="og:image" content="https://raw.githubusercontent.com/younghyopark/younghyopark.github.io/new/images/new_younghyo4.jpeg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@younghyo_park" />
+  <meta name="twitter:title" content="Robotics as Biology: four lessons from a field that's been here before" />
+  <meta name="twitter:description" content="Reading Fisher, Brenner, Schmidt-Nielsen, and Levins through the lens of robotics research." />
+  <meta name="twitter:image" content="https://raw.githubusercontent.com/younghyopark/younghyopark.github.io/new/images/new_younghyo4.jpeg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/shared/post-base.css">
+  <script src="/shared/post-nav.js"></script>
+
+  <style>
+    /* Scoped: literal source quotes should be readable, not faded. */
+    .post-body blockquote {
+      color: var(--text);
+      font-style: normal;
+      border-left-width: 4px;
+    }
+  </style>
+</head>
+<body>
+<div class="post-body">
+
+<div class="post-header">
+  <h1 class="post-title">Robotics as Biology: four lessons from a field that's been here before</h1>
+  <div class="post-meta">
+    <span>2026-04-25</span>
+    <span class="sep">&middot;</span>
+    <span>Younghyo Park</span>
+  </div>
+</div>
+
+<h1>1. Why I keep thinking about this</h1>
+
+<p>
+  The longer I do robotics research, the more it feels like the wrong fields are
+  loaning us their mental models. We borrow from physics
+  (precise laws, clean derivations, controlled apparatus) and from machine learning
+  (benchmarks, scaling curves, ablations on a fixed test set), and then we wonder
+  why our experiments are so hard to interpret and why findings on one robot
+  in one lab evaporate the moment somebody changes the lighting.
+</p>
+
+<p>
+  My nagging suspicion is that the field we should actually be borrowing from is
+  <strong>biology</strong>. Not as metaphor, not as a cute branding exercise,
+  but as a methodological tradition. Biology has spent a hundred years working
+  out exactly the problem we have now: <em>how do you do real science on a
+  complex, high-variance, hard-to-control system that you can't shut down for
+  inspection?</em> You can't make two patches of soil identical. You can't make
+  two cows identical. You can't make two real-world manipulation setups
+  identical either. The whole game is figuring out how to draw valid
+  conclusions in spite of that.
+</p>
+
+<p>
+  One framing note before I dive in. The argument below is for
+  <strong>academic</strong> robotics labs, not industry. Industry labs have a
+  different job: ship a product, fast. If one heroic demo on one task gets a
+  humanoid through a customer pilot, that's the right call for them, and the
+  methodological care I'm about to argue for would just be overhead in that
+  context. Doing good science may or may not align with shipping a good
+  product, and when it doesn't, industry should follow the product, not the
+  science.
+</p>
+
+<p>
+  Academia is supposed to be the part of the field that <em>isn't</em> racing
+  industry on product velocity, because we can't and we shouldn't. Our
+  comparative advantage is supposed to be the careful, generalizable,
+  mechanism-revealing work that industry doesn't have time for. That's what
+  science <em>is</em>, and it's also exactly what biology has spent a hundred
+  years figuring out how to do at scale. If we don't differentiate ourselves
+  from industry on that axis, I'm not sure what academic robotics is even for
+  anymore. So when I say "we" in the rest of this post, I mostly mean the
+  academic "we."
+</p>
+
+<p>
+  This post is my attempt to summarize what I took away from reading four
+  pieces of biology that I think every academic robotics researcher should
+  know about: Fisher's <em>Design of Experiments</em>, Brenner's
+  <em>C. elegans</em> paper, Schmidt-Nielsen's <em>Scaling</em>, and Levins'
+  <em>Strategy of Model Building</em>. None of them are about robots. All of
+  them are, in a deep way, about us.
+</p>
+
+
+<h1>2. Why biology, of all places</h1>
+
+<p>
+  When people hear "robotics is like biology" they usually translate it as
+  "robots will be living things one day" or "neural nets are like brains."
+  That's not what I mean. What I mean is structural:
+</p>
+
+<ul>
+  <li>
+    The system you're studying has <strong>enormous uncontrolled variability</strong>.
+    Two adjacent plots of the same field yield differently for reasons no
+    one can fully articulate. Two real-world rollouts of the same policy succeed
+    or fail for reasons no one can fully articulate.
+  </li>
+  <li>
+    The <strong>treatments interact</strong>. A fertilizer that helps one
+    seed variety hurts another. A controller gain that's fine on one task
+    breaks another. Effects don't decompose neatly into a sum of one-factor-at-a-time
+    main effects.
+  </li>
+  <li>
+    Each trial is <strong>expensive and slow</strong>. You don't get to run
+    a million plots, just like you don't get to run a million real-world rollouts.
+    Compute-bound ML doesn't have to think about this in the same way at all.
+  </li>
+  <li>
+    The thing you actually care about, "does this generalize?",
+    is fundamentally an <strong>inductive question</strong>: from a finite
+    sample of trials, what can I confidently claim about the population of
+    conditions I haven't tested?
+  </li>
+</ul>
+
+<p>
+  Biology had to confront all of this in the 1920s and 30s. The statistical
+  technology and methodological culture that came out of it is a gift left on
+  the porch. We should pick it up.
+</p>
+
+<p>
+  Four ideas in particular, one each from four different traditions of
+  twentieth-century biology, are the ones I want to talk about.
+</p>
+
+
+<h1>3. Lesson 1: Pick your model organism (Brenner, <em>C. elegans</em>)</h1>
+
+<p>
+  This is the lesson that comes <em>before</em> all the others, and the one
+  I think the field most quietly avoids.
+</p>
+
+<p>
+  In the mid-1960s, Sydney Brenner was at the LMB in Cambridge, surrounded by
+  the people who had just cracked the genetic code. The next big problem was
+  obvious: how does a genome specify a <em>nervous system</em>? But the molecular
+  biologists of the day were trying to attack it with the same tools that
+  had worked for protein synthesis, and the targets they had at hand
+  (mouse brain, primate cortex) were hopelessly intractable.
+</p>
+
+<p>
+  Brenner's move was to switch the organism. After looking for something
+  simpler than the standard models, he picked <em>Caenorhabditis elegans</em>:
+  a 1mm soil nematode with about
+  600 cells (roughly half of them neurons), a 3&half;-day life cycle on
+  <em>E. coli</em>, and, crucially, a self-fertilizing
+  hermaphroditic reproductive system that made genetic crosses easy. From his
+  <a href="../../references/Brenner1974.pdf">1974 paper</a>:
+</p>
+
+<blockquote>
+  "Some eight years ago, when I embarked on this problem, I decided that what
+  was needed was an experimental organism which was suitable for genetical
+  study and in which one could determine the complete structure of the nervous
+  system. <em>Drosophila</em>, with about 10<sup>5</sup> neurons, is much too
+  large, and, looking for a simpler organism, my choice eventually settled on
+  the small nematode, <em>Caenorhabditis elegans</em>."
+</blockquote>
+
+<p>
+  The criteria for picking the organism were very explicit: small enough to
+  study exhaustively, complex enough that the answers would generalize,
+  and tractable for the technique you're going to use (genetics, in this case).
+  <em>Drosophila</em> was already a famous model organism; Brenner deliberately
+  moved <em>down</em> the complexity ladder to find one even more amenable to
+  the question he wanted to ask.
+</p>
+
+<p>
+  It worked. The complete cell lineage was traced by Sulston and colleagues
+  by 1983; the connectome of all 302 neurons was published by White, Southgate,
+  Thomson, and Brenner in 1986. Two Nobel prizes have come directly out of
+  worm work (Brenner/Sulston/Horvitz in 2002 for cell-death genetics;
+  Fire/Mello in 2006 for RNAi), and a third (Chalfie's share of the 2008 GFP
+  prize) leaned heavily on it. The whole strategy hinged on the up-front
+  decision of <em>what to study</em>.
+</p>
+
+<p>
+  The robotics analog is obvious and, I think, weirdly underdone. The field
+  generally picks platforms based on what's available, what looks impressive
+  in videos, or what the lab next door is using. The criterion that actually
+  matters, <em>is this platform tractable enough that we can run the
+  experiments we want to run, while complex enough that the answers will
+  transfer?</em>, almost never gets debated explicitly.
+</p>
+
+<p>
+  In my own work I keep converging on something like a Franka FR3 with a small
+  set of canonical manipulation tasks (block picking, mug hanging, bimanual
+  handover). Not because they're the most exciting tasks anyone could think of,
+  but because they sit at the right point on the tractability/complexity curve
+  for the questions I care about. That's me, half-accidentally, picking a model
+  organism. If we did this on purpose (declared a small set of platforms
+  and tasks as community-level "model organisms" and accumulated deep, comparable
+  experiments on them across labs), I think we'd buy ourselves about a
+  decade of progress. <em>C. elegans</em> biology is not impressive because every
+  paper studied a new worm. It's impressive because every paper studied
+  <em>the same worm</em>, and the cumulative depth of understanding compounded.
+</p>
+
+
+<h1>4. Lesson 2: Design experiments to interact, not isolate (Fisher)</h1>
+
+<p>
+  Once you have a tractable system, the next question is <em>how</em> to
+  interrogate it. This is where R. A. Fisher's
+  <a href="../../references/1937-fisher-thedesignofexperiments.pdf"><em>The Design of Experiments</em></a>
+  (1937) comes in, and it's where most robotics evaluations are at their most
+  embarrassing.
+</p>
+
+<p>
+  Fisher had to handle a problem that doesn't really exist for ML benchmarks
+  but very much exists for robotics: every experimental trial happens under
+  conditions that are not, and cannot be, identical. Two adjacent plots of soil
+  yield differently. Two real-world rollouts of the same policy succeed or fail
+  for reasons no one can fully articulate. Field experimentation in agriculture
+  had to invent the modern statistical apparatus from scratch to handle this.
+  The same apparatus is sitting right there for us.
+</p>
+
+<p>Three of his ideas in particular are worth taking from the book directly.</p>
+
+<h2>Randomisation as the physical basis of validity.</h2>
+
+<p>
+  It is not enough to make conditions "as similar as possible"; they will
+  never actually be similar. What you do instead is <em>randomise</em>
+  assignments, so that uncontrolled differences cannot bias the comparison. In
+  Fisher's words, randomisation is "the only point in the experimental procedure
+  in which the laws of chance, which are to be in exclusive control of our
+  frequency distribution, have been explicitly introduced." Translation for us:
+  when you compare policy A vs. policy B in the real world, they have to be
+  interleaved rollout-by-rollout, with the order seeded and logged. "All A in
+  the morning, then all B in the afternoon" is not a comparison; it's a
+  comparison-of-policies tangled with a comparison-of-everything-else-that-drifted-between-sessions.
+</p>
+
+<h2>Replication for <em>error estimation</em>, not just variance reduction.</h2>
+
+<p>
+  When we report success rates over N trials, we usually justify it as "to
+  reduce noise." Fisher is careful to point out that replication serves a
+  second, more important purpose:
+</p>
+
+<blockquote>
+  "[Replication's] main purpose, which there is no alternative method of
+  achieving, is to supply an estimate of error by which the significance of
+  these comparisons is to be judged."
+</blockquote>
+
+<p>
+  If your variance bar is computed from 3 seeds, you don't have an error
+  estimate; you have a number. Without a credible estimate of the experiment's
+  own error, the only way for someone else to judge whether a 4-point
+  success-rate gap is real is to lean on their <em>prior intuition</em> about
+  how much rollouts vary in this kind of setup. That makes the result
+  not self-contained, and it can't carry conviction to anyone outside the
+  lab.
+</p>
+
+<h2>Factorial designs over one-at-a-time.</h2>
+
+<p>
+  This is the lesson I most want to put on a billboard. Fisher devotes a whole
+  chapter to dismantling the "scientific" myth of varying one factor at a time:
+</p>
+
+<blockquote>
+  "In expositions of the scientific use of experimentation it is frequent to
+  find an excessive stress laid on the importance of varying the essential
+  conditions <em>only one at a time</em>. &hellip; This ideal doctrine seems to
+  be more nearly related to expositions of elementary physical theory than to
+  laboratory practice in any branch of research."
+</blockquote>
+
+<p>
+  If you have four binary factors to test, the textbook approach has you do
+  four separate ablations. The factorial approach runs all 16 combinations,
+  randomised, and gets you (a) the same precision on each main effect as a
+  dedicated single-factor study, (b) all the pairwise and higher-order
+  interactions for free. In any system where factors interact (which
+  includes essentially every robot learning pipeline), one-at-a-time
+  systematically misses the most interesting structure. Most of the
+  consequential pieces of robot-learning lore feel like exactly this kind of
+  unmeasured interaction. "Action chunking helps." Helps relative to what
+  action space, what controller stiffness, what data scale? "Diffusion policies
+  beat Gaussian heads." On what task density, what observation space, what
+  training-time budget? Each has been shown one-at-a-time, in isolation, on
+  different setups. We have approximately zero clean factorial evidence about
+  how any of them combine.
+</p>
+
+<h2>What about the combinatorial blowup?</h2>
+
+<p>
+  The obvious objection to "just run the factorial cube" is that 2<sup>n</sup>
+  grows fast and rollouts are expensive. Four factors is 16 cells, fine. Six
+  is 64. Eight is 256. At three reps each you're already at 768 rollouts,
+  which is more than most robotics papers ever do for any single result. So
+  in practice, "go factorial" can sound like a thing that's only theoretically
+  available.
+</p>
+
+<p>
+  Fisher took this concern seriously and addresses it head-on in the last two
+  sections of the factorial chapter. There are three escape hatches, and a
+  fourth that got formalised after the book but follows directly from his
+  reasoning.
+</p>
+
+<p>
+  <strong>Escape hatch 1: hidden replication means you need fewer per-cell
+  repeats than you think.</strong>
+  This is the most underappreciated property of factorial designs and the one
+  most worth internalising. In a 2<sup>4</sup> = 16-cell experiment, the main
+  effect of factor A is computed as the difference between the 8 cells where
+  A is high and the 8 cells where A is low. Even if each of those 16 cells is
+  run only once, the main effect of A is already an average over 8 trials. So
+  a single rollout per cell gives you 8-fold averaging on every main effect
+  "for free," courtesy of the structure of the design itself. Fisher's phrase:
+  <em>"the loss of absolute replication is made good by the hidden replication
+  inherent in the factorial arrangement."</em> The same is true for pairwise
+  interactions, which average over 4 cells each. The intuition that "I need 5
+  reps per cell" comes from the one-at-a-time mental model, where each
+  comparison only uses two cells. In a factorial design, that intuition
+  systematically over-counts.
+</p>
+
+<p>
+  <strong>Escape hatch 2: trade absolute replication for more conditions.</strong>
+  If you have a fixed budget of, say, 96 rollouts, the textbook impulse is to
+  do 6 reps of 16 cells. Fisher works out the alternative arithmetic: you can
+  also do 2 reps of 48 cells. Same total budget, three times the design space,
+  and the precision on each main effect is <em>unchanged</em> because of the
+  hidden-replication argument. The only thing you lose is a chunk of the
+  degrees of freedom for the error estimate (80 versus 48 in his worked
+  example), which mostly matters at the statistical-significance margin and
+  often doesn't matter for your actual interpretation.
+</p>
+
+<p>
+  <strong>Escape hatch 3: drop replication entirely; use higher-order
+  interactions as your error term.</strong>
+  This is Section 41 of the book ("Experiments without Replication") and it's
+  the practical crown jewel. With 6 binary factors = 64 cells, run each cell
+  once. The 63 degrees of freedom decompose as: 6 main effects + 15 pairwise
+  interactions + 20 three-way + 15 four-way + 6 five-way + 1 six-way
+  interaction. The argument: in any reasonable system, three-way and higher
+  interactions are usually too small to matter. So pool those 42 d.f. of
+  high-order interactions and use them as your error estimate. You get clean
+  reads on all the main effects and all the pairwise interactions for the
+  cost of running each cell once. Fisher also names the failure mode and the
+  recovery move: <em>"If, however, contrary to expectation, it appeared that
+  there was a large interaction between two of these factors, it would be
+  advisable to examine separately the interactions between 3 factors which
+  involve these two."</em> In other words: pool aggressively by default, and
+  un-pool selectively when something interesting jumps out.
+</p>
+
+<p>
+  <strong>Escape hatch 4: fractional factorial designs.</strong>
+  Fisher gestures at this but the full machinery was developed later by
+  Finney (1945) and Box &amp; Hunter (1950s, the same Box from
+  <em>Statistics for Experimenters</em>). The idea: instead of running all
+  2<sup>n</sup> cells, run a carefully chosen 1/2, 1/4, or 1/8 fraction. You
+  give up the ability to distinguish certain interaction terms (they get
+  "confounded" or aliased with each other), but if you've already decided the
+  high-order interactions are negligible, you're not actually losing anything
+  estimable. The payoff is dramatic: with a half-fraction of a 2<sup>7</sup>
+  design you can probe 7 binary factors in 64 trials instead of 128. With a
+  Plackett-Burman screening design you can probe 7 factors in 8 trials, which
+  sounds like cheating but works for screening which factors are even worth
+  studying further. This is what industrial DOE actually uses in practice, and
+  it's why semiconductor fabs and chemical plants don't run a million-cell
+  factorial when they want to optimise a process.
+</p>
+
+<p>
+  Putting all of these together, the practical playbook for our setting looks
+  roughly like:
+</p>
+
+<ul>
+  <li>
+    <strong>Up to ~4 binary factors:</strong> run the full 2<sup>n</sup> cube,
+    with as many reps per cell as you can afford. 16 to 80 rollouts is
+    completely tractable for most groups and gets you everything (main
+    effects, all interactions, a clean error estimate).
+  </li>
+  <li>
+    <strong>5 to 6 factors:</strong> run the full 2<sup>n</sup> once, no
+    replication, and use higher-order interactions as your error term. 32 to
+    64 rollouts. Same precision on the things you care about; you just give
+    up the ability to detect tiny three-way effects.
+  </li>
+  <li>
+    <strong>7+ factors:</strong> switch to a fractional factorial. Most of
+    the factors are probably nearly independent of each other anyway; you
+    just want to figure out which ones matter, and screening designs are
+    purpose-built for that.
+  </li>
+  <li>
+    <strong>Continuous factors:</strong> bin them to two or three levels
+    (low/high, or low/mid/high) for the screening pass. Once you know which
+    factors matter, do a follow-up with a finer sweep on just those, holding
+    the rest at sensible defaults.
+  </li>
+</ul>
+
+<p>
+  The thing this playbook gets you, in any case, is much more than a
+  one-at-a-time study with the same budget. A six-factor screen at 64
+  rollouts tells you which two or three factors actually matter and how they
+  interact. A six-factor one-at-a-time study at 64 rollouts tells you the
+  marginal effect of each factor under one specific setting of the others,
+  which is almost always the wrong question. The cost is the same; the
+  information return is roughly an order of magnitude apart.
+</p>
+
+<h2>OK but how do you actually analyse it?</h2>
+
+<p>
+  Fair question. With one rollout per cell and no explicit replication, what
+  are you supposed to do with the resulting numbers? The answer is
+  <strong>analysis of variance</strong>, which is also Fisher's invention and
+  is essentially purpose-built for this situation.
+</p>
+
+<p>
+  For a 2<sup>n</sup> factorial design, every effect (main effect or
+  interaction) is a <em>linear contrast</em>: a particular &plusmn;1-weighted
+  sum of the cell outcomes. Coding factors A, B, C as &plusmn;1 and writing
+  the 8 outcomes as y<sub>1</sub> through y<sub>8</sub>:
+</p>
+
+<ul>
+  <li>
+    The main effect of A is (mean of cells where A=+) minus (mean where A=−),
+    which works out to a signed sum where the signs match A's column.
+  </li>
+  <li>
+    The AB interaction is the signed sum where the signs are the
+    <em>product</em> of A's and B's columns.
+  </li>
+  <li>
+    The ABC interaction is the signed sum where the signs are the product of
+    all three columns.
+  </li>
+</ul>
+
+<p>
+  Seven contrasts, seven degrees of freedom, exactly matching the 8 &minus; 1
+  = 7 d.f. you have in 8 cells. <strong>Every cell contributes to every
+  effect.</strong> That's the hidden replication made concrete: each main
+  effect is already averaging four observations even though no cell is
+  literally replicated.
+</p>
+
+<p>
+  The remaining question is how to tell signal from noise without any explicit
+  error estimate. Two standard options.
+</p>
+
+<p>
+  <strong>Option 1: pool the high-order interactions as the error term.</strong>
+  This is Fisher's Section 41 move. If you're willing to assume that three-way
+  and higher interactions are negligible (the world rarely has weird "A only
+  matters when B and C are both high" effects), then the measured values of
+  those high-order contrasts are essentially measuring noise: if ABC is
+  "really" zero in the population, the value you compute for ABC from your
+  data is whatever rollout-to-rollout variance happened to load onto that
+  contrast. Pool those terms, divide each effect's mean square by the pooled
+  error mean square, get an F statistic. ANOVA software (<code>statsmodels</code>
+  in Python, base R) does this in one line. In a 2<sup>4</sup> you get 5 d.f.
+  for error this way; in a 2<sup>5</sup>, 16 d.f. The technique gets really
+  practical for 5+ factors and is a bit dicey for 2<sup>3</sup>.
+</p>
+
+<p>
+  <strong>Option 2: half-normal plot (Daniel, 1959).</strong>
+  More visual and honestly what I'd reach for first in a robotics setting.
+  Compute all 2<sup>n</sup> &minus; 1 effects, take absolute values, sort
+  them, and plot them against the expected order statistics of a half-normal
+  distribution. If every effect were pure noise, the points would lie on a
+  straight line through the origin. <strong>Real effects show up as outliers
+  above the line.</strong> No <em>a priori</em> error estimate needed: the
+  noise effects estimate the error themselves, by virtue of forming the line,
+  and the real effects sort themselves out by deviating from it. In a
+  2<sup>4</sup> with 15 effects you'll typically see 10 to 13 of them lying
+  on a clean line and 2 to 5 of them shooting off above. You don't even need
+  a p-value to read the plot. This is what most experienced DOE practitioners
+  actually use for unreplicated factorials, and Box, Hunter &amp; Hunter spend
+  a lot of pages on it.
+</p>
+
+<p>
+  One caveat for our setting: strict ANOVA assumes outcomes are roughly
+  normally distributed with constant variance across cells. Robotics success
+  rates aren't either. They're bounded in [0, 1], the variance depends on the
+  mean (a cell at 50% success has more variance than one at 95%), and
+  "success" is binary at the per-trial level. Three pragmatic workarounds:
+</p>
+
+<ol>
+  <li>
+    <strong>Logistic regression with the same factorial design matrix.</strong>
+    Same effects, same interpretation, but the model respects the binomial
+    structure of the outcome.
+    <code>statsmodels.formula.api.logit('success ~ A * B * C', data=df).fit()</code>
+    gives you coefficients for every main effect and interaction in one
+    call, with confidence intervals you can actually trust.
+  </li>
+  <li>
+    <strong>Bootstrap.</strong> Resample trials with replacement, recompute
+    each effect, look at the empirical distribution of effect magnitudes. No
+    parametric assumptions, slow but bulletproof, and works for any test
+    statistic you care to define.
+  </li>
+  <li>
+    <strong>Half-normal plot anyway.</strong> It's robust to mild
+    distributional violations and tends to give the right answer for
+    screening, which is what unreplicated factorials are for in the first
+    place.
+  </li>
+</ol>
+
+<p>
+  So the actual end-to-end workflow for a 2<sup>4</sup> screening pass with
+  one rollout per cell looks like: randomise the order of the 16 cells, run
+  them, compute the 15 signed-contrast effects (about three lines of code),
+  make the half-normal plot, eyeball which effects are real, optionally fit a
+  logistic regression on the same design matrix to get coefficient estimates
+  and intervals, and then follow up at higher replication on whatever the
+  screen flagged as worth chasing. That's it. Same statistical machinery the
+  agronomy stations at Rothamsted were using in 1925, just with NumPy and a
+  laptop.
+</p>
+
+<p>
+  And the kicker: highly standardised experiments don't strengthen your
+  conclusions, they <em>narrow</em> them.
+</p>
+
+<blockquote>
+  "The exact standardisation of experimental conditions&hellip; always carries
+  with it the real disadvantage that a highly standardised experiment supplies
+  direct information only in respect of the narrow range of conditions achieved
+  by standardisation."
+</blockquote>
+
+<p>
+  A lighting-controlled, single-extrinsic, single-object-pose experiment doesn't
+  tell you your method works. It tells you it works <em>under those exact
+  conditions</em>. Biology never tries to hold the cow constant; it varies the
+  cow on purpose and absorbs the variation into the error term, so the
+  conclusion comes out generalising across cows. We should be doing the same.
+</p>
+
+
+<h1>5. Lesson 3: Look for scaling laws, not just point estimates (Schmidt-Nielsen, Milo &amp; Phillips)</h1>
+
+<p>
+  Biology spent its first century being almost entirely qualitative. "Gene X
+  affects process Y." "Hormone A regulates organ B." It only matured into
+  quantitative biology when people started measuring things: fast,
+  precisely, and <em>across orders of magnitude</em>.
+</p>
+
+<p>
+  Knut Schmidt-Nielsen's
+  <a href="../../references/9780521319874_excerpt.pdf"><em>Scaling: Why is Animal Size So Important?</em></a>
+  opens with the observation that animals span 10<sup>21</sup> in mass between
+  the smallest mycoplasma and the largest whale. That's not a difference of
+  degree; it's a difference of physical regime. And when you ask how a biological
+  function (metabolic rate, heart rate, bone strength, oxygen transport)
+  varies across that range, you find clean <em>scaling laws</em> that
+  hold across phyla. The canonical example, which the broader literature spends
+  decades arguing about, is Kleiber's law: metabolic rate scales roughly as
+  mass<sup>3/4</sup> across an extraordinary range of organisms. A single
+  exponent that organises an enormous amount of biology.
+</p>
+
+<p>
+  Schmidt-Nielsen's other key observation is that many of the things that
+  <em>look</em> like fundamental constraints can be overcome by changing the
+  <em>design</em>, not the quantity. Diffusion alone can supply oxygen to a
+  microorganism, but is hopelessly inadequate for an elephant. The fix isn't
+  more diffusion; it's a new mechanism: convection in blood, plus
+  hemoglobin as a 100&times; amplifier of oxygen-carrying capacity. The system
+  reorganises around the constraint rather than fighting it. He uses the
+  engineering analogy of stone arches versus suspension bridges: as you scale
+  up, you don't make a bigger stone arch, you switch to a fundamentally
+  different design where the load-bearing elements are in tension instead of
+  compression.
+</p>
+
+<p>
+  Both of these are exactly the kind of result robotics should be producing
+  and almost never does. We report success rates at single operating points.
+  We almost never plot performance as a function of a continuous design choice
+  over multiple orders of magnitude. When was the last time you saw a robotics
+  paper with a log-log plot of success rate vs. data scale, controller stiffness,
+  or policy frequency, fit with a clean exponent and discussed in terms of
+  <em>why</em> that exponent? When was the last time we said something like
+  "below this threshold the system is bottlenecked by X, but above it the
+  binding constraint switches to Y, so the slope of the curve changes"?
+</p>
+
+<p>
+  Milo &amp; Phillips, in the
+  <a href="https://book.bionumbers.org/preface/">preface</a> to <em>Cell
+  Biology by the Numbers</em>, push the same argument from a different angle:
+  biology was held back for decades by being qualitative, and matured when
+  people started making precise quantitative measurements that could be
+  cross-checked across methods. They borrow Lord Kelvin's line (knowledge
+  without measurement is "meagre and unsatisfactory") and propose
+  that biology needs a "cheat sheet" of well-established quantitative
+  facts: how big, how fast, how many, how much. They argue that
+  <em>the act of trying to explain why a number has the value it does becomes
+  an engine of discovery</em>. You can't ask "why is this 0.7" if all you've
+  ever reported is "it works."
+</p>
+
+<p>
+  This is one of the most underrated opportunities in our field. We should be
+  hunting for the robotics analogues of Kleiber's law: clean numerical
+  relationships that hold across systems and tell you <em>why</em>. "How does
+  sample efficiency scale with controller stiffness?" (We took a first crack at
+  this in our recent <a href="https://younghyopark.me/tune-to-learn">Tune to
+  Learn</a> work, where the choice of controller gains turns out to interact
+  strongly with whether you're doing BC, RL, or sim-to-real, and the right
+  setting differs by an order of magnitude across regimes.) "How does
+  sim-to-real gap scale with policy frequency?" "How does success rate scale
+  with demonstration count, and is the exponent the same across embodiments?"
+  These are answerable questions with clean numbers attached, and the field
+  treats them like exotica.
+</p>
+
+
+<h1>6. Lesson 4: Be honest about what you sacrificed (Levins)</h1>
+
+<p>
+  The cleanest single idea in this entire reading list comes from a 10-page
+  paper Richard Levins wrote in 1966 called
+  <a href="../../references/Levins-1966-Model_Building.pdf">"The Strategy of
+  Model Building in Population Biology."</a> His argument is elegant and
+  brutal:
+</p>
+
+<blockquote>
+  "It is of course desirable to work with manageable models which maximize
+  generality, realism, and precision toward the overlapping but not identical
+  goals of understanding, predicting, and modifying nature. But this cannot be
+  done."
+</blockquote>
+
+<p>
+  You can pick at most two of {generality, realism, precision}. Three strategies
+  fall out of which one you sacrifice:
+</p>
+
+<ol>
+  <li>
+    <strong>Sacrifice generality.</strong> Build a faithful, precise model of
+    one specific system. (Levins names fishery biologists; we'd name digital
+    twins, or any sysID-then-deploy pipeline.) Predictions are precise but only
+    valid for the exact setup you modeled.
+  </li>
+  <li>
+    <strong>Sacrifice realism.</strong> Build clean, general equations and hope
+    the simplifying assumptions don't matter. (Levins names physicists doing
+    population biology; we'd name everyone analyzing toy MDPs or LQR
+    derivations.) Predictions are precise and broad but rest on assumptions
+    that don't actually hold in practice.
+  </li>
+  <li>
+    <strong>Sacrifice precision.</strong> Build flexible, often graphical,
+    qualitative models that span many systems but only generate inequalities or
+    signs. (Levins names himself and MacArthur. We don't really have a vibrant
+    analog in robotics, which is part of the problem.) Predictions are general
+    and grounded in reality but only ever qualitative.
+  </li>
+</ol>
+
+<p>
+  The honest paper, in Levins's framework, is the one that <em>names which
+  corner it's playing in</em>. The dishonest paper is the one that quietly
+  pretends to be in all three corners at once.
+</p>
+
+<p>
+  This maps straight onto our methodological debates. A high-fidelity
+  simulation gives you precision and generality (across initial conditions)
+  but sacrifices realism; the sim-to-real gap is, definitionally, the
+  realism debt. A real-world teleoperated demo collection gives you realism and
+  precision but sacrifices generality; you have data for <em>this</em>
+  environment, not the population of environments you want to cover.
+  An analytical bound or stability theorem gives you generality and realism
+  (it holds for any system in its assumed class) but only in qualitative or
+  worst-case form. None of these are wrong. They are different bets, and they
+  don't compose into "the right way."
+</p>
+
+<p>
+  Levins also offers a constructive way out, which I think is the deepest
+  thing in the paper. When you have a question that matters, build
+  <em>several</em> models that take different sacrifices, and look for the
+  result that holds across all of them. He calls this a <em>robust theorem</em>:
+</p>
+
+<blockquote>
+  "&hellip;if these models, despite their different assumptions, lead to similar
+  results we have what we can call a robust theorem which is relatively free of
+  the details of the model. Hence our truth is the intersection of independent
+  lies."
+</blockquote>
+
+<p>
+  If a sim study, a real-world study, and a theoretical analysis all converge
+  on the same conclusion, that conclusion is more credible than any of them on
+  its own, <em>because</em> their failure modes are independent. The
+  current incentive structure in robotics research is roughly the opposite. We
+  pick one corner (usually #1, the high-fidelity-of-one-system corner) and try
+  to wring a paper out of it. The Levins move would be to deliberately attack
+  the same question from multiple corners and report when they agree (and,
+  more interestingly, when they don't).
+</p>
+
+
+<h1>7. What I'd actually like to see us do differently</h1>
+
+<p>
+  These four lessons hang together more than they look like at first. They are
+  all answers to the same underlying question: <em>how do you do science on a
+  complex, high-variance, hard-to-control system that you can't shut down for
+  inspection?</em> Biology has been answering this question for a hundred
+  years. We can either reinvent its answers slowly or read its books quickly.
+</p>
+
+<p>Concretely, applied to a typical robotics paper:</p>
+
+<ul>
+  <li>
+    <strong>Pick a model organism, and stick to it.</strong>
+    State up front what platform and task suite you've chosen and <em>why</em>:
+    tractability, complexity, transferability. Make it easy for other
+    labs to compare against the same setup. Resist the temptation to constantly
+    move to a new robot for novelty.
+  </li>
+  <li>
+    <strong>Stop varying one thing at a time.</strong>
+    When you ablate, run the factorial cube and report interactions. The
+    interactions are usually the interesting story.
+  </li>
+  <li>
+    <strong>Randomise eval order; report variance properly.</strong>
+    Three seeds is not an error estimate. Interleave A and B trials. Log the
+    random seed. Treat the rollout-to-rollout variance as a first-class number,
+    not a footnote.
+  </li>
+  <li>
+    <strong>Hunt for scaling laws.</strong>
+    Plot performance against your continuous design knobs over orders of
+    magnitude. Fit the exponent. <em>Explain it.</em> Don't let "method works
+    at one operating point" be the final form of any result.
+  </li>
+  <li>
+    <strong>Name your Levins corner.</strong>
+    Tell me whether the result is meant to be precise-and-general (sim),
+    precise-and-realistic (real-world), or general-and-realistic (theory).
+    Better still, attack the same question from two or three corners and look
+    for the robust theorem at the intersection.
+  </li>
+</ul>
+
+<p>
+  None of this is hard. None of it requires new tools. It mostly requires
+  treating the experiment as something to be designed, not just executed.
+</p>
+
+
+<h1>8. Closing &amp; further reading</h1>
+
+<p>
+  If we're going to take the analogy seriously and treat robotics as biology,
+  we should at least read what biology has already worked out. The
+  four-piece starter pack:
+</p>
+
+<ul>
+  <li>
+    <strong>R. A. Fisher,
+    <a href="../../references/1937-fisher-thedesignofexperiments.pdf"><em>The Design of Experiments</em></a>
+    (1937).</strong>
+    The methodology bible. Short, opinionated, surprisingly readable. Skip the
+    arithmetic and read it for the arguments.
+  </li>
+  <li>
+    <strong>Sydney Brenner,
+    <a href="../../references/Brenner1974.pdf">"The Genetics of <em>Caenorhabditis
+    elegans</em>"</a> (<em>Genetics</em>, 1974).</strong>
+    ~24 pages. The model-organism move, written by the person making it. Read
+    the introduction even if you skim the genetics tables.
+  </li>
+  <li>
+    <strong>Knut Schmidt-Nielsen,
+    <a href="../../references/9780521319874_excerpt.pdf"><em>Scaling: Why is
+    Animal Size So Important?</em></a> (1984).</strong>
+    Chapters 1 and 2 are enough to absorb the spirit. The rest is depth on
+    specific systems, useful but not load-bearing.
+  </li>
+  <li>
+    <strong>Richard Levins,
+    <a href="../../references/Levins-1966-Model_Building.pdf">"The Strategy of
+    Model Building in Population Biology"</a> (<em>American Scientist</em>,
+    1966).</strong>
+    Ten pages. The single highest-leverage thing on this list. Read it twice.
+  </li>
+</ul>
+
+<p>Honorable mentions worth knowing about even if you don't read in full:</p>
+
+<ul>
+  <li>
+    <strong>Milo &amp; Phillips, <em>Cell Biology by the Numbers</em>:</strong>
+    the quantitative-biology manifesto.
+    The <a href="https://book.bionumbers.org/preface/">preface</a> alone
+    makes the case in 10 minutes.
+  </li>
+  <li>
+    <strong>Horace Freeland Judson, <em>The Eighth Day of Creation</em>:</strong>
+    the definitive history of how molecular biology was actually done
+    in the 30s through 70s. Worth reading not for any one technique but to
+    feel what an empirical research culture <em>looks like</em> when it's
+    working at its best.
+  </li>
+  <li>
+    <strong>Box, Hunter &amp; Hunter, <em>Statistics for Experimenters</em>:</strong>
+    the modern industrial-engineering descendant of Fisher. The
+    chapters on factorial and fractional factorial designs read directly onto
+    how we should structure ablations.
+  </li>
+  <li>
+    <strong>John Platt, "Strong Inference" (<em>Science</em>, 1964):</strong>
+    the design-experiments-to-kill-hypotheses argument in under ten
+    pages. Pairs nicely with Fisher's null-hypothesis discussion.
+  </li>
+</ul>
+
+<p>
+  I'm not claiming any of this turns robotics into biology overnight. But I do
+  think the field has been borrowing from the wrong neighbours, and the right
+  neighbours have spent a century working out exactly the methodological
+  problems we now have. There's no harm in going to read their notes.
+</p>
+
+</div>
+</body>
+</html>

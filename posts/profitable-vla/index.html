@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Profitable VLAs - Younghyo Park</title>
+  <title>Profitable VLA - Younghyo Park</title>
 
   <meta property="og:type" content="article" />
-  <meta property="og:title" content="Profitable VLAs: Viewing Vision-Language-Action Models with a (Skeptical) Business Hat" />
+  <meta property="og:title" content="Profitable VLA: Thinking about VLA wearing a business hat" />
   <meta property="og:description" content="A business-oriented perspective on vision-language-action models — what makes them commercially viable and where the money is." />
   <meta property="og:url" content="https://younghyopark.me/posts/profitable-vla/" />
   <meta property="og:image" content="https://raw.githubusercontent.com/younghyopark/younghyopark.github.io/new/images/new_younghyo4.jpeg" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:site" content="@younghyo_park" />
-  <meta name="twitter:title" content="Profitable VLAs: Viewing Vision-Language-Action Models with a (Skeptical) Business Hat" />
+  <meta name="twitter:title" content="Profitable VLA: Thinking about VLA wearing a business hat" />
   <meta name="twitter:description" content="A business-oriented perspective on vision-language-action models — what makes them commercially viable and where the money is." />
   <meta name="twitter:image" content="https://raw.githubusercontent.com/younghyopark/younghyopark.github.io/new/images/new_younghyo4.jpeg" />
 
@@ -27,9 +27,9 @@
 <div class="post-body">
 
 <div class="post-header">
-  <h1 class="post-title">Profitable VLAs: Viewing Vision-Language-Action Models with a (Skeptical) Business Hat</h1>
+  <h1 class="post-title">Profitable VLA: Thinking about VLA wearing a business hat</h1>
   <div class="post-meta">
-    <span>2026-02-24</span>
+    <span>2026-04-22</span>
     <span class="sep">&middot;</span>
     <span>Younghyo Park</span>
   </div>
@@ -38,9 +38,15 @@
 <h1>1. Introduction</h1>
 
 <p>
-  I've been thinking a lot about how VLAs will actually be used.
-  Not in a research lab, not on a benchmark &mdash;
-  but in a real business, by a real company, making real money.
+  Lately there's been a pretty striking race toward a generalist VLA &mdash;
+  Physical Intelligence, Skild AI, Generalist AI, and others all trying to build
+  a single model that does everything.
+  I find myself genuinely excited about it as a research direction,
+  but I've also started asking a much more boring question:
+</p>
+
+<p>
+  <em>how do I imagine these models actually being used to make profit?</em>
 </p>
 
 <p>
@@ -55,944 +61,529 @@
 </p>
 
 <p>
-  With that in mind, I want to think through the concrete ways
-  VLAs might be commercialized.
-  I see roughly three motivations a company might have for training a VLA,
-  and each implies a different set of technical requirements.
-  I'm sure I'm getting some of this wrong &mdash;
+  So this post is my attempt to work through that.
+  I'm sure I'm getting some of it wrong &mdash;
   if you think I am, I'd genuinely like to hear about it.
 </p>
 
-<p>
-  One assumption I'm making throughout this post:
-  pure zero-shot deployment is unlikely to be enough.
-  No matter how good the foundation model is,
-  some form of task-specific or environment-specific tuning &mdash;
-  whether that's fine-tuning, in-context learning (prompting), or something else &mdash;
-  will probably be required to get a VLA working reliably in a new setting.
-</p>
 
-<h1>2. What is a VLA?</h1>
+<h1>2. How LLM companies make money</h1>
 
 <p>
-  A vision-language-action model (VLA) is a
-  <a href="https://en.wikipedia.org/wiki/Vision-language-action_model">multimodal foundation model</a>
-  that takes in visual observations (camera images or video)
-  and a language instruction ("pick up the red cup"),
-  and directly outputs low-level robot actions
-  (joint angles, gripper commands, etc.).
-</p>
-
-<p>
-  The key idea is that a VLA is <em>pretrained</em> &mdash;
-  typically by fine-tuning a large vision-language model (like PaLM-E or Gemini)
-  on a broad dataset of robot trajectories
-  paired with visual observations and language descriptions.
-  This pretraining is meant to give the model
-  a general understanding of how the physical world works:
-  object shapes, spatial relationships, how things move when you push them,
-  what it means to "put something on the table."
-</p>
-
-<p>
-  The promise is that this pretrained understanding
-  makes it much easier to build a task-specific policy.
-  Instead of collecting thousands of demonstrations
-  and training a model from scratch for every new task,
-  you start from a VLA that already knows a lot about the world,
-  and adapt it to your specific task or environment
-  with relatively little additional data.
-  In the language model world,
-  this is the same logic behind fine-tuning GPT or Claude
-  on a specific domain &mdash;
-  you don't train a language model from scratch
-  every time you want a customer support chatbot.
-</p>
-
-
-<h1>3. Why Train a VLA?</h1>
-
-<p>
-  The way I see it, a company might want to train a VLA
-  for three very different reasons:
+  Before guessing where the VLA money comes from,
+  it's worth looking at where the LLM money comes from.
+  Very broadly, revenue for the big labs splits into three buckets:
 </p>
 
 <ul>
   <li>
-    <strong>To sell the model itself</strong> &mdash;
-    a B2B "VLA provider" that builds the model and sells access to it,
-    the way OpenAI or Anthropic sell access to LLMs.
+    <strong>B2C Subscriptions</strong> &mdash; ChatGPT Plus, Claude Max, Claude Code, Codex.
+    Individuals paying a flat monthly fee.
   </li>
   <li>
-    <strong>To power a general-purpose robot product</strong> &mdash;
-    a vertically integrated company that builds both the hardware and the software,
-    selling a complete robot directly to end users.
-    The VLA is what makes it work across diverse environments out of the box.
+    <strong>B2B Pay-Per-Token</strong> &mdash; the API business.
+    Other companies build products or services on top and pay per token consumed.
   </li>
   <li>
-    <strong>To speed up custom robot solutions</strong> &mdash;
-    a robotics solution provider that builds tailored systems per client.
-    The VLA is one of their internal tools that reduces delivery time.
+    <strong>B2B Custom Model</strong> &mdash; block deals where the provider trains
+    or heavily tunes a model for a specific company or government.
   </li>
 </ul>
 
 <p>
-  These motivations aren't mutually exclusive &mdash;
-  a company might start with one and shift toward another.
-  But I think the distinction is useful
-  because each motivation implies very different answers
-  to questions like "how does fine-tuning work?"
-  and "where does the model run?"
-  and "what does the revenue model look like?"
+  And the revenue mix across these buckets, based on rough public reporting, looks something like:
+</p>
+
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th>B2C Subscriptions</th>
+      <th>B2B Pay-Per-Token</th>
+      <th>B2B Custom Model</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>OpenAI</strong></td><td>~80%</td><td>~15%</td><td>~5%</td></tr>
+    <tr><td><strong>Anthropic</strong></td><td>~25%</td><td>~70%</td><td>~5%</td></tr>
+    <tr><td><strong>VLA?</strong></td><td>?</td><td>?</td><td>?</td></tr>
+  </tbody>
+</table>
+
+<p>
+  The natural question is what that last row looks like for VLA.
+  Before guessing the percentages,
+  though, we need to ask a more basic question:
+  what kind of company is training the VLA in the first place?
+</p>
+
+
+<h1>3. Two archetypes</h1>
+
+<p>
+  In my head, there are really two very different kinds of companies
+  that could be training a generalist VLA.
+  The distinction sounds subtle but ends up driving almost everything else.
 </p>
 
 <p>
-  Let me go through each one.
-</p>
-
-
-<h1>4. Motivation A: Selling the Model (B2B)</h1>
-
-<p>
-  The first motivation is probably the most familiar one:
-  build the best VLA, then sell access to it.
-  A <strong>foundation model provider for robotics</strong>,
-  analogous to what OpenAI and Anthropic have built for language.
-  Several companies seem to be heading in this direction.
+  The first archetype is a <strong>VLA Model Provider</strong> &mdash;
+  a company that trains a general-purpose VLA and sells access to it.
+  They don't necessarily have a robot product of their own.
+  <em>The model is the product.</em>
+  This is the archetype that maps directly onto the LLM table above.
 </p>
 
 <p>
-  The analogy to LLMs is natural.
-  Anthropic just hit
-  <a href="https://www.saastr.com/anthropic-just-hit-14-billion-in-arr-up-from-1-billion-just-14-months-ago/">$30B ARR</a>
-  as of early 2026, with 70&ndash;75% coming from API/B2B revenue.
-  OpenAI is at ~$24B ARR, more consumer-heavy via ChatGPT,
-  but with a massive enterprise API business underneath.
-  So the model is proven, at least for language.
-  But the analogy has limits &mdash;
-  the LLM B2B model works because there are
-  <em>millions</em> of developers and <em>thousands</em> of companies
-  building on top of language models.
-  The list of robotics companies that would actually buy a VLA
-  is much shorter.
+  The second archetype is an <strong>In-House VLA Powered Product/Service Company</strong> &mdash;
+  a company that trains a general-purpose VLA internally and embeds it in a product
+  or service they sell directly to end users.
+  <em>The model is a means to a product.</em>
+  The VLA here is infrastructure, not revenue.
 </p>
 
 <p>
-  There are two axes that shape how a VLA provider operates,
-  and I think each deserves some discussion on its own
-  before we look at how they interact.
-</p>
-
-<h2>Who is the Customer?</h2>
-
-<p>
-  I think there are two quite different types of customers
-  for a VLA provider,
-  and they map to familiar patterns in the LLM world.
+  These aren't mutually exclusive &mdash; a company could do both, or start as one and
+  drift into the other. But I think the distinction is useful because each archetype
+  implies very different answers to "how is the model deployed?",
+  "who fine-tunes it?", and "what does the revenue model look like?".
 </p>
 
 <p>
-  <strong>Product companies</strong> build hardware and sell a complete robot to end users.
-  They need a VLA to make their robot capable,
-  but they don't want to train a foundation model from scratch &mdash;
-  that's not their core competency.
-  They want to buy or license a VLA,
-  adapt it to their robot's form factor and target environments,
-  and embed it in every unit they ship.
-  The fine-tuning here is typically a one-time, broad effort &mdash;
-  they need the model to work across all kitchens, not one specific kitchen.
-  The LLM analogy is something like
-  <a href="https://blog.duolingo.com/duolingo-max/">Duolingo</a>,
-  which integrated GPT-4 via API to build
-  their "Roleplay" and "Explain My Answer" features &mdash;
-  they didn't train a language model themselves,
-  they built a consumer product on top of OpenAI's foundation model.
+  Let me start with the first archetype, because that's where most of the
+  structural questions live.
+</p>
+
+
+<h1>4. Path A &mdash; VLA Model Provider</h1>
+
+<p>
+  If you're a VLA Model Provider, the model itself is your product.
+  Which means before you can even think about revenue,
+  you have to answer a very uncomfortable question.
+</p>
+
+<h2>How do you provide the weights?</h2>
+
+<p>
+  For "VLA Model Provider" to make sense as a business,
+  it's really important to protect the weights.
+  Handing a customer access to the model can't look like
+  <em>"hey, thanks for the purchase, here's the download link."</em>
+  Broadly, there are three options.
 </p>
 
 <p>
-  <strong>Solutions companies</strong> are robotics service providers.
-  They don't sell a product off the shelf &mdash;
-  they build custom automation systems per client.
-  A warehouse company comes to them and says
-  "we need a robot that can pick these specific items off these specific shelves,"
-  and the solutions company delivers a working system.
-  The fine-tuning here is per-client, every time &mdash;
-  each new project requires adapting the model
-  to a specific task, environment, and set of objects.
-  The LLM analogy is how firms like
-  <a href="https://www.webpronews.com/the-consulting-arms-race-how-openai-and-anthropic-are-deploying-big-four-firms-to-win-the-enterprise-ai-war/">Accenture and Deloitte</a>
-  have partnered with OpenAI and Anthropic
-  to build custom AI tools for enterprise clients &mdash;
-  fine-tuning or configuring Claude and GPT
-  for specific industries and workflows,
-  deploying bespoke solutions per client engagement.
+  <strong>Option 1: legal enforcement.</strong>
+  Rely on contracts to prevent redistribution, the way entertainment businesses
+  (Disney, music labels, etc.) rely on copyright law.
+  This works poorly for any technology that can be copied bit-for-bit,
+  and historically has been a rough deal once your product shows up on the open internet.
 </p>
 
 <p>
-  These two customer types have very different relationships
-  with the VLA provider.
-  Product companies are repeat buyers in a limited sense &mdash;
-  they might buy the VLA once and use it across millions of units.
-  Solutions companies are repeat buyers in a deeper sense &mdash;
-  they come back every time they have a new client,
-  needing a new round of adaptation.
-</p>
-
-<h2>How Do You Provide the Model?</h2>
-
-<p>
-  This is the delivery question, and it has profound implications
-  for IP protection, fine-tuning, and the revenue model.
-</p>
-
-<p>
-  <strong>If you ship the base weights</strong>,
-  the customer runs inference locally on their own hardware.
-  This is how most robotics deployments work today &mdash;
-  you can't have a warehouse robot that stops working when the WiFi drops.
-  But it also means the customer has the weights on their machine.
-  They can fine-tune them, study them, improve on them,
-  or potentially redistribute them.
-  The VLA provider's core IP is now on someone else's hardware.
-</p>
-
-<p>
-  The edge AI security industry is working on protecting weights on-device &mdash;
-  <a href="https://alifsemi.com/understanding-the-ensemble-difference-built-in-secure-enclave-provides-strong-cyber-protection-to-edge-ai-devices/">secure enclaves</a>,
+  <strong>Option 2: hardware security.</strong>
+  Ship sealed devices with the weights locked behind a secure enclave or
+  software license &mdash; think of a Jetson Orin with the model bound to specific hardware.
+  The edge AI security industry is working on this
+  (<a href="https://alifsemi.com/understanding-the-ensemble-difference-built-in-secure-enclave-provides-strong-cyber-protection-to-edge-ai-devices/">secure enclaves</a>,
   ARM TrustZone, NVIDIA's confidential computing,
-  <a href="https://www.kudelski-iot.com/insights/protecting-ai-at-the-edge-the-importance-of-secure-enclaves">Kudelski's secure enclave solutions</a> &mdash;
-  but as of now, there is no fully secure way to deploy model weights
+  <a href="https://www.kudelski-iot.com/insights/protecting-ai-at-the-edge-the-importance-of-secure-enclaves">Kudelski's solutions</a>),
+  but as of today there's no fully secure way to deploy model weights
   on edge devices against a determined attacker with physical access.
-  Companies rely on legal protection plus technical speed bumps,
-  not true cryptographic guarantees.
 </p>
 
 <p>
-  <strong>If you don't ship the base weights</strong>,
-  you keep them under your control.
-  This could mean delivering via embedded hardware
-  (a Jetson Orin with the model locked behind a security key &mdash;
-  more secure, but now you're in the hardware business),
-  or via a cloud API
-  (the model runs on your servers and returns action predictions &mdash;
-  great for IP protection, but latency is a real concern).
-  VLAs aren't used for low-level 1kHz motor control &mdash;
+  <strong>Option 3: cloud inference only.</strong>
+  Never let the weights leave your servers in the first place &mdash;
+  customers call an API, you return predictions.
+  <strong>This is where the LLM industry converged</strong>,
+  and for good reason: it's the only one of the three that gives you real control.
+</p>
+
+<p>
+  The first two are a risky bet if a company's revenue model relies entirely
+  on having a proprietary model.
+  Weights on someone else's hardware are fundamentally hard to protect.
+  So if you're following the LLM playbook, cloud inference is the direction you end up going.
+  But that leads directly into the second concern.
+</p>
+
+<h2>The bandwidth problem</h2>
+
+<p>
+  If cloud hosting becomes a strict requirement,
+  then every action prediction is subject to network round-trip latency and jitter.
+  Here's roughly where the fastest cloud LLM APIs sit today,
+  measured as Time-To-First-Token (TTFT) for a ~3k-token input,
+  from <a href="https://tokenmix.ai/blog/ai-api-latency-benchmark">tokenmix.ai's benchmark</a>:
+</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Model</th>
+      <th>p50</th>
+      <th>p95</th>
+      <th>p99</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>GPT 5.4</td><td>450ms</td><td>1200ms</td><td>2100ms</td></tr>
+    <tr><td>Sonnet 4.6</td><td>500ms</td><td>900ms</td><td>1400ms</td></tr>
+    <tr><td>Gemini Pro</td><td>600ms</td><td>1800ms</td><td>3500ms</td></tr>
+  </tbody>
+</table>
+
+<p>
+  The p50 numbers are okay for a typing assistant.
+  The p99 numbers are the problem: 1.4&ndash;3.5 seconds, i.e. 0.2&ndash;0.7&thinsp;Hz worst-case.
+  I (a human) can wait for an occasionally slow Claude response.
+  <strong>Physics will not.</strong>
+</p>
+
+<p>
+  VLAs aren't used for low-level 1&thinsp;kHz motor control &mdash;
   that's handled by a local controller.
-  But they do need to output actions at roughly
-  <a href="https://arxiv.org/html/2602.18397v1">5&ndash;30Hz</a>,
-  meaning 33&ndash;200ms per prediction.
-  For comparison, today's fastest LLM APIs
-  have a time-to-first-token of
-  <a href="https://www.kunalganglani.com/blog/llm-api-latency-benchmarks-2026">~600ms at best</a>,
-  and that's before accounting for network round-trip.
-  So cloud-based VLA inference is possible in principle,
-  but it's tight &mdash; and any network hiccup
-  means a missed control cycle.
+  But they do sit at the top of a real-time control stack and need to push out
+  desired SE(3) poses or joint positions at roughly 10&ndash;50&thinsp;Hz,
+  which gets handed down to joint position controllers (500&thinsp;Hz&ndash;1&thinsp;kHz),
+  torque controllers (30&ndash;40&thinsp;kHz), and eventually the motor itself.
+  A p99 of 2 seconds at the very top of that stack blows the budget,
+  and any network hiccup means a missed control cycle.
 </p>
 
 <p>
-  The delivery choice also determines who can fine-tune.
-  If the customer has the weights, they can adapt the model themselves.
-  If they don't, the VLA provider is the one doing the fine-tuning &mdash;
-  either as an explicit service,
-  or through in-context learning at inference time.
-</p>
-
-<p>
-  These two axes interact in interesting ways.
-  Pick a combination below to see how each scenario plays out:
-</p>
-
-<div class="axis-selector">
-  <div class="axis-group">
-    <div class="axis-label">Who is the customer?</div>
-    <div class="axis-options">
-      <button class="axis-btn" data-axis="customer" data-value="product">Product company</button>
-      <button class="axis-btn" data-axis="customer" data-value="solutions">Solutions company</button>
-    </div>
-  </div>
-  <div class="axis-group">
-    <div class="axis-label">Do you ship the weights?</div>
-    <div class="axis-options">
-      <button class="axis-btn" data-axis="delivery" data-value="ship">Ship the base weights</button>
-      <button class="axis-btn" data-axis="delivery" data-value="keep">Don't ship the base weights</button>
-    </div>
-  </div>
-</div>
-
-<p class="cell-prompt" id="cell-prompt">Select a combination above to see the discussion.</p>
-
-<!-- ═══ Cell A: Ship + Product ═══ -->
-<div class="cell-content" id="cell-product-ship">
-<h3>Ship weights + Product company</h3>
-
-<p>
-  The product company receives the base weights
-  and can do whatever they want with them &mdash;
-  fine-tune, run in-context learning, develop entirely new adaptation techniques.
-  They have full flexibility over the model.
-</p>
-
-<p>
-  That flexibility is great for the customer,
-  but it's a problem from the provider's perspective.
-  Nothing stops the customer from improving the model
-  beyond what the provider shipped,
-  or from becoming a "second vendor" that resells an enhanced version.
-  What's the sustainable business here?
-  A one-time transaction for the base weights?
-  That's hard to build a company around.
-</p>
-
-<details>
-  <summary>Aside: could derivative models pay royalties up the chain?</summary>
-  <p>
-    One idea worth considering:
-    if model C is fine-tuned on model B,
-    which was fine-tuned on model A &mdash;
-    whenever C generates revenue,
-    some fraction trickles back to B and A.
-  </p>
-  <p>
-    This isn't a new idea in other domains.
-    In music, when you sample someone's track,
-    the original artist typically
-    <a href="https://www.romanolaw.com/music-sampling-rights-what-you-need-to-know/">receives a percentage of copyright ownership</a>
-    in the new song, with ongoing royalties tied to sales and streams.
-    In the patent world, this is known as
-    <a href="https://faculty.haas.berkeley.edu/shapiro/stacking.pdf">"royalty stacking"</a> &mdash;
-    where a product that builds on multiple patents
-    owes royalties to each patent holder.
-    (Though in practice, royalty stacking often becomes prohibitive
-    and discourages downstream innovation.)
-  </p>
-  <p>
-    On the enforcement side,
-    there's emerging work on
-    <a href="https://arxiv.org/html/2506.01631v1">model fingerprinting</a>
-    that can detect whether a model was derived from a specific base model &mdash;
-    one approach achieves 94% classification accuracy
-    across model families, even after fine-tuning.
-    And blockchain-based systems have been proposed for
-    <a href="https://www.blockchain-council.org/blockchain/model-ip-protection-with-blockchain-licensing-royalty-tracking-usage-metering/">automated royalty tracking</a>,
-    where smart contracts could enforce payments
-    whenever a derivative model is used commercially &mdash;
-    similar to how
-    <a href="https://eips.ethereum.org/EIPS/eip-2981">ERC-2981</a>
-    embeds royalty logic into NFTs
-    so original creators get a cut of every secondary sale.
-  </p>
-  <p>
-    None of this is production-ready for VLAs.
-    But the "ship the weights" model
-    doesn't have to mean "give up all future revenue" &mdash;
-    if the industry develops robust provenance tracking
-    and enforceable licensing chains,
-    it could look more like music publishing than a one-time sale.
-    Whether that's realistic is another question.
-  </p>
-</details>
-</div>
-
-<!-- ═══ Cell B: Keep + Product ═══ -->
-<div class="cell-content" id="cell-product-keep">
-<h3>Don't ship weights + Product company</h3>
-
-<p>
-  The VLA provider keeps the weights and fine-tunes once
-  for the product company's use case.
-  The product company doesn't need the VLA adapted to one specific kitchen &mdash;
-  they need it to work well across all kitchens.
-  So the provider fine-tunes on a large, diverse dataset
-  that the product company collects internally
-  (or that the provider already has from pretraining),
-  and delivers a model tailored to their robot's form factor
-  and target environment category.
-</p>
-
-<p>
-  This looks more like a traditional B2B software deal.
-  The data is less sensitive &mdash;
-  it's general household or warehouse data, not proprietary processes.
-  The provider could deliver via embedded hardware
-  (a Jetson Orin with the model locked behind a security key)
-  or potentially a cloud API, though latency is tight &mdash;
-  VLA action prediction needs to run at 5&ndash;30Hz,
-  and today's best cloud API latencies (~600ms to first token)
-  don't leave much room for network overhead.
-</p>
-</div>
-
-<!-- ═══ Cell C: Ship + Solutions ═══ -->
-<div class="cell-content" id="cell-solutions-ship">
-<h3>Ship weights + Solutions company</h3>
-
-<p>
-  Similar to the product company case above,
-  but the solutions company fine-tunes per client,
-  every time they take on a new project.
-  They have the same full flexibility &mdash;
-  and the same risk to the VLA provider's business.
-</p>
-
-<p>
-  In fact, the risk is amplified:
-  a solutions company with the base weights
-  and a growing library of fine-tuned variants
-  is essentially building their own VLA capability
-  on top of someone else's foundation.
-  At some point, they might not need the provider at all.
-</p>
-</div>
-
-<!-- ═══ Cell D+E: Keep + Solutions ═══ -->
-<div class="cell-content" id="cell-solutions-keep">
-<h3>Don't ship weights + Solutions company</h3>
-
-<p>
-  This is where it gets most interesting.
-  Fine-tuning happens per client, every time &mdash;
-  a solutions company gets a new client who wants to automate
-  a specific task on their factory floor,
-  and they need to collect demonstration data,
-  send it to the VLA provider, and get back an adapted model.
-  There are two approaches:
-</p>
-
-<h4>Approach D: Fine-tuning as a service</h4>
-
-<!-- TODO: diagram — FaaS data flow between VLA Provider, Solutions Co, End Customer -->
-
-<p>
-  The solutions company (or their end client) collects task-specific demonstration data
-  and sends it to the VLA provider.
-  The provider fine-tunes the model and delivers an updated version
-  adapted to that specific task and environment.
-  The base weights never leave the provider's hands &mdash;
-  the customer only receives the fine-tuned result
-  (or access to it via an embedded device or API).
-</p>
-
-<p>
-  The data collection process
-  becomes a core part of the product experience.
-  The VLA provider needs to tell the customer:
-  here's what data we need, here's how to collect it.
-  And the choice of data modality &mdash;
-  teleoperation (high quality, but expensive),
-  egocentric video (cheaper, but hard to extract actions from),
-  exocentric video (lowest barrier, but embodiment gap),
-  or wearable motion capture (middle ground, but requires hardware buy-in) &mdash;
-  isn't just a research decision,
-  it's a product decision that shapes the customer experience.
-</p>
-
-<p>
-  <strong>Competitive dynamics.</strong>
-  If multiple VLA providers compete in this space,
-  the differentiating factors become:
-  how easy is the data collection,
-  and how good is the resulting fine-tuned model?
-  Company A might claim:
-  "Just shoot 5 iPhone videos of your employees doing the task,
-  and we'll give you a working model."
-  Company B might require a full wearable motion capture kit
-  with a specific collection protocol and a larger number of demonstrations.
-  Company A's pitch is lower friction &mdash;
-  but Company B can argue that their approach
-  actually produces a model that works reliably.
-  And Company B might even sell the data collection kit as part of the package,
-  creating an additional revenue stream.
-</p>
-
-<p>
-  <strong>The data privacy tension.</strong>
-  This model requires the customer to send task data
-  to the VLA provider.
-  But that data might be confidential &mdash;
-  think of a defense contractor or a pharmaceutical company
-  that doesn't want its proprietary manufacturing processes
-  leaving their facility.
-  From the customer's side, there's a real tension
-  between wanting a better model and wanting to keep their data private.
-</p>
-
-<h4>Approach E: In-context learning</h4>
-
-<p>
-  This sidesteps the data privacy problem entirely.
-  Instead of sending task data to the provider for fine-tuning,
-  the customer provides a few demonstrations at inference time &mdash;
-  no gradient updates, no data leaving the premises.
-  The provider keeps the weights on their own servers.
-  The demonstrations stay local,
-  used only as context for the model's predictions.
-</p>
-
-<p>
-  This is essentially how LLM APIs work today:
-  you "steer" the model through prompting, not fine-tuning.
-  For product companies, in-context learning is less critical &mdash;
-  they're fine with a one-time fine-tuning deal.
-  But for solutions companies with privacy-sensitive clients,
-  it could be the difference between closing a deal and losing it.
-</p>
-
-<p>
-  If VLAs could reach this level of in-context adaptability,
-  it would be a clean solution to both the IP problem and the data privacy problem.
-  But it's a much harder research challenge for robotics
-  than it was for language,
-  and we're not there yet.
-</p>
-</div>
-
-<h2>Revenue Model</h2>
-
-<p>
-  The revenue model depends on the combination you chose above.
-  Shipping weights naturally leads to one-time licensing,
-  which is simpler but hard to build recurring revenue on.
-  Keeping weights opens up subscriptions, per-query pricing, or per-project fees.
-</p>
-
-<p>
-  In the LLM world, it's mostly subscriptions and pay-per-token.
-  But robots are different &mdash;
-  a factory that buys a robot expects it to work for 10 years
-  without paying a monthly fee to keep the brain running.
-  A subscription model creates recurring revenue
-  but risks customer pushback &mdash;
-  especially in industrial settings where
-  "the robot stops working if we stop paying"
-  is a non-starter.
-  Likely some hybrid,
-  but nobody has announced a real pricing model
-  for VLA-as-a-service yet.
-</p>
-
-<script>
-(function() {
-  const state = { customer: null, delivery: null };
-  const buttons = document.querySelectorAll('.axis-btn');
-  const prompt = document.getElementById('cell-prompt');
-  const cells = document.querySelectorAll('.cell-content');
-
-  buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const axis = btn.dataset.axis;
-      const value = btn.dataset.value;
-
-      // toggle: if already active, deselect
-      if (state[axis] === value) {
-        state[axis] = null;
-        btn.classList.remove('active');
-      } else {
-        // deselect siblings
-        document.querySelectorAll(`.axis-btn[data-axis="${axis}"]`)
-          .forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        state[axis] = value;
-      }
-
-      // hide all cells
-      cells.forEach(c => c.classList.remove('visible'));
-
-      if (state.customer && state.delivery) {
-        prompt.style.display = 'none';
-        const id = 'cell-' + state.customer + '-' + state.delivery;
-        const target = document.getElementById(id);
-        if (target) {
-          target.classList.add('visible');
-          target.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-      } else {
-        prompt.style.display = 'block';
-      }
-    });
-  });
-})();
-</script>
-
-
-<h1>5. Motivation B: Powering a General-Purpose Robot (B2C)</h1>
-
-<p>
-  The second motivation is different &mdash; the company isn't selling a model,
-  it's selling a robot, directly to the end user.
-  You buy it, unbox it, and it works.
-  No setup, no customization, no need to contact the company.
-  Companies like
-  <a href="https://www.figure.ai/">Figure AI</a>,
-  <a href="https://www.1x.tech/">1X Technologies</a>,
-  and Tesla (Optimus) are pursuing some version of this.
-  They're vertically integrated &mdash;
-  the model and the robot are inseparable.
-</p>
-
-<!-- TODO: diagram — Archetype B: Robot Company → End Customer -->
-
-<p>
-  If this is your vision, a VLA isn't just nice to have &mdash;
-  it's the only viable path.
-  How else do you build a robot brain that works
-  in every house, every kitchen, every factory configuration?
-</p>
-
-<h2>The Business Model</h2>
-
-<p>
-  The product is the robot, not the model.
-  The VLA is invisible to the customer &mdash;
-  they don't know or care that there's a foundation model inside.
-  This is fundamentally different from Motivation A:
-  the VLA is a cost center, not a revenue source.
-  It's what makes the robot useful,
-  but the money comes from selling hardware
-  (and possibly a software subscription for updates and new capabilities).
-</p>
-
-<p>
-  This means the economics are hardware economics.
-  Bill of materials, manufacturing, supply chain, margins on physical goods.
-  The VLA training cost is amortized across every unit sold &mdash;
-  which only works if you sell a lot of units.
-  This is part of why these companies have raised large rounds:
-  you need capital both for the data collection and model training,
-  <em>and</em> for the hardware side of the business.
-</p>
-
-<h2>The Generalization Bar</h2>
-
-<p>
-  The generalization bar here is extremely high.
-  There's no per-customer solution.
-  The model ships once and has to handle
-  every environment it's placed in &mdash;
-  every mug shape, every table height, every floor texture.
-  This requires an enormous amount of diverse real-world training data,
-  and the data collection alone is a significant long-term investment.
-</p>
-
-<p>
-  But there's a subtlety here.
-  "Works out of the box" doesn't necessarily mean
-  "zero-shot handles every possible task."
-  It might mean the robot ships with a strong general baseline,
-  and the customer teaches it new things over time
-  through natural interaction.
-  The iPhone didn't ship with every app preinstalled &mdash;
-  it shipped with a platform that made it easy to add capability.
-  A general-purpose robot might work the same way.
-</p>
-
-<h2>Fine-Tuning Still Happens</h2>
-
-<p>
-  Even an "out of the box" robot will encounter novel situations
-  that require adaptation.
-  The question is whether this can be made so frictionless
-  that the customer doesn't think of it as fine-tuning at all &mdash;
-  you just show the robot what you want, and it picks it up.
-</p>
-
-<p>
-  This makes the UX of adaptation as much a research problem
-  as the learning algorithm itself.
-  Teleoperation and wearables are out of the question for a consumer.
-  The model needs to learn from whatever a normal person
-  can naturally provide &mdash;
-  showing the robot, verbal instruction, or just a few repeated attempts.
-  If the research community can crack this,
-  it becomes a major competitive advantage for the robot product:
-  "our robot learns from you" is a compelling pitch.
-</p>
-
-<p>
-  This is also where the distinction between
-  on-device fine-tuning and in-context learning matters.
-  On-device fine-tuning (updating weights locally on the robot's hardware)
-  means the robot permanently learns from experience,
-  but requires compute and careful handling of catastrophic forgetting.
-  In-context learning (adapting at inference time without weight updates)
-  is lighter-weight but ephemeral &mdash;
-  the robot doesn't "remember" between sessions
-  unless you persist the demonstrations somehow.
-</p>
-
-<h2>Fleet Learning and the Data Flywheel</h2>
-
-<p>
-  When thousands of robots are deployed in homes and factories,
-  every interaction generates data.
-  A robot that fails to pick up a new type of mug,
-  a robot that successfully navigates an unusual floor layout &mdash;
-  all of this is potential training signal.
-</p>
-
-<p>
-  The company that figures out how to aggregate this fleet data
-  and feed it back into model improvements
-  has a powerful flywheel:
-  more robots deployed → more data → better model → more robots sold.
-  Tesla is betting on this with Optimus,
-  and it's the same logic behind Tesla's autopilot data advantage.
-</p>
-
-<p>
-  But fleet learning raises its own questions.
-  How do you handle data privacy
-  when the robot is recording inside someone's home?
-  How do you aggregate data across diverse environments
-  without the model regressing on previously solved tasks?
-  Research on continual learning, federated learning,
-  and selective data aggregation becomes critical here.
-</p>
-
-<h2>Revenue and Sustainability</h2>
-
-<p>
-  The revenue model is more straightforward than Motivation A:
-  you sell robots.
-  But "sell robots" hides a lot of complexity.
-  Is it a one-time purchase or a subscription?
-  If the robot gets better over time through software updates
-  (powered by fleet learning),
-  that's a strong argument for a subscription component.
-  If the robot is a static product that works as-is at purchase,
-  it's harder to justify ongoing fees.
-</p>
-
-<p>
-  There's also the question of margins.
-  Hardware margins in consumer electronics are thin &mdash;
-  typically 30&ndash;40% for premium products.
-  If the VLA training cost is high and the unit volume is low
-  (which it will be in the early years),
-  the unit economics might not work.
-  This is the classic hardware startup trap:
-  you need scale to be profitable,
-  but you need profitability (or patient capital) to reach scale.
-</p>
-
-
-<h1>6. Motivation C: Speeding Up Custom Solutions</h1>
-
-<p>
-  There's a third path, and it might be the closest to reality
-  for most robotics companies today.
-  <strong>"Submit an inquiry. We'll build a robot solution tailored to your needs."</strong>
-</p>
-
-<p>
-  In this model, the company isn't selling a general-purpose robot
-  and it isn't selling a foundation model.
-  It's selling outcomes &mdash;
-  a working robot system customized for each client's specific task.
-  The VLA is an internal tool,
-  a pretrained model that reduces the lead time
-  from "new client signs a contract" to "robot is operational on their floor."
-  Instead of spending 6 months collecting task-specific data
-  and training from scratch,
-  you fine-tune your internal VLA on a few hours of demonstrations
-  and get something working in weeks.
-</p>
-
-<!-- TODO: diagram — Motivation C: Client → Solutions Company → Custom System -->
-
-<h2>The Business Model</h2>
-
-<p>
-  This is a services business, not a product business.
-  Revenue comes from project fees, deployment contracts,
-  and ongoing maintenance agreements.
-  The VLA doesn't generate revenue directly &mdash;
-  it reduces the cost and time of delivering each project.
-</p>
-
-<p>
-  The economics here are fundamentally different from Motivation A or B.
-  In Motivation A, you train one model and sell it many times &mdash;
-  near-zero marginal cost per customer.
-  In Motivation B, you train one model and embed it in many robots &mdash;
-  marginal cost is the hardware.
-  In Motivation C, every customer requires custom work &mdash;
-  the VLA reduces the effort, but doesn't eliminate it.
-  This means the business scales linearly with headcount,
-  not exponentially with model quality.
-</p>
-
-<p>
-  That said, there's a compounding effect:
-  every project the company completes adds to their internal dataset.
-  Over time, the VLA gets better at handling the kinds of tasks
-  their clients typically ask for.
-  A company that has deployed 200 warehouse picking solutions
-  has a significant data advantage over a competitor starting from scratch &mdash;
-  even if they're using the same base VLA.
-  The moat isn't the model, it's the accumulated task data
-  and the operational know-how to deploy it.
-</p>
-
-<h2>But Do You Even Need a VLA?</h2>
-
-<p>
-  This is the uncomfortable question for Motivation C.
-</p>
-
-<p>
-  Pete Florence &mdash; formerly of Google DeepMind, now CEO of
-  <a href="https://boldstart.vc/news/generalistai-when-robots-start-to-improvise-welcome-to-boldstart/">Generalist AI</a>
-  &mdash; trained their GEN-1 model on 500K+ hours of real-world data
-  from scratch, not by fine-tuning a pretrained VLM.
-  His view:
+  One common reaction is: fine, make the cloud model output only the high-level stuff &mdash;
+  3D keypoints, SE(3) targets, plans, something <a href="https://molmo.allenai.org/">MolmoPoint</a>-flavored &mdash;
+  and let a smaller local model (the "physical intelligence" layer)
+  consume that and generate the fast joint-level actions.
+  As an architecture, that's reasonable.
+  But as a <em>business</em>, I'd push back as a customer:
 </p>
 
 <blockquote>
-  "No amount of downloading data from the internet, by itself,
-  will create the level of fast, fluid, precise, reactive layer of intelligence
-  needed for interacting with the physical world."
+  Really? I'm paying you huge money for a VLA,
+  and you're telling me I need to bring my own physical intelligence?
 </blockquote>
 
 <p>
-  For a well-resourced team with enough data for their specific domain,
-  a pretrained VLA might not even help.
-  Training a task-specific policy from scratch
-  (or from a vision backbone like DINOv2)
-  can outperform a general VLA
-  that was trained on everything but your exact use case.
+  At that point the provider has effectively retreated to selling a semantic
+  layer and offloaded the hard part to the customer.
+  That's a much narrower pitch than "we sell you a VLA,"
+  and it collapses the list of companies for whom this is a full solution.
 </p>
 
 <p>
-  And sometimes the answer isn't even a learned policy at all.
-  A specialized gripper, a cleverly designed fixture,
-  a constrained workspace &mdash;
-  mechanical engineering can eliminate the need for
-  the kind of generalization that VLAs provide.
-  If you can make the problem easier through hardware design,
-  a simple classical controller might outperform
-  the most sophisticated VLA.
+  Still, for the sake of continuing the discussion,
+  let's assume we somehow figure out a way to guarantee &gt;10&thinsp;Hz TTFT
+  for cloud-hosted VLAs.
+  What does the revenue mix actually look like then?
+  Let's walk through the three LLM buckets, one at a time.
+</p>
+
+<h2>4a. B2C Subscriptions</h2>
+
+<p>
+  The LLM analogue is that people pay $20&ndash;$200 per month for ChatGPT Plus or Claude Max.
+  The VLA analogue would be some people paying $20&ndash;$200 per month for pi-0.7 or GEN-1
+  or whatever the consumer-facing VLA subscription ends up being called.
 </p>
 
 <p>
-  So the value of a pretrained VLA for a solutions company
-  depends on a crossover point:
-  how much task-specific data do you have?
-  If you're taking on a completely novel task
-  with only a handful of demonstrations,
-  the pretrained VLA's general knowledge is invaluable.
-  If you have thousands of demonstrations
-  from a well-defined, repeatable task,
-  training from scratch might be better.
-  Most real projects probably fall somewhere in between,
-  and the honest answer is that we don't yet have
-  a good sense of where that crossover point is.
-</p>
-
-<h2>The Slippery Slope to "Traditional Robotics"</h2>
-
-<p>
-  This is where Motivation C starts to look
-  similar to what already exists.
-  Companies like
-  Berkshire Grey (acquired by SoftBank Robotics in 2023),
-  Plus One Robotics,
-  RightHand Robotics,
-  Locus Robotics (acquired by Zebra Technologies),
-  Mujin, and Dexterity.ai
-  have been doing this for years &mdash;
-  custom robotic solutions, per-client integration,
-  long sales cycles, maintenance contracts.
+  For the LLM version, the target demographic is anyone who owns a phone or laptop
+  (really, any GUI),
+  and the requirement on the model is that it provide real value to most people
+  out of the box &mdash; no task-specific finetuning,
+  just prompt it and go.
 </p>
 
 <p>
-  The promise of the VLA-powered solutions company
-  is that it can deliver faster and cheaper
-  because the pretrained model reduces engineering effort.
-  But if the pretrained model doesn't help that much
-  for narrow, well-defined tasks,
-  and if custom mechanical solutions often work better,
-  what exactly separates a VLA-powered solutions company
-  from a traditional robotics integrator?
+  Translating that to VLA,
+  the target demographic becomes anyone who owns a robot
+  (or any physical embodiment),
+  and the requirement is that the model perform any task in any environment,
+  out of the box, without task/environment-specific finetuning.
+  Which makes the prerequisites for this market to even exist pretty demanding:
+  everyone has to have a personal robot,
+  <em>and</em> models have to be able to complete most tasks via in-context learning alone.
 </p>
 
 <p>
-  The answer might be: not much, and that's not necessarily bad.
-  The traditional robotics services market is large and growing.
-  But it does mean the VLA is a tool that speeds things up,
-  not a moat that keeps competitors out.
-  A solutions company that happens to use a VLA internally
-  isn't fundamentally different from one that doesn't &mdash;
-  what matters is the quality of the deployed system,
-  the speed of delivery, and the reliability of ongoing support.
-</p>
-
-<h2>Connection to Motivation A</h2>
-
-<p>
-  It's worth noting that Motivation C companies
-  are exactly the "customer type 2" from Motivation A.
-  A solutions company that doesn't want to train its own VLA
-  might buy one from a VLA provider instead &mdash;
-  which puts us back in cells C, D, or E from the table above.
-  The line between "motivation to train your own VLA"
-  and "customer of someone else's VLA" is blurry,
-  and a company might move between the two
-  as the technology and their internal capabilities evolve.
-</p>
-
-
-<h1>7. Open Questions</h1>
-
-<p>
-  I don't have clean answers to most of what I've raised here.
-  But I think it's useful to at least name the open questions clearly:
-</p>
-
-<ul>
-  <li>
-    As far as I can tell, the business model for VLAs is still very much being figured out.
-    Physical Intelligence open-sourced their weights.
-    Figure and 1X are investing heavily in vertical integration.
-    I haven't seen anyone announce pricing for VLA-as-a-service.
-  </li>
-  <li>
-    The "just works" B2C robot requires a level of zero-shot generalization
-    that we're not close to yet.
-  </li>
-  <li>
-    Cloud-based VLA inference is technically marginal
-    for real-time manipulation,
-    and the hybrid cloud-edge architectures that could make it work
-    are still being figured out.
-  </li>
-  <li>
-    Weight security on edge devices remains an unsolved problem,
-    which complicates any business model that involves shipping weights.
-  </li>
-  <li>
-    For narrow, well-defined tasks,
-    task-specific training or even custom mechanical design
-    can be more effective than a general VLA.
-  </li>
-</ul>
-
-<p>
-  None of this means VLAs are a dead end.
-  But I do think the research community would benefit from
-  thinking more concretely about deployment &mdash;
-  not just "can we improve success rate on a benchmark,"
-  but questions like
-  "what does the customer's fine-tuning workflow actually look like?"
-  or "can this run on a Jetson Orin at 10Hz?"
-  or "is in-context learning sufficient to avoid shipping weights?"
+  If and when that market exists, the winner is decided by the same two things
+  that decide the LLM winner:
+  <strong>how easy it is to prompt</strong>, and <strong>how performant it is</strong>.
+  For LLMs we mostly talk about this as "vibes" &mdash;
+  does the model feel good to use.
+  For VLAs, "how easy it is to prompt" is actually a whole axis by itself,
+  because the prompts are much more than text.
+  Very roughly, from easiest-to-provide to hardest:
+  simple language instructions, detailed step-by-step language instructions,
+  task-specific human videos, and task-specific teleoperation data.
+  (That last one isn't as infeasible as it sounds,
+  since we're already assuming everyone has a robot.)
 </p>
 
 <p>
-  The technical questions and the business questions
-  are more entangled than they might appear.
-  I think it's worth keeping both in mind.
+  You can imagine the competitive landscape that comes out of this.
+  Company A charges $20/month but their model only really works with one-line language prompts.
+  Company B charges $25/month with a more performant model that expects detailed step-by-step instructions.
+  Company D charges $18/month but bundles in a rental for a wearable prompt-collection device
+  so they can get higher-quality demonstrations.
+  Each company is making a different bet on the
+  "ease of prompting vs. performance" frontier.
 </p>
+
+<p>
+  If you take this market seriously, two agendas fall out naturally.
+  On the business side, somebody needs to make a robot product that is
+  (a) not proprietary, so users can run different VLA APIs on it,
+  and (b) general-enough hardware to be worth having.
+  On the research side, we need much better in-context learning for VLAs &mdash;
+  especially with rich, multi-modal prompts,
+  not just text.
+</p>
+
+<h2>4b. B2B Pay-Per-Token</h2>
+
+<p>
+  In the LLM world, the pay-per-token bucket is really two very different customer groups
+  pressed into the same pricing model.
+</p>
+
+<p>
+  One group is <strong>product builders</strong> &mdash;
+  companies that ship their own product with the model (queried via API) embedded
+  as an invisible component.
+  The end user interacts with the product, not the model.
+  API usage scales with the product's user base and engagement.
+  Cursor, Notion, DoorDash, Duolingo, and many others fall in here.
+</p>
+
+<p>
+  The other is <strong>implementation partners</strong> &mdash;
+  system integration firms (Accenture, Deloitte, McKinsey, BCG, and similar) that build
+  custom AI-based solutions for enterprise clients using the provider's API.
+  They act as a distribution channel for the model provider.
+  The client pays the partner a project or retainer fee;
+  the partner passes some of that through to the API cost.
+</p>
+
+<h3>Would a robot product company actually be a product builder here?</h3>
+
+<p>
+  Any company developing robot hardware as an end-product
+  basically has to make a call:
+</p>
+
+<ol>
+  <li>Build and train an in-house VLA for my robot, or</li>
+  <li>Just pay the API cost to a provider, or</li>
+  <li>If (2), should I let the product swap between different providers, or lock to one?</li>
+</ol>
+
+<p>
+  My personal bet is that most serious robot product companies end up at (1), in-house.
+  Two reasons.
+</p>
+
+<p>
+  <strong>Safety and liability.</strong>
+  Most LLM applications are reversible at their core.
+  If Claude writes nonsense, I can hit revert, fix the prompt, try again.
+  Physics doesn't have an undo.
+  A robot product company bears legal responsibility when their product causes harm,
+  and depending on an opaque third-party model for safety-critical,
+  irreversible physical actions is a clear no for me.
+</p>
+
+<p>
+  <strong>Margins and control.</strong>
+  A product company's whole business is shipping a product that works over many years.
+  Paying per-token forever for the part that decides what the robot actually does &mdash;
+  where every outage, price change, or silent model update becomes your problem &mdash;
+  is an uncomfortable place to be.
+  LLM-powered products like Cursor have been absorbing exactly this pain
+  as API pricing shifts under them,
+  and I'd expect robot product companies to be especially allergic to it.
+</p>
+
+<h3>Would an implementation-partner-style player buy?</h3>
+
+<p>
+  The robotics analogue of Accenture/Deloitte already exists:
+  automation solution providers like
+  Berkshire Grey, Mujin, RightHand Robotics, Locus Robotics, Bastian Solutions, and similar firms.
+  Their model has always been "a business comes to us, we deliver a bespoke automation system."
+  A hotel asks them to automate towel folding.
+  A warehouse asks them to automate package sorting.
+  For each new project, the question becomes:
+  <em>do I actually need a VLA for this?</em>
+</p>
+
+<p>
+  My bet here is <strong>mostly no</strong>, and for an interesting reason.
+  These automation tasks are inherently very specific and custom.
+  The hotel client doesn't need a solution that generalizes to other hotels.
+  The warehouse client doesn't need it to generalize to other warehouses.
+  That cross-task, cross-environment generalization is precisely the strength
+  VLAs are selling &mdash; and it's not what these customers are asking for.
+  They'd be paying for a capability they don't use.
+</p>
+
+<p>
+  The only scenario where it really makes sense for a solutions provider to pay
+  token costs for a third-party cloud VLA,
+  instead of training a smaller custom model from scratch,
+  is if a cloud-hosted VLA ICL-ed from task-specific prompts outperforms a locally-runnable model
+  trained from scratch with task-specific data.
+  That's a high bar, and I'm not confident it gets crossed often enough
+  to build a meaningful pay-per-token business on top of.
+</p>
+
+<h2>4c. B2B Custom Model</h2>
+
+<p>
+  The third LLM bucket is block deals for custom models &mdash;
+  a government or large enterprise contracts the provider to produce a tuned model
+  just for them.
+  For a VLA provider, the natural translation is that the provider company itself
+  becomes a B2B automation solution provider.
+  Since they have the weights, task-specific finetuning is on the table:
+  finetune on data from the client, serve the result over cloud,
+  and keep the base weights secure.
+</p>
+
+<p>
+  The tricky part is that the direct competitors in this space are the traditional
+  automation integrators (Berkshire Grey, Mujin, and friends),
+  who have been doing this work for years without a VLA.
+  They have existing customer relationships, long sales cycles mastered,
+  and playbooks for per-client integration that have nothing to do with foundation models.
+  Whoever wins this market is whoever gets the most clients with real automation needs &mdash;
+  whoever can deliver the best bang-for-buck per-client solution,
+  not whoever has the most impressive model on a benchmark.
+</p>
+
+<p>
+  Which is a slightly awkward conclusion for a "VLA Model Provider,"
+  because the winning move in this market looks indistinguishable from
+  "be a good traditional robotics integrator that happens to use a VLA internally."
+  The VLA is a means, not an edge.
+</p>
+
+
+<h1>5. Path B &mdash; In-House VLA Powered Product/Service Company</h1>
+
+<p>
+  Zooming back out to the original two-archetype picture:
+  all of Section 4 was about the left column.
+  If you watch where my "personal bets" in 4b and 4c keep nudging,
+  though, they all point in the same direction &mdash;
+  the serious buyers mostly want to own their stack.
+  Which makes the right column, the in-house VLA,
+  worth taking seriously in its own right.
+</p>
+
+<p>
+  Figure AI, 1X, Tesla (with Optimus), and others are already heading in this direction.
+  The product is the robot, not the model.
+  The VLA is invisible to the customer &mdash;
+  they don't know or care that there's a foundation model inside.
+  This is fundamentally different from Path A:
+  the VLA is a cost center, not a revenue source.
+  Money comes from selling hardware
+  (and possibly software subscriptions for updates and new capabilities),
+  not from selling model access.
+</p>
+
+<p>
+  What's interesting is that the <em>spec sheet</em> for the VLA changes substantially
+  once you're thinking of it as an internal component of a product
+  rather than a product to be sold on its own.
+</p>
+
+<p>
+  <strong>Cross-embodiment? Probably not a priority.</strong>
+  The model is going to be used for a single robot product.
+  You don't need it to work on someone else's arm with a different kinematic tree
+  and a different gripper.
+  Drop that requirement and a lot of research complexity drops with it.
+</p>
+
+<p>
+  <strong>Task scope can be narrowed a lot.</strong>
+  Depending on how you position your robot in the market &mdash;
+  household chores, warehouse picking, a specific industrial niche &mdash;
+  the set of tasks the VLA actually needs to handle is a small slice of
+  "every task a human can do."
+  It's still a hard problem, but a much smaller one.
+</p>
+
+<p>
+  Both of those bullets quietly push against big chunks of the current
+  generalist-VLA research agenda.
+  A lot of the difficulty in building VLAs today comes from trying to be
+  simultaneously cross-embodiment and cross-task.
+  If the business shape is "one company, one robot, one scoped product,"
+  you get to drop both requirements on day one &mdash;
+  and that changes what the right research questions even are.
+</p>
+
+<p>
+  There's a real flywheel to chase here too.
+  When thousands of units are deployed,
+  every interaction generates data:
+  robots failing to pick up an unusual mug,
+  successfully navigating a weird floor layout,
+  getting surprising verbal instructions from a user.
+  The company that figures out how to aggregate fleet data
+  and feed it back into model improvements
+  has a powerful loop:
+  more robots deployed &rarr; more data &rarr; better model &rarr; more robots sold.
+  That's the same argument Tesla has been making about autopilot for years.
+  It comes with its own set of hard problems &mdash;
+  in-home privacy, catastrophic forgetting, deciding what data is worth keeping &mdash;
+  but they're problems on a concrete product, not a generic benchmark.
+</p>
+
+
+<h1>6. Wrapping up</h1>
+
+<p>
+  I do still believe generalist VLAs are a cool and ambitious research direction.
+  I'm not trying to talk anyone out of them.
+  But thinking seriously about their potential use case might ground us a little better &mdash;
+  both in what the technical spec actually is,
+  and in what we're implicitly assuming about how the whole thing gets paid for.
+</p>
+
+<p>
+  Most of the specific claims above are calls I wouldn't stake too much on.
+  The part I'd defend more firmly is the framing.
+  "VLA Model Provider" and "In-House VLA Product Company"
+  are not the same business, and they don't need the same model.
+  Figuring out which one you're building probably has to come
+  before figuring out how many action heads it has.
+</p>
+
+<details>
+  <summary>Notes on the revenue-mix table</summary>
+  <p>
+    The percentages in Section 2 are rough order-of-magnitude estimates based
+    on public reporting through early 2026 &mdash;
+    Anthropic's 2025 ARR write-ups
+    (e.g. <a href="https://www.saastr.com/anthropic-just-hit-14-billion-in-arr-up-from-1-billion-just-14-months-ago/">this SaaStr summary</a>)
+    and various analyses of OpenAI's revenue shape that put ChatGPT consumer subs
+    at the majority and API as a smaller slice.
+    Treat them as directional, not exact; they shift every quarter.
+  </p>
+  <p>
+    Latency numbers in Section 4 are from
+    <a href="https://tokenmix.ai/blog/ai-api-latency-benchmark">tokenmix.ai's benchmark</a>
+    and also move quickly.
+  </p>
+</details>
 
 </div>
 </body>
