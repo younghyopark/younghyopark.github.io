@@ -149,15 +149,17 @@
 </p>
 
 <p>
-  Academia is supposed to be the part of the field that <em>isn't</em> racing
-  industry on product velocity, because we can't and we shouldn't. Our
-  comparative advantage is supposed to be the careful, generalizable,
-  mechanism-revealing work that industry doesn't have time for. That's what
-  science <em>is</em>, and it's also exactly what biology has spent a hundred
-  years figuring out how to do at scale. If we don't differentiate ourselves
-  from industry on that axis, I'm not sure what academic robotics is even for
-  anymore. So when I say "we" in the rest of this post, I mostly mean the
-  academic "we."
+  Academia is in a different position. We aren't racing industry on product
+  velocity, and probably shouldn't try. Our comparative advantage is supposed
+  to be the careful, generalizable, mechanism-revealing work that industry
+  doesn't have time for, and that's what biology has spent a hundred years
+  figuring out how to do at scale. If we don't lean into that axis, the
+  academic part of the field is going to have a hard time saying what it's
+  for. So when I say "we" in the rest of this post, I mostly mean the
+  academic "we", and I want to be upfront that I'm a third-year PhD student
+  writing this, not someone with the standing to scold the community. Where
+  I'm pointing at things I think we can do better, I'm pointing at myself
+  too.
 </p>
 
 <p>
@@ -220,7 +222,7 @@
 
 <p>
   This is the lesson that comes <em>before</em> all the others, and the one
-  I think the field most quietly avoids.
+  I'm most quietly resistant to in my own work.
 </p>
 
 <p>
@@ -256,28 +258,29 @@
 </p>
 
 <p>
-  This is the move I think robotics most needs, and most stubbornly resists.
+  This is the move I keep finding hardest to actually make.
 </p>
 
 <p>
-  We have a habit of studying the system we want to deploy on, even when the
-  noise floor on that system is so high that we can't actually tell what's
-  going on. We do imitation-learning research on bimanual humanoids because
-  humanoids are exciting. We study sim-to-real on dexterous in-hand
-  reorientation because in-hand reorientation is impressive. We benchmark new
-  architectures on the hardest tasks we can find, because the hardest tasks
-  are what reviewers want to see.
+  I notice the pattern in my own work all the time: I want to study the
+  system I'd ultimately like to deploy on, even when the noise floor on that
+  system is so high that I can't actually tell what's going on. It's
+  tempting to do imitation-learning experiments on bimanual setups because
+  bimanual setups are exciting, to study sim-to-real on dexterous in-hand
+  tasks because they're impressive, to pick the hardest benchmark for an
+  ablation because hard benchmarks read as serious.
 </p>
 
 <p>
   The trouble is that on those systems, the experimental signal-to-noise
-  ratio is awful. Every rollout is expensive, every comparison is dominated
+  ratio is rough. Every rollout is expensive, every comparison is dominated
   by variance from a hundred uncontrolled sources, and the differences we
-  report are barely separable from chance. We end up running 5 trials per
-  condition, declaring a 4-point success-rate gap a "win," and writing the
-  paper around it. None of that is good science. It's just what's available
-  when you've insisted on doing your science on the hardest possible
-  substrate.
+  end up reporting are often barely separable from chance. Running 5 trials
+  per condition, finding a 4-point success-rate gap, and writing the framing
+  of the paper around it (something I've done; something I see all the time)
+  isn't really what you'd do if the priority were learning something durable
+  about the underlying phenomenon. It's what's available when you've
+  insisted on doing your science on the hardest possible substrate.
 </p>
 
 <p>
@@ -323,8 +326,8 @@
   Once you have a tractable system, the next question is <em>how</em> to
   interrogate it. This is where R. A. Fisher's
   <a href="../../references/1937-fisher-thedesignofexperiments.pdf"><em>The Design of Experiments</em></a>
-  (1937) comes in, and it's where most robotics evaluations are at their most
-  embarrassing.
+  (1937) comes in, and where I think a lot of robotics evaluations (mine
+  very much included) end up looking weakest.
 </p>
 
 <p>
@@ -400,14 +403,15 @@
   dedicated single-factor study, (b) all the pairwise and higher-order
   interactions for free. In any system where factors interact (which
   includes essentially every robot learning pipeline), one-at-a-time
-  systematically misses the most interesting structure. Most of the
-  consequential pieces of robot-learning lore feel like exactly this kind of
+  systematically misses the most interesting structure. A lot of the
+  robot-learning takeaways I've absorbed feel like exactly this kind of
   unmeasured interaction. "Action chunking helps." Helps relative to what
-  action space, what controller stiffness, what data scale? "Diffusion policies
-  beat Gaussian heads." On what task density, what observation space, what
-  training-time budget? Each has been shown one-at-a-time, in isolation, on
-  different setups. We have approximately zero clean factorial evidence about
-  how any of them combine.
+  action space, what controller stiffness, what data scale? "Diffusion
+  policies beat Gaussian heads." On what task density, what
+  observation space, what training-time budget? Each has been shown
+  one-at-a-time, in isolation, on different setups. I personally don't know
+  of clean factorial evidence about how any of them combine, and would love
+  to be pointed at it if it exists.
 </p>
 
 <h2>What about the combinatorial blowup?</h2>
@@ -715,15 +719,15 @@
 </p>
 
 <p>
-  Both of these are exactly the kind of result robotics should be producing
-  and almost never does. We report success rates at single operating points.
-  We almost never plot performance as a function of a continuous design choice
-  over multiple orders of magnitude. When was the last time you saw a robotics
-  paper with a log-log plot of success rate vs. data scale, controller stiffness,
-  or policy frequency, fit with a clean exponent and discussed in terms of
-  <em>why</em> that exponent? When was the last time we said something like
-  "below this threshold the system is bottlenecked by X, but above it the
-  binding constraint switches to Y, so the slope of the curve changes"?
+  Both of these are the kind of result I'd love to see more of in robotics.
+  We mostly report success rates at single operating points. We almost never
+  plot performance as a function of a continuous design choice over multiple
+  orders of magnitude, let alone fit it with a clean exponent and discuss
+  <em>why</em> that exponent comes out the value it does. The kind of
+  analysis where you say "below this threshold the system is bottlenecked by
+  X, but above it the binding constraint switches to Y, so the slope of the
+  curve changes" is the kind of analysis I think we could be producing a lot
+  more of, and the kind I want to learn how to do well.
 </p>
 
 <p>
@@ -742,18 +746,19 @@
 </p>
 
 <p>
-  This is one of the most underrated opportunities in our field. We should be
-  hunting for the robotics analogues of Kleiber's law: clean numerical
-  relationships that hold across systems and tell you <em>why</em>. "How does
-  sample efficiency scale with controller stiffness?" (We took a first crack at
-  this in our recent <a href="https://younghyopark.me/tune-to-learn">Tune to
-  Learn</a> work, where the choice of controller gains turns out to interact
-  strongly with whether you're doing BC, RL, or sim-to-real, and the right
-  setting differs by an order of magnitude across regimes.) "How does
-  sim-to-real gap scale with policy frequency?" "How does success rate scale
-  with demonstration count, and is the exponent the same across embodiments?"
-  These are answerable questions with clean numbers attached, and the field
-  treats them like exotica.
+  This is one of the underrated opportunities I see in front of us. Robotics
+  analogues of Kleiber's law (clean numerical relationships that hold across
+  systems and tell you <em>why</em>) would be very valuable, and we don't
+  have many of them yet. "How does sample efficiency scale with controller
+  stiffness?" (We took a first crack at this in our recent
+  <a href="https://younghyopark.me/tune-to-learn">Tune to Learn</a> work,
+  where the choice of controller gains turns out to interact strongly with
+  whether you're doing BC, RL, or sim-to-real, and the right setting differs
+  by an order of magnitude across regimes.) "How does sim-to-real gap scale
+  with policy frequency?" "How does success rate scale with demonstration
+  count, and is the exponent the same across embodiments?" These are
+  answerable questions with clean numerical answers attached, and I think
+  we (myself very much included) have been treating them like exotica.
 </p>
 
 
@@ -803,9 +808,10 @@
 </ol>
 
 <p>
-  The honest paper, in Levins's framework, is the one that <em>names which
-  corner it's playing in</em>. The dishonest paper is the one that quietly
-  pretends to be in all three corners at once.
+  The clearest paper, in Levins's framework, is the one that <em>names which
+  corner it's playing in</em>. The muddier paper, and I've definitely written
+  some muddier ones, is the one that quietly hopes it's in all three corners
+  at once.
 </p>
 
 <p>
@@ -837,27 +843,32 @@
 
 <p>
   If a sim study, a real-world study, and a theoretical analysis all converge
-  on the same conclusion, that conclusion is more credible than any of them on
-  its own, <em>because</em> their failure modes are independent. The
-  current incentive structure in robotics research is roughly the opposite. We
-  pick one corner (usually #1, the high-fidelity-of-one-system corner) and try
-  to wring a paper out of it. The Levins move would be to deliberately attack
-  the same question from multiple corners and report when they agree (and,
-  more interestingly, when they don't).
+  on the same conclusion, that conclusion is more credible than any of them
+  on its own, <em>because</em> their failure modes are independent. Most of
+  the robotics work I read (and most of mine) lives in just one corner,
+  usually corner #1, because that's the corner that comfortably fits inside
+  a single paper. The Levins move I'd like to see more of, and try more of
+  myself, is deliberately attacking the same question from two or three
+  corners and reporting when they agree (and, more interestingly, when they
+  don't).
 </p>
 
 
-<h1>7. What I'd actually like to see us do differently</h1>
+<h1>7. What I'd like to see us do differently</h1>
 
 <p>
-  These four lessons hang together more than they look like at first. They are
+  These four lessons hang together more than they look like at first. They're
   all answers to the same underlying question: <em>how do you do science on a
   complex, high-variance, hard-to-control system that you can't shut down for
-  inspection?</em> Biology has been answering this question for a hundred
-  years. We can either reinvent its answers slowly or read its books quickly.
+  inspection?</em> Biology has been working on this question for a hundred
+  years. Reading its books has been substantially more useful to me than
+  reinventing the answers from scratch.
 </p>
 
-<p>Concretely, applied to a typical robotics paper:</p>
+<p>
+  Concretely, applied to a typical robotics paper (mine or anyone else's),
+  here's what I'd like to see more of:
+</p>
 
 <ul>
   <li>
@@ -894,7 +905,7 @@
 </ul>
 
 <p>
-  None of this is hard. None of it requires new tools. It mostly requires
+  None of this is particularly hard or requires new tools. It mostly requires
   treating the experiment as something to be designed, not just executed.
 </p>
 
@@ -968,10 +979,11 @@
 </ul>
 
 <p>
-  I'm not claiming any of this turns robotics into biology overnight. But I do
-  think the field has been borrowing from the wrong neighbours, and the right
-  neighbours have spent a century working out exactly the methodological
-  problems we now have. There's no harm in going to read their notes.
+  I'm not claiming any of this turns robotics into biology, or that I have
+  any of it figured out. But I do think the field has been borrowing
+  pretty heavily from physics and ML, and the right neighbours have spent a
+  century working out exactly the methodological problems we now have.
+  There's no harm in going to read their notes.
 </p>
 
 </div>
