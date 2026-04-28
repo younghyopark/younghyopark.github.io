@@ -277,12 +277,15 @@ mark {
     padding: 0 !important;
   }
   img.hoverZoomLink {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
+    width: 80% !important;
+    max-width: 80% !important;
+    max-height: 45vh;
+    object-fit: cover;
+    object-position: center 30%;
+    margin: 0 auto !important;
     display: block;
-    -webkit-mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
-    mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
   }
   /* Pull the name up slightly into the fading edge of the photo */
   body > table > tbody > tr > td > table:first-of-type > tbody > tr > td:first-child {
