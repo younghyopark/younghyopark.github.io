@@ -120,9 +120,15 @@ name {
   width: 160px;
   height: 160px;
   position: absolute;
+  opacity: 0;
   transition: opacity .2s ease-in-out;
   -moz-transition: opacity .2s ease-in-out;
   -webkit-transition: opacity .2s ease-in-out;
+}
+
+tr:hover .two,
+.one:hover .two {
+  opacity: 1 !important;
 }
 
 .fade {
@@ -218,6 +224,10 @@ mark {
 }
 
 @media (max-width: 600px) {
+  html {
+    scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 16px);
+  }
+
   body > table table tr {
     display: block;
   }
@@ -230,19 +240,25 @@ mark {
     vertical-align: top !important;
   }
 
-  .one,
-  .two {
+  .one {
     width: 100% !important;
     max-width: 224px;
-    height: auto !important;
     aspect-ratio: 1 / 1;
+    height: auto !important;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .two {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none;
   }
   .one {
-    margin: 0 auto;
+    margin: 0 auto 8px;
   }
   .two {
     inset: 0;
-    margin: 0 auto;
+    margin: 0;
   }
   .one > img,
   .one > video,
@@ -311,5 +327,25 @@ mark {
      just give multi-line items some line-height. */
   body > table table tr td ul li {
     line-height: 1.5;
+  }
+}
+
+/* On touch screens, the old hover-preview overlay can escape its
+   table cell in iOS Safari's native video layer. Make it in-flow. */
+@media (max-width: 600px) and (hover: none) {
+  .one > .two {
+    position: relative;
+    display: block;
+    opacity: 1 !important;
+    aspect-ratio: 1 / 1;
+    height: auto !important;
+  }
+  .one > .two > img,
+  .one > .two > video {
+    aspect-ratio: 1 / 1;
+    height: auto !important;
+  }
+  .one > .two + img {
+    display: none;
   }
 }
