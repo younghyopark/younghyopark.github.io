@@ -332,7 +332,7 @@ mark {
 
 /* On touch screens, the old hover-preview overlay can escape its
    table cell in iOS Safari's native video layer. Make it in-flow. */
-@media (max-width: 600px) and (hover: none) {
+@media (hover: none) {
   .one > .two {
     position: relative;
     display: block;
