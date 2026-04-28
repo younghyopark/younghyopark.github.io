@@ -216,3 +216,97 @@ mark {
 .news-wrap.expanded .news-toggle::after {
   content: " ▴";
 }
+
+@media (max-width: 600px) {
+  body > table table tr {
+    display: block;
+  }
+  body > table table tr td {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 10px 16px !important;
+    box-sizing: border-box;
+    vertical-align: top !important;
+  }
+
+  .one,
+  .two {
+    width: 100% !important;
+    max-width: 224px;
+    height: auto !important;
+    aspect-ratio: 1 / 1;
+  }
+  .one {
+    margin: 0 auto;
+  }
+  .two {
+    inset: 0;
+    margin: 0 auto;
+  }
+  .one > img,
+  .one > video,
+  .two > img,
+  .two > video {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover;
+  }
+
+  /* Standalone media (cards without a .one wrapper) */
+  body > table table tr td > img,
+  body > table table tr td > video {
+    max-width: 224px !important;
+    height: auto !important;
+    margin: 0 auto;
+    display: block;
+  }
+
+  /* Bio header: profile photo full-bleed at the top, fading into the
+     page background so it blends into the name below. */
+  body {
+    margin: 0;
+  }
+  body > table > tbody > tr > td > table:first-of-type > tbody > tr {
+    display: flex !important;
+    flex-direction: column;
+  }
+  body > table > tbody > tr > td > table:first-of-type > tbody > tr > td.bio-photo,
+  body > table > tbody > tr > td > table:first-of-type > tbody > tr > td:last-child {
+    order: -1;
+    padding: 0 !important;
+  }
+  img.hoverZoomLink {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    display: block;
+    -webkit-mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+  }
+  /* Pull the name up slightly into the fading edge of the photo */
+  body > table > tbody > tr > td > table:first-of-type > tbody > tr > td:first-child {
+    margin-top: -40px;
+    padding-top: 0 !important;
+  }
+
+  name {
+    font-size: 32px;
+  }
+  heading {
+    font-size: 20px;
+  }
+
+  /* Restore healthy spacing between sections — desktop uses
+     inline margin-bottom:-25px on heading tables to tighten the
+     gap, but on mobile that overlaps and cramps the layout. */
+  body > table > tbody > tr > td > table[style*="margin-bottom:-25px"] {
+    margin-bottom: 0 !important;
+  }
+
+  /* Invited Talks list: keep tight bullet spacing,
+     just give multi-line items some line-height. */
+  body > table table tr td ul li {
+    line-height: 1.5;
+  }
+}
