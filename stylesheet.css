@@ -278,8 +278,7 @@ mark {
     display: block;
   }
 
-  /* Bio header: profile photo full-bleed at the top, fading into the
-     page background so it blends into the name below. */
+  /* Bio header: full-width portrait at the top with a soft bottom fade. */
   body {
     margin: 0;
   }
@@ -287,25 +286,30 @@ mark {
     display: flex !important;
     flex-direction: column;
   }
-  body > table > tbody > tr > td > table:first-of-type > tbody > tr > td.bio-photo,
-  body > table > tbody > tr > td > table:first-of-type > tbody > tr > td:last-child {
+  .bio-photo {
+    display: block !important;
     order: -1;
     padding: 0 !important;
   }
-  img.hoverZoomLink {
-    width: 80% !important;
-    max-width: 80% !important;
-    max-height: 45vh;
-    object-fit: cover;
-    object-position: center 30%;
-    margin: 0 auto !important;
+  .bio-photo picture {
     display: block;
-    -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
-    mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
   }
-  /* Pull the name up slightly into the fading edge of the photo */
-  body > table > tbody > tr > td > table:first-of-type > tbody > tr > td:first-child {
-    margin-top: -40px;
+  .bio-photo img.hoverZoomLink {
+    display: block;
+    width: 100% !important;
+    max-width: none !important;
+    height: min(72vw, 45vh);
+    object-fit: cover;
+    object-position: center 58%;
+    margin: 0 !important;
+    -webkit-mask-image: linear-gradient(to bottom, black 58%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 58%, transparent 100%);
+  }
+  .bio-links {
+    margin-top: 0;
+  }
+  .bio-text {
+    margin-top: -42px;
     padding-top: 0 !important;
   }
 
