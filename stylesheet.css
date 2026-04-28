@@ -116,19 +116,23 @@ name {
   position: relative;
 }
 
+.diagram-thumb {
+  height: auto;
+}
+
+.diagram-thumb > img {
+  height: auto;
+  object-fit: contain;
+}
+
 .two {
   width: 160px;
   height: 160px;
   position: absolute;
-  opacity: 0;
+  opacity: 1 !important;
   transition: opacity .2s ease-in-out;
   -moz-transition: opacity .2s ease-in-out;
   -webkit-transition: opacity .2s ease-in-out;
-}
-
-tr:hover .two,
-.one:hover .two {
-  opacity: 1 !important;
 }
 
 .fade {
@@ -267,6 +271,14 @@ mark {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover;
+  }
+  .one.diagram-thumb {
+    aspect-ratio: auto;
+    overflow: visible;
+  }
+  .one.diagram-thumb > img {
+    height: auto !important;
+    object-fit: contain;
   }
 
   /* Standalone media (cards without a .one wrapper) */
