@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact in 3 Simulators, Part 1 — Intro - Younghyo Park</title>
+
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Contact in 3 Simulators, Part 1 — Intro" />
+  <meta property="og:description" content="An honest comparison of how MuJoCo, PhysX, and Drake determine contact. Same question, different engines; or different questions entirely?" />
+  <meta property="og:url" content="https://younghyopark.me/posts/sim-contact-1-intro/" />
+  <meta property="og:image" content="https://raw.githubusercontent.com/younghyopark/younghyopark.github.io/new/images/new_younghyo4.jpeg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@younghyo_park" />
+  <meta name="twitter:title" content="Contact in 3 Simulators, Part 1 — Intro" />
+  <meta name="twitter:description" content="An honest comparison of how MuJoCo, PhysX, and Drake determine contact." />
+  <meta name="twitter:image" content="https://raw.githubusercontent.com/younghyopark/younghyopark.github.io/new/images/new_younghyo4.jpeg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/shared/post-base.css">
+  <script src="/shared/post-nav.js"></script>
+
+  <!-- MathJax -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true
+      },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script type="text/javascript" id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <style>
+    .series-banner {
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.85rem 1.1rem;
+      margin: 0 0 2rem 0;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+    .series-banner .series-label {
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      font-size: 0.74rem;
+      margin-right: 0.5rem;
+    }
+    .series-banner .series-parts { margin-top: 0.3rem; }
+    .series-banner a {
+      color: var(--text);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+    }
+    .series-banner a:hover { border-bottom-color: var(--text); }
+    .series-banner .current { color: var(--text); font-weight: 600; border-bottom: none; }
+
+    table.compare {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.88rem;
+    }
+    table.compare th, table.compare td {
+      border: 1px solid var(--border);
+      padding: 0.55rem 0.7rem;
+      text-align: left;
+      vertical-align: top;
+      line-height: 1.45;
+    }
+    table.compare th {
+      background: var(--bg-alt);
+      font-weight: 600;
+      font-size: 0.82rem;
+    }
+    table.compare td:first-child {
+      font-weight: 600;
+      background: var(--bg-alt);
+      width: 22%;
+    }
+    .next-up {
+      margin-top: 3rem;
+      padding: 1.1rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--bg-alt);
+    }
+    .next-up .label {
+      font-size: 0.74rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .next-up a { color: var(--text); }
+    .parts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.75rem;
+      margin: 1.5rem 0;
+    }
+    @media (max-width: 700px) {
+      .parts-grid { grid-template-columns: 1fr; }
+    }
+    .parts-grid .card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.95rem 1rem;
+      background: var(--bg);
+    }
+    .parts-grid .card .label {
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .parts-grid .card a {
+      display: block;
+      color: var(--text);
+      font-weight: 600;
+      margin: 0.3rem 0 0.4rem;
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.3rem;
+    }
+    .parts-grid .card p {
+      margin: 0;
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .math-block {
+      background: var(--bg-alt);
+      border-left: 3px solid var(--border);
+      padding: 1rem 1.2rem;
+      margin: 1.2rem 0;
+      overflow-x: auto;
+    }
+    .math-block mjx-container[display="true"] {
+      margin: 0 !important;
+    }
+    .math-source {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: -0.6rem;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+<div class="post-body">
+
+<div class="post-header">
+  <h1 class="post-title">Contact in 3 Simulators, Part 1 — Intro</h1>
+  <div class="post-meta">
+    <span>2026-05-07</span>
+    <span class="sep">&middot;</span>
+    <span>Younghyo Park</span>
+  </div>
+</div>
+
+<div class="series-banner">
+  <span class="series-label">Series</span> Contact in 3 simulators
+  <div class="series-parts">
+    <span class="current">Part 1 — Intro</span> ·
+    <a href="/posts/sim-contact-2-mujoco/">Part 2 — MuJoCo</a> ·
+    <a href="/posts/sim-contact-3-physx/">Part 3 — PhysX</a> ·
+    <a href="/posts/sim-contact-4-drake/">Part 4 — Drake</a>
+  </div>
+</div>
+
+<blockquote>
+This series came out of curiosity, not advocacy. I wanted to know what
+actually differs between MuJoCo, PhysX, and Drake when they touch
+contact &mdash; not as marketing, but at the source-code level. This
+intro lays out what's the same, what's different, and (honestly) where
+the differences matter and where they don't.
+</blockquote>
+
+<h1>1. Why these three</h1>
+
+<p>
+  These three are the simulators most robotics and animation people end
+  up choosing between for rigid-body work that involves contact:
+</p>
+
+<ul>
+  <li>
+    <strong>MuJoCo.</strong> Originated in Todorov's lab; now
+    maintained by Google DeepMind. The dominant choice for
+    contact-rich reinforcement learning and model-predictive control.
+    Source: <code>google-deepmind/mujoco</code>.
+  </li>
+  <li>
+    <strong>PhysX.</strong> NVIDIA's general-purpose physics engine,
+    originally built for games. Now also the backbone of NVIDIA Isaac
+    Sim / Isaac Lab. Source: <code>NVIDIA-Omniverse/PhysX</code>.
+  </li>
+  <li>
+    <strong>Drake.</strong> RobotLocomotion / TRI's robotics
+    simulation and design framework. Strong in manipulation research,
+    where its hydroelastic contact model is its defining feature.
+    Source: <code>RobotLocomotion/drake</code>.
+  </li>
+</ul>
+
+<p>
+  Other engines exist (Bullet, ODE, MuJoCo MJX, Brax, Genesis, IsaacGym
+  on top of PhysX). I'm not covering them. The three I picked span the
+  interesting axes &mdash; if you understand these, you can place the
+  others.
+</p>
+
+<h1>2. The honest summary, up front</h1>
+
+<p>
+  If you read nothing else, this is the takeaway:
+</p>
+
+<ul>
+  <li>
+    <strong>MuJoCo and PhysX answer the same question.</strong> Both
+    treat contact as a constraint: when bodies penetrate, the solver
+    finds whatever forces are needed (right now) to resolve the
+    penetration and respect the friction cone. The forces are
+    Lagrange multipliers, not material outputs. Where they differ is
+    in how the constraint problem is solved &mdash; MuJoCo formulates
+    a global convex optimization per island and runs Newton/CG/PGS;
+    PhysX maintains a persistent contact manifold per pair and
+    iterates impulses (PGS or TGS).
+  </li>
+  <li>
+    <strong>Drake answers a different question.</strong> Hydroelastic
+    contact treats the contact region as a small overlap of two
+    pressure fields, computes the surface where they balance, and
+    integrates the pressure to get a force. The force is prescribed
+    by state and material; Drake's solver only enforces Newton's
+    laws and friction, not the contact force itself. Drake also
+    supports a point-contact model (via FCL), so it can be used in
+    the same family as MuJoCo/PhysX too.
+  </li>
+  <li>
+    <strong>"Better" depends on the question.</strong> For
+    contact-rich RL with stiff timesteps, MuJoCo wins on speed and
+    stability and has the cleanest convex formulation. For game-style
+    physics where you mostly want plausible behavior at scale,
+    PhysX's persistent manifold + iterative-impulse pipeline is what
+    has been battle-tested for two decades. For manipulation problems
+    where you care about distributed contact, smoothness, and
+    physically-meaningful material parameters &mdash; especially if
+    you're considering gradient-based methods &mdash; Drake's
+    hydroelastic path is genuinely different and the only one of the
+    three that gives you that.
+  </li>
+</ul>
+
+<p>
+  The rest of this post unpacks why those statements are true. The
+  three deep-dive parts (linked at the bottom) do the actual code
+  walks.
+</p>
+
+<h1>3. Two views of contact</h1>
+
+<p>
+  Before getting to the table, the single most useful thing to
+  internalize is that there are two genuinely different ways to think
+  about what contact <em>is</em>, in a physics simulator. MuJoCo and
+  PhysX implement the first; Drake's hydroelastic implements the
+  second.
+</p>
+
+<h2>3.1. Contact-as-constraint</h2>
+
+<p>
+  The first view says: contact is a <strong>constraint</strong>. When
+  two rigid bodies touch, the universe imposes a rule on them &mdash;
+  "you cannot interpenetrate" &mdash; and the simulator's job is to
+  find whatever forces are needed right now to make the rule hold
+  while everything else in the dynamics keeps doing its thing. The
+  forces themselves are not derived from a material model. They're
+  <strong>Lagrange multipliers</strong>: whatever values it takes to
+  keep the constraint satisfied. Friction sits on top of this as
+  another constraint ("the tangential force must lie inside the
+  friction cone") that also gets enforced by some impulse the solver
+  works out.
+</p>
+
+<p>
+  This view is the lineage of Stewart, Trinkle, Anitescu, Potra,
+  Erleben &mdash; "rigid body contact dynamics" &mdash; and it leads
+  naturally to a constrained optimization problem each timestep: given
+  the bodies' inertias and external forces, find the contact forces
+  that satisfy non-penetration, the friction cone, and Newton's laws.
+  MuJoCo and PhysX both live here. So do Bullet, ODE, and most engines
+  you'd recognize as a "rigid body simulator."
+</p>
+
+<h2>3.2. Contact-as-constitutive-law</h2>
+
+<p>
+  The second view says: contact is a <strong>constitutive
+  law</strong>. The bodies aren't rigid &mdash; they're slightly
+  squishy, and what we call "contact" is really a small region where
+  they overlap and push back on each other with some pressure that
+  depends on how much they overlap. Specify the pressure law (a
+  stress-strain relationship of the material), integrate it over the
+  overlapping region, and you get a force. The simulator then plugs
+  this force into the equations of motion the same way it plugs in
+  gravity or a spring.
+</p>
+
+<p>
+  This view is the lineage of finite element method (FEM) people
+  treating contact as a constitutive boundary condition, and its
+  cleanest modern crystallization is Drake's hydroelastic contact
+  model (Elandt et al. 2019).
+</p>
+
+<h2>3.3. The dual lens</h2>
+
+<ul>
+  <li>
+    <strong>Constraint-based contact answers:</strong> "given current
+    state and inertia, what set of contact impulses is consistent
+    with non-penetration and the friction cone?" Force is what the
+    solver decides it is.
+  </li>
+  <li>
+    <strong>Constitutive contact answers:</strong> "given current
+    state, what is the pressure at every point on the contact
+    surface?" Force is fully prescribed by state, and the equations
+    of motion just receive it.
+  </li>
+</ul>
+
+<p>
+  Both are valid. They aren't strictly incompatible &mdash; they're
+  <em>dual</em> ways of describing the same phenomenon, and in
+  certain limits they agree. But the engines that grow out of each
+  viewpoint look very different inside.
+</p>
+
+<h2>3.4. What problem does each actually solve?</h2>
+
+<p>
+  Both views become precise when you write down the optimization
+  problem the engine actually attacks. Below are the formulations
+  taken verbatim from each codebase &mdash; not glossed-over
+  versions. Variable names match what you'd find in MuJoCo's
+  <code>doc/computation/index.rst</code> and Drake's SAP source
+  (<code>multibody/contact_solvers/sap/sap_model.h</code>).
+</p>
+
+<h3>The constraint-based problem (MuJoCo)</h3>
+
+<p>
+  MuJoCo's primal problem finds the constrained acceleration
+  \(\dot{v}\) by solving:
+</p>
+
+<div class="math-block">
+\[
+\begin{aligned}
+(\dot{v},\, \dot{\omega}) \;=\; \operatorname*{arg\,min}_{(x,\, y)}\; &
+\bigl\lVert x - M^{-1}(\tau - c)\bigr\rVert^{2}_{M}
+\;+\; \bigl\lVert y - a_{r}\bigr\rVert^{2}_{R^{-1}} \\[4pt]
+\text{subject to}\quad &
+J_{\mathcal{E}}\, x_{\mathcal{E}} - y_{\mathcal{E}} = 0
+\quad\text{(equalities)} \\
+& J_{\mathcal{F}}\, x_{\mathcal{F}} - y_{\mathcal{F}} = 0
+\quad\text{(friction loss)} \\
+& J_{\mathcal{C}}\, x_{\mathcal{C}} - y_{\mathcal{C}} \in \mathcal{K}^{*}
+\quad\text{(contacts, dual cone)}
+\end{aligned}
+\]
+</div>
+<p class="math-source">
+  Source: <code>references/mujoco/doc/computation/index.rst</code>,
+  line 1106 (eq. <code>:label: eq:primal</code>).
+</p>
+
+<p>
+  Reading the symbols:
+</p>
+
+<ul>
+  <li>\(x\) is the optimization variable for generalized
+      acceleration; \(y\) is a slack variable in constraint
+      space (its physical interpretation in MuJoCo's docs is the
+      "deformation acceleration" of an augmented system).</li>
+  <li>\(M\) is the inertia matrix, \(\tau\) is the applied
+      generalized force, \(c\) is the bias.
+      \(M^{-1}(\tau - c)\) is the unconstrained "free-flight"
+      acceleration.</li>
+  <li>\(R\) is the diagonal regularizer (computed from
+      <code>solimp</code>); \(a_{r}\) is the reference
+      acceleration (computed from <code>solref</code>). Both are
+      what Part 2 unpacks at length.</li>
+  <li>\(J_{\mathcal{E}}, J_{\mathcal{F}}, J_{\mathcal{C}}\) are
+      the constraint Jacobians for equalities, friction-loss
+      constraints, and contacts.</li>
+  <li>\(\mathcal{K}^{*}\) is the dual of the friction cone (which
+      coincides with the cone itself for the pyramidal case; the
+      elliptic cone has a distinct dual).</li>
+  <li>\(\lVert z \rVert^{2}_{W} = z^{T} W z\), a positive-definite
+      weighted norm.</li>
+</ul>
+
+<p>
+  In words: find the acceleration \(x\) closest in \(M\)-norm to
+  free flight, plus a slack acceleration \(y\) close in
+  \(R^{-1}\)-norm to the reference acceleration \(a_{r}\),
+  subject to per-pair constraints that \(J\,x - y\) sits in the
+  appropriate set (zero for equalities, dual cone for contacts).
+  (Strictly, the second norm is a Huber norm
+  \(\lVert\cdot\rVert^{\text{Huber}(\eta)}_{R^{-1}}\) to handle
+  friction-loss interval bounds; in the absence of friction-loss
+  constraints, both norms are quadratic and the problem is the QP
+  shown above. See MuJoCo's docs eq. <code>eq:primal</code> for
+  the full Huber form.)
+</p>
+
+<h4>Where are the contact forces?</h4>
+
+<p>
+  Notice that contact forces don't appear anywhere as a variable
+  in the primal problem above. The optimization is over
+  \((x, y)\) &mdash; <em>accelerations</em> &mdash; with constraints
+  involving \(J_{\mathcal{E}}, J_{\mathcal{F}}, J_{\mathcal{C}}\)
+  but no explicit force vector. Where did the forces go?
+</p>
+
+<p>
+  The MuJoCo doc is explicit about this:
+  <em>"We start with a primal problem defined over accelerations
+  \(\dot{v}\) where the constraint forces are implicit. We then
+  transform the primal problem over accelerations into its
+  Lagrange dual. The dual is a convex optimization problem over
+  constraint forces, which also play the role of Lagrange
+  multipliers for the primal problem."</em>
+  (<code>doc/computation/index.rst:1023</code>.)
+</p>
+
+<p>
+  In other words, contact forces are the <strong>Lagrange
+  multipliers</strong> of the linear/conic constraints in the
+  primal. They emerge from the Karush&ndash;Kuhn&ndash;Tucker
+  (KKT) conditions, not from the optimization variables. The
+  <em>same</em> physical answer can also be obtained by writing
+  the Lagrange dual problem, in which forces are the primary
+  variable. The doc gives the dual explicitly:
+</p>
+
+<div class="math-block">
+\[
+\begin{aligned}
+f \;=\; \operatorname*{arg\,min}_{\lambda}\;\;
+& \tfrac{1}{2}\, \lambda^{T} (A + R)\, \lambda
+\;+\; \lambda^{T} (a_{u} - a_{r}) \\[4pt]
+\text{subject to}\quad & \lambda \in \Omega
+\end{aligned}
+\]
+</div>
+<p class="math-source">
+  Source: <code>references/mujoco/doc/computation/index.rst</code>,
+  line 1251 (eq. <code>:label: eq:dual</code>).
+  Auxiliary quantities: \(A = J M^{-1} J^{T}\) is the inverse
+  inertia in constraint space; \(a_{u} = J M^{-1}(\tau - c) + \dot{J}\, v\)
+  is the unconstrained acceleration in constraint space.
+</p>
+
+<p>
+  Reading this:
+</p>
+
+<ul>
+  <li>\(\lambda\) is the optimization variable; at the optimum,
+      \(\lambda = f\), the constraint force vector.</li>
+  <li>\(\Omega\) is the constraint set on \(\lambda\): equality
+      multipliers \(\lambda_{\mathcal{E}}\) are unconstrained;
+      friction-loss \(\lambda_{\mathcal{F}}\) sits in a box
+      \(|\lambda_{\mathcal{F}}| \le \eta\); contact
+      \(\lambda_{\mathcal{C}}\) sits in the friction cone
+      \(\mathcal{K}\) itself (not the dual &mdash; the cone is
+      the dual of the dual). For pyramidal cones this reduces to
+      \(\lambda_{\mathcal{C}} \ge 0\); for elliptic, it's a
+      second-order cone constraint.</li>
+  <li>The cost is a quadratic in \(\lambda\) with positive
+      definite Hessian \(A + R\). Once \(\lambda\) is found, the
+      acceleration is recovered from
+      \(M\,\dot{v} = \tau - c + J^{T}\lambda\) &mdash; standard
+      Newton's-law bookkeeping.</li>
+</ul>
+
+<p>
+  So <strong>forces sit in the dual; accelerations sit in the
+  primal</strong>. Neither contains both. MuJoCo's solvers
+  exploit this: the Newton and CG solvers attack the (reduced)
+  primal, while the PGS solver attacks the dual. Both produce
+  the same \((\dot{v}, f)\) pair at convergence.
+</p>
+
+<p>
+  This is what the phrase "force is a Lagrange multiplier" means
+  concretely: in MuJoCo, you don't directly compute a force from
+  a material law &mdash; you set up an optimization in
+  acceleration space, and whatever force value makes the KKT
+  conditions hold <em>is</em> the contact force. Drake's SAP
+  flips this: \(\gamma\) (the impulse) appears explicitly as a
+  derivative of the cost function, computed from a constitutive
+  law. We'll see this contrast crystallize in the SAP block
+  next.
+</p>
+
+<h3>The constitutive-based problem (Drake / SAP)</h3>
+
+<p>
+  Drake's SAP solver minimizes a primal cost in
+  <em>velocity</em>:
+</p>
+
+<div class="math-block">
+\[
+\begin{aligned}
+v \;=\; \operatorname*{arg\,min}_{v}\;\;
+& \tfrac{1}{2}\, (v - v^{*})^{T} A\, (v - v^{*})
+\;+\; \sum_{i} \ell_{i}\!\left(v_{c_i}\right) \\[4pt]
+\text{where}\quad &
+v_{c_i} = J_{i}\, v,
+\qquad \gamma_{i} = -\,\frac{\partial \ell_{i}}{\partial v_{c_i}}
+\end{aligned}
+\]
+</div>
+<p class="math-source">
+  Source:
+  <code>references/drake/multibody/contact_solvers/sap/sap_model.h:368</code>:
+  <em>"primal cost \(\ell_{p}(v) = \tfrac{1}{2}(v - v^{*})^{T} A (v - v^{*})
+  + \tfrac{1}{2}\gamma^{T} R\, \gamma\)"</em>
+  &mdash; the right-hand sum is the regularizer cost, expressed
+  per-constraint as \(\ell_{i}(v_{c_i})\); see
+  <code>sap_constraint.h:24</code>.
+</p>
+
+<p>
+  Reading the symbols:
+</p>
+
+<ul>
+  <li>\(v\) is the unknown post-timestep generalized velocity
+      (the optimization variable).</li>
+  <li>\(v^{*}\) is the free-motion velocity: what \(v\) would be
+      if all constraints were removed
+      (<code>sap_contact_problem.h:35</code>).</li>
+  <li>\(A\) is an SPD approximation of the linearized
+      discrete dynamics matrix, block-diagonal across "cliques"
+      of bodies (<code>sap_contact_problem.h:75</code>).</li>
+  <li>\(J_{i}\) is the \(i\)-th constraint's Jacobian, mapping
+      generalized velocity to constraint velocity
+      \(v_{c_i}\).</li>
+  <li>\(\ell_{i}(\cdot)\) is the \(i\)-th constraint's
+      <strong>convex per-constraint cost function</strong>
+      (<code>sap_constraint.h:24</code>). Each constraint type
+      provides its own \(\ell\) &mdash; friction-cone, distance,
+      Hunt-Crossley dissipation, hydroelastic, etc.</li>
+  <li>\(\gamma_{i}\) is the constraint impulse, defined as the
+      negative gradient of \(\ell_{i}\) with respect to
+      constraint velocity (<code>sap_constraint.h:33</code>).</li>
+</ul>
+
+<p>
+  At the optimum, the gradient of the primal cost is zero, which
+  gives the discrete momentum balance:
+</p>
+
+<div class="math-block">
+\[
+A\,(v - v^{*}) \;=\; J^{T} \gamma
+\]
+</div>
+<p class="math-source">
+  Source:
+  <code>references/drake/multibody/contact_solvers/sap/sap_contact_problem.h:32</code>,
+  eq. (1).
+</p>
+
+<p>
+  In words: the constrained velocity \(v\) is the one closest
+  (in the inertia-weighted sense) to free flight, while paying
+  a convex penalty \(\ell_{i}\) per constraint. The contact
+  impulses come out as <em>gradients of the cost function</em>,
+  not as the outputs of an explicit cone-membership constraint
+  &mdash; notice the SAP problem has <em>no constraint set</em>;
+  it's unconstrained over \(v\). This is what the SAP paper's
+  title, "An Unconstrained Convex Formulation," is pointing
+  at. For a hydroelastic contact, the cost \(\ell\) is
+  constructed from the upstream pressure field and Hunt-Crossley
+  dissipation; the resulting impulse equals what the integral
+  \(\int_{S} p(x)\, \hat{n}(x)\, dA\) predicts. The
+  <em>physical material</em> enters through \(\ell\).
+</p>
+
+<h3>Reading the equations side by side</h3>
+
+<p>
+  The two problems look genuinely different:
+</p>
+
+<ul>
+  <li>
+    <strong>Variable space.</strong> MuJoCo solves over
+    <em>acceleration</em> (with a slack variable). SAP solves
+    over <em>velocity</em>. For a discrete-time integrator
+    they're related by \(\Delta t\); the choice affects the
+    Hessian's conditioning but not what's expressible.
+  </li>
+  <li>
+    <strong>Constraint structure.</strong> MuJoCo has explicit
+    cone-membership constraints (\(J\,x - y \in \mathcal{K}^{*}\)).
+    SAP has <em>no</em> explicit constraints &mdash; the cone
+    behavior is baked into the convex cost \(\ell_{i}\). SAP is
+    solving an unconstrained convex optimization; MuJoCo a
+    constrained one.
+  </li>
+  <li>
+    <strong>Where physical knowledge enters.</strong> In
+    MuJoCo, physics enters through \(R\) and \(a_{r}\)
+    &mdash; computed from <code>solref</code>/<code>solimp</code>,
+    which are solver hyperparameters in disguise. In SAP,
+    physics enters through \(\ell_{i}\) &mdash; computed from
+    upstream material parameters (Young's modulus, friction
+    coefficient, dissipation in physical units). Both
+    problems are convex; both produce contact forces
+    satisfying Newton's laws and friction at the optimum. The
+    distinction is <em>where</em> the physics is encoded.
+  </li>
+</ul>
+
+<h1>4. Side by side</h1>
+
+<p>
+  Here's the same set of design questions answered from each engine's
+  source code. The cells link to the deep-dive part where each claim
+  is substantiated.
+</p>
+
+<table class="compare">
+  <thead>
+    <tr>
+      <th></th>
+      <th>MuJoCo</th>
+      <th>PhysX</th>
+      <th>Drake</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>View of contact</td>
+      <td>Constraint &mdash; force is a Lagrange multiplier</td>
+      <td>Constraint &mdash; force is a Lagrange multiplier</td>
+      <td>Constitutive (hydroelastic) or constraint (point)</td>
+    </tr>
+    <tr>
+      <td>Broadphase</td>
+      <td>Single covariance-aligned sweep-and-prune</td>
+      <td>5 algorithms (SAP, MBP, ABP, PABP, GPU); user picks; default ABP</td>
+      <td>FCL-based; BVH for hydroelastic mesh queries</td>
+    </tr>
+    <tr>
+      <td>Narrowphase</td>
+      <td>Function table → primitive routines or GJK/EPA; SDF path; <code>multiCCD</code> perturbation probe for multi-contact</td>
+      <td>Function table → GJK every frame + persistent manifold; full regenerate via SAT + 2D face clipping when invalidated</td>
+      <td>FCL for point contact; tet-tet pressure-field intersection (clip against equilibrium plane) for hydroelastic</td>
+    </tr>
+    <tr>
+      <td>Contact persistence</td>
+      <td>None &mdash; rebuilt every step</td>
+      <td>Persistent manifold per pair; up to 4 cached contacts; warm-started impulses</td>
+      <td>None for point; the contact surface is recomputed but is a continuous function of state</td>
+    </tr>
+    <tr>
+      <td>Per-contact data</td>
+      <td><code>mjContact</code>: geometry + <em>solver</em> regularization (<code>solref</code>, <code>solimp</code>)</td>
+      <td><code>PxContactPoint</code>: geometry + <em>combined material</em> (friction, restitution, damping)</td>
+      <td><code>PenetrationAsPointPair</code> (point) or <code>ContactSurface</code> mesh + pressure field (hydro)</td>
+    </tr>
+    <tr>
+      <td>How the user specifies "softness"</td>
+      <td><code>solref</code> (time constant, damping ratio) — solver hyperparameter</td>
+      <td>Restitution + damping; negative restitution back-door for spring stiffness</td>
+      <td>Hydroelastic modulus <em>E</em> (Pa) + Hunt-Crossley dissipation — material property</td>
+    </tr>
+    <tr>
+      <td>Friction model</td>
+      <td>Pyramidal or true elliptic cone (user-selectable)</td>
+      <td>Pyramidal (1 or 2 friction directions)</td>
+      <td>Regularized Coulomb cone (smooth, no LCP)</td>
+    </tr>
+    <tr>
+      <td>Two-material combination</td>
+      <td>Per-geom <code>solmix</code> weighted average</td>
+      <td>Combine modes (AVERAGE / MIN / MULTIPLY / MAX)</td>
+      <td>Equilibrium surface lands at pressure-balance; no parameter averaging</td>
+    </tr>
+    <tr>
+      <td>Solver</td>
+      <td>Convex optimization (Newton / CG / PGS) on Gauss principle</td>
+      <td>Iterative impulse-based: PGS or TGS (substepping)</td>
+      <td>SAP: smooth convex primal Newton with regularized cones</td>
+    </tr>
+    <tr>
+      <td>Stiff-contact stability mechanism</td>
+      <td>Implicit-in-velocity reference acceleration co-solved with dynamics</td>
+      <td>TGS substeps and re-evaluates constraint errors mid-step</td>
+      <td>SAP's convex formulation + material-rooted regularization</td>
+    </tr>
+    <tr>
+      <td>Multi-contact for face contact</td>
+      <td>Box-box: 8 points (hand-coded); capsule/cylinder/mesh pairs: up to 5 via <code>multiCCD</code> perturbation probe; sphere/ellipsoid: 1</td>
+      <td>Up to 4 per pair, generated by SAT + 2D face clipping (full path) or accumulated from per-frame GJK (incremental); reduced via spread heuristic</td>
+      <td>Whole contact surface (mesh of polygons) by construction</td>
+    </tr>
+    <tr>
+      <td>Articulation</td>
+      <td>Reduced-coordinate, treated uniformly with free bodies</td>
+      <td>Reduced-coordinate Featherstone (also legacy maximal)</td>
+      <td>Reduced-coordinate (multibody tree)</td>
+    </tr>
+    <tr>
+      <td>Geometry / dynamics separation</td>
+      <td>Single engine</td>
+      <td>Layered SDK; geometry under <code>geomutils</code></td>
+      <td>Two systems: SceneGraph and MultibodyPlant, talking over a port</td>
+    </tr>
+  </tbody>
+</table>
+
+<h1>5. What's actually the same across all three</h1>
+
+<p>
+  It's worth noting where the three engines genuinely agree, because
+  the differences are louder than the similarities and it's easy to
+  overstate them:
+</p>
+
+<ul>
+  <li>
+    <strong>Broadphase &rarr; narrowphase &rarr; constraint setup
+    &rarr; solve.</strong> All three engines split contact into the
+    same four stages. The boundaries are the same; what's inside each
+    stage differs.
+  </li>
+  <li>
+    <strong>GJK + EPA for general convex pairs.</strong> All three use
+    GJK to test for intersection and EPA to extract penetration depth
+    and normal under penetration. Drake, via FCL; MuJoCo and PhysX,
+    in-house. The math is identical.
+  </li>
+  <li>
+    <strong>Coulomb friction.</strong> All three implement Coulomb
+    friction with a per-pair coefficient (or two: static and dynamic).
+    They differ in whether the cone is pyramidal, elliptic, or
+    smoothed; not in whether it's Coulomb.
+  </li>
+  <li>
+    <strong>Discrete time stepping by default.</strong> All three are
+    designed around a fixed-step discrete update of the dynamics, not
+    around adaptive ODE integration. Drake nominally supports
+    continuous-time mode but in practice everyone uses the discrete
+    plant.
+  </li>
+  <li>
+    <strong>Convex solvers, ultimately.</strong> MuJoCo's Newton and
+    Drake's SAP are both convex primal/dual Newton-style solvers.
+    PhysX's PGS/TGS, while iterative-impulse rather than Newton-style,
+    is solving a problem that's also convex (LCP with a positive-
+    semidefinite system matrix). The convexity story is universal in
+    this generation of engines.
+  </li>
+</ul>
+
+<p>
+  So the question is rarely "which engine produces correct contact"
+  &mdash; all three produce defensible answers in their domain &mdash;
+  but rather "which engine answers the kind of question you're
+  asking."
+</p>
+
+<h1>6. Where the philosophies push in different directions</h1>
+
+<p>
+  The interesting differences are downstream of the constraint-versus-
+  constitutive split. Four pressure points, in roughly increasing
+  depth.
+</p>
+
+<h2>6.1. What "softness" actually means</h2>
+
+<p>
+  In MuJoCo, "soft contact" means <strong>regularized constraint
+  enforcement</strong>: instead of a hard non-penetration inequality,
+  the solver allows a little penetration in exchange for a numerically
+  nicer optimization, with <code>solref</code>/<code>solimp</code>
+  controlling how much. The "softness" exists to keep the convex
+  problem well-conditioned, not to model material compliance.
+</p>
+
+<p>
+  In PhysX, "soft contact" via the negative-restitution back door is
+  the same idea in different clothes: a regularized constraint where
+  the user picks a stiffness, but with no constitutive grounding.
+</p>
+
+<p>
+  In Drake's hydroelastic, "soft" means the geom literally has a
+  finite-stiffness pressure field. A 1 MPa silicone sphere produces a
+  specific traction distribution at a specific penetration. There's no
+  solver hyperparameter to tune; you specify the modulus and the
+  geometry, and the force comes out.
+</p>
+
+<p>
+  The mapping <em>K</em>&middot;<em>r</em> &harr;
+  <em>p</em>(<em>x</em>)&middot;<em>A</em> is mathematically possible
+  &mdash; you can pick a <code>solref</code> that reproduces the
+  steady-state force of a given hydroelastic contact &mdash; but it's
+  a coincidence at the level of one static frame. The transient
+  compliance, the way the contact patch evolves under sliding,
+  none of that comes along for the ride.
+</p>
+
+<h2>6.2. Smoothness of contact birth and death</h2>
+
+<p>
+  In MuJoCo and PhysX, contact is a discrete event. A point either
+  exists in the contact list or it doesn't. As a body rolls across an
+  edge, contacts pop in and out; as a body lifts off, the contact
+  vanishes. PhysX's persistent manifold smooths this somewhat by
+  reusing identities across frames, but the underlying transition
+  is still discrete.
+</p>
+
+<p>
+  In Drake's hydroelastic, the contact surface is a continuous
+  function of state. As a foot rolls across a curved floor, the
+  patch deforms continuously and the integrated force varies
+  smoothly. There is no "contact point appeared, contact point
+  disappeared" event &mdash; the integrand is continuous in
+  configuration.
+</p>
+
+<p>
+  This matters in exactly one circumstance: when you want to
+  <strong>differentiate</strong> through the dynamics. The hard
+  contact birth/death events in the constraint pipelines limit
+  gradient-based methods. The smooth contact surface in hydroelastic
+  doesn't. For everything else &mdash; RL, MPC, plain forward
+  simulation &mdash; the practical difference is smaller than the
+  marketing suggests, because the discrete-contact engines are
+  designed to absorb the discontinuity through their solver
+  formulation. But for diffsim or gradient-based trajectory
+  optimization, this is a real and structural difference.
+</p>
+
+<h2>6.3. Distributed force</h2>
+
+<p>
+  When a flat surface rests on another flat surface, the contact is a
+  distributed force, not a point. Each engine handles this
+  differently:
+</p>
+
+<ul>
+  <li>
+    <strong>MuJoCo</strong> hand-codes box-box to return up to 8
+    points, and uses <code>multiCCD</code> &mdash; a perturbation
+    probe that rotates each geom by &plusmn;0.001 rad and re-runs the
+    penetration query &mdash; to surface up to 5 contacts for general
+    convex pairs. True point contacts (sphere, ellipsoid) stay at 1.
+  </li>
+  <li>
+    <strong>PhysX</strong> takes a fundamentally different route to
+    the same destination: when the persistent manifold needs a full
+    regenerate, it runs SAT to pick the contact axis, finds the
+    incident face, and clips it against the reference face in 2D
+    (Sutherland-Hodgman style) to produce up to 4 contacts in one
+    shot. Most frames the manifold is reused with only a single GJK
+    refresh on top.
+  </li>
+  <li>
+    <strong>Drake</strong> doesn't have to do anything special. The
+    contact surface <em>is</em> the distributed contact, and force
+    is integrated over it.
+  </li>
+</ul>
+
+<p>
+  This is one of the cleanest places where hydroelastic's win is
+  real and not merely cosmetic. Edge contact, corner contact,
+  conformal contact &mdash; all handled by the same pressure-field
+  integral, with no special cases. In the constraint-based engines,
+  these are ongoing engineering challenges papered over with
+  carefully-tuned narrowphase routines.
+</p>
+
+<h2>6.4. Where the material parameters live</h2>
+
+<p>
+  This is the cleanest test for which philosophy an engine implements:
+  <em>where does the user specify "this is silicone"?</em>
+</p>
+
+<ul>
+  <li>
+    <strong>MuJoCo:</strong> on the contact (or geom default),
+    via <code>solref</code> and <code>solimp</code>. Numerical
+    parameters with units that mostly happen to look physical
+    (a "time constant" in seconds), but their job is solver
+    conditioning.
+  </li>
+  <li>
+    <strong>PhysX:</strong> on the material, via friction,
+    restitution, and damping. These are coefficients, not material
+    constants in the constitutive sense &mdash; restitution is a
+    pure number in [0,1] (or negative for spring mode), not an
+    elastic modulus in Pa.
+  </li>
+  <li>
+    <strong>Drake:</strong> on the geom's proximity properties, via
+    <code>hydroelastic_modulus</code> in pascals, plus
+    <code>dissipation</code> and <code>friction</code>. The modulus
+    is a material constant; it's consumed unmodified by the
+    contact-surface computation.
+  </li>
+</ul>
+
+<p>
+  None of the three is "right" in some absolute sense. But the
+  question "what numerical value should I pick to simulate
+  silicone?" has very different answers in each. In Drake, you
+  Google silicone's Young's modulus. In MuJoCo, you back-solve
+  <code>solref</code> against a target steady-state force. In
+  PhysX, you accept that you're picking values for behavior, not
+  for materials, and you tune.
+</p>
+
+<h1>7. Where each engine is the right tool</h1>
+
+<p>
+  Without crowning a winner, here's the honest read on what each
+  engine is best at, based on what its source code optimizes for:
+</p>
+
+<ul>
+  <li>
+    <strong>MuJoCo</strong> is hard to beat for contact-rich
+    reinforcement learning, model-predictive control, and dexterous
+    manipulation research where you need thousands of rollouts per
+    second on a laptop. The implicit-in-velocity reference
+    acceleration and the convex Gauss-principle formulation let it
+    take 2-millisecond timesteps with stiff contact and not blow
+    up. The tradeoff is that material parameters are solver
+    parameters, and "feels like silicone" is a tuning problem.
+  </li>
+  <li>
+    <strong>PhysX</strong> is best when you want general-purpose,
+    well-tested rigid-body physics with broad geometry support and
+    the option of GPU acceleration (especially via Isaac Sim /
+    Isaac Lab). It's the most pragmatic of the three: persistent
+    manifolds, iterative impulses, two solver options for stiff
+    content (TGS), four broadphase options to fit different scene
+    profiles. The tradeoff is the same as MuJoCo's &mdash; no
+    constitutive contact &mdash; plus the friction cone is
+    pyramidal-only, which is a real (small) approximation for
+    dexterous manipulation.
+  </li>
+  <li>
+    <strong>Drake</strong> is the right tool when you need
+    distributed contact done right out of the box, when you want
+    material parameters to be material parameters, or when you're
+    doing gradient-based methods that need smooth contact. It's
+    also the only one of the three with first-class deformable-body
+    support and clean geometry/dynamics separation in its
+    architecture. The tradeoff: hydroelastic pre-meshing has setup
+    cost, and the discrete-time SAP solver is generally slower per
+    step than MuJoCo's per-island Newton. For workloads that
+    don't need hydroelastic's smoothness or distributed-contact
+    properties, you're paying for capabilities you're not using.
+  </li>
+</ul>
+
+<p>
+  None of these statements would surprise a long-time user of the
+  respective engine. The point of writing them down is that, when
+  you're choosing, the relevant question isn't "which is the best
+  simulator." It's "which question is my problem actually asking?"
+</p>
+
+<h1>8. The three deep dives</h1>
+
+<p>
+  Each of the next three parts walks the actual code &mdash; broadphase
+  through solver &mdash; for one engine, with file paths and line
+  numbers cited so you can follow along in the source. They're
+  designed to read in order, but stand alone if you only care about
+  one engine.
+</p>
+
+<div class="parts-grid">
+  <div class="card">
+    <span class="label">Part 2</span>
+    <a href="/posts/sim-contact-2-mujoco/">MuJoCo</a>
+    <p>Covariance-aligned sweep-and-prune, GJK/EPA, the
+    <code>solref</code>/<code>solimp</code> regularization, the
+    convex Gauss-principle solver, and constraint islands.</p>
+  </div>
+  <div class="card">
+    <span class="label">Part 3</span>
+    <a href="/posts/sim-contact-3-physx/">PhysX</a>
+    <p>Five broadphases, persistent contact manifolds, contact
+    reduction to 4 points per patch, the PGS and TGS solvers, and
+    the pyramidal friction model.</p>
+  </div>
+  <div class="card">
+    <span class="label">Part 4</span>
+    <a href="/posts/sim-contact-4-drake/">Drake</a>
+    <p>SceneGraph and ProximityEngine, point and hydroelastic
+    contact, pressure fields, equilibrium-surface computation,
+    <code>ContactSurface</code>, and the SAP solver.</p>
+  </div>
+</div>
+
+<p>
+  If you're picking a place to start, Part 2 is the gentlest entry
+  &mdash; MuJoCo's pipeline is the most compact of the three and a
+  good baseline for the constraint-based view. Then Part 3 shows the
+  same view implemented differently. Then Part 4 shows the
+  alternative.
+</p>
+
+<h1>9. A short reading list (the whole-series version)</h1>
+
+<ul>
+  <li>
+    <strong>Stewart, "Rigid-Body Dynamics with Friction and
+    Impact" (SIAM Review 2000).</strong> The textbook framing of
+    constraint-based contact. The mathematical setting MuJoCo and
+    PhysX both inhabit.
+  </li>
+  <li>
+    <strong>Todorov, "Convex and analytically-invertible dynamics
+    with contacts and constraints" (ICRA 2014).</strong> The paper
+    behind MuJoCo's convex solver formulation.
+  </li>
+  <li>
+    <strong>Catto, "Iterative Dynamics with Temporal
+    Coherence" (GDC 2005).</strong> The PGS-on-impulses formulation
+    PhysX (and Box2D, Bullet) descends from. Short, very clear.
+  </li>
+  <li>
+    <strong>Elandt, Drumwright, Sherman, Ruppel, "A Pressure Field
+    Model for Fast, Robust Approximation of Net Contact Force and
+    Moment Between Nominally Rigid Objects" (IROS 2019).</strong>
+    The hydroelastic paper. Read before opening Drake's source.
+  </li>
+  <li>
+    <strong>Castro, Permenter, Han, "An Unconstrained Convex
+    Formulation of Compliant Contact" (T-RO 2023).</strong> The
+    paper behind Drake's SAP solver.
+  </li>
+</ul>
+
+<div class="next-up">
+  <span class="label">Next</span>
+  <h3 style="margin: 0.3rem 0 0.5rem;"><a href="/posts/sim-contact-2-mujoco/">Part 2 — MuJoCo</a></h3>
+  <p style="margin: 0; color: var(--text-muted); font-size: 0.92rem;">
+    A code-level tour of MuJoCo's contact pipeline: the
+    constraint-based view at its most compact, with all the math in
+    one engine's worth of files.
+  </p>
+</div>
+
+</div>
+</body>
+</html>

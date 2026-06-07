@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact in 3 Simulators, Part 3 — PhysX - Younghyo Park</title>
+
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Contact in 3 Simulators, Part 3 — PhysX" />
+  <meta property="og:description" content="A code-level walkthrough of PhysX's contact pipeline: persistent manifolds, contact reduction, PGS/TGS solvers, and pyramidal friction." />
+  <meta property="og:url" content="https://younghyopark.me/posts/sim-contact-3-physx/" />
+  <meta property="og:image" content="https://raw.githubusercontent.com/younghyopark/younghyopark.github.io/new/images/new_younghyo4.jpeg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@younghyo_park" />
+  <meta name="twitter:title" content="Contact in 3 Simulators, Part 3 — PhysX" />
+  <meta name="twitter:description" content="A code-level walkthrough of PhysX's contact pipeline." />
+  <meta name="twitter:image" content="https://raw.githubusercontent.com/younghyopark/younghyopark.github.io/new/images/new_younghyo4.jpeg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/shared/post-base.css">
+  <script src="/shared/post-nav.js"></script>
+
+  <style>
+    .series-banner {
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.85rem 1.1rem;
+      margin: 0 0 2rem 0;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+    .series-banner .series-label {
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      font-size: 0.74rem;
+      margin-right: 0.5rem;
+    }
+    .series-banner .series-parts { margin-top: 0.3rem; }
+    .series-banner a {
+      color: var(--text);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+    }
+    .series-banner a:hover { border-bottom-color: var(--text); }
+    .series-banner .current { color: var(--text); font-weight: 600; border-bottom: none; }
+    .next-up {
+      margin-top: 3rem;
+      padding: 1.1rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--bg-alt);
+    }
+    .next-up .label {
+      font-size: 0.74rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .next-up a { color: var(--text); }
+  </style>
+</head>
+<body>
+<div class="post-body">
+
+<div class="post-header">
+  <h1 class="post-title">Contact in 3 Simulators, Part 3 — PhysX</h1>
+  <div class="post-meta">
+    <span>2026-05-07</span>
+    <span class="sep">&middot;</span>
+    <span>Younghyo Park</span>
+  </div>
+</div>
+
+<div class="series-banner">
+  <span class="series-label">Series</span> Contact in 3 simulators
+  <div class="series-parts">
+    <a href="/posts/sim-contact-1-intro/">Part 1 — Intro</a> ·
+    <a href="/posts/sim-contact-2-mujoco/">Part 2 — MuJoCo</a> ·
+    <span class="current">Part 3 — PhysX</span> ·
+    <a href="/posts/sim-contact-4-drake/">Part 4 — Drake</a>
+  </div>
+</div>
+
+<blockquote>
+A code-level tour of how PhysX (NVIDIA) determines and resolves contact.
+PhysX shares MuJoCo's worldview &mdash; contact-as-constraint &mdash; but
+solves the resulting problem with a different machinery: persistent
+manifolds carried across timesteps and impulse-based iterative solvers
+(PGS and TGS). All file paths are relative to
+<code>references/PhysX/</code>.
+</blockquote>
+
+<h1>1. Where to look</h1>
+
+<p>
+  PhysX's source tree is laid out by abstraction layer. The relevant
+  directories for contact are:
+</p>
+
+<ul>
+  <li><code>physx/include/</code> &mdash; public headers, including the
+      <code>PxBroadPhase</code> / <code>PxMaterial</code> / <code>PxContact</code>
+      structs the user touches.</li>
+  <li><code>physx/source/geomutils/</code> &mdash; geometry queries:
+      GJK, EPA, persistent contact manifolds, narrowphase dispatch.</li>
+  <li><code>physx/source/lowlevel/</code> and
+      <code>physx/source/lowleveldynamics/</code> &mdash; the solver,
+      contact reduction, material combination, articulation.</li>
+  <li><code>physx/source/lowlevelaabb/</code>,
+      <code>physx/source/gpubroadphase/</code> &mdash; broadphase
+      backends.</li>
+</ul>
+
+<p>
+  As with MuJoCo, the work splits into broadphase &rarr; narrowphase
+  &rarr; constraint setup &rarr; solve. The shapes of those stages are
+  similar; the implementation choices differ in ways worth noticing.
+</p>
+
+<h1>2. Step 1a — Broadphase: five algorithms, one default</h1>
+
+<p>
+  PhysX exposes five broadphase algorithms and lets the user pick at
+  scene-creation time. The enum is here:
+</p>
+
+<p class="code-caption">physx/include/PxBroadPhase.h</p>
+<pre><code><span class="k">struct</span> <span class="t">PxBroadPhaseType</span> {
+  <span class="k">enum</span> <span class="t">Enum</span> {
+    eSAP,    <span class="c">// 3-axis sweep-and-prune; good for many sleeping objects</span>
+    eMBP,    <span class="c">// multi box pruning; better when objects move (needs world bounds)</span>
+    eABP,    <span class="c">// automatic box pruning; hybrid, manages regions automatically</span>
+    ePABP,   <span class="c">// parallel ABP; can be fastest, more memory</span>
+    eGPU     <span class="c">// GPU SAP variant, ABP-style pair generation</span>
+  };
+};</code></pre>
+
+<p>
+  The default is <strong>eABP</strong>, set in
+  <code>physx/source/simulationcontroller/src/ScScene.cpp</code>. The
+  user picks one via <code>PxBroadPhaseDesc::mType</code>
+  (<code>PxBroadPhase.h:229</code>). Compare with MuJoCo's single
+  covariance-aligned sweep-and-prune: PhysX makes broadphase a
+  configuration knob because the right choice depends on whether your
+  scene is a city of mostly-sleeping objects (SAP wins) or a small set
+  of fast-moving ones (MBP/ABP win).
+</p>
+
+<p>
+  CPU broadphases live behind <code>BpBroadPhase.h</code>
+  (<code>physx/source/lowlevelaabb/include/BpBroadPhase.h</code>); the
+  GPU path is <code>PxgBroadphase.h</code>
+  (<code>physx/source/gpubroadphase/include/PxgBroadphase.h</code>).
+</p>
+
+<h1>3. Step 1b — Narrowphase: function tables, GJK/EPA, and persistent manifolds</h1>
+
+<p>
+  Narrowphase dispatch in PhysX is, as in MuJoCo, a function table
+  indexed by geom-type pair:
+</p>
+
+<p class="code-caption">physx/source/geomutils/src/contact/GuContactMethodImpl.h:120</p>
+<pre><code><span class="c">// Per-pair contact functions. Macro GU_CONTACT_METHOD_ARGS</span>
+<span class="c">// expands to a uniform signature.</span>
+GU_CONTACT_METHOD(contactSphereSphere);
+GU_CONTACT_METHOD(contactConvexConvex);
+<span class="c">// ... and dozens more pair-specific entry points</span></code></pre>
+
+<p>
+  There are two parallel dispatch paths in this header. The plain
+  <code>contact*</code> functions are the legacy direct-GJK path; the
+  <code>pcm*</code> functions (line ~191 onward) go through the
+  <strong>Persistent Contact Manifold</strong> machinery, which is the
+  main path in modern PhysX.
+</p>
+
+<h2>3.1. GJK and EPA, in-house</h2>
+
+<p>
+  PhysX ships its own GJK and EPA, not as external libraries. The
+  entry points are:
+</p>
+
+<p class="code-caption">physx/source/geomutils/src/gjk/GuGJKTest.h:41</p>
+<pre><code>GjkStatus testGjk(...);             <span class="c">// separation test</span>
+GjkStatus testGjkPenetration(...);  <span class="c">// penetration test</span>
+GjkStatus testEpaPenetration(...);  <span class="c">// EPA: depth + normal under penetration</span></code></pre>
+
+<p>
+  These return contact-relevant data &mdash; the closest features on
+  each shape, the separation distance, and (in the EPA case) the
+  penetration depth and normal &mdash; in the same way MuJoCo's
+  <code>engine_collision_gjk.c</code> does. The math is the same. The
+  implementations differ in tuning and SIMD layout but not in
+  algorithmic kind.
+</p>
+
+<h2>3.2. The persistent contact manifold</h2>
+
+<p>
+  This is where PhysX diverges sharply from MuJoCo. In MuJoCo, every
+  contact you see this timestep was generated this timestep; the
+  collision routines run from scratch and the
+  <code>mjData.contact</code> array is rebuilt each call. In PhysX,
+  contacts are <em>cached</em> in a <strong>persistent contact
+  manifold</strong> attached to the pair, and most frames the
+  narrowphase only does cheap incremental work on top of the cache.
+</p>
+
+<p class="code-caption">physx/source/geomutils/src/pcm/GuPersistentContactManifold.h:144</p>
+<pre><code><span class="k">class</span> <span class="t">PersistentContactManifold</span> {
+  <span class="c">// Stores up to GU_MANIFOLD_CACHE_SIZE (=4) contacts</span>
+  <span class="c">// across timesteps for this pair.</span>
+  PxU32 mNumContacts;
+  PersistentContact mContactPoints[GU_MANIFOLD_CACHE_SIZE];
+
+  PxQuat mRelativeQuat;        <span class="c">// pair-relative rotation last frame</span>
+  PxTransform mRelativeTransform;  <span class="c">// pair-relative pose last frame</span>
+
+  <span class="c">// invalidate_BoxConvex / invalidate_SphereCapsule etc.</span>
+  <span class="c">// decide whether the cached contacts are still good.</span>
+};</code></pre>
+
+<p>
+  The cache holds at most 4 contacts &mdash; <code>GU_MANIFOLD_CACHE_SIZE</code>
+  is hardcoded to 4 (<code>GuPersistentContactManifold.h:44</code>).
+  How those slots get filled is the more interesting story.
+</p>
+
+<h2>3.3. The per-frame dispatch: refresh, incremental, or full regenerate</h2>
+
+<p>
+  Each contact-test call (e.g.
+  <code>pcmContactConvexConvex</code>,
+  <code>physx/source/geomutils/src/pcm/GuPCMContactConvexConvex.cpp:194</code>)
+  walks the same three stages:
+</p>
+
+<p class="code-caption">physx/source/geomutils/src/pcm/GuPCMContactConvexConvex.cpp:228</p>
+<pre><code><span class="c">// 1. Refresh: project cached contacts to current poses,</span>
+<span class="c">//    drop any that have separated or drifted too far.</span>
+manifold.refreshContactPoints(aToB, projectBreakingThreshold, contactDist);
+<span class="k">const</span> <span class="k">bool</span> bLostContacts = (manifold.mNumContacts != initialContacts);
+...
+<span class="c">// 2. Run GJK once for the closest features in the current pose.</span>
+<span class="c">//    GJK is cheap; this happens every frame.</span>
+GjkStatus status = gjkPenetration&lt;...&gt;(...);
+
+<span class="c">// 3. Decide: if pose has changed too much, contacts were lost,</span>
+<span class="c">//    or the new GJK normal disagrees with the cached one by &gt; 45°,</span>
+<span class="c">//    invoke the expensive full SAT-based regeneration. Otherwise,</span>
+<span class="c">//    just append the GJK contact incrementally.</span>
+<span class="k">if</span>(bLostContacts || manifold.invalidate_BoxConvex(curRTrans, ...)) {
+  <span class="c">// full regenerate (see &sect;4)</span>
+} <span class="k">else</span> {
+  <span class="c">// incremental: addManifoldPoint with the new GJK contact</span>
+}</code></pre>
+
+<p>
+  The invalidation thresholds are explicit numerical constants:
+</p>
+
+<p class="code-caption">physx/source/geomutils/src/pcm/GuPersistentContactManifold.cpp:173</p>
+<pre><code><span class="c">// Translational threshold: 50% of margin (more lenient slots</span>
+<span class="c">// for stable cases, tighter for fast-moving).</span>
+<span class="k">const</span> PxF32 invalidateThresholds[5] = { 0.5f, 0.125f, 0.25f, 0.375f, 0.375f };
+
+<span class="c">// Rotational threshold: quat dot product. 0.9998 ≈ ~1.1° rotation.</span>
+<span class="k">const</span> PxF32 invalidateQuatThresholds[5] = { 0.9998f, 0.9999f, 0.9999f, 0.9999f, 0.9999f };</code></pre>
+
+<p>
+  In other words: for slowly-evolving contact (a box settling on a
+  table, or a finger pressing into a cube), PhysX runs only the cheap
+  GJK-once-plus-append path each frame. The expensive analytic
+  multi-contact generation runs only when the pair's pose has moved
+  more than ~1&deg; relative or 50% of the contact margin, or when the
+  refresh step lost cached contacts.
+</p>
+
+<p>
+  Two consequences. First, the narrowphase amortizes well across
+  frames &mdash; for resting contact, the same 4-slot manifold can
+  persist for many frames with only a single GJK call per frame
+  feeding it. Second, the cached contacts give the iterative solver
+  something to <strong>warm-start</strong> on: the impulses from last
+  frame's solve are still meaningful for this frame's, and starting
+  the iteration from those impulses rather than from zero converges
+  much faster. This is the operational reason PhysX feels so
+  responsive in scenes with lots of resting contact.
+</p>
+
+<h1>4. Where the multiple contacts come from: SAT + face clipping</h1>
+
+<p>
+  Now the question I glossed over: when the manifold <em>does</em>
+  need a full regenerate, where do those 4 contacts come from? The
+  answer is in
+  <code>generateFullContactManifold</code>
+  (<code>physx/source/geomutils/src/pcm/GuPCMContactGenBoxConvex.cpp:532</code>),
+  which is the analog to MuJoCo's
+  <code>multiCCD</code> &mdash; same problem, very different
+  mechanism.
+</p>
+
+<p>
+  PhysX's approach is the textbook <strong>Separating Axis Theorem
+  (SAT) + face clipping</strong> pipeline:
+</p>
+
+<ol>
+  <li>
+    <strong>Find the minimum-overlap axis</strong> by testing all
+    face normals (both shapes) and all edge-edge cross-products. The
+    axis with the smallest interval overlap is the contact normal.
+  </li>
+  <li>
+    <strong>Identify a reference face</strong> (the face whose normal
+    won the SAT test) and an <strong>incident face</strong> (the
+    most-anti-parallel face on the other shape).
+  </li>
+  <li>
+    <strong>Project both faces into 2D</strong>, perpendicular to the
+    contact normal. Now you have a reference polygon and an incident
+    polygon in a shared 2D frame.
+  </li>
+  <li>
+    <strong>Clip the incident polygon against the reference
+    polygon</strong> (Sutherland-Hodgman style), keeping every
+    surviving vertex that has nonpositive separation in 3D.
+    <code>generatedContacts</code>
+    (<code>GuPCMContactGenBoxConvex.cpp:331</code>) is the function
+    that runs this clip.
+  </li>
+  <li>
+    <strong>Reduce to 4 contacts</strong> via
+    <code>PersistentContactManifold::addBatchManifoldContacts</code>
+    using a spread heuristic: the deepest contact, then the contact
+    farthest from it, then the one farthest from the line between
+    them, then the one most-perpendicular to the resulting plane.
+  </li>
+</ol>
+
+<p>
+  The mechanism difference from MuJoCo's
+  <code>multiCCD</code> is worth pausing on. MuJoCo gets multiple
+  contacts by <em>perturbing</em> the geoms by &plusmn;0.001 rad and
+  re-running the penetration query, then accepting any new distinct
+  contacts. PhysX gets multiple contacts by <em>analytically
+  clipping</em> the two contact faces against each other in 2D.
+  PhysX's path is exact for polygonal convex shapes and produces the
+  full overlap polygon; MuJoCo's is empirical and probes for whether
+  a patch exists at all. They reach similar 4&ndash;5-contact outputs by
+  very different roads.
+</p>
+
+<p>
+  Drake's hydroelastic, in Part 4, also clips polygons against each
+  other &mdash; tetrahedra against an equilibrium plane &mdash; but
+  the polygons there are the contact <em>surface</em> mesh, not 2D
+  projections of contact faces. The shapes of the algorithms are
+  closer cousins than they look at the table-comparison level.
+</p>
+
+<h2>4.1. Two reducers, not to be confused</h2>
+
+<p>
+  PhysX has two independent contact-reduction stages, each with its
+  own implementation, and it's easy to mix them up:
+</p>
+
+<ul>
+  <li>
+    <strong>Per-pair manifold reduction</strong>
+    (<code>PersistentContactManifold::addBatchManifoldContacts</code>
+    and <code>reduceContactsForPCM</code>,
+    <code>GuPersistentContactManifold.cpp:603</code>). This is the
+    one that caps a single pair's contacts to 4, with the spread
+    heuristic above.
+  </li>
+  <li>
+    <strong>Per-actor solver-side reduction</strong>
+    (<code>Dy::ContactReduction&lt;6, 6&gt;</code>,
+    <code>physx/source/lowleveldynamics/src/DyContactReduction.h:81</code>,
+    invoked from <code>DyDynamics.cpp:420</code>). When two actors
+    have multiple shape pairs touching (e.g. compound shapes), this
+    second-stage reducer caps the total at most 6 patches &times; 6
+    contacts before the solver sees them. Same heuristic family,
+    different scope.
+  </li>
+</ul>
+
+<p>
+  A header comment on the solver-side reducer is candid about the
+  4-vs-5 tradeoff: <em>"might be OK with 4 but 5 guarantees the
+  deepest + 4 contacts that contribute to largest surface area"</em>
+  (<code>DyContactReduction.h:43</code>). They picked 4 for the PCM
+  cache and 6&times;6 for the solver-side cap; both are pragmatic
+  choices, not theoretically motivated ones.
+</p>
+
+<h1>5. Anatomy of a <code>PxContactPoint</code></h1>
+
+<p>
+  PhysX's per-contact struct is in the public header:
+</p>
+
+<p class="code-caption">physx/include/geomutils/PxContactPoint.h:39</p>
+<pre><code><span class="k">struct</span> <span class="t">PxContactPoint</span> {
+  PxVec3  normal;             <span class="c">// contact normal (world)</span>
+  PxReal  separation;         <span class="c">// negative = penetration</span>
+  PxVec3  point;              <span class="c">// contact point (world)</span>
+  PxReal  maxImpulse;
+  PxVec3  targetVel;          <span class="c">// optional driven velocity</span>
+  PxReal  staticFriction;     <span class="c">// already-combined</span>
+  PxU8    materialFlags;
+  PxU32   internalFaceIndex1; <span class="c">// mesh/heightfield only</span>
+  PxReal  dynamicFriction;    <span class="c">// already-combined</span>
+  PxReal  restitution;        <span class="c">// already-combined</span>
+  PxReal  damping;            <span class="c">// only for compliant contacts</span>
+};</code></pre>
+
+<p>
+  This is qualitatively different from MuJoCo's <code>mjContact</code>.
+  Where <code>mjContact</code> carries <em>solver regularization
+  parameters</em> (<code>solref</code>, <code>solimp</code>),
+  <code>PxContactPoint</code> carries <em>combined material
+  coefficients</em>: the static and dynamic friction, the
+  restitution, and (for compliant contacts) damping. The pair's two
+  geom materials have already been combined into single numbers by
+  the time this struct is filled.
+</p>
+
+<p>
+  At a higher level, contacts are grouped into a
+  <code>PxContactPatch</code>:
+</p>
+
+<p class="code-caption">physx/include/PxContact.h:56</p>
+<pre><code><span class="k">struct</span> <span class="t">PxContactPatch</span> {
+  PxVec3 normal;
+  PxReal restitution;          <span class="c">// patch-level (combined)</span>
+  PxReal dynamicFriction;
+  PxReal staticFriction;
+  PxU16  materialIndex0, materialIndex1;
+  PxU16  startContactIndex;    <span class="c">// index into contact list</span>
+  PxU8   nbContacts;
+};</code></pre>
+
+<p>
+  All contacts in a patch share a normal and material; the patch
+  exists so the solver can iterate over a contiguous block with one
+  set of friction parameters. Note again: the combined values are on
+  the patch, with material-index back-references kept around mostly
+  for reporting.
+</p>
+
+<h2>5.1. Material combination</h2>
+
+<p>
+  Where do the combined values come from? Each material has a
+  combine mode, and the combination is mechanical:
+</p>
+
+<p class="code-caption">physx/include/PxMaterial.h:123</p>
+<pre><code><span class="k">struct</span> <span class="t">PxCombineMode</span> {
+  <span class="k">enum</span> <span class="t">Enum</span> {
+    eAVERAGE = 0,
+    eMIN     = 1,
+    eMULTIPLY = 2,
+    eMAX     = 3
+  };
+};</code></pre>
+
+<p>
+  At pair time, PhysX picks the mode by taking the maximum of the two
+  materials' combine modes (a documented rule, also at
+  <code>PxMaterial.h:112</code>) and applies it:
+</p>
+
+<p class="code-caption">physx/source/lowlevel/software/include/PxsMaterialCombiner.h:70</p>
+<pre><code><span class="k">void</span> PxsCombineMaterials(<span class="k">const</span> PxsMaterialData&amp; mat0,
+                         <span class="k">const</span> PxsMaterialData&amp; mat1,
+                         PxReal&amp; combinedStaticFriction,
+                         PxReal&amp; combinedDynamicFriction,
+                         PxReal&amp; combinedRestitution,
+                         PxU32&amp;  combinedMaterialFlags,
+                         PxReal&amp; combinedDamping);</code></pre>
+
+<p>
+  There's a special case for compliant contacts &mdash; if exactly
+  one of the two materials uses compliant mode (negative
+  restitution, see &sect;7), the combiner switches to
+  <code>eMIN</code> so the compliant behavior dominates
+  (<code>PxsMaterialCombiner.h:96-98</code>). Otherwise it's a
+  straightforward apply-the-mode-elementwise.
+</p>
+
+<h1>6. The solver: PGS and TGS</h1>
+
+<p>
+  PhysX has two interchangeable constraint solvers. Both are
+  <strong>iterative impulse-based</strong> solvers: they apply
+  velocity-level impulses at each contact, sweep through all
+  constraints, and repeat. They do <em>not</em> solve a global
+  optimization problem the way MuJoCo's Newton solver does.
+</p>
+
+<h2>6.1. PGS — Projected Gauss-Seidel</h2>
+
+<p>
+  PGS is the classical iterative solver for this kind of problem,
+  and it's what PhysX has shipped for years.
+</p>
+
+<p class="code-caption">physx/source/lowleveldynamics/src/DySolverConstraints.cpp:47</p>
+<pre><code><span class="c">// solve1D: process a single 1D constraint.</span>
+<span class="c">// Computed impulse:</span>
+<span class="c">//   lambda' = [vT - (vn0 + vni) - b] / r</span>
+<span class="c">// where r = J M^-1 J^T is the effective inverse mass</span>
+<span class="c">// of the constraint, b is the bias term, vT is the target,</span>
+<span class="c">// vn0 / vni are linear / "mom-velocity" projections.</span>
+<span class="c">// Lambda' is then clamped to [minImpulse, maxImpulse] and</span>
+<span class="c">// applied to both bodies.</span></code></pre>
+
+<p>
+  The solver iterates this loop over all constraints (contacts +
+  joints + friction) for some number of <strong>velocity
+  iterations</strong>, then over <strong>position iterations</strong>
+  to clean up residual penetration. The applied impulse is
+  accumulated in <code>SolverConstraint1D::appliedForce</code>
+  (<code>DySolverConstraint1D.h:70</code>), which is what gets
+  warm-started from the manifold cache.
+</p>
+
+<p>
+  Per-contact friction is handled by adding 1 or 2 extra constraints
+  to the iteration loop:
+</p>
+
+<p class="code-caption">physx/source/lowleveldynamics/src/DyContactPrep.h:145</p>
+<pre><code>createFinalizeSolverContactsCoulomb1D(...);  <span class="c">// 1 friction direction (cheap)</span>
+createFinalizeSolverContactsCoulomb2D(...);  <span class="c">// 2 orthogonal friction directions</span></code></pre>
+
+<p>
+  This is a <strong>pyramidal</strong> friction approximation, the
+  same way MuJoCo's pyramidal cone option is. PhysX does not have an
+  elliptic / true second-order cone option in the rigid-body solver;
+  it ships pyramidal only. For most scenes (and for games, where
+  PhysX grew up) this is fine. For dexterous manipulation where
+  diagonal friction direction matters, it's an approximation worth
+  knowing about.
+</p>
+
+<h2>6.2. TGS — Temporal Gauss-Seidel</h2>
+
+<p>
+  TGS is the newer solver, recommended for "stiff" content
+  (articulated robots, heavy machinery, dense piles).
+</p>
+
+<p class="code-caption">physx/source/lowleveldynamics/src/DyTGS.h:29</p>
+<pre><code><span class="c">// TGS divides the timestep into substeps and runs</span>
+<span class="c">// solver iterations per substep. Each substep advances</span>
+<span class="c">// positions, re-evaluates constraint errors, and re-solves.</span>
+<span class="k">void</span> integrateCoreStep(...);</code></pre>
+
+<p>
+  The mechanical change from PGS to TGS is that, between solver
+  iterations, TGS partially advances the positions, then
+  re-evaluates the constraint errors against the new positions. PGS
+  doesn't &mdash; it iterates at a single position. The effect is
+  that TGS gives the iterative solver something more like an implicit
+  treatment without making each iteration much more expensive: stiff
+  constraints don't blow up the way they do in PGS at the same
+  iteration count.
+</p>
+
+<p>
+  This is roughly analogous to MuJoCo's implicit-in-velocity
+  treatment of the reference acceleration (Part 2, &sect;6), but it's
+  achieved by a different mechanism &mdash; substepping inside the
+  solver rather than co-solving a single optimization problem. The
+  user-visible effect is similar: more stable behavior with stiff
+  contact at the same simulation timestep.
+</p>
+
+<h1>7. Compliant contacts via negative restitution</h1>
+
+<p>
+  PhysX has no concept of a constitutive material model in the rigid
+  contact solver, but it has a small back-door for "soft" contact
+  behavior: <strong>negative restitution</strong>.
+</p>
+
+<p class="code-caption">physx/include/PxMaterial.h:188</p>
+<pre><code><span class="c">// "If a negative value is provided it is interpreted</span>
+<span class="c">//  as stiffness term for an implicit spring."</span>
+<span class="k">void</span> setRestitution(PxReal rest);</code></pre>
+
+<p>
+  When the value is negative, PhysX reinterprets it as a spring
+  stiffness; the contact constraint becomes a spring-damper with
+  that stiffness and the material's <code>damping</code> field as the
+  damper. This is the same family of trick MuJoCo uses with
+  <code>solref</code>: a regularized constraint dressed up as a
+  spring. It's not a constitutive model &mdash; there's no Young's
+  modulus, no contact area, no integration over a region &mdash; but
+  it lets users get bouncy/squishy behavior without leaving the
+  rigid solver.
+</p>
+
+<h1>8. Articulation: reduced-coordinate Featherstone</h1>
+
+<p>
+  Articulated chains (robot arms, ragdolls) get a reduced-coordinate
+  treatment via Featherstone:
+</p>
+
+<p class="code-caption">physx/source/lowleveldynamics/include/DyFeatherstoneArticulation.h:29</p>
+<pre><code><span class="k">class</span> <span class="t">FeatherstoneArticulation</span> {
+  <span class="c">// Joint-space dynamics; no Cartesian-space integration of</span>
+  <span class="c">// each link as a free body. Joint constraints are implicit</span>
+  <span class="c">// in the parameterization.</span>
+};</code></pre>
+
+<p>
+  Contacts on articulated links are wrapped into solver constraints
+  through a separate prep path
+  (<code>DyArticulationContactPrep.h</code>), so the same PGS/TGS
+  iteration loop still applies; only the bodies' degree-of-freedom
+  layout differs. PhysX also retains a maximal-coordinate articulation
+  path for backward compatibility, but the modern recommendation is
+  reduced-coordinate.
+</p>
+
+<h1>9. Recap: a single timestep, narrated</h1>
+
+<ol>
+  <li><strong>Broadphase</strong> (chosen from SAP/MBP/ABP/PABP/GPU,
+      default ABP) drops obvious non-colliding pairs.</li>
+  <li><strong>Refresh cached contacts</strong>: project last
+      frame's manifold contacts to the current poses, drop any that
+      have separated past the breaking threshold.</li>
+  <li><strong>Run GJK once</strong> for the deepest closest-feature
+      pair under the current pose. Cheap; runs every frame on every
+      surviving pair.</li>
+  <li><strong>Decide: incremental or full?</strong> If contacts
+      were lost in refresh, or the relative pose moved past the
+      invalidation thresholds (~50% of margin in translation, ~1&deg;
+      in rotation), or the GJK normal disagrees with the cached
+      manifold normal by &gt; 45&deg;, run the full SAT + face-clipping
+      regenerator (<code>generateFullContactManifold</code>). Otherwise
+      append the GJK contact incrementally via
+      <code>addManifoldPoint</code>, displacing one of the 4 cached
+      slots if needed via the spread heuristic.</li>
+  <li><strong>Per-pair reduction</strong>: when the full path runs,
+      <code>addBatchManifoldContacts</code> caps the manifold at 4
+      contacts using the deepest+farthest+farthest-from-segment
+      heuristic.</li>
+  <li><strong>Material combination</strong> turns the two materials'
+      friction/restitution/damping into single per-contact (and
+      per-patch) values via the chosen combine mode.</li>
+  <li><strong>Constraint prep</strong>: each contact becomes one
+      normal constraint plus 1 or 2 pyramidal friction constraints,
+      with impulse bounds set from the combined material values.</li>
+  <li><strong>Solve</strong>: PGS or TGS iterates impulses over all
+      constraints, warm-started from last frame's
+      <code>appliedForce</code> values.</li>
+  <li>Velocities and positions integrate; manifolds save their
+      contacts and impulses for the next step.</li>
+</ol>
+
+<p>
+  The thing to keep in mind, going into Part 4, is that PhysX is
+  squarely in the same family as MuJoCo &mdash;
+  contact-as-constraint, force is the solver's output &mdash; with
+  the implementation choice of <em>persistent state plus iterative
+  impulses</em> instead of MuJoCo's <em>fresh state plus convex
+  optimization</em>. Drake answers a different question entirely.
+</p>
+
+<h1>10. A short reading list</h1>
+
+<ul>
+  <li>
+    <strong>NVIDIA's PhysX SDK documentation</strong>, particularly
+    the chapters on rigid-body dynamics, friction, and articulations.
+    The TGS solver section is the clearest written description of how
+    the substepping changes the math.
+  </li>
+  <li>
+    <strong>Catto, "Iterative Dynamics with Temporal
+    Coherence" (GDC 2005).</strong> The textbook reference for the
+    PGS-on-impulses formulation that PhysX (and Box2D, and Bullet)
+    descends from.
+  </li>
+  <li>
+    <strong><code>DySolverConstraints.cpp</code>,
+    <code>DyContactReduction.h</code>,
+    <code>GuPersistentContactManifold.h</code>.</strong> The three
+    files together cover most of what's distinctive about PhysX's
+    pipeline.
+  </li>
+</ul>
+
+<div class="next-up">
+  <span class="label">Next</span>
+  <h3 style="margin: 0.3rem 0 0.5rem;"><a href="/posts/sim-contact-4-drake/">Part 4 — Drake</a></h3>
+  <p style="margin: 0; color: var(--text-muted); font-size: 0.92rem;">
+    A different question entirely: contact as a constitutive boundary
+    condition. Pressure fields, equilibrium surfaces, ContactSurface as
+    a first-class object, and the SAP solver that integrates it all.
+  </p>
+</div>
+
+</div>
+</body>
+</html>

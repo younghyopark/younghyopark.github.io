@@ -1,0 +1,408 @@
+<mujoco model="solref_solimp_grid_demo">
+  <compiler angle="degree" coordinate="local"/>
+
+  <option
+    timestep="0.001"
+    gravity="0 0 -9.81"
+    integrator="implicitfast"
+    solver="Newton"
+    iterations="80"
+    tolerance="1e-10">
+    <flag contact="enable"/>
+  </option>
+
+  <!--
+    4x4 parameter grid:
+
+      x-axis / columns: solref[0], the contact time constant.
+        col 1 = slow restoration:    solref="0.12 1"
+        col 2 = default-ish:         solref="0.02 1"
+        col 3 = fast restoration:    solref="0.004 1"
+        col 4 = fast + underdamped: solref="0.004 0.25"
+
+      y-axis / rows: solimp, the impedance curve.
+        row 1 = soft onset:          solimp="0.001 0.55 0.15 0.5 2"
+        row 2 = default-ish:         solimp="0.9 0.95 0.001 0.5 2"
+        row 3 = rigid onset:         solimp="0.995 0.999 0.0002 0.5 2"
+        row 4 = very rigid onset:    solimp="0.9999 0.99999 0.00005 0.5 2"
+
+    All cubes have identical size, mass, friction, starting height, and
+    initial offsets. The cubes start with a 10 cm vertical air gap between
+    neighbors. Only solref/solimp change across the grid.
+  -->
+  <default>
+    <geom friction="1.2 0.005 0.0001"/>
+
+    <default class="slow_ref_soft_imp">
+      <geom solref="0.12 1" solimp="0.001 0.55 0.15 0.5 2"/>
+    </default>
+    <default class="default_ref_soft_imp">
+      <geom solref="0.02 1" solimp="0.001 0.55 0.15 0.5 2"/>
+    </default>
+    <default class="fast_ref_soft_imp">
+      <geom solref="0.004 1" solimp="0.001 0.55 0.15 0.5 2"/>
+    </default>
+    <default class="very_fast_ref_soft_imp">
+      <geom solref="0.004 0.25" solimp="0.001 0.55 0.15 0.5 2"/>
+    </default>
+
+    <default class="slow_ref_default_imp">
+      <geom solref="0.12 1" solimp="0.9 0.95 0.001 0.5 2"/>
+    </default>
+    <default class="default_ref_default_imp">
+      <geom solref="0.02 1" solimp="0.9 0.95 0.001 0.5 2"/>
+    </default>
+    <default class="fast_ref_default_imp">
+      <geom solref="0.004 1" solimp="0.9 0.95 0.001 0.5 2"/>
+    </default>
+    <default class="very_fast_ref_default_imp">
+      <geom solref="0.004 0.25" solimp="0.9 0.95 0.001 0.5 2"/>
+    </default>
+
+    <default class="slow_ref_rigid_imp">
+      <geom solref="0.12 1" solimp="0.995 0.999 0.0002 0.5 2"/>
+    </default>
+    <default class="default_ref_rigid_imp">
+      <geom solref="0.02 1" solimp="0.995 0.999 0.0002 0.5 2"/>
+    </default>
+    <default class="fast_ref_rigid_imp">
+      <geom solref="0.004 1" solimp="0.995 0.999 0.0002 0.5 2"/>
+    </default>
+    <default class="very_fast_ref_rigid_imp">
+      <geom solref="0.004 0.25" solimp="0.995 0.999 0.0002 0.5 2"/>
+    </default>
+
+    <default class="slow_ref_very_rigid_imp">
+      <geom solref="0.12 1" solimp="0.9999 0.99999 0.00005 0.5 2"/>
+    </default>
+    <default class="default_ref_very_rigid_imp">
+      <geom solref="0.02 1" solimp="0.9999 0.99999 0.00005 0.5 2"/>
+    </default>
+    <default class="fast_ref_very_rigid_imp">
+      <geom solref="0.004 1" solimp="0.9999 0.99999 0.00005 0.5 2"/>
+    </default>
+    <default class="very_fast_ref_very_rigid_imp">
+      <geom solref="0.004 0.25" solimp="0.9999 0.99999 0.00005 0.5 2"/>
+    </default>
+  </default>
+
+  <visual>
+    <global azimuth="135" elevation="-25"/>
+    <quality shadowsize="2048"/>
+  </visual>
+
+  <asset>
+    <texture
+      name="grid_texture"
+      type="2d"
+      builtin="checker"
+      rgb1="0.16 0.16 0.16"
+      rgb2="0.82 0.82 0.82"
+      width="512"
+      height="512"/>
+
+    <material
+      name="grid_material"
+      texture="grid_texture"
+      texrepeat="14 14"
+      reflectance="0.12"/>
+
+    <!-- Cube and pad color encode solref column. -->
+    <material name="cube_slow_ref_mat" rgba="0.68 0.46 0.85 1"/>
+    <material name="cube_default_ref_mat" rgba="0.68 0.70 0.72 1"/>
+    <material name="cube_fast_ref_mat" rgba="0.18 0.72 0.95 1"/>
+    <material name="cube_very_fast_ref_mat" rgba="0.95 0.42 0.22 1"/>
+  </asset>
+
+  <worldbody>
+    <light name="key_light" pos="0 -6 7" dir="0 1 -1" diffuse="0.9 0.9 0.9"/>
+    <light name="fill_light" pos="-5 3 4" dir="1 -1 -1" diffuse="0.35 0.35 0.35"/>
+
+    <camera name="grid_view" pos="0.6 -10.2 5.6" xyaxes="1 0 0 0 0.50 0.866"/>
+    <camera name="low_side" pos="0.6 -10.8 1.9" xyaxes="1 0 0 0 0.18 0.984"/>
+
+    <!-- Visual-only grid plane. Contact happens on the sixteen colored pads. -->
+    <!-- <geom
+      name="visual_grid"
+      type="plane"
+      pos="0 0 -0.04"
+      size="6.2 5.3 0.1"
+      material="grid_material"
+      contype="0"
+      conaffinity="0"/> -->
+
+    <!--
+      MuJoCo XML has no arbitrary text geom. These named sites act as labels
+      when the viewer's site labels are enabled.
+    -->
+    <site name="solref_0.12" type="box" pos="-2.4 -3.05 0.04" size="0.42 0.035 0.035" rgba="0.68 0.46 0.85 1"/>
+    <site name="solref_0.02" type="box" pos="0 -3.05 0.04" size="0.42 0.035 0.035" rgba="0.68 0.70 0.72 1"/>
+    <site name="solref_0.004" type="box" pos="2.4 -3.05 0.04" size="0.42 0.035 0.035" rgba="0.18 0.72 0.95 1"/>
+    <site name="solref_0.004_0.25" type="box" pos="4.8 -3.05 0.04" size="0.42 0.035 0.035" rgba="0.95 0.42 0.22 1"/>
+
+    <site name="solimp_0.001_0.55_0.15" type="box" pos="-3.55 -2.0 0.04" size="0.035 0.42 0.035" rgba="0.58 0.38 0.78 1"/>
+    <site name="solimp_0.9_0.95_0.001" type="box" pos="-3.55 0 0.04" size="0.035 0.42 0.035" rgba="0.46 0.50 0.55 1"/>
+    <site name="solimp_0.995_0.999_0.0002" type="box" pos="-3.55 2.0 0.04" size="0.035 0.42 0.035" rgba="0.17 0.58 0.86 1"/>
+    <site name="solimp_0.9999_0.99999_0.00005" type="box" pos="-3.55 4.0 0.04" size="0.035 0.42 0.035" rgba="0.95 0.42 0.22 1"/>
+
+    <!--
+      Cell labels show the converted stiffness/damping-like values at
+      d(r)=d_width:
+        k = 1 / (d_width * timeconst^2 * dampratio^2)
+        b = 2 / (d_width * timeconst)
+    -->
+    <site name="k126_b30" type="sphere" pos="-2.4 -1.33 0.06" size="0.035" rgba="0.68 0.46 0.85 1"/>
+    <site name="k4.5e3_b182" type="sphere" pos="0 -1.33 0.06" size="0.035" rgba="0.68 0.70 0.72 1"/>
+    <site name="k1.1e5_b909" type="sphere" pos="2.4 -1.33 0.06" size="0.035" rgba="0.18 0.72 0.95 1"/>
+    <site name="k1.8e6_b909" type="sphere" pos="4.8 -1.33 0.06" size="0.035" rgba="0.95 0.42 0.22 1"/>
+
+    <site name="k73_b18" type="sphere" pos="-2.4 0.67 0.06" size="0.035" rgba="0.68 0.46 0.85 1"/>
+    <site name="k2.6e3_b105" type="sphere" pos="0 0.67 0.06" size="0.035" rgba="0.68 0.70 0.72 1"/>
+    <site name="k6.6e4_b526" type="sphere" pos="2.4 0.67 0.06" size="0.035" rgba="0.18 0.72 0.95 1"/>
+    <site name="k1.1e6_b526" type="sphere" pos="4.8 0.67 0.06" size="0.035" rgba="0.95 0.42 0.22 1"/>
+
+    <site name="k70_b17" type="sphere" pos="-2.4 2.67 0.06" size="0.035" rgba="0.68 0.46 0.85 1"/>
+    <site name="k2.5e3_b100" type="sphere" pos="0 2.67 0.06" size="0.035" rgba="0.68 0.70 0.72 1"/>
+    <site name="k6.3e4_b501" type="sphere" pos="2.4 2.67 0.06" size="0.035" rgba="0.18 0.72 0.95 1"/>
+    <site name="k1.0e6_b501" type="sphere" pos="4.8 2.67 0.06" size="0.035" rgba="0.95 0.42 0.22 1"/>
+
+    <site name="k69_b17" type="sphere" pos="-2.4 4.67 0.06" size="0.035" rgba="0.68 0.46 0.85 1"/>
+    <site name="k2.50e3_b100" type="sphere" pos="0 4.67 0.06" size="0.035" rgba="0.68 0.70 0.72 1"/>
+    <site name="k6.3e4_b500" type="sphere" pos="2.4 4.67 0.06" size="0.035" rgba="0.18 0.72 0.95 1"/>
+    <site name="k1.0e6_b500" type="sphere" pos="4.8 4.67 0.06" size="0.035" rgba="0.95 0.42 0.22 1"/>
+
+    <!-- Row 1, front: soft solimp onset. -->
+    <!-- Pads are thick, with their top surfaces at z=0, so very soft contacts can visibly sink without tunneling through. -->
+    <geom name="pad_soft_imp_slow_ref" class="slow_ref_soft_imp" type="box" pos="-2.4 -2.0 -0.20" size="0.65 0.65 0.20" material="cube_slow_ref_mat"/>
+    <body name="soft_imp_slow_ref_bottom" pos="-2.400 -2.000 1.000">
+      <freejoint/>
+      <geom name="soft_imp_slow_ref_bottom_geom" class="slow_ref_soft_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_slow_ref_mat"/>
+    </body>
+    <body name="soft_imp_slow_ref_middle" pos="-2.385 -1.990 1.500">
+      <freejoint/>
+      <geom name="soft_imp_slow_ref_middle_geom" class="slow_ref_soft_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_slow_ref_mat"/>
+    </body>
+    <body name="soft_imp_slow_ref_top" pos="-2.412 -2.010 2.000">
+      <freejoint/>
+      <geom name="soft_imp_slow_ref_top_geom" class="slow_ref_soft_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_slow_ref_mat"/>
+    </body>
+
+    <geom name="pad_soft_imp_default_ref" class="default_ref_soft_imp" type="box" pos="0 -2.0 -0.20" size="0.65 0.65 0.20" material="cube_default_ref_mat"/>
+    <body name="soft_imp_default_ref_bottom" pos="0.000 -2.000 1.000">
+      <freejoint/>
+      <geom name="soft_imp_default_ref_bottom_geom" class="default_ref_soft_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_default_ref_mat"/>
+    </body>
+    <body name="soft_imp_default_ref_middle" pos="0.015 -1.990 1.500">
+      <freejoint/>
+      <geom name="soft_imp_default_ref_middle_geom" class="default_ref_soft_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_default_ref_mat"/>
+    </body>
+    <body name="soft_imp_default_ref_top" pos="-0.012 -2.010 2.000">
+      <freejoint/>
+      <geom name="soft_imp_default_ref_top_geom" class="default_ref_soft_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_default_ref_mat"/>
+    </body>
+
+    <geom name="pad_soft_imp_fast_ref" class="fast_ref_soft_imp" type="box" pos="2.4 -2.0 -0.20" size="0.65 0.65 0.20" material="cube_fast_ref_mat"/>
+    <body name="soft_imp_fast_ref_bottom" pos="2.400 -2.000 1.000">
+      <freejoint/>
+      <geom name="soft_imp_fast_ref_bottom_geom" class="fast_ref_soft_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_fast_ref_mat"/>
+    </body>
+    <body name="soft_imp_fast_ref_middle" pos="2.415 -1.990 1.500">
+      <freejoint/>
+      <geom name="soft_imp_fast_ref_middle_geom" class="fast_ref_soft_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_fast_ref_mat"/>
+    </body>
+    <body name="soft_imp_fast_ref_top" pos="2.388 -2.010 2.000">
+      <freejoint/>
+      <geom name="soft_imp_fast_ref_top_geom" class="fast_ref_soft_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_fast_ref_mat"/>
+    </body>
+
+    <geom name="pad_soft_imp_very_fast_ref" class="very_fast_ref_soft_imp" type="box" pos="4.8 -2.0 -0.20" size="0.65 0.65 0.20" material="cube_very_fast_ref_mat"/>
+    <body name="soft_imp_very_fast_ref_bottom" pos="4.800 -2.000 1.000">
+      <freejoint/>
+      <geom name="soft_imp_very_fast_ref_bottom_geom" class="very_fast_ref_soft_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_very_fast_ref_mat"/>
+    </body>
+    <body name="soft_imp_very_fast_ref_middle" pos="4.815 -1.990 1.500">
+      <freejoint/>
+      <geom name="soft_imp_very_fast_ref_middle_geom" class="very_fast_ref_soft_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_very_fast_ref_mat"/>
+    </body>
+    <body name="soft_imp_very_fast_ref_top" pos="4.788 -2.010 2.000">
+      <freejoint/>
+      <geom name="soft_imp_very_fast_ref_top_geom" class="very_fast_ref_soft_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_very_fast_ref_mat"/>
+    </body>
+
+    <!-- Row 2, middle: default-ish solimp. -->
+    <geom name="pad_default_imp_slow_ref" class="slow_ref_default_imp" type="box" pos="-2.4 0 -0.20" size="0.65 0.65 0.20" material="cube_slow_ref_mat"/>
+    <body name="default_imp_slow_ref_bottom" pos="-2.400 0.000 1.000">
+      <freejoint/>
+      <geom name="default_imp_slow_ref_bottom_geom" class="slow_ref_default_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_slow_ref_mat"/>
+    </body>
+    <body name="default_imp_slow_ref_middle" pos="-2.385 0.010 1.500">
+      <freejoint/>
+      <geom name="default_imp_slow_ref_middle_geom" class="slow_ref_default_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_slow_ref_mat"/>
+    </body>
+    <body name="default_imp_slow_ref_top" pos="-2.412 -0.010 2.000">
+      <freejoint/>
+      <geom name="default_imp_slow_ref_top_geom" class="slow_ref_default_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_slow_ref_mat"/>
+    </body>
+
+    <geom name="pad_default_imp_default_ref" class="default_ref_default_imp" type="box" pos="0 0 -0.20" size="0.65 0.65 0.20" material="cube_default_ref_mat"/>
+    <body name="default_imp_default_ref_bottom" pos="0.000 0.000 1.000">
+      <freejoint/>
+      <geom name="default_imp_default_ref_bottom_geom" class="default_ref_default_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_default_ref_mat"/>
+    </body>
+    <body name="default_imp_default_ref_middle" pos="0.015 0.010 1.500">
+      <freejoint/>
+      <geom name="default_imp_default_ref_middle_geom" class="default_ref_default_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_default_ref_mat"/>
+    </body>
+    <body name="default_imp_default_ref_top" pos="-0.012 -0.010 2.000">
+      <freejoint/>
+      <geom name="default_imp_default_ref_top_geom" class="default_ref_default_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_default_ref_mat"/>
+    </body>
+
+    <geom name="pad_default_imp_fast_ref" class="fast_ref_default_imp" type="box" pos="2.4 0 -0.20" size="0.65 0.65 0.20" material="cube_fast_ref_mat"/>
+    <body name="default_imp_fast_ref_bottom" pos="2.400 0.000 1.000">
+      <freejoint/>
+      <geom name="default_imp_fast_ref_bottom_geom" class="fast_ref_default_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_fast_ref_mat"/>
+    </body>
+    <body name="default_imp_fast_ref_middle" pos="2.415 0.010 1.500">
+      <freejoint/>
+      <geom name="default_imp_fast_ref_middle_geom" class="fast_ref_default_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_fast_ref_mat"/>
+    </body>
+    <body name="default_imp_fast_ref_top" pos="2.388 -0.010 2.000">
+      <freejoint/>
+      <geom name="default_imp_fast_ref_top_geom" class="fast_ref_default_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_fast_ref_mat"/>
+    </body>
+
+    <geom name="pad_default_imp_very_fast_ref" class="very_fast_ref_default_imp" type="box" pos="4.8 0 -0.20" size="0.65 0.65 0.20" material="cube_very_fast_ref_mat"/>
+    <body name="default_imp_very_fast_ref_bottom" pos="4.800 0.000 1.000">
+      <freejoint/>
+      <geom name="default_imp_very_fast_ref_bottom_geom" class="very_fast_ref_default_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_very_fast_ref_mat"/>
+    </body>
+    <body name="default_imp_very_fast_ref_middle" pos="4.815 0.010 1.500">
+      <freejoint/>
+      <geom name="default_imp_very_fast_ref_middle_geom" class="very_fast_ref_default_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_very_fast_ref_mat"/>
+    </body>
+    <body name="default_imp_very_fast_ref_top" pos="4.788 -0.010 2.000">
+      <freejoint/>
+      <geom name="default_imp_very_fast_ref_top_geom" class="very_fast_ref_default_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_very_fast_ref_mat"/>
+    </body>
+
+    <!-- Row 3, back: high / near-rigid solimp onset. -->
+    <geom name="pad_rigid_imp_slow_ref" class="slow_ref_rigid_imp" type="box" pos="-2.4 2.0 -0.20" size="0.65 0.65 0.20" material="cube_slow_ref_mat"/>
+    <body name="rigid_imp_slow_ref_bottom" pos="-2.400 2.000 1.000">
+      <freejoint/>
+      <geom name="rigid_imp_slow_ref_bottom_geom" class="slow_ref_rigid_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_slow_ref_mat"/>
+    </body>
+    <body name="rigid_imp_slow_ref_middle" pos="-2.385 2.010 1.500">
+      <freejoint/>
+      <geom name="rigid_imp_slow_ref_middle_geom" class="slow_ref_rigid_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_slow_ref_mat"/>
+    </body>
+    <body name="rigid_imp_slow_ref_top" pos="-2.412 1.990 2.000">
+      <freejoint/>
+      <geom name="rigid_imp_slow_ref_top_geom" class="slow_ref_rigid_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_slow_ref_mat"/>
+    </body>
+
+    <geom name="pad_rigid_imp_default_ref" class="default_ref_rigid_imp" type="box" pos="0 2.0 -0.20" size="0.65 0.65 0.20" material="cube_default_ref_mat"/>
+    <body name="rigid_imp_default_ref_bottom" pos="0.000 2.000 1.000">
+      <freejoint/>
+      <geom name="rigid_imp_default_ref_bottom_geom" class="default_ref_rigid_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_default_ref_mat"/>
+    </body>
+    <body name="rigid_imp_default_ref_middle" pos="0.015 2.010 1.500">
+      <freejoint/>
+      <geom name="rigid_imp_default_ref_middle_geom" class="default_ref_rigid_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_default_ref_mat"/>
+    </body>
+    <body name="rigid_imp_default_ref_top" pos="-0.012 1.990 2.000">
+      <freejoint/>
+      <geom name="rigid_imp_default_ref_top_geom" class="default_ref_rigid_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_default_ref_mat"/>
+    </body>
+
+    <geom name="pad_rigid_imp_fast_ref" class="fast_ref_rigid_imp" type="box" pos="2.4 2.0 -0.20" size="0.65 0.65 0.20" material="cube_fast_ref_mat"/>
+    <body name="rigid_imp_fast_ref_bottom" pos="2.400 2.000 1.000">
+      <freejoint/>
+      <geom name="rigid_imp_fast_ref_bottom_geom" class="fast_ref_rigid_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_fast_ref_mat"/>
+    </body>
+    <body name="rigid_imp_fast_ref_middle" pos="2.415 2.010 1.500">
+      <freejoint/>
+      <geom name="rigid_imp_fast_ref_middle_geom" class="fast_ref_rigid_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_fast_ref_mat"/>
+    </body>
+    <body name="rigid_imp_fast_ref_top" pos="2.388 1.990 2.000">
+      <freejoint/>
+      <geom name="rigid_imp_fast_ref_top_geom" class="fast_ref_rigid_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_fast_ref_mat"/>
+    </body>
+
+    <geom name="pad_rigid_imp_very_fast_ref" class="very_fast_ref_rigid_imp" type="box" pos="4.8 2.0 -0.20" size="0.65 0.65 0.20" material="cube_very_fast_ref_mat"/>
+    <body name="rigid_imp_very_fast_ref_bottom" pos="4.800 2.000 1.000">
+      <freejoint/>
+      <geom name="rigid_imp_very_fast_ref_bottom_geom" class="very_fast_ref_rigid_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_very_fast_ref_mat"/>
+    </body>
+    <body name="rigid_imp_very_fast_ref_middle" pos="4.815 2.010 1.500">
+      <freejoint/>
+      <geom name="rigid_imp_very_fast_ref_middle_geom" class="very_fast_ref_rigid_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_very_fast_ref_mat"/>
+    </body>
+    <body name="rigid_imp_very_fast_ref_top" pos="4.788 1.990 2.000">
+      <freejoint/>
+      <geom name="rigid_imp_very_fast_ref_top_geom" class="very_fast_ref_rigid_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_very_fast_ref_mat"/>
+    </body>
+
+    <!-- Row 4, far back: very high / extremely rigid solimp onset. -->
+    <geom name="pad_very_rigid_imp_slow_ref" class="slow_ref_very_rigid_imp" type="box" pos="-2.4 4.0 -0.20" size="0.65 0.65 0.20" material="cube_slow_ref_mat"/>
+    <body name="very_rigid_imp_slow_ref_bottom" pos="-2.400 4.000 1.000">
+      <freejoint/>
+      <geom name="very_rigid_imp_slow_ref_bottom_geom" class="slow_ref_very_rigid_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_slow_ref_mat"/>
+    </body>
+    <body name="very_rigid_imp_slow_ref_middle" pos="-2.385 4.010 1.500">
+      <freejoint/>
+      <geom name="very_rigid_imp_slow_ref_middle_geom" class="slow_ref_very_rigid_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_slow_ref_mat"/>
+    </body>
+    <body name="very_rigid_imp_slow_ref_top" pos="-2.412 3.990 2.000">
+      <freejoint/>
+      <geom name="very_rigid_imp_slow_ref_top_geom" class="slow_ref_very_rigid_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_slow_ref_mat"/>
+    </body>
+
+    <geom name="pad_very_rigid_imp_default_ref" class="default_ref_very_rigid_imp" type="box" pos="0 4.0 -0.20" size="0.65 0.65 0.20" material="cube_default_ref_mat"/>
+    <body name="very_rigid_imp_default_ref_bottom" pos="0.000 4.000 1.000">
+      <freejoint/>
+      <geom name="very_rigid_imp_default_ref_bottom_geom" class="default_ref_very_rigid_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_default_ref_mat"/>
+    </body>
+    <body name="very_rigid_imp_default_ref_middle" pos="0.015 4.010 1.500">
+      <freejoint/>
+      <geom name="very_rigid_imp_default_ref_middle_geom" class="default_ref_very_rigid_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_default_ref_mat"/>
+    </body>
+    <body name="very_rigid_imp_default_ref_top" pos="-0.012 3.990 2.000">
+      <freejoint/>
+      <geom name="very_rigid_imp_default_ref_top_geom" class="default_ref_very_rigid_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_default_ref_mat"/>
+    </body>
+
+    <geom name="pad_very_rigid_imp_fast_ref" class="fast_ref_very_rigid_imp" type="box" pos="2.4 4.0 -0.20" size="0.65 0.65 0.20" material="cube_fast_ref_mat"/>
+    <body name="very_rigid_imp_fast_ref_bottom" pos="2.400 4.000 1.000">
+      <freejoint/>
+      <geom name="very_rigid_imp_fast_ref_bottom_geom" class="fast_ref_very_rigid_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_fast_ref_mat"/>
+    </body>
+    <body name="very_rigid_imp_fast_ref_middle" pos="2.415 4.010 1.500">
+      <freejoint/>
+      <geom name="very_rigid_imp_fast_ref_middle_geom" class="fast_ref_very_rigid_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_fast_ref_mat"/>
+    </body>
+    <body name="very_rigid_imp_fast_ref_top" pos="2.388 3.990 2.000">
+      <freejoint/>
+      <geom name="very_rigid_imp_fast_ref_top_geom" class="fast_ref_very_rigid_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_fast_ref_mat"/>
+    </body>
+
+    <geom name="pad_very_rigid_imp_very_fast_ref" class="very_fast_ref_very_rigid_imp" type="box" pos="4.8 4.0 -0.20" size="0.65 0.65 0.20" material="cube_very_fast_ref_mat"/>
+    <body name="very_rigid_imp_very_fast_ref_bottom" pos="4.800 4.000 1.000">
+      <freejoint/>
+      <geom name="very_rigid_imp_very_fast_ref_bottom_geom" class="very_fast_ref_very_rigid_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_very_fast_ref_mat"/>
+    </body>
+    <body name="very_rigid_imp_very_fast_ref_middle" pos="4.815 4.010 1.500">
+      <freejoint/>
+      <geom name="very_rigid_imp_very_fast_ref_middle_geom" class="very_fast_ref_very_rigid_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_very_fast_ref_mat"/>
+    </body>
+    <body name="very_rigid_imp_very_fast_ref_top" pos="4.788 3.990 2.000">
+      <freejoint/>
+      <geom name="very_rigid_imp_very_fast_ref_top_geom" class="very_fast_ref_very_rigid_imp" type="box" size="0.20 0.20 0.20" mass="0.8" material="cube_very_fast_ref_mat"/>
+    </body>
+  </worldbody>
+
+  <keyframe>
+    <!-- Reset to the initial suspended stack poses. Omitted qpos defaults to qpos0. -->
+    <key name="pre_drop"/>
+  </keyframe>
+</mujoco>

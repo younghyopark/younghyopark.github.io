@@ -1,0 +1,8 @@
+{
+  "title": "Contact in 3 Simulators, Part 2 — MuJoCo",
+  "date": "2026-05-07",
+  "author": "Younghyo Park",
+  "tags": ["simulation", "mujoco", "contact", "explainer", "series:contact-pipelines"],
+  "excerpt": "A code-level walkthrough of MuJoCo's contact pipeline: covariance-aligned broadphase, GJK/EPA narrowphase, the solref/solimp regularization, and the convex solver that turns it all into forces.",
+  "publish": false
+}

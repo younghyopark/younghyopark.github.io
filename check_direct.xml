@@ -1,0 +1,247 @@
+<mujoco model="direct_solref_cube_stack_demo">
+  <compiler angle="degree" coordinate="local"/>
+
+  <option
+    timestep="0.001"
+    gravity="0 0 -9.81"
+    integrator="implicitfast"
+    solver="Newton"
+    iterations="80"
+    tolerance="1e-10">
+    <flag contact="enable"/>
+  </option>
+
+  <!--
+    Direct solref demo.
+
+    Negative solref switches MuJoCo from the usual
+      solref = "timeconst dampratio"
+    format to the direct format:
+      solref = "-stiffness -damping"
+
+    Columns vary direct stiffness k.
+    Rows vary direct damping b.
+    solimp is fixed, so the visual differences mostly come from direct solref.
+  -->
+  <default>
+    <geom
+      friction="1.2 0.005 0.0001"
+      solimp="0.9 0.95 0.001 0.5 2"/>
+
+    <default class="k500_b20">
+      <geom solref="-500 -20"/>
+    </default>
+    <default class="k2500_b20">
+      <geom solref="-2500 -20"/>
+    </default>
+    <default class="k10000_b20">
+      <geom solref="-10000 -20"/>
+    </default>
+
+    <default class="k500_b100">
+      <geom solref="-500 -100"/>
+    </default>
+    <default class="k2500_b100">
+      <geom solref="-2500 -100"/>
+    </default>
+    <default class="k10000_b100">
+      <geom solref="-10000 -100"/>
+    </default>
+
+    <default class="k500_b300">
+      <geom solref="-500 -300"/>
+    </default>
+    <default class="k2500_b300">
+      <geom solref="-2500 -300"/>
+    </default>
+    <default class="k10000_b300">
+      <geom solref="-10000 -300"/>
+    </default>
+  </default>
+
+  <visual>
+    <global azimuth="135" elevation="-25"/>
+    <quality shadowsize="2048"/>
+  </visual>
+
+  <asset>
+    <texture
+      name="grid_texture"
+      type="2d"
+      builtin="checker"
+      rgb1="0.16 0.16 0.16"
+      rgb2="0.82 0.82 0.82"
+      width="512"
+      height="512"/>
+
+    <material
+      name="grid_material"
+      texture="grid_texture"
+      texrepeat="12 12"
+      reflectance="0.12"/>
+
+    <!-- Color encodes stiffness column. -->
+    <material name="k500_mat" rgba="0.62 0.46 0.82 1"/>
+    <material name="k2500_mat" rgba="0.66 0.68 0.70 1"/>
+    <material name="k10000_mat" rgba="0.16 0.68 0.95 1"/>
+  </asset>
+
+  <worldbody>
+    <light name="key_light" pos="0 -6 7" dir="0 1 -1" diffuse="0.9 0.9 0.9"/>
+    <light name="fill_light" pos="-5 3 4" dir="1 -1 -1" diffuse="0.35 0.35 0.35"/>
+
+    <camera name="grid_view" pos="0 -8.8 5.0" xyaxes="1 0 0 0 0.50 0.866"/>
+    <camera name="low_side" pos="0 -9.5 1.9" xyaxes="1 0 0 0 0.18 0.984"/>
+
+    <geom
+      name="visual_grid"
+      type="plane"
+      pos="0 0 -0.04"
+      size="4.5 4.0 0.1"
+      material="grid_material"
+      contype="0"
+      conaffinity="0"/>
+
+    <!-- Viewer labels: enable site labels to see the grid axes. -->
+    <site name="k_500" type="box" pos="-2.4 -3.05 0.04" size="0.34 0.035 0.035" rgba="0.62 0.46 0.82 1"/>
+    <site name="k_2500" type="box" pos="0 -3.05 0.04" size="0.34 0.035 0.035" rgba="0.66 0.68 0.70 1"/>
+    <site name="k_10000" type="box" pos="2.4 -3.05 0.04" size="0.34 0.035 0.035" rgba="0.16 0.68 0.95 1"/>
+
+    <site name="b_20" type="box" pos="-3.55 -2.0 0.04" size="0.035 0.34 0.035" rgba="0.95 0.55 0.25 1"/>
+    <site name="b_100" type="box" pos="-3.55 0 0.04" size="0.035 0.34 0.035" rgba="0.55 0.58 0.62 1"/>
+    <site name="b_300" type="box" pos="-3.55 2.0 0.04" size="0.035 0.34 0.035" rgba="0.18 0.72 0.60 1"/>
+
+    <!-- Row 1: low damping, b = 20. -->
+    <geom name="pad_k500_b20" class="k500_b20" type="box" pos="-2.4 -2.0 -0.20" size="0.65 0.65 0.20" material="k500_mat"/>
+    <body name="k500_b20_bottom" pos="-2.400 -2.000 1.000">
+      <freejoint/>
+      <geom name="k500_b20_bottom_geom" class="k500_b20" type="box" size="0.20 0.20 0.20" mass="0.8" material="k500_mat"/>
+    </body>
+    <body name="k500_b20_middle" pos="-2.385 -1.990 1.500">
+      <freejoint/>
+      <geom name="k500_b20_middle_geom" class="k500_b20" type="box" size="0.20 0.20 0.20" mass="0.8" material="k500_mat"/>
+    </body>
+    <body name="k500_b20_top" pos="-2.412 -2.010 2.000">
+      <freejoint/>
+      <geom name="k500_b20_top_geom" class="k500_b20" type="box" size="0.20 0.20 0.20" mass="0.8" material="k500_mat"/>
+    </body>
+
+    <geom name="pad_k2500_b20" class="k2500_b20" type="box" pos="0 -2.0 -0.20" size="0.65 0.65 0.20" material="k2500_mat"/>
+    <body name="k2500_b20_bottom" pos="0.000 -2.000 1.000">
+      <freejoint/>
+      <geom name="k2500_b20_bottom_geom" class="k2500_b20" type="box" size="0.20 0.20 0.20" mass="0.8" material="k2500_mat"/>
+    </body>
+    <body name="k2500_b20_middle" pos="0.015 -1.990 1.500">
+      <freejoint/>
+      <geom name="k2500_b20_middle_geom" class="k2500_b20" type="box" size="0.20 0.20 0.20" mass="0.8" material="k2500_mat"/>
+    </body>
+    <body name="k2500_b20_top" pos="-0.012 -2.010 2.000">
+      <freejoint/>
+      <geom name="k2500_b20_top_geom" class="k2500_b20" type="box" size="0.20 0.20 0.20" mass="0.8" material="k2500_mat"/>
+    </body>
+
+    <geom name="pad_k10000_b20" class="k10000_b20" type="box" pos="2.4 -2.0 -0.20" size="0.65 0.65 0.20" material="k10000_mat"/>
+    <body name="k10000_b20_bottom" pos="2.400 -2.000 1.000">
+      <freejoint/>
+      <geom name="k10000_b20_bottom_geom" class="k10000_b20" type="box" size="0.20 0.20 0.20" mass="0.8" material="k10000_mat"/>
+    </body>
+    <body name="k10000_b20_middle" pos="2.415 -1.990 1.500">
+      <freejoint/>
+      <geom name="k10000_b20_middle_geom" class="k10000_b20" type="box" size="0.20 0.20 0.20" mass="0.8" material="k10000_mat"/>
+    </body>
+    <body name="k10000_b20_top" pos="2.388 -2.010 2.000">
+      <freejoint/>
+      <geom name="k10000_b20_top_geom" class="k10000_b20" type="box" size="0.20 0.20 0.20" mass="0.8" material="k10000_mat"/>
+    </body>
+
+    <!-- Row 2: medium damping, b = 100. -->
+    <geom name="pad_k500_b100" class="k500_b100" type="box" pos="-2.4 0 -0.20" size="0.65 0.65 0.20" material="k500_mat"/>
+    <body name="k500_b100_bottom" pos="-2.400 0.000 1.000">
+      <freejoint/>
+      <geom name="k500_b100_bottom_geom" class="k500_b100" type="box" size="0.20 0.20 0.20" mass="0.8" material="k500_mat"/>
+    </body>
+    <body name="k500_b100_middle" pos="-2.385 0.010 1.500">
+      <freejoint/>
+      <geom name="k500_b100_middle_geom" class="k500_b100" type="box" size="0.20 0.20 0.20" mass="0.8" material="k500_mat"/>
+    </body>
+    <body name="k500_b100_top" pos="-2.412 -0.010 2.000">
+      <freejoint/>
+      <geom name="k500_b100_top_geom" class="k500_b100" type="box" size="0.20 0.20 0.20" mass="0.8" material="k500_mat"/>
+    </body>
+
+    <geom name="pad_k2500_b100" class="k2500_b100" type="box" pos="0 0 -0.20" size="0.65 0.65 0.20" material="k2500_mat"/>
+    <body name="k2500_b100_bottom" pos="0.000 0.000 1.000">
+      <freejoint/>
+      <geom name="k2500_b100_bottom_geom" class="k2500_b100" type="box" size="0.20 0.20 0.20" mass="0.8" material="k2500_mat"/>
+    </body>
+    <body name="k2500_b100_middle" pos="0.015 0.010 1.500">
+      <freejoint/>
+      <geom name="k2500_b100_middle_geom" class="k2500_b100" type="box" size="0.20 0.20 0.20" mass="0.8" material="k2500_mat"/>
+    </body>
+    <body name="k2500_b100_top" pos="-0.012 -0.010 2.000">
+      <freejoint/>
+      <geom name="k2500_b100_top_geom" class="k2500_b100" type="box" size="0.20 0.20 0.20" mass="0.8" material="k2500_mat"/>
+    </body>
+
+    <geom name="pad_k10000_b100" class="k10000_b100" type="box" pos="2.4 0 -0.20" size="0.65 0.65 0.20" material="k10000_mat"/>
+    <body name="k10000_b100_bottom" pos="2.400 0.000 1.000">
+      <freejoint/>
+      <geom name="k10000_b100_bottom_geom" class="k10000_b100" type="box" size="0.20 0.20 0.20" mass="0.8" material="k10000_mat"/>
+    </body>
+    <body name="k10000_b100_middle" pos="2.415 0.010 1.500">
+      <freejoint/>
+      <geom name="k10000_b100_middle_geom" class="k10000_b100" type="box" size="0.20 0.20 0.20" mass="0.8" material="k10000_mat"/>
+    </body>
+    <body name="k10000_b100_top" pos="2.388 -0.010 2.000">
+      <freejoint/>
+      <geom name="k10000_b100_top_geom" class="k10000_b100" type="box" size="0.20 0.20 0.20" mass="0.8" material="k10000_mat"/>
+    </body>
+
+    <!-- Row 3: high damping, b = 300. -->
+    <geom name="pad_k500_b300" class="k500_b300" type="box" pos="-2.4 2.0 -0.20" size="0.65 0.65 0.20" material="k500_mat"/>
+    <body name="k500_b300_bottom" pos="-2.400 2.000 1.000">
+      <freejoint/>
+      <geom name="k500_b300_bottom_geom" class="k500_b300" type="box" size="0.20 0.20 0.20" mass="0.8" material="k500_mat"/>
+    </body>
+    <body name="k500_b300_middle" pos="-2.385 2.010 1.500">
+      <freejoint/>
+      <geom name="k500_b300_middle_geom" class="k500_b300" type="box" size="0.20 0.20 0.20" mass="0.8" material="k500_mat"/>
+    </body>
+    <body name="k500_b300_top" pos="-2.412 1.990 2.000">
+      <freejoint/>
+      <geom name="k500_b300_top_geom" class="k500_b300" type="box" size="0.20 0.20 0.20" mass="0.8" material="k500_mat"/>
+    </body>
+
+    <geom name="pad_k2500_b300" class="k2500_b300" type="box" pos="0 2.0 -0.20" size="0.65 0.65 0.20" material="k2500_mat"/>
+    <body name="k2500_b300_bottom" pos="0.000 2.000 1.000">
+      <freejoint/>
+      <geom name="k2500_b300_bottom_geom" class="k2500_b300" type="box" size="0.20 0.20 0.20" mass="0.8" material="k2500_mat"/>
+    </body>
+    <body name="k2500_b300_middle" pos="0.015 2.010 1.500">
+      <freejoint/>
+      <geom name="k2500_b300_middle_geom" class="k2500_b300" type="box" size="0.20 0.20 0.20" mass="0.8" material="k2500_mat"/>
+    </body>
+    <body name="k2500_b300_top" pos="-0.012 1.990 2.000">
+      <freejoint/>
+      <geom name="k2500_b300_top_geom" class="k2500_b300" type="box" size="0.20 0.20 0.20" mass="0.8" material="k2500_mat"/>
+    </body>
+
+    <geom name="pad_k10000_b300" class="k10000_b300" type="box" pos="2.4 2.0 -0.20" size="0.65 0.65 0.20" material="k10000_mat"/>
+    <body name="k10000_b300_bottom" pos="2.400 2.000 1.000">
+      <freejoint/>
+      <geom name="k10000_b300_bottom_geom" class="k10000_b300" type="box" size="0.20 0.20 0.20" mass="0.8" material="k10000_mat"/>
+    </body>
+    <body name="k10000_b300_middle" pos="2.415 2.010 1.500">
+      <freejoint/>
+      <geom name="k10000_b300_middle_geom" class="k10000_b300" type="box" size="0.20 0.20 0.20" mass="0.8" material="k10000_mat"/>
+    </body>
+    <body name="k10000_b300_top" pos="2.388 1.990 2.000">
+      <freejoint/>
+      <geom name="k10000_b300_top_geom" class="k10000_b300" type="box" size="0.20 0.20 0.20" mass="0.8" material="k10000_mat"/>
+    </body>
+  </worldbody>
+
+  <keyframe>
+    <key name="pre_drop"/>
+  </keyframe>
+</mujoco>

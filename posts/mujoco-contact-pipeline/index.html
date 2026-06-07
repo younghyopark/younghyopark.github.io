@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Inside MuJoCo's Contact Pipeline (and Why It's Not Drake's) - Younghyo Park</title>
+
+  <!-- Open Graph / Social previews -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Inside MuJoCo's Contact Pipeline (and Why It's Not Drake's)" />
+  <meta property="og:description" content="A ground-up tour of how MuJoCo simulates contact, and why Drake's hydroelastic model answers a fundamentally different question." />
+  <meta property="og:url" content="https://younghyopark.me/posts/mujoco-contact-pipeline/" />
+  <meta property="og:image" content="https://raw.githubusercontent.com/younghyopark/younghyopark.github.io/new/images/new_younghyo4.jpeg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@younghyo_park" />
+  <meta name="twitter:title" content="Inside MuJoCo's Contact Pipeline (and Why It's Not Drake's)" />
+  <meta name="twitter:description" content="A ground-up tour of how MuJoCo simulates contact, and why Drake's hydroelastic model answers a fundamentally different question." />
+  <meta name="twitter:image" content="https://raw.githubusercontent.com/younghyopark/younghyopark.github.io/new/images/new_younghyo4.jpeg" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Shared blog post styles + nav -->
+  <link rel="stylesheet" href="/shared/post-base.css">
+  <script src="/shared/post-nav.js"></script>
+</head>
+<body>
+<div class="post-body">
+
+<div class="post-header">
+  <h1 class="post-title">Inside MuJoCo's Contact Pipeline (and Why It's Not Drake's)</h1>
+  <div class="post-meta">
+    <span>2026-05-06</span>
+    <span class="sep">&middot;</span>
+    <span>Younghyo Park</span>
+  </div>
+</div>
+
+<blockquote>
+A ground-up tour of how MuJoCo's contact simulation actually works &mdash;
+broadphase, narrowphase, <code>solref</code>/<code>solimp</code>, the convex
+solver &mdash; and why Drake's hydroelastic contact model answers a different
+question entirely. The point of the comparison isn't to declare a winner.
+It's to make the philosophical split underneath each engine visible, so the
+right tool for your problem stops feeling like a matter of taste.
+</blockquote>
+
+<h1>1. Why care what's under the hood</h1>
+
+<p>
+  If you've used MuJoCo for more than a few weeks, you've fought with
+  contact. A box rests on a table and slowly drifts sideways. A finger
+  pushes into a cube and the cube shoots away with twice the energy you
+  put in. Someone tells you to "tune <code>solref</code> and
+  <code>solimp</code>" and you go read the docs and come back more
+  confused than when you started. The numbers don't have units you
+  recognize. The five-number <code>solimp</code> tuple is a piecewise
+  function with a midpoint and an exponent. <em>What does any of this
+  have to do with contact?</em>
+</p>
+
+<p>
+  Meanwhile, your colleague who uses Drake casually mentions
+  "hydroelastic contact" like it's a feature you can just turn on,
+  shows you a video where a deformable foot rolls smoothly over a
+  curved floor with continuous force traces, and asks why MuJoCo
+  doesn't have it. You go look it up, find people in GitHub issues
+  saying "you can fork MuJoCo and add it," and wonder if that's
+  actually a good idea.
+</p>
+
+<p>
+  This post tries to answer that. The short version is that the
+  question "why doesn't MuJoCo have hydroelastic contact" is a category
+  error: the two engines aren't picking different points on the same
+  spectrum, they're answering different questions. To see why, you
+  have to understand what MuJoCo's contact pipeline actually does
+  &mdash; not as an API, but as a sequence of mathematical
+  decisions, with code you can look at. So that's what we'll do
+  first. Then we'll look at hydroelastic contact, and the friction
+  between the two will be obvious.
+</p>
+
+<p>
+  Throughout, I'll cite specific files and line numbers from the
+  MuJoCo source (the <code>google-deepmind/mujoco</code> repo) so you
+  can go follow along. None of this is secret &mdash; it's all in
+  there, and the comments are good. It's just spread across enough
+  files that nobody assembles it for you.
+</p>
+
+<h1>2. Two philosophies of contact</h1>
+
+<p>
+  Before we get to code, the single most useful thing to internalize
+  is that there are two genuinely different ways to think about
+  what contact <em>is</em>, in a physics simulator.
+</p>
+
+<h2>2.1. Contact-as-constraint</h2>
+
+<p>
+  The first view says: contact is a <strong>constraint</strong>.
+  When two rigid bodies touch, the universe imposes a rule on
+  them &mdash; "you cannot interpenetrate" &mdash; and the
+  simulator's job is to find whatever forces are needed
+  <em>right now</em> to make the rule hold while everything else
+  in the dynamics keeps doing its thing. The forces themselves are
+  not derived from a material model. They're <strong>Lagrange
+  multipliers</strong>: whatever values it takes to keep the constraint
+  satisfied. Friction sits on top of this as another constraint
+  ("the tangential force must lie inside the friction cone") that
+  also gets enforced by some impulse the solver works out.
+</p>
+
+<p>
+  This view is the lineage of Stewart, Trinkle, Anitescu, Potra,
+  Erleben &mdash; "rigid body contact dynamics" &mdash; and it leads
+  naturally to a constrained optimization problem each timestep:
+  given the bodies' inertias and external forces, find the contact
+  forces that satisfy non-penetration, the friction cone, and
+  Newton's laws. MuJoCo lives in this world. So does Bullet, ODE,
+  PhysX, Brax (sort of), and most of what you'd recognize as a
+  "rigid body simulator."
+</p>
+
+<h2>2.2. Contact-as-constitutive-law</h2>
+
+<p>
+  The second view says: contact is a <strong>constitutive
+  law</strong>. The bodies aren't rigid &mdash; they're slightly
+  squishy, and what we call "contact" is really a small region
+  where they overlap and push back on each other with some
+  pressure that depends on how much they overlap. Specify the
+  pressure law (a stress-strain relationship of the material),
+  integrate it over the overlapping region, and you get a force.
+  The simulator then plugs this force into the equations of motion
+  the same way it plugs in gravity or a spring.
+</p>
+
+<p>
+  This view is the lineage of finite element method (FEM) people
+  treating contact as a constitutive boundary condition, and its
+  cleanest modern crystallization is Drake's <strong>hydroelastic
+  contact model</strong> (Elandt, Drumwright, Sherman, Ruppel
+  2019). Instead of rigid bodies bumping into each other, you give
+  every geom a "pressure field" &mdash; a scalar function that's
+  zero on its surface and grows as you go inward &mdash; and at
+  any given configuration, two bodies in contact share an
+  <em>equilibrium surface</em> where their pressure fields
+  balance. The force is the integral of the pressure over that
+  surface, and the friction is a regularized Coulomb law layered
+  on top of the prescribed normal traction.
+</p>
+
+<h2>2.3. The dual lens</h2>
+
+<p>
+  Here's the cleanest way to hold both views in your head at once,
+  and it'll matter when we contrast the two engines later:
+</p>
+
+<ul>
+  <li>
+    <strong>Constraint-based contact answers:</strong> "given current
+    state and inertia, what set of contact impulses is consistent
+    with non-penetration and the friction cone?" Force is what the
+    solver decides it is.
+  </li>
+  <li>
+    <strong>Constitutive contact answers:</strong> "given current
+    state, what is the pressure at every point on the contact
+    surface?" Force is fully prescribed by state, and the equations
+    of motion just receive it.
+  </li>
+</ul>
+
+<p>
+  Both are valid. They aren't even strictly incompatible &mdash;
+  they're <em>dual</em> ways of describing the same phenomenon, and
+  in certain limits they agree. But the engines that grow out of
+  each viewpoint look very different inside, optimize different
+  quantities, and have different failure modes. With that in
+  mind, let's open MuJoCo.
+</p>
+
+<h1>3. MuJoCo's contact pipeline, end to end</h1>
+
+<p>
+  At the highest level, every MuJoCo timestep does these three
+  things, in order:
+</p>
+
+<ol>
+  <li>
+    <strong>Find contacts.</strong> Figure out which geoms are
+    touching or about to touch, and where.
+  </li>
+  <li>
+    <strong>Build the constraint problem.</strong> Turn that list
+    of contacts into a numerical optimization problem in which the
+    contact forces are the unknowns.
+  </li>
+  <li>
+    <strong>Solve it.</strong> Use a convex solver (Newton, CG, or
+    PGS) to find contact forces and the resulting accelerations
+    self-consistently.
+  </li>
+</ol>
+
+<p>
+  We'll walk through each. The relevant source files in the MuJoCo
+  repo are in <code>src/engine/</code>. Let's go.
+</p>
+
+<h2>3.1. Step 1a &mdash; Broadphase: which pairs even need looking at?</h2>
+
+<p>
+  A scene with <em>N</em> geoms has <em>N</em>(<em>N</em>&minus;1)/2
+  possible pairs. Almost none of them are touching. The first job
+  of collision detection is to throw out the obvious non-collisions
+  cheaply, before doing any expensive geometry work.
+</p>
+
+<p>
+  MuJoCo uses a covariance-aligned <strong>sweep-and-prune</strong>
+  algorithm. The trick: compute the principal-axis frame of all the
+  geoms (an eigendecomposition of their position covariance
+  matrix), project every geom's bounding sphere onto that frame's
+  longest axis, sort by projected position, and only check pairs
+  whose projections overlap. This is a one-shot rotation per
+  timestep that aligns the sweep direction with the scene's longest
+  spread &mdash; tall stacks get swept vertically, wide tables get
+  swept horizontally &mdash; and it makes the linear sweep much
+  more discriminative than a fixed world-axis sweep would be.
+</p>
+
+<p>You can see it being computed here:</p>
+
+<p class="code-caption">src/engine/engine_collision_driver.c</p>
+<pre><code><span class="c">// construct covariance-aligned 3D frame</span>
+mju_eig3(eigval, frame, quat, cov);</code></pre>
+
+<p>
+  The output of broadphase is a flat array of "this pair survived,
+  go check it carefully" &mdash; a few thousand candidate pairs in
+  a typical robot scene, down from the naive quadratic count.
+</p>
+
+<h2>3.2. Step 1b &mdash; Narrowphase: where are the contact points?</h2>
+
+<p>
+  For each surviving pair, MuJoCo dispatches to a type-specific
+  collision routine. There's a 2D function table indexed by
+  <code>(geom_type_a, geom_type_b)</code> &mdash; e.g.
+  <code>(sphere, plane)</code>, <code>(capsule, box)</code>,
+  <code>(box, box)</code>. For primitive pairs, there's a hand-written
+  closed-form routine in <code>engine_collision_primitive.c</code>
+  that returns the contact point, normal, and penetration depth
+  analytically. For non-primitive pairs &mdash; meshes, convex
+  hulls, anything not on the closed-form list &mdash; the dispatch
+  falls through to the general-purpose <strong>GJK + EPA</strong>
+  pipeline in <code>engine_collision_gjk.c</code>.
+</p>
+
+<p>
+  GJK (Gilbert-Johnson-Keerthi) is the standard textbook algorithm
+  for testing whether two convex shapes intersect; EPA (Expanding
+  Polytope Algorithm) is the followup that, given that they do
+  intersect, finds the contact normal and penetration depth.
+  Together they handle the long tail of geometry that doesn't fit a
+  primitive case. There's also a separate path for
+  <strong>SDF-based</strong> collisions in
+  <code>engine_collision_sdf.c</code> for geoms that have a signed-distance
+  function defined.
+</p>
+
+<p>
+  Two details worth surfacing here, because they show up later in
+  the philosophical contrast with hydroelastic:
+</p>
+
+<p>
+  <strong>(a) Multi-contact for some primitive pairs.</strong>
+  Most narrowphase routines return one contact point per pair. The
+  exception is box-box, in <code>engine_collision_box.c</code>,
+  which can return up to <strong>8 contact points</strong> for a
+  single pair. That's because a box resting flat on another box
+  doesn't have a unique "contact point" &mdash; it has a face. If
+  you returned only one point, the resting box would teeter and
+  drift. So the box-box collider explicitly enumerates the corners
+  of the overlapping region and emits a contact at each, giving the
+  solver enough information to pin all the rotational degrees of
+  freedom. This is the discrete-contact pipeline doing its best
+  impression of a distributed force, and it's worth holding onto:
+  it's a hint that even MuJoCo's own developers know "one point
+  per pair" is sometimes too few.
+</p>
+
+<p>
+  <strong>(b) Contacts are events.</strong> Every contact MuJoCo
+  finds in this step is added to the <code>mjData.contact</code>
+  array via <code>mj_addContact</code>. If two bodies are
+  separating &mdash; about to lose contact &mdash; the contact
+  simply isn't added on the next timestep. There's no smooth
+  birth/death of contact patches. Contacts appear when the
+  narrowphase reports penetration (or proximity, given a margin)
+  and disappear when it doesn't. This is fine in the rigid-body
+  world; it'll matter later.
+</p>
+
+<h2>3.3. Anatomy of an <code>mjContact</code></h2>
+
+<p>
+  Once the narrowphase has finished, we have a list of contacts.
+  Let's pause and look at what one of them actually contains,
+  because this struct is where MuJoCo's whole philosophy gets
+  baked in:
+</p>
+
+<p class="code-caption">include/mujoco/mjdata.h</p>
+<pre><code><span class="k">struct</span> <span class="t">mjContact_</span> {
+  <span class="t">mjtNum</span>  dist;                    <span class="c">// distance; negative = penetration</span>
+  <span class="t">mjtNum</span>  pos[3];                  <span class="c">// contact midpoint</span>
+  <span class="t">mjtNum</span>  frame[9];                <span class="c">// normal [0-2], tangents [3-8]</span>
+
+  <span class="t">mjtNum</span>  friction[5];             <span class="c">// [0-1] = mu, [2] = spin, [3-4] = roll</span>
+  <span class="t">mjtNum</span>  solref[mjNREF];          <span class="c">// solver reference (normal)</span>
+  <span class="t">mjtNum</span>  solreffriction[mjNREF];  <span class="c">// solver reference (friction)</span>
+  <span class="t">mjtNum</span>  solimp[mjNIMP];          <span class="c">// solver impedance</span>
+
+  <span class="k">int</span>     dim;                     <span class="c">// 1, 3, 4, or 6</span>
+  <span class="k">int</span>     geom[2], flex[2], elem[2], vert[2];
+};</code></pre>
+
+<p>
+  Read this carefully. There is no force in this struct. There is
+  no pressure, no contact area, no material property. A
+  <code>mjContact</code> is a <em>geometric</em> object, not a
+  physical one: it tells the solver "two bodies are this far into
+  each other at this point, here's the local frame, here's how
+  squishy it should feel, here's the friction coefficient."
+  Whatever force comes out of the contact later is the solver's
+  problem. That fact &mdash; that the contact carries
+  <em>regularization parameters</em> rather than <em>material
+  parameters</em> &mdash; is the heart of the constraint view of
+  contact. We'll come back to this.
+</p>
+
+<h2>3.4. Step 2 &mdash; <code>solref</code> and <code>solimp</code>: the soft-contact spring</h2>
+
+<p>
+  Now the work of turning these geometric contacts into a
+  numerical optimization problem. This step lives in
+  <code>engine_core_constraint.c</code>.
+</p>
+
+<p>
+  MuJoCo's "soft contacts" are <strong>regularized</strong> &mdash;
+  meaning instead of a hard non-penetration constraint
+  (<em>distance</em> &ge; 0), the solver enforces a softened
+  version, modeled as a virtual spring-damper that pushes bodies
+  apart in proportion to how deeply they've penetrated, with some
+  damping to take energy out. The two parameter families
+  <code>solref</code> and <code>solimp</code> together control
+  exactly what this virtual spring-damper looks like. Once you
+  know what they're parameterizing, the names start making sense.
+</p>
+
+<h3><code>solref</code>: time constant, damping ratio</h3>
+
+<p>
+  <code>solref</code> is two numbers. In its standard mode (the
+  positive-valued case), they describe a <strong>damped
+  second-order system</strong>:
+</p>
+
+<ul>
+  <li><code>solref[0]</code> = time constant (seconds): how
+      quickly does the spring restore equilibrium?</li>
+  <li><code>solref[1]</code> = damping ratio (dimensionless,
+      typically 1 = critically damped): how much does it
+      oscillate?</li>
+</ul>
+
+<p>
+  The defaults are <code>solref = (0.02, 1)</code> &mdash; a 20 ms
+  time constant, critically damped. The reason these are the
+  parameters (rather than a stiffness <em>k</em> and damping
+  <em>b</em>) is that they're <em>scale-invariant in the right
+  way</em>: a 20-ms-and-critically-damped contact looks the same
+  whether the body weighs a kilogram or a ton, because the solver
+  internally converts to <em>k</em> and <em>b</em> values that
+  account for the body's effective inertia in the constraint
+  direction. From the code:
+</p>
+
+<pre><code>// Standard mode (solref[0] > 0):
+//   K = 1 / (d_max² · timeconst² · dampratio²)
+//   B = 2 / (d_max · timeconst)</code></pre>
+
+<p>
+  where <code>d_max</code> is one of the <code>solimp</code>
+  numbers (we'll get there). If you set <code>solref[0]</code>
+  negative, you've opted into "direct mode" and you're specifying
+  raw stiffness and damping values explicitly. Most of the time
+  you don't want to.
+</p>
+
+<h3><code>solimp</code>: the impedance shape</h3>
+
+<p>
+  <code>solimp</code> is five numbers, and on first read they look
+  like alphabet soup. The function being parameterized is the
+  <strong>impedance function</strong> <em>d</em>(<em>r</em>):
+  given how deep we currently are into the contact (penetration
+  depth <em>r</em>), how strongly should the constraint be
+  enforced? <em>d</em> ranges from 0 (basically not enforced,
+  squishy) to 1 (basically rigid). The five numbers:
+</p>
+
+<ul>
+  <li><code>solimp[0] = d_min</code> &mdash; impedance at zero
+      penetration (just touching). Default 0.9.</li>
+  <li><code>solimp[1] = d_max</code> &mdash; impedance at deep
+      penetration. Default 0.95.</li>
+  <li><code>solimp[2] = width</code> &mdash; how wide a band of
+      penetration depth does the transition occupy. Default
+      0.001 m.</li>
+  <li><code>solimp[3] = midpoint</code> &mdash; where in [0,1] of
+      that band the transition is centered. Default 0.5.</li>
+  <li><code>solimp[4] = power</code> &mdash; how steeply
+      <em>d</em> rises through the transition (a piecewise
+      polynomial). Default 2 (quadratic).</li>
+</ul>
+
+<p>
+  The function lives at <code>engine_core_constraint.c:2014</code>
+  in <code>getimpedance</code>. The big idea is "soften when barely
+  touching, harden as you penetrate more," and the five parameters
+  describe a smooth bump function that interpolates between
+  <code>d_min</code> and <code>d_max</code> across a band of width
+  <code>width</code>.
+</p>
+
+<p>
+  Here's what's important to absorb: <strong>none of this is a
+  material model</strong>. Nowhere are you specifying that the
+  contact is silicone or steel. <code>solref</code> is a numerical
+  conditioner for the solver &mdash; "make the spring stiff enough
+  that bodies don't visibly interpenetrate, soft enough that the
+  optimizer doesn't blow up." <code>solimp</code> shapes how
+  aggressively the regularization kicks in as penetration grows.
+  These are <em>solver hyperparameters</em>, dressed up as physical
+  ones.
+</p>
+
+<p>
+  This is also why getting MuJoCo to "feel like silicone" is
+  fiddly. There's no E-modulus knob. You back-solve
+  <code>solref</code> and <code>solimp</code> until the steady-state
+  contact force matches what you'd expect from a Young's modulus
+  calculation, but the transient compliance &mdash; how the
+  material vibrates and dissipates &mdash; can still be wrong, and
+  the engine doesn't care. It's a convex optimizer, not a
+  constitutive law.
+</p>
+
+<h2>3.5. Step 2 (continued) &mdash; The reference acceleration</h2>
+
+<p>
+  Once we've turned the spring-damper parameters into <em>K</em>
+  and <em>B</em> values, MuJoCo computes a <strong>reference
+  acceleration</strong> for each constraint:
+</p>
+
+<blockquote>
+<em>a</em><sub>ref</sub> = &minus;<em>B</em> &middot; <em>v</em> &minus; <em>K</em> &middot; <em>r</em>
+</blockquote>
+
+<p>
+  where <em>v</em> is the velocity of the bodies in the contact's
+  normal direction and <em>r</em> is the position residual
+  (penetration depth, or distance below margin). This is the
+  acceleration the constraint <em>wants</em> &mdash; "I want to
+  push the bodies apart at this rate to undo their penetration in
+  the next timestep." The friction constraints get <em>a</em><sub>ref</sub>
+  with <em>K</em>=0, so they're pure velocity damping ("don't
+  slide tangentially").
+</p>
+
+<p>
+  Notice this is implicit-in-velocity: the <em>v</em> term is
+  evaluated at the new (post-step) velocity, not the old one. That
+  matters. It means the constraint's damping term is co-solved
+  with the dynamics; it's not an explicit force you slap on top
+  after the fact. This is the secret behind MuJoCo's ability to
+  run stable contact at large timesteps with stiff parameters.
+  We'll need this fact later.
+</p>
+
+<h2>3.6. Step 3 &mdash; The convex optimization</h2>
+
+<p>
+  All the contact information is now pre-baked. The actual solve
+  happens in <code>engine_solver.c</code>, and it's the most
+  intellectually elegant part of MuJoCo. The problem is stated as
+  <strong>Gauss's principle of least constraint</strong>: among
+  all motions consistent with the constraints, the actual motion
+  is the one that minimizes the deviation from the unconstrained
+  motion (weighted by inertia).
+</p>
+
+<p>
+  Concretely, the primal form is something like:
+</p>
+
+<blockquote>
+minimize&nbsp;<em>&frac12;</em> ||<em>x</em> &minus; <em>M</em><sup>&minus;1</sup>(<em>&tau;</em>&minus;<em>c</em>)||&sup2;<sub><em>M</em></sub> + (regularizer on slack)<br>
+subject to:&nbsp;<em>J</em><sub>E</sub><em>x</em><sub>E</sub> &minus; <em>y</em><sub>E</sub> = 0&nbsp;&nbsp;(equality)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>J</em><sub>F</sub><em>x</em><sub>F</sub> &minus; <em>y</em><sub>F</sub> = 0&nbsp;&nbsp;(friction loss)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>J</em><sub>C</sub><em>x</em><sub>C</sub> &minus; <em>y</em><sub>C</sub> &isin; <em>K</em>*&nbsp;&nbsp;(contact, dual cone)
+</blockquote>
+
+<p>
+  where <em>x</em> is the unknown acceleration, <em>M</em> is the
+  inertia matrix, <em>J</em> is the constraint Jacobian, and
+  <em>K</em>* is the dual of the friction cone. The equation is
+  scary; the picture isn't. We're saying "find the acceleration
+  closest to the free-flight one (weighted by mass), subject to
+  not violating any contacts and staying inside the friction cone
+  on each contact." The Lagrangian dual of this primal problem is
+  a smaller optimization over the contact forces themselves
+  &mdash; that's the actual thing the code minimizes.
+</p>
+
+<p>
+  Three solver flavors live in <code>engine_solver.c</code>:
+</p>
+
+<ul>
+  <li><strong>Newton</strong> (the default): assembles the full
+      Hessian, factorizes with Cholesky, line-searches on the
+      primal cost. Handles both pyramidal and elliptic friction
+      cones. Fastest for moderate problem sizes.</li>
+  <li><strong>CG</strong> (conjugate gradient): nonlinear CG with
+      line search; no setup cost; useful for large or rapidly
+      changing constraint sets.</li>
+  <li><strong>PGS</strong> (Projected Gauss-Seidel): block-coordinate
+      descent in dual space &mdash; the classical algorithm in
+      this area, included for compatibility and as a cheap
+      warm-start. For elliptic cones, PGS solves a 5D quadratically
+      constrained subproblem at each contact.</li>
+</ul>
+
+<p>
+  The cone choice is independent of the solver:
+</p>
+
+<pre><code>ctx-&gt;is_elliptic = (m-&gt;opt.cone == mjCONE_ELLIPTIC);</code></pre>
+
+<p>
+  Pyramidal cones approximate the friction cone with edges (the
+  classical LCP form). The dual constraints become box constraints
+  &mdash; cheap to solve. Elliptic cones use the true second-order
+  cone &mdash; physically correct (pyramidal cones over-allow
+  friction along the diagonals), but the dual constraints become
+  second-order, slower per iteration. Elliptic is what you want
+  for serious manipulation; pyramidal is the default because it's
+  faster and "good enough" most of the time.
+</p>
+
+<h2>3.7. Constraint islands and parallelism</h2>
+
+<p>
+  One last optimization worth knowing about: not every contact
+  affects every other contact. If your scene has a robot in one
+  corner picking up a cup, and another robot across the room
+  shaking hands with itself, those two contact problems can be
+  solved independently &mdash; they share no bodies and no
+  constraints. MuJoCo identifies these <strong>constraint
+  islands</strong> via a flood-fill on the constraint Jacobian's
+  sparsity pattern (<code>engine_island.c</code>) and farms them
+  out to separate threads. The island decomposition is a small
+  thing, but it's the difference between "real-time on a laptop"
+  and "real-time only on a server" in scenes with many independent
+  agents.
+</p>
+
+<h1>4. Recap: a single timestep, narrated</h1>
+
+<p>
+  Pulling it all together, here's what one MuJoCo timestep does to
+  contact, with the names we now have:
+</p>
+
+<ol>
+  <li><strong>Broadphase</strong> sweeps geom AABBs along a
+      covariance-aligned axis, drops obvious non-collisions.</li>
+  <li><strong>Narrowphase</strong> dispatches each surviving pair
+      to a primitive routine or GJK/EPA, generating
+      <code>mjContact</code> records with geometric info but
+      no force.</li>
+  <li><strong>Constraint setup</strong> turns
+      <code>solref</code>/<code>solimp</code>/friction into a
+      reference acceleration and an impedance for each contact
+      &mdash; the "what the spring-damper wants" part.</li>
+  <li><strong>Island decomposition</strong> splits the contact
+      graph into independent subproblems.</li>
+  <li><strong>Convex solve</strong>, per island, finds contact
+      forces that satisfy Gauss's principle subject to the
+      friction-cone constraint.</li>
+  <li>Forces map back to accelerations; integrate; repeat.</li>
+</ol>
+
+<p>
+  The thing to keep in mind, for the next section, is that
+  <strong>everywhere in this pipeline, "contact" is a discrete
+  geometric event, and "force" is a Lagrange multiplier the
+  solver computes</strong>. Nothing in MuJoCo's contact code
+  looks at a material's Young's modulus and computes a pressure.
+  Material-like behavior emerges from the choice of
+  <code>solref</code>/<code>solimp</code>, which are solver
+  hyperparameters that happen to look like a spring-damper.
+</p>
+
+<h1>5. Drake's hydroelastic model, in one diagram's worth of words</h1>
+
+<p>
+  Now let's flip to the other camp. I won't reproduce Drake's
+  whole pipeline &mdash; this is a MuJoCo post &mdash; but the
+  core idea is short enough to state precisely.
+</p>
+
+<p>
+  In the <strong>hydroelastic contact model</strong>, every geom
+  is given a <em>pressure field</em>: a scalar function defined
+  on its volume that's zero on the surface, grows linearly inward
+  with some elastic modulus <em>E</em> and depth, and saturates
+  at the geom's interior. Think of it as encoding "if you
+  squished into me, here's how hard I'd push back at this point."
+  A rigid geom has an infinite-stiffness field; a "soft" geom has
+  a finite one.
+</p>
+
+<p>
+  When two such geoms intersect, the simulator computes the
+  <strong>equilibrium surface</strong>: the manifold inside the
+  intersection where their two pressure fields are equal. On
+  that surface, define the <strong>traction</strong>:
+</p>
+
+<blockquote>
+<em>p</em>(<em>x</em>) = <em>E</em> &middot; &epsilon;(<em>x</em>)
+</blockquote>
+
+<p>
+  where <em>&epsilon;</em>(<em>x</em>) is the strain at point
+  <em>x</em>. Integrate <em>p</em>(<em>x</em>) times the local
+  normal over the equilibrium surface and you have the contact
+  <strong>force and moment</strong> &mdash; not as a Lagrange
+  multiplier, but as a deterministic function of state. Friction
+  is then a regularized Coulomb law on top: take the prescribed
+  normal traction, multiply by &mu;, smooth the
+  velocity-dependence around zero so it's differentiable. Done.
+</p>
+
+<p>
+  Two things make this model attractive:
+</p>
+
+<ol>
+  <li>
+    <strong>Distributed force, automatically.</strong> A foot
+    pressing on a curved floor doesn't generate one contact
+    point; it generates a polygonal patch with a continuous
+    traction across it. Edge contact, corner contact, conformal
+    contact &mdash; all handled by the same integral. No
+    hand-tuning the number of contact points.
+  </li>
+  <li>
+    <strong>Smooth gradients.</strong> As the foot rolls, the
+    patch deforms continuously. Force varies continuously with
+    state. There's no "contact point appeared, contact point
+    disappeared" event &mdash; which is exactly what makes
+    hydroelastic so attractive for differentiable simulation and
+    gradient-based control.
+  </li>
+</ol>
+
+<p>
+  At this point the natural question is "why doesn't MuJoCo just
+  do this?" The answer is that the parts of hydroelastic that
+  make it nice are exactly the parts MuJoCo's pipeline doesn't
+  preserve cleanly. Let's walk through them.
+</p>
+
+<h1>6. Where the philosophies fight</h1>
+
+<p>
+  Four points of friction (sorry), in roughly increasing depth.
+</p>
+
+<h2>6.1. Smoothness is lost in the re-discretization</h2>
+
+<p>
+  Imagine you wanted to add hydroelastic-like behavior to MuJoCo
+  in the laziest possible way: at each timestep, compute the
+  equilibrium surface as Drake would, then chop it up into a
+  bunch of points, hand each point to the existing
+  <code>mj_addContact</code> as a separate <code>mjContact</code>,
+  and let the convex solver work them out. This is the obvious
+  attempt, and it almost works.
+</p>
+
+<p>
+  The problem is contact birth and death. As the foot rolls, the
+  equilibrium surface continuously deforms &mdash; in Drake, the
+  patch elongates one way and shrinks the other, and the
+  integrated force varies smoothly. In the
+  ported-to-MuJoCo version, the discrete contact points born from
+  that patch <em>appear and disappear</em> as the patch
+  geometry changes. Each contact in MuJoCo is an event
+  (<code>mj_addContact</code> succeeded or it didn't), and the
+  solver experiences abrupt changes in the constraint set as
+  contacts pop in and out.
+</p>
+
+<p>
+  The buttery gradient that hydroelastic gives you in Drake comes
+  from the integrand being a continuous function of state. Once
+  you hand that integrand to MuJoCo as a list of points, the
+  list itself becomes a discontinuous function of state, and the
+  smoothness is gone. Recovering it would mean adding contact
+  <em>persistence</em> &mdash; tracking which contacts in this
+  step correspond to which contacts last step, smoothing their
+  parameters across the transition. MuJoCo's contact pipeline
+  doesn't have that machinery, and bolting it on isn't a small
+  change.
+</p>
+
+<h2>6.2. "Soft" means different things</h2>
+
+<p>
+  The word "soft" appears in both worlds, but it's doing
+  different work. In MuJoCo, "soft contact" means
+  <strong>regularized constraint enforcement</strong>: instead of
+  a hard non-penetration inequality, the solver allows a little
+  penetration in exchange for a numerically nicer optimization
+  problem, with <code>solref</code>/<code>solimp</code>
+  controlling how much. The "softness" exists to keep the convex
+  problem well-conditioned, not to model material compliance.
+</p>
+
+<p>
+  In hydroelastic, "soft" means the geom literally has a
+  finite-stiffness pressure field. A 1 MPa silicone sphere
+  produces a specific traction distribution at a specific
+  penetration. There's no solver hyperparameter to tune; you
+  specify the modulus and the geometry, and the force comes out.
+</p>
+
+<p>
+  The mapping <em>K</em> &middot; <em>r</em> &harr;
+  <em>p</em>(<em>x</em>) &middot; <em>A</em> is mathematically
+  possible &mdash; you can pick a <code>solref</code> that
+  reproduces the steady-state force of a given hydroelastic
+  contact &mdash; but it's a coincidence at the level of one
+  static frame. The transient compliance, the mode shapes, the
+  way the contact patch evolves under sliding &mdash; none of
+  that comes along for the ride. There's no clean way for the
+  user to say "this is silicone with <em>E</em> = 1 MPa" and
+  have MuJoCo get the dynamics right; you're back-solving
+  <code>solref</code> to match a constitutive law the engine
+  doesn't believe in.
+</p>
+
+<h2>6.3. Implicit-in-velocity is the secret sauce, and it assumes solver-resolved forces</h2>
+
+<p>
+  This one is the deepest, and it's the reason hydroelastic
+  isn't a drop-in even if you solve the contact-persistence
+  problem.
+</p>
+
+<p>
+  Recall from section 3.5: MuJoCo computes a reference
+  acceleration <em>a</em><sub>ref</sub> = &minus;<em>B</em><em>v</em> &minus; <em>K</em><em>r</em>,
+  and the <em>v</em> in there is the post-step velocity. The
+  constraint forces are <strong>co-solved</strong> with the
+  accelerations: the optimizer simultaneously decides "what
+  contact force <em>&lambda;</em> and what acceleration
+  <em>v&#775;</em> are jointly consistent with Newton's laws and
+  the constraint <em>a</em><sub>ref</sub>?" That joint solve is
+  what lets MuJoCo take large timesteps with stiff contact
+  parameters: the implicit treatment damps out high-frequency
+  modes you'd otherwise have to resolve explicitly.
+</p>
+
+<p>
+  Now imagine injecting a hydroelastic force into this. The
+  force is a <em>state-dependent prescribed quantity</em>:
+  <em>F</em><sub>HE</sub>(<em>q</em>, <em>q&#775;</em>), evaluated at the current
+  state and added to the dynamics. That's an explicit term. If
+  the hydroelastic material is stiff (high <em>E</em>), the
+  force can change rapidly with state, and you need a small
+  timestep to integrate it stably &mdash; exactly the regime
+  MuJoCo's implicit constraint formulation was designed to
+  avoid. A stiff hydroelastic geom in MuJoCo would slow you
+  down to FEM-grade timesteps, which is a death sentence for
+  RL or MPC workloads doing thousands of rollouts per second.
+</p>
+
+<p>
+  The clean fix is to <em>linearize</em> the hydroelastic
+  pressure law and bake it into the constraint formulation as a
+  Lagrangian penalty &mdash; this is roughly what Drake's SAP
+  (Semi-Analytic Primal) integration does. But once you've
+  done that, you've recreated MuJoCo's softening from a
+  different starting point. You haven't really added
+  hydroelastic; you've translated it into the same constraint
+  language MuJoCo already speaks.
+</p>
+
+<h2>6.4. Two-body coupling: equilibrium surface vs solmix</h2>
+
+<p>
+  The fourth point is more aesthetic, but it matters for
+  consistency. In hydroelastic, when two soft bodies of
+  different stiffness collide, the equilibrium surface
+  automatically lands closer to the stiffer body, and the
+  combined behavior is symmetric and principled &mdash; it falls
+  out of equating the two pressure fields. There's no parameter
+  averaging. The mathematics does it.
+</p>
+
+<p>
+  In MuJoCo, when two geoms with different
+  <code>solref</code>/<code>solimp</code> collide, the engine
+  has to combine them into a single set of solver parameters
+  for the contact. It does this with a per-geom <code>solmix</code>
+  weight (see <code>mj_contactParam</code> in
+  <code>engine_collision_driver.c</code>):
+</p>
+
+<pre><code>mix = solmix1 / (solmix1 + solmix2);
+solref[i] = mix*solref1[i] + (1-mix)*solref2[i];</code></pre>
+
+<p>
+  This is fine in practice, but it's a hack. There's no
+  physics behind picking the average, no theorem saying the
+  combined system behaves like a real material with intermediate
+  properties. It's just "we have to come up with one number, here's
+  one." If you ported hydroelastic into MuJoCo's contact pipeline
+  and threw away the equilibrium-surface idea (because MuJoCo
+  wants per-contact <code>solref</code>), you'd have lost one of
+  the things that distinguishes hydroelastic from "many discrete
+  springs." You'd be back to picking a fudge factor, just under a
+  fancier name.
+</p>
+
+<h1>7. So what should you do?</h1>
+
+<p>
+  Here's the actually-useful framing, after all of that.
+</p>
+
+<p>
+  Most of the time, when people say "I want hydroelastic in
+  MuJoCo," what they actually want is one of these:
+</p>
+
+<ul>
+  <li>
+    <strong>Distributed force on a flat-on-flat contact.</strong>
+    The box-box 8-point machinery already covers this for
+    boxes. For other primitives, <strong>flex elements</strong>
+    (MuJoCo's tetrahedral soft-body primitives) participate in
+    contact natively, and <code>multiccd</code> for mesh-mesh
+    pairs can surface multiple contacts. You can also raise
+    contact margin to widen the activation region. None of this
+    is hydroelastic, but most of the practical wins of
+    hydroelastic for stable manipulation contact are already
+    achievable.
+  </li>
+  <li>
+    <strong>Force that doesn't depend on the contact-point
+    count.</strong> Tune <code>solref</code>/<code>solimp</code>
+    so that the per-contact force scales reasonably as more
+    contacts are added; use elliptic cones; raise the friction
+    impedance ratio if friction is wonkier than normal forces.
+    The relationship between <em>n</em> contact points and total
+    force is much more controllable than people give it credit
+    for, once you stop treating the parameters as opaque.
+  </li>
+  <li>
+    <strong>Edge and corner contact behaving sensibly.</strong>
+    This is mostly a meshing problem. Round the edges in your
+    mesh; use convex decomposition; or use SDF geoms for the
+    pieces where edge contact dominates. Hydroelastic does
+    handle edges more gracefully out of the box, but the gap
+    closes a lot once you stop feeding the simulator
+    sharp-cornered convex hulls.
+  </li>
+</ul>
+
+<p>
+  Where the analogy genuinely breaks down &mdash; where
+  hydroelastic's win is real and not just polish &mdash; is
+  <strong>differentiable simulation</strong>. If your goal is
+  to backpropagate through dynamics, fit a policy with
+  gradient-based control, or do diffsim-style trajectory
+  optimization, the hard contact birth/death events in MuJoCo's
+  pipeline really do limit you. No amount of clever multi-contact
+  tricks will give you the smooth gradients hydroelastic offers,
+  because the discontinuity is structural &mdash; it's in the
+  contact set, not in any one contact's parameters. In that
+  case, the question isn't "can I port hydroelastic into MuJoCo";
+  it's "should I be in MuJoCo at all," and the honest answer is
+  often "go use Drake, or Brax with soft contacts, or a custom
+  MPM-ish thing built around continuous-contact assumptions."
+</p>
+
+<p>
+  But for everything else &mdash; manipulation realism, contact-rich
+  RL, sim-to-real for grasping &mdash; the gap between
+  well-tuned MuJoCo and a hydroelastic engine is much smaller than
+  the marketing suggests. The real win of MuJoCo's pipeline is
+  that the constraint formulation lets you take 2-millisecond
+  timesteps with stiff contact and not blow up, which means you
+  can run thousands of rollouts a second on a laptop. That's
+  upstream of every learning algorithm anyone builds on top, and
+  it's exactly what the implicit-in-velocity, solver-resolved-force
+  view of contact buys you.
+</p>
+
+<p>
+  So: not the same engine, not the same question, not even the
+  same kind of answer. Knowing which one you actually want is the
+  whole game.
+</p>
+
+<h1>8. A short reading list</h1>
+
+<p>
+  If you want to dig further, these are the things I'd actually
+  read, in order:
+</p>
+
+<ul>
+  <li>
+    <strong>MuJoCo's own
+    <code>doc/computation/index.rst</code>.</strong> It's the
+    most coherent technical reference for the constraint solver,
+    Gauss principle formulation, and friction cone choices. It
+    quietly assumes you've already read Todorov 2014.
+  </li>
+  <li>
+    <strong>Todorov, "Convex and analytically-invertible dynamics
+    with contacts and constraints" (ICRA 2014).</strong> The paper
+    that introduced the convex contact formulation MuJoCo
+    implements. Worth reading before you tune anything.
+  </li>
+  <li>
+    <strong>Elandt, Drumwright, Sherman, Ruppel, "A Pressure
+    Field Model for Fast, Robust Approximation of Net Contact
+    Force and Moment Between Nominally Rigid Objects" (IROS
+    2019).</strong> The hydroelastic contact paper. Short, very
+    readable.
+  </li>
+  <li>
+    <strong>Drake's hydroelastic user guide.</strong> Practical
+    documentation, with diagrams of equilibrium surfaces that
+    finally made the model click for me.
+  </li>
+  <li>
+    <strong><code>engine_solver.c</code> and
+    <code>engine_core_constraint.c</code> in the MuJoCo
+    repo.</strong> Read them with the doc page open in another
+    tab. Surprisingly approachable C, and the comments
+    occasionally do the explaining for you.
+  </li>
+</ul>
+
+<p>
+  The point of this post wasn't to make you a contact-simulation
+  expert &mdash; that takes years &mdash; but to give you the
+  vocabulary to read those things without bouncing off. If
+  <code>solref</code> stops looking like alphabet soup, and the
+  word "constitutive" doesn't seem like an empty buzzword,
+  this was time well spent.
+</p>
+
+</div>
+</body>
+</html>

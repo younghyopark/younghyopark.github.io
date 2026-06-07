@@ -105,6 +105,70 @@ papertitle {
   font-weight: 700
 }
 
+.paper-note,
+.paper-note a,
+.paper-note strong {
+  color: red;
+  font-size: inherit;
+  font-weight: 700;
+}
+
+.paper-tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: help;
+  outline: none;
+}
+
+.paper-tooltip-content {
+  position: absolute;
+  left: 0;
+  top: 1.55em;
+  z-index: 10;
+  width: max-content;
+  max-width: 320px;
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: white;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  color: #555;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.35;
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition: opacity 0.15s ease;
+}
+
+.paper-tooltip:hover .paper-tooltip-content,
+.paper-tooltip:focus .paper-tooltip-content,
+.paper-tooltip:focus-within .paper-tooltip-content {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+}
+
+.paper-note .paper-tooltip-content a {
+  display: block;
+  color: #1772d0;
+  font-size: inherit;
+  font-weight: 700;
+}
+
+.paper-tooltip-content span {
+  display: block;
+  margin-bottom: 6px;
+  color: #555;
+  font-size: inherit;
+  font-weight: 400;
+}
+
+.paper-tooltip-content span:last-child {
+  margin-bottom: 0;
+}
+
 name {
   font-family: 'Lato', Verdana, Helvetica, sans-serif;
   font-size: 32px;

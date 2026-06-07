@@ -1,0 +1,8 @@
+{
+  "title": "Contact in 3 Simulators, Part 1 — Intro",
+  "date": "2026-05-07",
+  "author": "Younghyo Park",
+  "tags": ["simulation", "mujoco", "physx", "drake", "contact", "explainer", "series:contact-pipelines"],
+  "excerpt": "An honest look at how MuJoCo, PhysX, and Drake handle contact. Two answer the same question with different machinery; one answers a different question entirely. The point isn't to crown a winner — it's to make the differences visible.",
+  "publish": false
+}

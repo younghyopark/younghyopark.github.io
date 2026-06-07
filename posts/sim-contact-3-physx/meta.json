@@ -1,0 +1,8 @@
+{
+  "title": "Contact in 3 Simulators, Part 3 — PhysX",
+  "date": "2026-05-07",
+  "author": "Younghyo Park",
+  "tags": ["simulation", "physx", "contact", "explainer", "series:contact-pipelines"],
+  "excerpt": "A code-level walkthrough of PhysX's contact pipeline: five broadphases, persistent contact manifolds, contact reduction, the PGS and TGS solvers, and the pyramidal friction model.",
+  "publish": false
+}

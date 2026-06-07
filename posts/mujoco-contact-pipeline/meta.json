@@ -1,0 +1,8 @@
+{
+  "title": "Inside MuJoCo's Contact Pipeline (and Why It's Not Drake's)",
+  "date": "2026-05-06",
+  "author": "Younghyo Park",
+  "tags": ["simulation", "mujoco", "drake", "contact", "explainer"],
+  "excerpt": "A ground-up tour of how MuJoCo simulates contact — broadphase, narrowphase, solref/solimp, the convex solver — and why hydroelastic contact in Drake answers a fundamentally different question.",
+  "publish": false
+}

@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact in 3 Simulators, Part 2 — MuJoCo - Younghyo Park</title>
+
+  <!-- Open Graph / Social previews -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Contact in 3 Simulators, Part 2 — MuJoCo" />
+  <meta property="og:description" content="A code-level walkthrough of MuJoCo's contact pipeline: covariance-aligned broadphase, GJK/EPA narrowphase, the solref/solimp regularization, and the convex solver." />
+  <meta property="og:url" content="https://younghyopark.me/posts/sim-contact-2-mujoco/" />
+  <meta property="og:image" content="https://raw.githubusercontent.com/younghyopark/younghyopark.github.io/new/images/new_younghyo4.jpeg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@younghyo_park" />
+  <meta name="twitter:title" content="Contact in 3 Simulators, Part 2 — MuJoCo" />
+  <meta name="twitter:description" content="A code-level walkthrough of MuJoCo's contact pipeline." />
+  <meta name="twitter:image" content="https://raw.githubusercontent.com/younghyopark/younghyopark.github.io/new/images/new_younghyo4.jpeg" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Shared blog post styles + nav -->
+  <link rel="stylesheet" href="/shared/post-base.css">
+  <script src="/shared/post-nav.js"></script>
+
+  <!-- MathJax -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true
+      },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script type="text/javascript" id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <style>
+    .series-banner {
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.85rem 1.1rem;
+      margin: 0 0 2rem 0;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+    .series-banner .series-label {
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      font-size: 0.74rem;
+      margin-right: 0.5rem;
+    }
+    .series-banner .series-parts {
+      margin-top: 0.3rem;
+    }
+    .series-banner a {
+      color: var(--text);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+    }
+    .series-banner a:hover {
+      border-bottom-color: var(--text);
+    }
+    .series-banner .current {
+      color: var(--text);
+      font-weight: 600;
+      border-bottom: none;
+    }
+    .next-up {
+      margin-top: 3rem;
+      padding: 1.1rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--bg-alt);
+    }
+    .next-up .label {
+      font-size: 0.74rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .next-up a { color: var(--text); }
+    .math-block {
+      background: var(--bg-alt);
+      border-left: 3px solid var(--border);
+      padding: 1rem 1.2rem;
+      margin: 1.2rem 0;
+      overflow-x: auto;
+    }
+    .math-block mjx-container[display="true"] {
+      margin: 0 !important;
+    }
+    table.compare {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.88rem;
+    }
+    table.compare th, table.compare td {
+      border: 1px solid var(--border);
+      padding: 0.55rem 0.7rem;
+      text-align: left;
+      vertical-align: top;
+      line-height: 1.45;
+    }
+    table.compare th {
+      background: var(--bg-alt);
+      font-weight: 600;
+      font-size: 0.82rem;
+    }
+    table.compare td:first-child {
+      font-weight: 600;
+      background: var(--bg-alt);
+      width: 22%;
+    }
+  </style>
+</head>
+<body>
+<div class="post-body">
+
+<div class="post-header">
+  <h1 class="post-title">Contact in 3 Simulators, Part 2 — MuJoCo</h1>
+  <div class="post-meta">
+    <span>2026-05-07</span>
+    <span class="sep">&middot;</span>
+    <span>Younghyo Park</span>
+  </div>
+</div>
+
+<div class="series-banner">
+  <span class="series-label">Series</span> Contact in 3 simulators
+  <div class="series-parts">
+    <a href="/posts/sim-contact-1-intro/">Part 1 — Intro</a> ·
+    <span class="current">Part 2 — MuJoCo</span> ·
+    <a href="/posts/sim-contact-3-physx/">Part 3 — PhysX</a> ·
+    <a href="/posts/sim-contact-4-drake/">Part 4 — Drake</a>
+  </div>
+</div>
+
+<blockquote>
+A code-level tour of how MuJoCo turns geometry into contact forces &mdash;
+broadphase, narrowphase, <code>solref</code>/<code>solimp</code>, and the
+convex solver. Read <a href="/posts/sim-contact-1-intro/">Part 1</a> first
+if you want the framing for why I'm comparing three engines at all; this
+part is purely a walkthrough of the MuJoCo source.
+</blockquote>
+
+<h1>1. Where to look</h1>
+
+<p>
+  MuJoCo's contact code lives in <code>src/engine/</code> in the
+  <code>google-deepmind/mujoco</code> repo. There are about a dozen files
+  involved, but the work splits cleanly into three stages, in order:
+</p>
+
+<ol>
+  <li>
+    <strong>Find contacts.</strong> Figure out which geoms are touching
+    or about to touch, and where.
+  </li>
+  <li>
+    <strong>Build the constraint problem.</strong> Turn that list of
+    contacts into a numerical optimization problem in which the contact
+    forces are the unknowns.
+  </li>
+  <li>
+    <strong>Solve it.</strong> Use a convex solver (Newton, CG, or PGS)
+    to find contact forces and the resulting accelerations
+    self-consistently.
+  </li>
+</ol>
+
+<p>
+  We'll walk each stage. The comments in the source are good. The
+  problem is that the steps are spread across enough files that nobody
+  assembles them for you in one place &mdash; so that's what this post
+  does.
+</p>
+
+<h1>2. Step 1a — Broadphase: which pairs even need looking at?</h1>
+
+<p>
+  A scene with \(N\) geoms has \(N(N-1)/2\)
+  possible pairs. Almost none of them are touching. The first job of
+  collision detection is to throw out the obvious non-collisions cheaply,
+  before doing any expensive geometry work.
+</p>
+
+<p>
+  MuJoCo uses a covariance-aligned <strong>sweep-and-prune</strong>
+  algorithm. The trick: compute the principal-axis frame of all the
+  geoms (an eigendecomposition of their position covariance matrix),
+  project every geom's bounding sphere onto that frame's longest axis,
+  sort by projected position, and only check pairs whose projections
+  overlap. This is a one-shot rotation per timestep that aligns the
+  sweep direction with the scene's longest spread &mdash; tall stacks
+  get swept vertically, wide tables get swept horizontally &mdash; and
+  it makes the linear sweep much more discriminative than a fixed
+  world-axis sweep would be.
+</p>
+
+<p>You can see it being computed here:</p>
+
+<p class="code-caption">src/engine/engine_collision_driver.c</p>
+<pre><code><span class="c">// construct covariance-aligned 3D frame</span>
+mju_eig3(eigval, frame, quat, cov);</code></pre>
+
+<p>
+  The output of broadphase is a flat array of "this pair survived, go
+  check it carefully" &mdash; a few thousand candidate pairs in a
+  typical robot scene, down from the naive quadratic count.
+</p>
+
+<h1>3. Step 1b — Narrowphase: where are the contact points?</h1>
+
+<p>
+  For each surviving pair, MuJoCo dispatches to a type-specific collision
+  routine. There's a 2D function table indexed by
+  <code>(geom_type_a, geom_type_b)</code> &mdash; e.g. <code>(sphere,
+  plane)</code>, <code>(capsule, box)</code>, <code>(box, box)</code>.
+  For primitive pairs, there's a hand-written closed-form routine in
+  <code>engine_collision_primitive.c</code> that returns the contact
+  point, normal, and penetration depth analytically. For non-primitive
+  pairs &mdash; meshes, convex hulls, anything not on the closed-form
+  list &mdash; the dispatch falls through to the general-purpose
+  <strong>GJK + EPA</strong> pipeline in
+  <code>engine_collision_gjk.c</code>.
+</p>
+
+<p>
+  GJK (Gilbert-Johnson-Keerthi) is the standard textbook algorithm for
+  testing whether two convex shapes intersect; EPA (Expanding Polytope
+  Algorithm) is the followup that, given that they do intersect, finds
+  the contact normal and penetration depth. Together they handle the
+  long tail of geometry that doesn't fit a primitive case. There's also
+  a separate path for <strong>SDF-based</strong> collisions in
+  <code>engine_collision_sdf.c</code> for geoms that have a
+  signed-distance function defined.
+</p>
+
+<p>
+  Three details are worth surfacing here, because they show up later in
+  comparisons with the other engines:
+</p>
+
+<p>
+  <strong>(a) Multi-contact for some primitive pairs.</strong> Most
+  primitive narrowphase routines return one contact point per pair. The
+  exception is box-box, in <code>engine_collision_box.c</code>, which
+  can return up to <strong>8 contact points</strong> for a single
+  pair. That's because a box resting flat on another box doesn't have a
+  unique "contact point" &mdash; it has a face. If you returned only
+  one point, the resting box would teeter and drift. So the box-box
+  collider explicitly enumerates the corners of the overlapping region
+  and emits a contact at each, giving the solver enough information to
+  pin all the rotational degrees of freedom.
+</p>
+
+<p>
+  <strong>(b) <code>multiCCD</code>: multi-contact for general convex
+  pairs.</strong> What about a cylinder resting on a box, or two
+  arbitrary meshes face-to-face? Box-box has hand-coded enumeration,
+  but for general convex-convex pairs through the libccd / GJK / EPA
+  path you'd naively get only the single deepest contact &mdash; same
+  teeter-and-drift problem. MuJoCo solves this with
+  <strong>multiCCD</strong>, controlled by the <code>multiccd</code>
+  flag (on by default; the disable bit is <code>mjDSBL_MULTICCD</code>).
+  The trick is in <code>engine_collision_convex.c:840</code>:
+</p>
+
+<p class="code-caption">src/engine/engine_collision_convex.c:860</p>
+<pre><code><span class="c">// look for additional contacts</span>
+<span class="k">if</span> (ncon == 1 &amp;&amp; !mjDISABLED(mjDSBL_MULTICCD)
+    &amp;&amp; m-&gt;geom_type[g1] != mjGEOM_ELLIPSOID &amp;&amp; m-&gt;geom_type[g1] != mjGEOM_SPHERE
+    &amp;&amp; m-&gt;geom_type[g2] != mjGEOM_ELLIPSOID &amp;&amp; m-&gt;geom_type[g2] != mjGEOM_SPHERE) {
+
+  <span class="c">// multiCCD parameters</span>
+  <span class="k">const</span> mjtNum relative_tolerance = 1e-3;
+  <span class="k">const</span> mjtNum perturbation_angle = 1e-3;</code></pre>
+
+<p>
+  The algorithm: after the initial GJK/EPA call returns one contact,
+  pick two axes in the contact's tangent plane and four (axis, sign)
+  combinations of a tiny &plusmn;0.001-radian rotation. For each, rotate
+  geom 1 by that angle around the contact point and counter-rotate
+  geom 2; re-run the penetration query; if a new <em>distinct</em>
+  contact is found (more than <code>1e-3 &times; min(rbound)</code>
+  from existing ones), keep it. Restore the original poses and move on.
+  Up to four extra contacts can be added this way, for a total of five.
+</p>
+
+<p>
+  The insight is that for a face-on-face contact, tilting the geoms
+  by a hair reveals contact points elsewhere on the face &mdash; the
+  shape is locally flat, so a small rotation moves the deepest point.
+  For a true point contact (sphere, ellipsoid), the perturbation
+  produces no distinct new contact, so the algorithm stays at one.
+  It's an empirical "is this a point or a patch?" probe rather than an
+  analytic enumeration. The cap of <strong>4&ndash;5 contacts per
+  pair</strong> for mesh-mesh and mesh-box (with or without margin) is
+  set in <code>maxContacts</code>:
+</p>
+
+<p class="code-caption">src/engine/engine_collision_driver.c:114</p>
+<pre><code><span class="k">int</span> is_multiccd = !mjDISABLED(mjDSBL_MULTICCD);
+<span class="k">if</span> (!is_multiccd) {
+  <span class="k">return</span> 1;  <span class="c">// fall back to single contact</span>
+}
+
+<span class="k">if</span> (type1 == mjGEOM_CAPSULE || type2 == mjGEOM_CAPSULE ||
+    type1 == mjGEOM_CYLINDER || type2 == mjGEOM_CYLINDER) {
+  <span class="k">return</span> 5;
+}
+<span class="c">// 4 contacts for mesh-mesh or mesh-box without margins, 5 with margins</span>
+<span class="k">return</span> has_margin ? 5 : 4;</code></pre>
+
+<p>
+  This changes the practical picture significantly: MuJoCo's
+  multi-contact story isn't "box-box only, one-per-pair otherwise" but
+  "box-box gets 8, capsule/cylinder/mesh pairs get up to 5 via
+  multiCCD, true point contacts (sphere, ellipsoid) get 1." It's still
+  not a continuous contact patch the way Drake's hydroelastic surface
+  is &mdash; the points are sampled, not integrated &mdash; but it's
+  closer to a distributed force than the "one point per pair" reading
+  of MuJoCo would suggest.
+</p>
+
+<p>
+  <strong>(c) Contacts are events, not state.</strong> Every contact
+  MuJoCo finds in this step is added to the <code>mjData.contact</code>
+  array via <code>mj_addContact</code>. If two bodies are separating
+  &mdash; about to lose contact &mdash; the contact simply isn't added
+  on the next timestep. There's no smooth birth/death of contact
+  patches, and no carry-over of contact state across timesteps. Contacts
+  appear when the narrowphase reports penetration (or proximity, given a
+  margin) and disappear when it doesn't. PhysX takes the opposite
+  approach (persistent manifolds), which is why its contact behavior
+  feels qualitatively different even on identical geometry. We'll see
+  that in Part 3.
+</p>
+
+<h1>4. Anatomy of an <code>mjContact</code></h1>
+
+<p>
+  Once the narrowphase has finished, we have a list of contacts. Let's
+  pause and look at what one of them actually contains, because this
+  struct is where MuJoCo's whole philosophy gets baked in:
+</p>
+
+<p class="code-caption">include/mujoco/mjdata.h</p>
+<pre><code><span class="k">struct</span> <span class="t">mjContact_</span> {
+  <span class="t">mjtNum</span>  dist;                    <span class="c">// distance; negative = penetration</span>
+  <span class="t">mjtNum</span>  pos[3];                  <span class="c">// contact midpoint</span>
+  <span class="t">mjtNum</span>  frame[9];                <span class="c">// normal [0-2], tangents [3-8]</span>
+
+  <span class="t">mjtNum</span>  friction[5];             <span class="c">// [0-1] = mu, [2] = spin, [3-4] = roll</span>
+  <span class="t">mjtNum</span>  solref[mjNREF];          <span class="c">// solver reference (normal)</span>
+  <span class="t">mjtNum</span>  solreffriction[mjNREF];  <span class="c">// solver reference (friction)</span>
+  <span class="t">mjtNum</span>  solimp[mjNIMP];          <span class="c">// solver impedance</span>
+
+  <span class="k">int</span>     dim;                     <span class="c">// 1, 3, 4, or 6</span>
+  <span class="k">int</span>     geom[2], flex[2], elem[2], vert[2];
+};</code></pre>
+
+<p>
+  Read this carefully. There is no force in this struct. There is no
+  pressure, no contact area, no Young's modulus, no material property.
+  An <code>mjContact</code> is a <em>geometric</em> object, not a
+  physical one: it tells the solver "two bodies are this far into each
+  other at this point, here's the local frame, here's how squishy it
+  should feel, here's the friction coefficient." Whatever force comes
+  out of the contact later is the solver's problem.
+</p>
+
+<p>
+  The fact that the contact carries <em>regularization parameters</em>
+  rather than <em>material parameters</em> is the heart of the constraint
+  view of contact. Drake's <code>ContactSurface</code> looks completely
+  different (it carries a pressure field); we'll see that in Part 4.
+</p>
+
+<h1>5. Step 2 — <code>solref</code> and <code>solimp</code>: the soft-contact spring</h1>
+
+<p>
+  Now the work of turning these geometric contacts into a numerical
+  optimization problem. This step lives in
+  <code>engine_core_constraint.c</code>.
+</p>
+
+<p>
+  MuJoCo's "soft contacts" are <strong>regularized</strong> &mdash;
+  meaning instead of a hard non-penetration constraint
+  (<em>distance</em> &ge; 0), the solver enforces a softened version,
+  modeled as a virtual spring-damper that pushes bodies apart in
+  proportion to how deeply they've penetrated, with some damping to take
+  energy out. The two parameter families <code>solref</code> and
+  <code>solimp</code> together control exactly what this virtual
+  spring-damper looks like. Once you know what they're parameterizing,
+  the names start making sense.
+</p>
+
+<p>
+  The five-second version is:
+</p>
+
+<ul>
+  <li>
+    <strong><code>solref</code> controls the spring-damper reference
+    motion.</strong> In the normal positive-valued mode, you don't enter
+    stiffness and damping directly. You enter a time constant and a
+    damping ratio, and MuJoCo converts those into stiffness-like and
+    damping-like coefficients in constraint space. Smaller time constant
+    means faster correction. Lower damping ratio means more bounce or
+    ringing.
+  </li>
+  <li>
+    <strong><code>solimp</code> controls the constraint impedance
+    <em>d</em>(<em>r</em>).</strong> This is MuJoCo's "how much authority
+    does this constraint have right now?" knob. Small impedance means a
+    weak constraint; large impedance means a strong one. Because
+    <code>solimp</code> can make <em>d</em> depend on penetration, contact
+    can start weak near first touch and harden as bodies sink in.
+  </li>
+</ul>
+
+<p>
+  So a useful mental shortcut is:
+</p>
+
+<ul>
+  <li><code>solref</code>: what spring-damper motion the constraint wants.</li>
+  <li><code>solimp</code>: how strongly the solver enforces that motion at this penetration depth.</li>
+</ul>
+
+<p>
+  In that sense, the right intuition is a
+  <strong>penetration-dependent spring-damper</strong>. But the precise
+  object in the docs is not a material spring with stiffness in N/m. It
+  is a soft constraint with three internal quantities: impedance
+  <em>d</em>, damping <em>b</em>, and stiffness <em>k</em>. The reference
+  acceleration is spring-damper-like,
+  \(a_\mathrm{ref} = -b v - k r\), and the impedance <em>d</em> controls how much
+  the solver follows that reference motion instead of the unconstrained
+  motion. So <code>solimp</code> is better understood as
+  penetration-dependent constraint authority, not just a literal
+  stiffness multiplier.
+</p>
+
+<p>
+  That word "authority" is not just a metaphor. MuJoCo turns impedance
+  into the diagonal regularizer used by the solver:
+</p>
+
+<p>
+  \[
+  R_{ii} = \frac{1 - d_i}{d_i}\,\widehat{A}_{ii}
+  \]
+</p>
+
+<p>
+  So when <em>d</em> is close to 1, <em>R</em> is close to 0 and the
+  constraint is almost hard: the solver strongly follows the
+  spring-damper reference acceleration. When <em>d</em> is small,
+  <em>R</em> becomes large and the constraint is weak: the solver mostly
+  allows the unconstrained acceleration. In the ideal diagonal case, the
+  contact acceleration is approximately an interpolation:
+</p>
+
+<p>
+  \[
+  a_\mathrm{constrained}
+  \approx
+  d\,a_\mathrm{reference}
+  +
+  (1-d)\,a_\mathrm{unconstrained}
+  \]
+</p>
+
+<p>
+  This is the clearest way to read <code>solimp</code>: it is a
+  penetration-dependent weight on how much the contact correction is
+  allowed to matter inside the optimization problem.
+</p>
+
+<h2><code>solref</code>: time constant, damping ratio</h2>
+
+<p>
+  <code>solref</code> is two numbers. In its standard mode (the
+  positive-valued case), they describe a <strong>damped second-order
+  system</strong>:
+</p>
+
+<ul>
+  <li><code>solref[0]</code> = time constant (seconds): how quickly does
+      the spring restore equilibrium?</li>
+  <li><code>solref[1]</code> = damping ratio (dimensionless, typically
+      1 = critically damped): how much does it oscillate?</li>
+</ul>
+
+<p>
+  The defaults are <code>solref = (0.02, 1)</code> &mdash; a 20 ms time
+  constant, critically damped. The reason these are the parameters
+  (rather than a stiffness <em>k</em> and damping <em>b</em>) is that
+  they're <em>scale-invariant in the right way</em>: a
+  20-ms-and-critically-damped contact looks the same whether the body
+  weighs a kilogram or a ton, because the solver internally converts to
+  <em>k</em> and <em>b</em> values that account for the body's effective
+  inertia in the constraint direction. From the code:
+</p>
+
+<div class="math-block">
+\[
+\begin{aligned}
+k &= \frac{d(r)}{d_\mathrm{width}^{2}\,\mathrm{timeconst}^{2}\,\mathrm{dampratio}^{2}} \\
+b &= \frac{2}{d_\mathrm{width}\,\mathrm{timeconst}}
+\end{aligned}
+\qquad \text{(standard mode, } \mathrm{solref}[0] > 0\text{)}
+\]
+</div>
+
+<p>
+  where <code>d_width</code> is one of the <code>solimp</code> numbers
+  (we'll get there), and <em>d</em>(<em>r</em>) is the impedance at the
+  current constraint violation. If you set <code>solref[0]</code>
+  negative, you've opted into "direct mode" and you're specifying raw
+  stiffness and damping values explicitly. The positive format is the
+  easier one for ordinary modeling; the direct format is useful when you
+  really do want to identify stiffness and damping-like numbers.
+</p>
+
+<h2><code>solimp</code>: the impedance shape</h2>
+
+<p>
+  <code>solimp</code> is five numbers, and on first read they look like
+  alphabet soup. The function being parameterized is the
+  <strong>impedance function</strong> <em>d</em>(<em>r</em>): given how
+  large the constraint violation is (for contact, how far into the
+  contact layer we are), how strongly should the constraint be enforced?
+  <em>d</em> ranges from 0 (basically not enforced, squishy) to 1
+  (basically rigid). The five numbers:
+</p>
+
+<ul>
+  <li><code>solimp[0] = d_0</code> &mdash; impedance at zero
+      penetration (just touching). Default 0.9.</li>
+  <li><code>solimp[1] = d_width</code> &mdash; impedance once the
+      violation reaches <code>width</code>. Default 0.95.</li>
+  <li><code>solimp[2] = width</code> &mdash; how wide a band of
+      penetration depth does the transition occupy. Default 0.001 m.</li>
+  <li><code>solimp[3] = midpoint</code> &mdash; where in [0,1] of that
+      band the transition is centered. Default 0.5.</li>
+  <li><code>solimp[4] = power</code> &mdash; how steeply <em>d</em>
+      rises through the transition (a piecewise polynomial). Default
+      2 (quadratic).</li>
+</ul>
+
+<p>
+  The function lives at <code>engine_core_constraint.c:2014</code> in
+  <code>getimpedance</code>. The big idea is "soften when barely
+  touching, harden as you penetrate more," and the five parameters
+  describe a smooth sigmoid-like function that interpolates between
+  <code>d_0</code> and <code>d_width</code> across a band of width
+  <code>width</code>.
+</p>
+
+<p>
+  Here's what's important to absorb: <strong>none of this is a material
+  model</strong>. Nowhere are you specifying that the contact is
+  silicone or steel. <code>solref</code> is a numerical conditioner for
+  the solver &mdash; "make the spring stiff enough that bodies don't
+  visibly interpenetrate, soft enough that the optimizer doesn't blow
+  up." <code>solimp</code> shapes how aggressively the regularization
+  kicks in as penetration grows. These are <em>solver
+  hyperparameters</em>, dressed up as physical ones.
+</p>
+
+<p>
+  This is also why getting MuJoCo to "feel like silicone" is fiddly.
+  There's no E-modulus knob. You back-solve <code>solref</code> and
+  <code>solimp</code> until the steady-state contact force matches what
+  you'd expect from a Young's modulus calculation, but the transient
+  compliance &mdash; how the material vibrates and dissipates &mdash;
+  can still be wrong, and the engine doesn't care. It's a convex
+  optimizer, not a constitutive law.
+</p>
+
+<h1>6. Step 2 (continued) — The reference acceleration</h1>
+
+<p>
+  Once we've turned the spring-damper parameters into \(k\) and
+  \(b\) values, MuJoCo computes a <strong>reference
+  acceleration</strong> for each constraint:
+</p>
+
+<div class="math-block">
+\[
+a_\mathrm{ref} = -b\,v - k\,r
+\]
+</div>
+
+<p>
+  where \(v\) is the velocity of the bodies in the contact's normal
+  direction and \(r\) is the position residual (penetration depth,
+  or distance below margin). This is the acceleration the constraint
+  <em>wants</em> &mdash; "I want to push the bodies apart at this rate
+  to undo their penetration in the next timestep." The friction
+  constraints get \(a_\mathrm{ref}\) with \(k=0\), so they're
+  pure velocity damping ("don't slide tangentially").
+</p>
+
+<h2>Acceleration of what?</h2>
+
+<p>
+  This is the part that is easy to misread. \(a_\mathrm{ref}\) is
+  <em>not</em> the acceleration of either object in the contact. It is
+  the desired acceleration of the <strong>constraint error</strong>. For
+  a normal contact, that means the desired acceleration of the signed
+  gap between the two contact points.
+</p>
+
+<p>
+  MuJoCo solves for generalized acceleration: joint accelerations for
+  articulated bodies, and linear/angular accelerations for free bodies.
+  Call that unknown \(x\). A contact constraint then uses its Jacobian
+  \(J\) to map those body/joint accelerations into constraint space:
+</p>
+
+<div class="math-block">
+\[
+a_\mathrm{constraint} \approx Jx
+\]
+</div>
+
+<p>
+  For one normal contact between bodies A and B, this is roughly the
+  relative acceleration of the two contact points along the contact
+  normal:
+</p>
+
+<div class="math-block">
+\[
+a_\mathrm{constraint}
+\approx
+n^\mathsf{T}(a_A - a_B)
+\]
+</div>
+
+<p>
+  In words: object space says "the top box accelerates upward, the
+  bottom box accelerates slightly downward, this joint accelerates by
+  so much." Constraint space says "the contact gap is accelerating open
+  or closed." The reference acceleration lives in this second space. It
+  is the contact's request:
+</p>
+
+<div class="math-block">
+\[
+Jx \approx a_\mathrm{ref}
+\]
+</div>
+
+<p>
+  The solver then chooses the actual generalized acceleration \(x\) that
+  best satisfies all those contact requests while also respecting mass,
+  inertia, joints, friction cones, actuators, gravity, and every other
+  constraint in the scene.
+</p>
+
+<p>
+  This is why the force does not appear first. In the primal view,
+  MuJoCo asks "what acceleration is closest to free motion while
+  satisfying the constraints?" The contact force is the Lagrange
+  multiplier that makes that acceleration happen. So the primal variable
+  is acceleration; the dual variable is force.
+</p>
+
+<p>
+  Notice this is implicit-in-velocity: the <em>v</em> term is evaluated
+  at the new (post-step) velocity, not the old one. That matters. It
+  means the constraint's damping term is co-solved with the dynamics;
+  it's not an explicit force you slap on top after the fact. This is
+  the secret behind MuJoCo's ability to run stable contact at large
+  timesteps with stiff parameters. PhysX's TGS solver achieves something
+  similar through substepping; Drake's SAP achieves it by formulating
+  the discrete dynamics convexly. We'll see both.
+</p>
+
+<h1>7. Step 3 — The convex optimization</h1>
+
+<p>
+  All the contact information is now pre-baked. The actual solve
+  happens in <code>engine_solver.c</code>, and it's the most
+  intellectually elegant part of MuJoCo. The problem is stated as
+  <strong>Gauss's principle of least constraint</strong>: among all
+  motions consistent with the constraints, the actual motion is the one
+  that minimizes the deviation from the unconstrained motion (weighted
+  by inertia).
+</p>
+
+<p>
+  There are three accelerations to keep separate:
+</p>
+
+<ul>
+  <li>
+    <strong>Free acceleration:</strong> what the system would do with no
+    contacts or other constraints.
+  </li>
+  <li>
+    <strong>Reference acceleration:</strong> what each contact wants in
+    constraint space, computed from \(a_\mathrm{ref} = -b\,v-k\,r\).
+  </li>
+  <li>
+    <strong>Actual acceleration:</strong> what MuJoCo chooses after
+    satisfying all contacts, joints, friction cones, masses, actuators,
+    and gravity together.
+  </li>
+</ul>
+
+<p>
+  The mental model is:
+</p>
+
+<ol>
+  <li>
+    <strong>Free motion:</strong> what would happen with no constraints?
+  </li>
+  <li>
+    <strong>Contact requests:</strong> each contact computes
+    \(a_\mathrm{ref}\).
+  </li>
+  <li>
+    <strong>Global solve:</strong> pick one generalized acceleration
+    \(x\) for the whole system.
+  </li>
+  <li>
+    <strong>Dual recovery:</strong> the contact forces are the Lagrange
+    multipliers required to enforce that chosen acceleration.
+  </li>
+</ol>
+
+<p>
+  So the optimization is not "compute one force per contact in
+  isolation." It is "choose one physically consistent acceleration for
+  the entire scene."
+</p>
+
+<p>
+  Concretely, the primal form is something like:
+</p>
+
+<div class="math-block">
+\[
+\begin{aligned}
+\operatorname*{minimize}_{x,\,y}\quad &
+\frac{1}{2}\left\lVert x - M^{-1}(\tau-c)\right\rVert_M^2
++ \text{regularizer}(y) \\[4pt]
+\text{subject to}\quad &
+J_E x_E - y_E = 0
+\quad\text{(equality)} \\
+& J_F x_F - y_F = 0
+\quad\text{(friction loss)} \\
+& J_C x_C - y_C \in \mathcal{K}^{*}
+\quad\text{(contact, dual cone)}
+\end{aligned}
+\]
+</div>
+
+<p>
+  where \(x\) is the unknown acceleration, \(M\) is the
+  inertia matrix, \(J\) is the constraint Jacobian, and \(\mathcal{K}^{*}\)
+  is the dual of the friction cone. We're saying "find the acceleration closest to the free-flight
+  one (weighted by mass), subject to not violating any contacts and
+  staying inside the friction cone on each contact." The Lagrangian dual
+  of this primal problem is a smaller optimization over the contact
+  forces themselves &mdash; that's the actual thing the code minimizes.
+</p>
+
+<p>
+  Three solver flavors live in <code>engine_solver.c</code>:
+</p>
+
+<ul>
+  <li><strong>Newton</strong> (the default): assembles the full Hessian,
+      factorizes with Cholesky, line-searches on the primal cost.
+      Handles both pyramidal and elliptic friction cones. Fastest for
+      moderate problem sizes.</li>
+  <li><strong>CG</strong> (conjugate gradient): nonlinear CG with line
+      search; no setup cost; useful for large or rapidly changing
+      constraint sets.</li>
+  <li><strong>PGS</strong> (Projected Gauss-Seidel): block-coordinate
+      descent in dual space &mdash; the classical algorithm in this
+      area, included for compatibility and as a cheap warm-start. For
+      elliptic cones, PGS solves a 5D quadratically constrained
+      subproblem at each contact.</li>
+</ul>
+
+<p>
+  The cone choice is independent of the solver:
+</p>
+
+<pre><code>ctx-&gt;is_elliptic = (m-&gt;opt.cone == mjCONE_ELLIPTIC);</code></pre>
+
+<p>
+  Pyramidal cones approximate the friction cone with edges (the
+  classical LCP form). The dual constraints become box constraints
+  &mdash; cheap to solve. Elliptic cones use the true second-order cone
+  &mdash; physically correct (pyramidal cones over-allow friction along
+  the diagonals), but the dual constraints become second-order, slower
+  per iteration. Elliptic is what you want for serious manipulation;
+  pyramidal is the default because it's faster and "good enough" most
+  of the time.
+</p>
+
+<h1>8. Constraint islands and parallelism</h1>
+
+<p>
+  One last optimization worth knowing about: not every contact affects
+  every other contact. If your scene has a robot in one corner picking
+  up a cup, and another robot across the room shaking hands with itself,
+  those two contact problems can be solved independently &mdash; they
+  share no bodies and no constraints. MuJoCo identifies these
+  <strong>constraint islands</strong> via a flood-fill on the constraint
+  Jacobian's sparsity pattern (<code>engine_island.c</code>) and farms
+  them out to separate threads. The island decomposition is a small
+  thing, but it's the difference between "real-time on a laptop" and
+  "real-time only on a server" in scenes with many independent agents.
+</p>
+
+<h1>9. Recap: a single timestep, narrated</h1>
+
+<p>
+  Pulling it all together, here's what one MuJoCo timestep does to
+  contact, with the names we now have:
+</p>
+
+<ol>
+  <li><strong>Broadphase</strong> sweeps geom AABBs along a
+      covariance-aligned axis, drops obvious non-collisions.</li>
+  <li><strong>Narrowphase</strong> dispatches each surviving pair to a
+      primitive routine or GJK/EPA, generating <code>mjContact</code>
+      records with geometric info but no force.</li>
+  <li><strong>Constraint setup</strong> turns
+      <code>solref</code>/<code>solimp</code>/friction into a reference
+      acceleration and an impedance for each contact &mdash; the "what
+      the spring-damper wants" part.</li>
+  <li><strong>Island decomposition</strong> splits the contact graph
+      into independent subproblems.</li>
+  <li><strong>Convex solve</strong>, per island, finds contact forces
+      that satisfy Gauss's principle subject to the friction-cone
+      constraint.</li>
+  <li>Forces map back to accelerations; integrate; repeat.</li>
+</ol>
+
+<p>
+  The thing to keep in mind, going into the next two parts, is that
+  <strong>everywhere in this pipeline, "contact" is a discrete geometric
+  event, and "force" is a Lagrange multiplier the solver computes</strong>.
+  Nothing in MuJoCo's contact code looks at a material's Young's modulus
+  and computes a pressure. Material-like behavior emerges from the
+  choice of <code>solref</code>/<code>solimp</code>, which are solver
+  hyperparameters that happen to look like a spring-damper.
+</p>
+
+<h1>10. Looking ahead: how PhysX is different</h1>
+
+<p>
+  PhysX, in Part 3, mostly asks the same kind of question as MuJoCo:
+  contact is still a constraint problem. The difference is the
+  engineering posture. MuJoCo rebuilds contacts every step, forms a
+  clean convex problem, and solves for a globally consistent
+  acceleration/force answer. PhysX leans harder into time coherence:
+  contacts usually do not change completely from one frame to the next,
+  so it remembers useful contact points, refreshes them, and iteratively
+  repairs motion with impulses.
+</p>
+
+<table class="compare">
+  <thead>
+    <tr>
+      <th>Question</th>
+      <th>MuJoCo</th>
+      <th>PhysX</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Contact lifetime</td>
+      <td>Contacts are rebuilt each step.</td>
+      <td>Contacts live in a persistent manifold and are refreshed.</td>
+    </tr>
+    <tr>
+      <td>Multi-contact</td>
+      <td>Special primitive routines plus <code>multiCCD</code> for extra points.</td>
+      <td>Cached manifold points; full regeneration via SAT + face clipping when needed.</td>
+    </tr>
+    <tr>
+      <td>Solver style</td>
+      <td>Convex optimization per island; Newton / CG / PGS.</td>
+      <td>Iterative impulse solver; PGS or TGS.</td>
+    </tr>
+    <tr>
+      <td>Stability trick</td>
+      <td>Implicit soft constraints and convex regularization.</td>
+      <td>Warm starting, persistent manifolds, and TGS substepping.</td>
+    </tr>
+    <tr>
+      <td>Design center</td>
+      <td>Robotics, control, contact-rich RL.</td>
+      <td>Games, Isaac Sim / Isaac Lab, large real-time scenes.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>
+  The short version: MuJoCo is elegant because it formulates contact as
+  a clean optimization problem. PhysX is powerful because it exploits
+  time coherence. It remembers the contacts it already found, uses them
+  to warm-start the next solve, and iterates local impulses until the
+  scene is good enough for real-time simulation. Same constraint family;
+  different engineering lineage.
+</p>
+
+<h1>11. A short reading list</h1>
+
+<ul>
+  <li>
+    <strong>MuJoCo's <code>doc/computation/index.rst</code>.</strong>
+    The most coherent technical reference for the constraint solver,
+    Gauss principle formulation, and friction cone choices. It quietly
+    assumes you've already read Todorov 2014.
+  </li>
+  <li>
+    <strong>Todorov, "Convex and analytically-invertible dynamics with
+    contacts and constraints" (ICRA 2014).</strong> The paper that
+    introduced the convex contact formulation MuJoCo implements. Worth
+    reading before you tune anything.
+  </li>
+  <li>
+    <strong><code>engine_solver.c</code> and
+    <code>engine_core_constraint.c</code> in the MuJoCo repo.</strong>
+    Read them with the doc page open in another tab. Surprisingly
+    approachable C, and the comments occasionally do the explaining for
+    you.
+  </li>
+</ul>
+
+<div class="next-up">
+  <span class="label">Next</span>
+  <h3 style="margin: 0.3rem 0 0.5rem;"><a href="/posts/sim-contact-3-physx/">Part 3 — PhysX</a></h3>
+  <p style="margin: 0; color: var(--text-muted); font-size: 0.92rem;">
+    Same family of question (contact-as-constraint), different lineage.
+    Persistent manifolds, iterative impulse-based solvers (PGS and TGS),
+    and what changes when you choose to be fast first and principled
+    second.
+  </p>
+</div>
+
+</div>
+</body>
+</html>

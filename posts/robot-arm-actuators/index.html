@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Robot Arm Underneath Matters More Than You Think - Younghyo Park</title>
+
+  <!-- Open Graph / Social previews -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="The Robot Arm Underneath Matters More Than You Think" />
+  <meta property="og:description" content="A gentle field guide to what's actually inside a robot arm joint, and why those choices silently dictate what's possible." />
+  <meta property="og:url" content="https://younghyopark.me/posts/robot-arm-actuators/" />
+  <meta property="og:image" content="https://raw.githubusercontent.com/younghyopark/younghyopark.github.io/new/images/new_younghyo4.jpeg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@younghyo_park" />
+  <meta name="twitter:title" content="The Robot Arm Underneath Matters More Than You Think" />
+  <meta name="twitter:description" content="A gentle field guide to what's actually inside a robot arm joint, and why those choices silently dictate what's possible." />
+  <meta name="twitter:image" content="https://raw.githubusercontent.com/younghyopark/younghyopark.github.io/new/images/new_younghyo4.jpeg" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Shared blog post styles + nav -->
+  <link rel="stylesheet" href="/shared/post-base.css">
+  <script src="/shared/post-nav.js"></script>
+</head>
+<body>
+<div class="post-body">
+
+<div class="post-header">
+  <h1 class="post-title">The Robot Arm Underneath Matters More Than You Think</h1>
+  <div class="post-meta">
+    <span>2026-04-29</span>
+    <span class="sep">&middot;</span>
+    <span>Younghyo Park</span>
+  </div>
+</div>
+
+<blockquote>
+A gentle field guide to what's actually inside a robot arm joint &mdash; and
+why those choices silently dictate what kinds of skills are even possible
+on top of it.
+</blockquote>
+
+<h1>1. Why this matters at all</h1>
+
+<p>
+  When you watch a flashy robot demo on Twitter, the part that gets all the
+  attention is usually the policy &mdash; the neural network, the VLA, the
+  diffusion-based thing-of-the-month. The arm itself is treated as a kind of
+  <em>given</em>: a generic stick with joints that the smart software drives
+  around.
+</p>
+
+<p>
+  But spend any time near real hardware and you start to notice that
+  <strong>which arm you picked quietly decides what algorithms even make
+  sense</strong>. Want to do contact-rich manipulation? Compliant insertion?
+  Imitation learning by physically pushing the arm around? Whether those are
+  easy, hard, or flat-out impossible depends almost entirely on what's bolted
+  into each joint &mdash; and most of that is invisible from the outside.
+</p>
+
+<p>
+  The goal of this post is to crack open one joint and look inside.
+  We'll first do a parts catalog &mdash; motor, driver, gearbox, brake, sensor
+  &mdash; in the order each piece becomes relevant. Then we'll see how
+  different combinations of those pieces give you fundamentally different
+  robots, even when they all have six joints arranged in a vaguely human-arm
+  shape. By the end you'll know why a roboticist looks slightly pained when
+  someone says "just use a Dynamixel arm to do force control."
+</p>
+
+<h1>2. A parts catalog</h1>
+
+<p>
+  Every robot joint is some combination of these five things, in roughly this
+  order from input to output:
+</p>
+
+<blockquote>
+<strong>motor</strong> &rarr; <strong>driver</strong> &rarr;
+<strong>gearbox</strong> &rarr; (optional <strong>brake</strong>) &rarr;
+<strong>output shaft</strong>, with <strong>sensors</strong> sprinkled along the way.
+</blockquote>
+
+<p>
+  Each of these has a couple of choices, and each choice has consequences.
+</p>
+
+<h2>2.1. The motor</h2>
+
+<p>
+  The motor is the bit that actually turns electricity into rotation.
+  For our purposes there's only one distinction worth caring about:
+  <strong>brushed</strong> vs <strong>brushless</strong>.
+</p>
+
+<ul>
+  <li>
+    <strong>Brushed DC motors</strong> are the old-school kind. A pair of
+    carbon "brushes" rubs against a rotating commutator inside the motor and
+    physically switches which coils are energized. They're cheap and dead
+    simple to drive &mdash; just apply a voltage. Downside: the brushes wear
+    out, they spark, and efficiency is lower. You'll see these in cheap hobby
+    servos.
+  </li>
+  <li>
+    <strong>Brushless DC motors (BLDC)</strong> &mdash; sometimes called PMSMs
+    in textbooks &mdash; have no brushes. The coils are in the stationary
+    outer part (the stator), the magnets are on the rotor, and an
+    <em>electronic</em> circuit decides which coil to energize at which moment
+    based on where the rotor currently is. They're more efficient, last
+    essentially forever, and can deliver very high torque density. Almost
+    every serious modern robot joint uses BLDCs.
+  </li>
+</ul>
+
+<p>
+  There's a second axis that matters once you start designing compact joint
+  modules: <strong>framed</strong> vs <strong>frameless</strong>.
+</p>
+
+<ul>
+  <li>
+    A <strong>framed motor</strong> is what you'd buy off Amazon: it comes in
+    its own housing, with its own shaft and its own bearings, ready to bolt
+    down. You connect its shaft to whatever you want to drive.
+  </li>
+  <li>
+    A <strong>frameless motor</strong> is sold as just the two raw parts
+    &mdash; the rotor (a ring of magnets) and the stator (a ring of coils).
+    No housing, no shaft, no bearings. You're expected to integrate it into
+    <em>your</em> joint structure: the joint's own housing becomes the motor
+    housing, the joint's own bearings support the rotor. This is annoying
+    mechanically, but it lets you build joints that are dramatically more
+    compact and lighter, because you've stopped paying twice for housing and
+    bearings. Almost every modern humanoid / quadruped joint module uses a
+    frameless BLDC for this reason &mdash; the "pancake" motors you see in
+    Boston Dynamics, Unitree, Tesla Optimus joints are all frameless.
+  </li>
+</ul>
+
+<h2>2.2. The driver (and what "integrated drive" means)</h2>
+
+<p>
+  A brushed motor doesn't really need much &mdash; you can drive it with a
+  battery and a switch. A BLDC, on the other hand, can't run without
+  electronics: somebody has to know the rotor angle in real time and switch
+  the three coils in the right sequence. That somebody is the
+  <strong>motor driver</strong>, sometimes called the ESC, the inverter, or
+  the "drive."
+</p>
+
+<p>
+  A modern driver does <em>field-oriented control</em> (FOC): it measures
+  the current going into each coil, knows the rotor's angle from an encoder,
+  and continuously commands the right phase currents to produce a smooth,
+  efficient torque. Good FOC drivers run their control loops at tens of
+  kilohertz.
+</p>
+
+<p>
+  Now, you can either buy your motor and your driver separately and wire
+  them up, or you can buy them as a single unit. When the driver electronics
+  are built into the same housing as the motor (and often the encoder and the
+  gearbox too), people call it an
+  <strong>integrated drive</strong>. The whole joint becomes a "smart
+  actuator" you talk to over a digital bus &mdash; you say "go to position X"
+  or "apply current Y," it does the rest. ROBOTIS's Dynamixels and most
+  humanoid joint modules are integrated-drive units. The opposite would be
+  something like a Maxon motor connected to a separate cabinet of motor
+  controllers, which is what you see on classical industrial arms.
+</p>
+
+<h2>2.3. The gearbox</h2>
+
+<p>
+  A motor on its own spins fast and produces relatively little torque. A
+  robot joint wants the opposite &mdash; lots of torque, modest speed. The
+  fix is a <strong>gearbox</strong> (or "reducer") that trades speed for
+  torque. The <strong>gear ratio</strong> tells you how much trading is
+  happening: a 100:1 gearbox means the motor spins 100 times for every one
+  rotation of the output, and (ignoring losses) the output torque is 100 times
+  the motor torque.
+</p>
+
+<p>
+  There are three flavors of gearbox you'll meet most often:
+</p>
+
+<ul>
+  <li>
+    <strong>Planetary gears.</strong> The classic: a central "sun" gear, a
+    ring of "planet" gears around it, all inside an outer ring. Cheap, robust,
+    handles high speeds well, easy to stack multiple stages for big ratios.
+    Downsides: noticeable backlash, modest precision, modest shock tolerance.
+    Most affordable smart actuators, including the Dynamixel X-series, use
+    planetary gearboxes.
+  </li>
+  <li>
+    <strong>Harmonic drives</strong> (a.k.a. strain wave gears). A clever
+    design that uses an <em>elastically deforming</em> flexible spline to mesh
+    teeth in a way that gives near-zero backlash and very high reduction
+    ratios (50:1 to 320:1) in a thin, hollow package. They're the workhorse of
+    high-end industrial arms and cobots. Downsides: expensive, mildly
+    compliant (the flex spline is by definition springy), and they exhibit
+    hysteresis &mdash; the relationship between input and output isn't a
+    perfectly clean line, especially when reversing direction.
+  </li>
+  <li>
+    <strong>Cycloidal reducers.</strong> An eccentric input drives a lobed
+    "cycloidal" disc against a ring of pins; the disc's wobble is converted
+    into a slow, torque-multiplied output. The crucial property is that load
+    is shared across many contact points at once, which makes cycloidal
+    reducers <strong>extremely shock-tolerant</strong>: drop the robot, slam
+    the joint into a table, and the reducer doesn't shatter the way a
+    planetary or a thin harmonic spline might. They have low (but not zero)
+    backlash and high efficiency. Modern humanoid and high-end research arms
+    use cycloidal reducers heavily &mdash; including the new Dynamixel
+    Y-series.
+  </li>
+</ul>
+
+<p>
+  And one piece of vocabulary that comes up constantly: <strong>backlash</strong>
+  is the small amount of free play you feel when you reverse direction inside
+  any toothed gear. The teeth aren't perfectly mating &mdash; there's a tiny
+  gap, and when you flip direction, the input has to traverse that gap before
+  it picks the output back up. Cheap RC servo? Lots of backlash. Backlash
+  matters because <strong>it puts a floor on positioning precision</strong>
+  and makes torque control miserable near zero crossings, where the gear
+  teeth aren't even touching.
+</p>
+
+<h2>2.4. Backdriveability (the consequence of motor + gearbox)</h2>
+
+<p>
+  Now we can name the most important emergent property of any actuator:
+  <strong>backdriveability</strong>.
+</p>
+
+<p>
+  Backdriveability is the property of being able to grab the output shaft
+  (the joint, the link, whatever's after the gearbox) and turn it by hand
+  with the motor unpowered. <strong>Backdriveability is a spectrum, not a
+  binary.</strong> A direct-drive motor &mdash; no gearbox at all &mdash;
+  sits at the easy end. A worm-gear winch sits at the hard end: it's
+  <em>self-locking</em> by design, so turning the input moves the output,
+  but pushing the output does nothing. Most robot joints sit somewhere in
+  between.
+</p>
+
+<p>
+  Here's the part that surprised me when I first felt it. <strong>Even a
+  350:1 planetary gearbox is movable by hand, motors off.</strong> Grab a
+  Dynamixel-based research arm, kill the power, push the link &mdash; the
+  arm moves. It's friction-y, it has detent-y position-dependent
+  resistance from gearbox-reflected motor cogging, and you'd never call it
+  "transparent." But it's not a wall. A human pushes through a few tenths
+  of a Nm of static friction without thinking. This is a totally generic
+  property of planetary gearboxes &mdash; they're roughly 70&ndash;90%
+  efficient per stage and aren't self-locking, so even a 3- or 4-stage
+  reduction at hundreds-to-one ends up movable.
+</p>
+
+<p>
+  What gear ratio actually does is push you toward the hard end of the
+  spectrum without taking you all the way there. Three things resist
+  backdriving, in different ways:
+</p>
+
+<ul>
+  <li><strong>Reflected motor inertia</strong>, which scales with the gear
+      ratio <em>squared</em>. A 100:1 ratio makes the motor's rotor feel
+      10,000&times; heavier at the output. This dominates when you try to
+      <em>accelerate</em> the joint quickly &mdash; not at the slow speeds
+      humans push at.</li>
+  <li><strong>Reflected motor cogging</strong>, which scales linearly with
+      ratio. A small motor's cogging, multiplied through the gearbox,
+      gives you the detent-y feel.</li>
+  <li><strong>Gearbox friction</strong>, which depends heavily on
+      <em>type</em>. Planetary: roughly 70&ndash;90% efficient per stage,
+      not self-locking. Harmonic drive: stiffer, with hysteresis. Worm
+      gear: deliberately self-locking, the only architecture that's
+      actually a wall.
+  </li>
+</ul>
+
+<p>
+  So when roboticists call a joint "non-backdriveable," they almost always
+  mean <em>"not transparent enough to use as a clean force-sense
+  channel"</em> &mdash; not "literally cannot be moved." The latter is
+  rare. The former is what separates Type A arms from Type C arms in
+  practice, and it's the thing the rest of this post is about.
+</p>
+
+<p>
+  This is also why the high-ratio architecture is the cheap default.
+  High-gear-ratio joints can hold heavy payloads with tiny motors and
+  barely any current, because the gearbox is doing the holding for them.
+  That's why your $20 hobby servo can hold a surprisingly large arm in the
+  air without overheating. You're trading <em>transparency</em> for
+  <em>cheap, efficient torque</em>.
+</p>
+
+<h2>2.5. The brake</h2>
+
+<p>
+  Here's a subtle thing that follows directly from the previous section.
+  Even though a high-ratio joint is movable when you push it, the gravity
+  load of the arm itself is much smaller than the force a human applies.
+  So a 200:1 planetary gearbox has enough static friction to hold the arm's
+  weight against gravity when power is cut &mdash; it might creep slowly,
+  but it won't crash. The gearbox effectively acts as a passive brake.
+</p>
+
+<p>
+  But if your joint has a <em>low</em> gear ratio &mdash; the QDD case
+  &mdash; the friction is small enough that gravity alone overcomes it.
+  Cut the power and <strong>the arm collapses under its own weight</strong>.
+  That's bad. You also can't safely "park" a QDD robot without keeping
+  every motor energized and burning current.
+</p>
+
+<p>
+  The fix is an <strong>electric brake</strong>: a small electromagnetic disc
+  that, by default (when unpowered), clamps onto the rotor and holds it still.
+  Energize the brake, and it releases. This is "fail-safe" in the literal
+  sense &mdash; if the robot loses power, the brakes engage automatically and
+  the arm freezes in place rather than crashing onto the floor. You'll see
+  brakes built into essentially every high-end industrial arm and every
+  modern humanoid joint with low gear ratios.
+</p>
+
+<h2>2.6. Sensors: encoders and torque sensors</h2>
+
+<p>
+  Last piece. Two sensors matter:
+</p>
+
+<ul>
+  <li>
+    <strong>Encoder</strong>. Measures angular position. Every joint has at
+    least one. The interesting flavors are <em>incremental</em> (counts
+    pulses, has to be re-zeroed on each boot) vs <em>absolute</em> (reads its
+    position immediately at power-on), and <em>single-turn</em> vs
+    <em>multi-turn</em> (does it remember how many full revolutions it's
+    made). Modern smart actuators almost always use multi-turn absolute
+    encoders, sometimes with a tiny backup battery so they remember their
+    position even through power loss.
+  </li>
+  <li>
+    <strong>Output torque sensor.</strong> Measures the actual torque the
+    joint is exerting, <em>after</em> the gearbox. Usually a strain-gauge
+    ring sandwiched between the gearbox and the link. This is the expensive
+    sensor: it's a precision part, it has to be calibrated, it's electrically
+    delicate, and it's the single most important component that distinguishes
+    "torque-controllable" arms from the rest. Most arms don't have one.
+  </li>
+</ul>
+
+<p>
+  You can also try to <em>infer</em> torque without an output sensor by
+  measuring motor current (current is roughly proportional to motor-side
+  torque), and that estimate is good or bad depending almost entirely on what
+  gearbox sits between the motor and the output. Which leads us to&hellip;
+</p>
+
+<h1>3. Three archetypes of arm</h1>
+
+<p>
+  The whole parts catalog above collapses, for our purposes, into two
+  questions:
+</p>
+
+<ol>
+  <li>How much gear reduction is between the motor and the output?</li>
+  <li>Is there a torque sensor on the <em>output</em> side of that reduction?</li>
+</ol>
+
+<p>
+  Different combinations give you fundamentally different robots.
+</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Gear ratio</th>
+      <th>Output torque sensor?</th>
+      <th>What you can control</th>
+      <th>Examples</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>A</td>
+      <td>High (50:1+)</td>
+      <td>No</td>
+      <td>Position only</td>
+      <td>UR5/UR5e, most Dynamixel-based arms, hobby servo arms</td>
+    </tr>
+    <tr>
+      <td>B</td>
+      <td>High (50:1+)</td>
+      <td>Yes</td>
+      <td>Position <em>and</em> torque</td>
+      <td>Franka Research 3 (Panda), KUKA iiwa</td>
+    </tr>
+    <tr>
+      <td>C</td>
+      <td>Low (~3:1 to 10:1, "QDD")</td>
+      <td>No (but torque is estimable from current)</td>
+      <td>Position and torque</td>
+      <td>MIT Mini-Cheetah-style actuators, Unitree H1/G1 joints, many recent humanoid arms</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>3.1. Type A &mdash; high gear ratio, no torque sensor: "position-controllable only"</h2>
+
+<p>
+  This is by far the most common arm in the wild. A small high-RPM motor is
+  paired with a planetary or harmonic gearbox to get the joint torque up to
+  something useful. There is no sensor measuring the actual torque after the
+  gearbox &mdash; you just get a position encoder and a current reading on the
+  motor.
+</p>
+
+<p>
+  The <strong>UR5</strong> is the classic example on the industrial side
+  &mdash; no torque sensor in any of its joints. You command joint positions,
+  an internal PID drives the motor to track them, and that's that.
+  Researchers have tried to do "sensorless impedance control" by inferring
+  torque from motor current and a dynamic model, but the high gear reduction
+  smears out the relationship between motor current and the actual force at
+  the end-effector. Friction and stiction inside the gearbox eat the signal.
+</p>
+
+<p>What you give up:</p>
+<ul>
+  <li><strong>True torque control.</strong> You can't ask the joint for 1 Nm and trust it.</li>
+  <li><strong>Compliance.</strong> If the arm hits something, it doesn't gracefully give way; it grinds against the obstacle, with the position controller fighting harder and harder until something gives.</li>
+  <li><strong>Transparency.</strong> You <em>can</em> grab a Type A arm and push it &mdash; a Dynamixel-based arm is perfectly movable by hand, even with motors off. What you can't do is feel like the joint isn't there. There's a constant friction floor and detent-y position-dependent resistance from gearbox-reflected motor cogging. The friction is also what holds the arm against gravity for free, which is the property ALOHA-style leader arms rely on.</li>
+</ul>
+
+<p>
+  What you keep: cheap, robust, very precise position tracking, and high
+  payload per dollar. Pick-and-place where contact is incidental? Fine.
+  Anything contact-rich? You're fighting the hardware before you start.
+</p>
+
+<h2>3.2. Type B &mdash; high gear ratio with an output torque sensor: "torque-controllable, the expensive way"</h2>
+
+<p>
+  Take the same architecture and bolt a real output torque sensor onto each
+  joint. Now you can <em>measure</em> the torque the joint is actually
+  applying, in spite of the gearbox's friction and compliance, and close a
+  control loop around that measurement.
+</p>
+
+<p>
+  The <strong>Franka Research 3 (formerly Panda)</strong> is the canonical
+  example: link-side torque sensors on all 7 axes, paired with harmonic
+  drives. The <strong>KUKA iiwa</strong> family does the same. With this
+  you get:
+</p>
+
+<ul>
+  <li><strong>Honest torque control.</strong> Command 1 Nm; get 1 Nm.</li>
+  <li><strong>Impedance / admittance control.</strong> "Behave like a virtual spring" actually works.</li>
+  <li><strong>Kinesthetic teaching.</strong> The arm cancels its own gravity and friction using torque measurements, so you can drag it around with your hand.</li>
+  <li><strong>Excellent contact sensitivity</strong> &mdash; sometimes better than a wrist-mounted force/torque sensor, since you're measuring at every joint.</li>
+</ul>
+
+<p>
+  The price is, well, the price. You're paying for seven precision torque
+  sensors and the calibration that makes them trustworthy. This is why a
+  Franka costs what it costs.
+</p>
+
+<h2>3.3. Type C &mdash; low gear ratio (QDD): "torque-controllable, the proprioceptive way"</h2>
+
+<p>
+  The third archetype came out of the legged-robot world &mdash; specifically
+  the MIT Cheetah lineage &mdash; and is now showing up everywhere on
+  humanoids and modern research arms. The trick is to <em>refuse</em> the
+  high gear ratio. Instead of a tiny motor with a huge gearbox, you use a
+  much larger, high-torque-density BLDC (typically frameless or repurposed
+  from drone hardware) and pair it with a tiny reduction, typically
+  <strong>3:1 to 10:1</strong>. This is a
+  <strong>quasi-direct-drive (QDD)</strong> actuator.
+</p>
+
+<p>
+  Now look back at the backdriveability section. Reflected inertia and
+  reflected friction scale with the <em>square</em> of the gear ratio, so
+  going from 100:1 to 6:1 reduces them by a factor of nearly 280. The output
+  shaft is suddenly very easy to push. The motor itself has to be bigger to
+  compensate, but the joint feels alive in a way that a high-ratio joint
+  never does.
+</p>
+
+<p>
+  The other consequence is more subtle: with so little gearbox in the way,
+  the relationship between <strong>motor current</strong> and <strong>output
+  torque</strong> becomes clean enough to actually use. Friction is small and
+  well-behaved. So you can read motor current (which the FOC driver is doing
+  anyway) and treat it as a reasonably honest <em>torque sensor</em>, with no
+  extra hardware. The QDD literature calls this "proprioceptive torque
+  sensing."
+</p>
+
+<p>So a QDD arm gives you:</p>
+<ul>
+  <li><strong>Torque control without a torque sensor.</strong> Cheap, lightweight, no calibration drift on a separate part.</li>
+  <li><strong>True backdriveability.</strong> You can grab and move the joint trivially.</li>
+  <li><strong>High-bandwidth force control,</strong> because there's no harmonic-drive compliance to filter out the high-frequency content.</li>
+  <li><strong>Robustness to impacts.</strong> A direct-ish drive doesn't shatter teeth on hard contact.</li>
+</ul>
+
+<p>
+  Tradeoffs: lower peak holding torque per unit mass (no gearbox mechanical
+  advantage), so the motor itself has to be bigger and burns more current to
+  hold static loads. Worse static torque and positioning accuracy &mdash; you
+  feel every wiggle of motor cogging at the output, since there's no
+  high-ratio gearbox to average it away. And because the joint <em>is</em>
+  backdriveable, you generally need to add an electric brake to keep the arm
+  safely parked when power is off. That's tolerable for a humanoid joint but
+  expensive for a slow precise pick-and-place arm that spends most of its
+  life holding pose.
+</p>
+
+<h1>4. Case studies</h1>
+
+<p>
+  With the vocabulary in place, here's a tour of actuators and arms you'll
+  actually meet in the wild &mdash; spanning four orders of magnitude in
+  price &mdash; placed on the A/B/C map. The point isn't to be exhaustive.
+  It's to show how cleanly this single split carves up an otherwise
+  confusing market.
+</p>
+
+<h2>4.1. Type A in the wild &mdash; high ratio, position-only</h2>
+
+<h3>Universal Robots UR5 / UR5e / UR10</h3>
+<p>
+  Brushless motors with high-ratio harmonic drives in each joint, no joint
+  torque sensors, position-tracking PID per axis. Probably the most-used
+  collaborative arm in the world. The "force mode" in URScript and
+  research papers on "sensorless impedance control" are all heroic attempts
+  to extract torque information from motor current and a dynamic model;
+  the harmonic-drive friction smears the signal, so the result is usable
+  but never crisp. Don't try to do contact-rich manipulation on a UR
+  without an external wrist F/T sensor.
+</p>
+
+<h3>Dynamixel X-series (ROBOTIS)</h3>
+<p>
+  The cylindrical "smart actuator" you see in essentially every budget
+  research arm. Each module is a small cored or coreless DC motor (often a
+  Maxon coreless on the higher-end XW/XD/XH lines, a proprietary motor on
+  XL/XM/XC), a multi-stage planetary gearbox with <strong>~150:1 to
+  350:1</strong> reduction, an integrated FOC drive, and a position
+  encoder. No output torque sensor, no brake (the high ratio makes the
+  joint non-backdriveable, so it doesn't need one). The "current control
+  mode" controls motor-side torque, but the gearbox smears that into a
+  loose relationship with output torque.
+</p>
+
+<h3>Arms built on smart servos: ALOHA, WidowX, OpenManipulator-X</h3>
+<p>
+  Stacks of Dynamixel-X (or the cheaper Feetech STS3215 clones in
+  LeRobot's SO-100 / SO-101 designs) chained on a serial bus. The whole
+  arm inherits the actuator's archetype directly &mdash; if every joint
+  is Type A, the arm is Type A.
+</p>
+<p>
+  ALOHA is the canonical example of building a useful teleoperation
+  system on Type A hardware. Both leader and follower arms are stock
+  WidowX 250s, every joint a Dynamixel XM430-W350 with a 350:1 planetary
+  &mdash; pushable by hand for the reasons we walked through in the
+  parts catalog. The leader's motors are simply off; the operator
+  puppeteers it directly, and the gearbox friction is enough to hold
+  the arm's own weight at most poses, so it doesn't flop around between
+  motions. The follower runs position control on its own Dynamixels and
+  tracks the leader's joint angles. Total cost: a pair of $5k arms.
+</p>
+<p>
+  What ALOHA can't do is feel a contact event from the follower through
+  the leader. There's no torque sensor and no clean current-to-torque
+  mapping back through the 350:1 reduction, so any contact information
+  has to come from cameras or the operator's intuition. That's not a
+  problem ALOHA tries to solve &mdash; it's a teleop pipeline for
+  position-replay imitation learning, and on that axis it works great
+  &mdash; but it's the reason you wouldn't reach for an ALOHA-style stack
+  to do compliant insertion or polishing.
+</p>
+
+<h3>The very-cheap end: Feetech STS3215, hobby RC servos</h3>
+<p>
+  Even higher gear ratios, plastic gears in some, brushed motors with no
+  current sensing in others. Position-only, with worse precision and
+  bandwidth than Dynamixels. The reason these have suddenly become
+  research-relevant is LeRobot &mdash; at $5&ndash;10 per joint you can
+  afford to break things while iterating, which lowers the barrier to
+  trying VLAs in the first place.
+</p>
+
+<h2>4.2. Type B in the wild &mdash; high ratio, with output torque sensors</h2>
+
+<h3>Franka Research 3 (formerly Panda)</h3>
+<p>
+  7 DOF, harmonic drives on every joint, link-side strain-gauge torque
+  sensors on every joint. The de facto standard for academic manipulation
+  research because of its torque-control fidelity. "Guiding mode" cancels
+  gravity and friction using the torque measurements so you can drag the
+  arm kinesthetically with your hand &mdash; this is the canonical
+  demonstration of what a Type B arm gets you that Type A cannot.
+</p>
+
+<h3>KUKA LBR iiwa 7 / 14</h3>
+<p>
+  The industrial cousin of the Franka, ~$200k+. Same architectural
+  decision: harmonic drives plus per-joint torque sensors. Heavier, stiffer,
+  and certified for industrial human-robot collaboration scenarios in a way
+  the Franka isn't.
+</p>
+
+<h3>Series-elastic alternatives: ANYdrive, HEBI X5/X8</h3>
+<p>
+  A different way to reach Type B: instead of a strain-gauge ring, put a
+  precision torsion spring between the gearbox and the link, and measure
+  the spring's deflection with two encoders. Spring deflection times known
+  stiffness equals torque. This is a <strong>series-elastic actuator
+  (SEA)</strong>.
+</p>
+<p>
+  ANYbotics's <strong>ANYdrive</strong> (used in the ANYmal quadruped) is a
+  brushless motor + harmonic drive + series spring; HEBI Robotics's
+  <strong>X5 / X8</strong> modules (CMU spinout) are a more affordable,
+  modular take on the same idea. Both give you closed-loop torque control
+  with the bonus that the spring physically protects the gearbox from
+  impacts. Tradeoff: the spring limits torque bandwidth at high amplitudes,
+  which is part of why Katz's QDD thesis explicitly avoided SEAs.
+</p>
+
+<h2>4.3. Type C in the wild &mdash; quasi-direct drive</h2>
+
+<h3>MIT Mini Cheetah actuator (Ben Katz, 2018)</h3>
+<p>
+  Almost every modern QDD module &mdash; the cloned Mini-Cheetah actuators
+  on AliExpress, the open-source designs powering hobbyist quadrupeds and
+  research humanoid arms &mdash; descends from one document: Ben Katz's
+  MIT master's thesis,
+  <em>"A Low Cost Modular Actuator for Dynamic Robots"</em> (advised by
+  Sangbae Kim). The concrete numbers make the QDD philosophy a lot less
+  abstract:
+</p>
+<ul>
+  <li><strong>Motor:</strong> the rotor and stator from an off-the-shelf
+      $60&ndash;90 brushless drone motor (a T-Motor U8 equivalent), with
+      the stock housing thrown away &mdash; effectively turning a hobby
+      BLDC into a frameless motor. 81 mm air-gap diameter, 21 pole pairs,
+      optimized for torque density rather than RPM.</li>
+  <li><strong>Gearbox:</strong> a single-stage <strong>6:1 planetary
+      reduction</strong>, made entirely from stock Misumi and KHK gears.
+      About 0.005 rad (0.28&deg;) of backlash, which Katz says is fine for
+      legged locomotion.</li>
+  <li><strong>Torque sensing:</strong> none. Torque is controlled by FOC
+      current control on the motor. ~10% static torque error from gearbox
+      friction.</li>
+  <li><strong>Whole-actuator specs:</strong> 480 g, 96 mm OD &times; 40 mm
+      thick, 17 Nm peak torque, 6.9 Nm continuous, current-control
+      bandwidth ~4.5 kHz at low torque, total BOM around <strong>$300</strong>.</li>
+</ul>
+<p>
+  The thesis introduction has the cleanest one-paragraph statement of
+  the QDD philosophy you'll find anywhere:
+</p>
+<blockquote>
+"We take the same approach to actuation as the MIT Cheetah robots: using
+high torque density motors and low-ratio, backdriveable transmission to
+allow high bandwidth torque control. &hellip; Each actuator requires only
+one position sensor (at the rotor of the electric motor), no additional
+compliant elements built into the actuator, and relatively simple
+transmissions. <em>Torque control is achieved simply by current control of
+the electric motor.</em>"
+</blockquote>
+<p>
+  Note what Katz explicitly says is <em>not</em> a priority: "positioning
+  accuracy, backlash, and static torque accuracy." For a quadruped doing
+  6 m/s running and backflips, sub-degree positioning at the foot doesn't
+  matter, because the rest of the state estimation has bigger errors anyway.
+  This is the part most people miss when assuming QDD is universally better.
+</p>
+
+<h3>T-Motor + ODrive (the DIY route)</h3>
+<p>
+  A frameless or pancake BLDC from T-Motor (U8, U10, U12) paired with an
+  external FOC controller like ODrive, moteus, or VESC. No integrated drive,
+  no integrated brake, no integrated anything &mdash; you build the joint
+  yourself. Common in research labs that want a custom QDD module without
+  designing one from scratch, and the natural starting point if you read
+  the Katz thesis and want to try it.
+</p>
+
+<h3>MyActuator RMD-X, CubeMars AK series, SteadyWin GIM</h3>
+<p>
+  Sealed Chinese-manufactured QDD-style modules: frameless BLDC + planetary
+  or cycloidal reducer + integrated FOC drive + CAN bus, sold as a single
+  unit. Ratios typically 6:1 to 36:1. These have become the default choice
+  for budget humanoid and quadruped builds in 2024+ because they give you
+  90% of a Mini Cheetah module without the machining work.
+</p>
+
+<h3>Unitree quadruped and humanoid joints</h3>
+<p>
+  Built around frameless BLDCs with planetary or cycloidal reducers,
+  integrated FOC, and a daisy-chained CAN bus. Used internally on Unitree's
+  quadrupeds (Go1/2, B1/2) and humanoids (H1, G1). The H1 joint modules in
+  particular are often cited as one of the more torque-dense COTS QDD
+  options &mdash; part of why so many academic humanoid efforts in the last
+  two years have just bought a Unitree platform off the shelf.
+</p>
+
+<h2>4.4. The in-between: things that don't quite fit A or C</h2>
+
+<h3>Dynamixel Y-series (ROBOTIS)</h3>
+<p>
+  ROBOTIS's newer, premium line, designed explicitly for physical-AI and
+  humanoid use cases. Looking inside one is a tour of every term from the
+  parts catalog: a <strong>frameless BLDC</strong>, an <strong>integrated
+  drive</strong> ("DYD"), a <strong>cycloidal reducer</strong>, a
+  <strong>multi-turn absolute encoder</strong> with optional backup
+  battery, and an <strong>optional electric brake</strong>. Two reducer
+  ratios, <strong>51:1 and 99:1</strong> &mdash; meaningfully lower than
+  the X-series's 150&ndash;350:1, but still much higher than QDD's 3&ndash;10:1.
+  Modular SKUs (M001, B001, R051, R099, A051, A099) let you mix and match
+  motor, brake, and reducer.
+</p>
+<p>
+  Crucially, the Y-series still has <strong>no output torque sensor</strong>.
+  On paper it's still Type A. In practice it's a Type A trying as hard as
+  it can to feel like Type C without giving up the holding-torque advantage
+  of a moderate gearbox. It powers ROBOTIS's OMY manipulator and AI Worker
+  platform, both aimed at imitation- and reinforcement-learning workflows.
+</p>
+
+<h3>Aside: this in-between zone is getting crowded</h3>
+<p>
+  As humanoids and physical-AI workflows become a meaningful fraction of
+  actuator demand, more vendors are quietly drifting toward the same recipe
+  as the Y-series: frameless BLDC, cycloidal reducer, ratio in the
+  20&ndash;100:1 range, optional brake, no output torque sensor. It's
+  cheaper than a true Type B (no precision torque sensor on every joint)
+  while keeping more holding torque than a true QDD. Whether this
+  actually feels like Type C in practice depends almost entirely on how
+  cleanly the gearbox transmits motor current &mdash; and that's where
+  the cycloidal reducer matters.
+</p>
+
+<h1>5. So what?</h1>
+
+<p>
+  Here's the part I find genuinely worth dwelling on.
+</p>
+
+<p>
+  When people argue about which control scheme, which policy class, which
+  data-collection method is "the right one" for manipulation, the argument
+  is almost always made as if hardware is fungible. It isn't. Some examples
+  of how the actuator quietly decides things upstream:
+</p>
+
+<ul>
+  <li>
+    <strong>Imitation learning by puppeteering.</strong> All three types
+    can be moved by hand, but only Type B and Type C feel transparent
+    enough to grab and walk directly through a trajectory on the actual
+    task arm. Type A arms work great in leader-follower configurations
+    (ALOHA-style, leader motors off, follower tracking position) &mdash;
+    but you don't get force feedback from the follower's contact events,
+    so the demonstration distribution is fundamentally different.
+  </li>
+  <li>
+    <strong>Reinforcement learning on real hardware.</strong> Type A arms eat
+    contact like a brick wall &mdash; collisions are expensive in both senses.
+    Type C arms forgive a lot, which is why so much manipulation RL on real
+    hardware happens on QDD-actuated platforms.
+  </li>
+  <li>
+    <strong>Sim-to-real.</strong> Modeling a high-ratio gearbox with
+    nonlinear friction and stiction faithfully in simulation is its own
+    research career. Modeling a low-ratio direct-ish drive is comparatively
+    easy. Your sim-to-real gap depends on which arm you bought.
+  </li>
+  <li>
+    <strong>Safety around humans.</strong> A Type A arm running into your
+    hand will keep pushing until something trips a fault. A Type B or Type C
+    arm can detect contact in milliseconds and stop, or even comply.
+  </li>
+  <li>
+    <strong>What "skills" are even feasible.</strong> Polishing, wiping,
+    insertion, assembly &mdash; anything where you regulate <em>force</em>
+    against a surface &mdash; is much easier on B or C than on A.
+  </li>
+</ul>
+
+<p>
+  The takeaway isn't that any of these archetypes is "best." They aren't.
+  Each is optimal in its own region of the cost / capability space.
+  The takeaway is that <strong>the actuator architecture is upstream of
+  nearly every algorithmic decision</strong> you'll make on top of the arm,
+  and pretending otherwise leads to a lot of wasted effort.
+</p>
+
+<p>
+  If you're new to robotics and trying to figure out why a paper "doesn't
+  reproduce on your arm," check this layer first. Often it's not the policy.
+  It's that the arm in the paper had a torque sensor, and yours doesn't,
+  and no amount of fine-tuning is going to close that particular gap.
+</p>
+
+</div>
+</body>
+</html>

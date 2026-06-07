@@ -1,0 +1,124 @@
+<mujoco model="primitive_plane_contact_count">
+  <compiler angle="degree" coordinate="local"/>
+
+  <option timestep="0.001" gravity="0 0 -9.81" integrator="implicitfast">
+    <flag contact="enable"/>
+  </option>
+
+  <visual>
+    <global azimuth="135" elevation="-25"/>
+  </visual>
+
+  <asset>
+    <texture
+      name="grid_texture"
+      type="2d"
+      builtin="checker"
+      rgb1="0.16 0.16 0.16"
+      rgb2="0.82 0.82 0.82"
+      width="512"
+      height="512"/>
+
+    <material
+      name="grid_material"
+      texture="grid_texture"
+      texrepeat="8 8"
+      reflectance="0.1"/>
+
+    <material name="box_mat" rgba="0.20 0.55 0.90 1"/>
+    <material name="sphere_mat" rgba="0.90 0.38 0.22 1"/>
+    <material name="cylinder_mat" rgba="0.46 0.72 0.36 1"/>
+    <material name="side_cylinder_mat" rgba="0.72 0.46 0.86 1"/>
+    <material name="capsule_mat" rgba="0.92 0.70 0.24 1"/>
+    <material name="side_capsule_mat" rgba="0.28 0.75 0.70 1"/>
+  </asset>
+
+  <worldbody>
+    <light name="key_light" pos="0 -4 5" dir="0 1 -1" diffuse="0.9 0.9 0.9"/>
+    <camera name="overview" pos="0 -5.0 2.4" xyaxes="1 0 0 0 0.42 0.91"/>
+
+    <geom
+      name="floor"
+      type="plane"
+      pos="0 0 0"
+      size="3.5 2.0 0.1"
+      material="grid_material"
+      friction="1.0 0.005 0.0001"/>
+
+    <!-- Box half-extents are 0.25 x 0.25 x 0.20. Center z=0.198 gives 2 mm penetration. -->
+    <body name="box_body" pos="-2.5 0 0.198">
+      <freejoint/>
+      <geom
+        name="box_geom"
+        type="box"
+        size="0.25 0.25 0.20"
+        mass="1.0"
+        material="box_mat"
+        friction="1.0 0.005 0.0001"/>
+    </body>
+
+    <!-- Sphere radius is 0.20. Center z=0.198 gives 2 mm penetration. -->
+    <body name="sphere_body" pos="-1.5 0 0.198">
+      <freejoint/>
+      <geom
+        name="sphere_geom"
+        type="sphere"
+        size="0.20"
+        mass="1.0"
+        material="sphere_mat"
+        friction="1.0 0.005 0.0001"/>
+    </body>
+
+    <!-- Cylinder size is radius, half-height. Center z=0.198 gives 2 mm penetration. -->
+    <body name="cylinder_body" pos="-0.5 0 0.198">
+      <freejoint/>
+      <geom
+        name="cylinder_geom"
+        type="cylinder"
+        size="0.20 0.20"
+        mass="1.0"
+        material="cylinder_mat"
+        friction="1.0 0.005 0.0001"/>
+    </body>
+
+    <!-- Cylinder lying on its side. Rotate 90 deg about Y so its axis is along X. -->
+    <body name="side_cylinder_body" pos="0.5 0 0.198" euler="0 90 0">
+      <freejoint/>
+      <geom
+        name="side_cylinder_geom"
+        type="cylinder"
+        size="0.20 0.30"
+        mass="1.0"
+        material="side_cylinder_mat"
+        friction="1.0 0.005 0.0001"/>
+    </body>
+
+    <!-- Upright capsule. MuJoCo capsule size is radius, half-distance between sphere centers. -->
+    <body name="capsule_body" pos="1.5 0 0.498">
+      <freejoint/>
+      <geom
+        name="capsule_geom"
+        type="capsule"
+        size="0.20 0.30"
+        mass="1.0"
+        material="capsule_mat"
+        friction="1.0 0.005 0.0001"/>
+    </body>
+
+    <!-- Capsule lying on its side, with its axis along X. -->
+    <body name="side_capsule_body" pos="2.5 0 0.198" euler="0 90 0">
+      <freejoint/>
+      <geom
+        name="side_capsule_geom"
+        type="capsule"
+        size="0.20 0.30"
+        mass="1.0"
+        material="side_capsule_mat"
+        friction="1.0 0.005 0.0001"/>
+    </body>
+  </worldbody>
+
+  <keyframe>
+    <key name="contact_check"/>
+  </keyframe>
+</mujoco>

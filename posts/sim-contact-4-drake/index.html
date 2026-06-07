@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact in 3 Simulators, Part 4 — Drake - Younghyo Park</title>
+
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Contact in 3 Simulators, Part 4 — Drake" />
+  <meta property="og:description" content="A code-level walkthrough of Drake's contact pipeline: pressure fields, equilibrium surfaces, ContactSurface, and the SAP solver." />
+  <meta property="og:url" content="https://younghyopark.me/posts/sim-contact-4-drake/" />
+  <meta property="og:image" content="https://raw.githubusercontent.com/younghyopark/younghyopark.github.io/new/images/new_younghyo4.jpeg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@younghyo_park" />
+  <meta name="twitter:title" content="Contact in 3 Simulators, Part 4 — Drake" />
+  <meta name="twitter:description" content="A code-level walkthrough of Drake's contact pipeline." />
+  <meta name="twitter:image" content="https://raw.githubusercontent.com/younghyopark/younghyopark.github.io/new/images/new_younghyo4.jpeg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/shared/post-base.css">
+  <script src="/shared/post-nav.js"></script>
+
+  <style>
+    .series-banner {
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.85rem 1.1rem;
+      margin: 0 0 2rem 0;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+    .series-banner .series-label {
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      font-size: 0.74rem;
+      margin-right: 0.5rem;
+    }
+    .series-banner .series-parts { margin-top: 0.3rem; }
+    .series-banner a {
+      color: var(--text);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+    }
+    .series-banner a:hover { border-bottom-color: var(--text); }
+    .series-banner .current { color: var(--text); font-weight: 600; border-bottom: none; }
+    .next-up {
+      margin-top: 3rem;
+      padding: 1.1rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--bg-alt);
+    }
+    .next-up .label {
+      font-size: 0.74rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .next-up a { color: var(--text); }
+  </style>
+</head>
+<body>
+<div class="post-body">
+
+<div class="post-header">
+  <h1 class="post-title">Contact in 3 Simulators, Part 4 — Drake</h1>
+  <div class="post-meta">
+    <span>2026-05-07</span>
+    <span class="sep">&middot;</span>
+    <span>Younghyo Park</span>
+  </div>
+</div>
+
+<div class="series-banner">
+  <span class="series-label">Series</span> Contact in 3 simulators
+  <div class="series-parts">
+    <a href="/posts/sim-contact-1-intro/">Part 1 — Intro</a> ·
+    <a href="/posts/sim-contact-2-mujoco/">Part 2 — MuJoCo</a> ·
+    <a href="/posts/sim-contact-3-physx/">Part 3 — PhysX</a> ·
+    <span class="current">Part 4 — Drake</span>
+  </div>
+</div>
+
+<blockquote>
+A code-level tour of how Drake (RobotLocomotion) determines and resolves
+contact. Drake answers a different question than MuJoCo or PhysX: it
+treats contact as a <em>constitutive boundary condition</em>, computes a
+contact surface and a pressure field on that surface, and feeds the
+result to a convex solver. All file paths are relative to
+<code>references/drake/</code>.
+</blockquote>
+
+<h1>1. Where to look</h1>
+
+<p>
+  Drake's most important architectural commitment is that
+  <strong>geometry and dynamics are separate components</strong>.
+  MuJoCo's contact code lives intermingled with its dynamics; PhysX's is
+  organized in layers under a single SDK. Drake splits them into two
+  systems that talk over a port:
+</p>
+
+<ul>
+  <li><strong>SceneGraph</strong> + <strong>ProximityEngine</strong>
+      &mdash; everything geometry-related: shape registration, broad
+      and narrow phase, signed distance, and (the part this post is
+      mostly about) hydroelastic contact surfaces. Lives in
+      <code>geometry/</code>.</li>
+  <li><strong>MultibodyPlant</strong> &mdash; the rigid-body dynamics:
+      mass matrices, joint coordinates, contact-force integration, and
+      time stepping. Lives in <code>multibody/</code>.</li>
+  <li><strong>contact_solvers/sap/</strong> &mdash; the
+      Semi-Analytic Primal solver that takes the geometric contact
+      data and returns velocities. Lives in
+      <code>multibody/contact_solvers/</code>.</li>
+</ul>
+
+<p>
+  Within those, the relevant files for contact are concentrated in
+  <code>geometry/proximity/</code>,
+  <code>multibody/plant/</code>, and
+  <code>multibody/contact_solvers/sap/</code>.
+</p>
+
+<h1>2. Two contact models, picked by the user</h1>
+
+<p>
+  Unlike MuJoCo and PhysX, Drake offers two distinct contact models on
+  the same plant, selectable at setup time. There's also a third
+  enum value that combines them:
+</p>
+
+<p class="code-caption">multibody/plant/multibody_plant.h:138</p>
+<pre><code><span class="k">enum class</span> <span class="t">ContactModel</span> {
+  kHydroelastic,            <span class="c">// hydroelastic on every pair; throws if any pair is unsupported</span>
+  kPoint,                   <span class="c">// classical point contact via FCL on every pair</span>
+  kHydroelasticWithFallback <span class="c">// hydroelastic where supported, point contact for the rest</span>
+};</code></pre>
+
+<p>
+  The default is <strong>not</strong> the strict hydroelastic mode.
+  It's the permissive one:
+</p>
+
+<p class="code-caption">multibody/plant/multibody_plant.h:6638</p>
+<pre><code>ContactModel contact_model_{ContactModel::kHydroelasticWithFallback};</code></pre>
+
+<p>
+  This matters in practice. A freshly-constructed
+  <code>MultibodyPlant</code> is in
+  <code>kHydroelasticWithFallback</code> mode, but hydroelastic only
+  <em>actually engages</em> on a geom pair where both geoms have
+  hydroelastic proximity properties registered (we'll see how to do
+  that in &sect;4.1). If you load a URDF with no hydroelastic decoration,
+  every pair falls back to point contact silently. The "with
+  fallback" mode is essentially "try hydroelastic, but don't make
+  this an error if you didn't set it up." The strict
+  <code>kHydroelastic</code> mode is the one that throws an exception
+  on an unsupported pair, and most production users avoid it for that
+  reason. The user-facing way to flip the model is:
+</p>
+
+<p class="code-caption">multibody/plant/multibody_plant.cc:871</p>
+<pre><code><span class="k">void</span> MultibodyPlant&lt;T&gt;::set_contact_model(ContactModel model) {
+  ...
+  contact_model_ = model;
+}</code></pre>
+
+<p>
+  At simulation time, the plant dispatches on this enum to issue one
+  of three different geometry queries:
+</p>
+
+<p class="code-caption">multibody/plant/multibody_plant.cc:2992</p>
+<pre><code><span class="k">switch</span> (contact_model_) {
+  <span class="k">case</span> ContactModel::kPoint:
+    query_object.ComputePointPairPenetration(...);
+    <span class="k">break</span>;
+  <span class="k">case</span> ContactModel::kHydroelastic:
+    query_object.ComputeContactSurfaces(...);
+    <span class="k">break</span>;
+  <span class="k">case</span> ContactModel::kHydroelasticWithFallback:
+    query_object.ComputeContactSurfacesWithFallback(...);
+    <span class="k">break</span>;
+}</code></pre>
+
+<p>
+  Two different geometry queries, two different output types. The
+  fallback mode runs the hydroelastic query and, for any pair that
+  came back unsupported, runs the point-contact query as a backup.
+  The output of the day is a heterogeneous mix of contact surfaces
+  and point pairs, which the rest of the pipeline handles by
+  branching on type at the integration step (&sect;5).
+</p>
+
+<p>
+  We'll walk both paths. The point-contact path is short; the
+  hydroelastic path is where most of the interesting code is.
+</p>
+
+<h1>3. The point-contact path</h1>
+
+<p>
+  When the user picks <code>kPoint</code> (or when the fallback path
+  hits an unsupported pair), Drake computes contact the way most
+  rigid-body simulators do: penetration as a point pair. Underneath,
+  it leans on <strong>FCL</strong> (the Flexible Collision Library, an
+  open-source collision-detection library for general convex
+  shapes), which Drake wraps with a Drake-specific callback that
+  packages FCL's output into Drake's data types.
+</p>
+
+<p class="code-caption">geometry/proximity_engine.h:277</p>
+<pre><code><span class="c">// Returns one PenetrationAsPointPair per intersecting</span>
+<span class="c">// geometry pair, computed via FCL.</span>
+std::vector&lt;PenetrationAsPointPair&lt;T&gt;&gt;
+ComputePointPairPenetration(...) <span class="k">const</span>;</code></pre>
+
+<p>
+  The wrapping is just enough plumbing to ask FCL for one penetration
+  per pair. The callback machinery requests one contact, packages the
+  result, and discards anything beyond:
+</p>
+
+<p class="code-caption">geometry/proximity/penetration_as_point_pair_callback.h:28</p>
+<pre><code><span class="k">struct</span> <span class="t">CallbackData</span> {
+  fcl::CollisionRequestd request;  <span class="c">// enable_contact = true, num_max_contacts = 1</span>
+  ...
+};
+<span class="c">// MaybeMakePointPair extracts FCL's contact and produces</span>
+<span class="c">// the Drake-side PenetrationAsPointPair.</span></code></pre>
+
+<p>
+  The result type is small and familiar:
+</p>
+
+<p class="code-caption">geometry/query_results/penetration_as_point_pair.h:24</p>
+<pre><code><span class="k">struct</span> <span class="t">PenetrationAsPointPair</span> {
+  GeometryId id_A, id_B;     <span class="c">// the two geoms</span>
+  Vector3&lt;T&gt; p_WCa, p_WCb;   <span class="c">// closest points (world)</span>
+  Vector3&lt;T&gt; nhat_BA_W;      <span class="c">// unit normal: B -&gt; A</span>
+  T depth;                   <span class="c">// penetration depth</span>
+};</code></pre>
+
+<p>
+  This is essentially the same information MuJoCo's
+  <code>mjContact</code> carries (geometry, no force) and what
+  PhysX's <code>PxContactPoint</code> carries (plus material
+  combination &mdash; which Drake puts elsewhere; we'll see in
+  &sect;6). The struct is striking for what's missing: no
+  <code>solref</code> equivalent, no <code>maxImpulse</code>, no
+  combined material values. It's purely geometric, even more so than
+  <code>mjContact</code>.
+</p>
+
+<p>
+  Three implications worth flagging before we move on:
+</p>
+
+<ul>
+  <li>
+    <strong>Drake's point contact is one contact per pair, period.</strong>
+    There's no analog to MuJoCo's <code>multiCCD</code> or PhysX's
+    SAT face-clipping in this path. Box-on-box contact through
+    <code>kPoint</code> teeters and drifts the same way it would in
+    naive MuJoCo. Drake's answer to "I want distributed contact" is
+    "use hydroelastic," not "make point contact better."
+  </li>
+  <li>
+    <strong>FCL is a real dependency.</strong> If you've heard of
+    Bullet's collision library or libccd, FCL is in that family
+    &mdash; an open-source collision library that handles GJK/EPA,
+    AABB tree culling, and shape-shape primitive routines for the
+    standard types. Drake doesn't reimplement it, just wires its own
+    collision objects through it. So the actual GJK happening on a
+    point-contact pair lives in FCL's source, not Drake's.
+  </li>
+  <li>
+    <strong>Hydroelastic doesn't go through FCL.</strong> The
+    hydroelastic path has its own broadphase (a BVH on tet meshes)
+    and its own narrowphase (tet-tet polygon clipping in
+    <code>field_intersection.h</code>); it talks to FCL only for
+    bounding-box culling, not for actual penetration queries. We'll
+    see the hydroelastic broadphase in &sect;4.2.
+  </li>
+</ul>
+
+<p>
+  With the point path out of the way, the rest of this post is the
+  hydroelastic path &mdash; the part of Drake that's genuinely
+  unlike anything in Parts 2 or 3.
+</p>
+
+<h1>4. The hydroelastic path</h1>
+
+<p>
+  When the user picks <code>kHydroelastic</code>, the geometry query
+  is no longer "give me one point per pair"; it's "give me the
+  contact <em>surface</em> between this pair of geoms, with a
+  pressure field defined on it." This requires ahead-of-time work to
+  decorate each geom with a pressure field, then a runtime computation
+  that finds the surface where the two fields balance.
+</p>
+
+<h2>4.1. Pressure fields: the constitutive part</h2>
+
+<p>
+  Hydroelastic doesn't ask the user to tune solver parameters. It
+  asks them to specify a material:
+</p>
+
+<p class="code-caption">geometry/proximity_properties.h:141</p>
+<pre><code><span class="c">// Mark a geometry as compliant. The user provides:</span>
+<span class="c">//   hydroelastic_modulus &mdash; E (Pa), the stiffness</span>
+<span class="c">//   resolution_hint      &mdash; how finely to mesh the volume</span>
+<span class="k">void</span> AddCompliantHydroelasticProperties(...);
+
+<span class="c">// Mark a geometry as rigid. No modulus needed; treated</span>
+<span class="c">// as infinite stiffness.</span>
+<span class="k">void</span> AddRigidHydroelasticProperties(...);
+
+<span class="c">// Friction and Hunt-Crossley dissipation, also material-level.</span>
+<span class="k">void</span> AddContactMaterial(...); <span class="c">// proximity_properties.h:114</span></code></pre>
+
+<p>
+  Two things to understand here. First, <strong>compliant and rigid
+  geoms are represented differently in memory.</strong> Compliant geoms
+  get a tetrahedral volume mesh covering their interior plus a scalar
+  pressure field defined at every vertex. Rigid geoms get a surface
+  triangle mesh and no field at all. The asymmetry exists because rigid
+  is mathematically a degenerate case of compliant &mdash; "infinite
+  modulus" &mdash; that doesn't need a volume field; you only need to
+  know <em>where the surface is</em>, because any contact surface with
+  a rigid geom must lie on that surface.
+</p>
+
+<p>
+  Second, <strong>the meshing happens once, at registration time.</strong>
+  The <code>resolution_hint</code> parameter (in meters) controls how
+  finely each geom is tessellated; smaller values produce more
+  tetrahedra, which yields a smoother contact surface but more work
+  per timestep. Each primitive shape has its own tessellator under
+  <code>geometry/proximity/</code> (<code>make_box_mesh.h</code>,
+  <code>make_sphere_mesh.h</code>, etc.); the user only sees the
+  resolution hint. After registration, the meshes are fixed; only
+  the pressure field's spatial location changes as the geom moves.
+</p>
+
+<p>
+  The pressure field on a compliant geom is the actual constitutive
+  law, and it's deliberately simple:
+</p>
+
+<p class="code-caption">geometry/proximity/make_box_field.h:39</p>
+<pre><code><span class="c">// p(x) = E * e(x), where</span>
+<span class="c">//   e(x) = (d(x) - delta) / (H - delta)</span>
+<span class="c">//   d(x) = distance from x to the nearest face</span>
+<span class="c">//   delta = margin, H = half-size</span>
+<span class="c">// Linear extent-to-pressure, gradient magnitude E / (H - delta).</span>
+VolumeMeshFieldLinear&lt;T, T&gt; MakeBoxPressureField(...);</code></pre>
+
+<p>
+  The function <em>e</em>(<em>x</em>) is called the
+  <strong>extent</strong>: 0 at the surface, 1 at the geom's
+  "deepest" interior, with linear interpolation in between. The
+  pressure is just <em>E</em> times that. So a 1 MPa box of half-size
+  10 cm has a pressure of 0 at its surface and 1 MPa at its center,
+  with the field rising linearly along the gradient toward the
+  center.
+</p>
+
+<p>
+  It's worth being explicit about what this isn't. <em>e</em>(<em>x</em>)
+  is <strong>not strain</strong> in the continuum-mechanics sense.
+  It's not the result of solving any deformation equation. It's a
+  geometric proxy &mdash; how far you are from the boundary &mdash;
+  multiplied by a scalar to give it units of pressure. In the
+  hydroelastic paper this is justified as the small-deformation limit
+  of an elastic body's response, but the model doesn't track actual
+  deformation; the geom remains rigid in its kinematics, and the
+  "pressure" only matters where two such fields overlap.
+</p>
+
+<p>
+  Still, this simplification is what makes hydroelastic
+  computationally cheap: linear fields on tetrahedra means the
+  surface-where-they-balance computation is closed-form (we'll see in
+  &sect;4.2). A real continuum-mechanics solve would need an FEM
+  iteration per contact and would be orders of magnitude slower.
+  Hydroelastic trades fidelity for tractability and lands somewhere
+  meaningfully more faithful than a single-stiffness spring contact,
+  without actually solving elasticity.
+</p>
+
+<p>
+  There are analogous field builders for sphere, capsule, cylinder,
+  and convex meshes (<code>make_sphere_field.h</code>,
+  <code>make_capsule_field.h</code>, etc.). The geometry-specific
+  details of "what's the deepest point?" vary by shape:
+</p>
+
+<ul>
+  <li><strong>Sphere</strong>: deepest point is the center; field is
+      <em>E</em>&middot;(1 &minus; <em>r</em>/<em>R</em>) along the
+      radius.</li>
+  <li><strong>Box</strong>: deepest point is the center; field
+      depends on distance to the nearest of the 6 faces.</li>
+  <li><strong>Capsule</strong>: deepest is the central spine;
+      isosurfaces are nested capsule shells.</li>
+  <li><strong>Convex mesh</strong>: deepest point is computed
+      automatically (medial-axis-like construction during meshing).</li>
+</ul>
+
+<p>
+  Rigid geoms, by contrast, don't get a field at all. The contact
+  surface between a rigid and a compliant geom lives <em>on the
+  surface of the rigid geom</em> wherever the compliant geom's
+  pressure is positive there. Mathematically this is the same
+  equilibrium-surface idea (where the two pressures balance), but
+  with one of the pressures being "infinite outside, zero inside" by
+  convention &mdash; collapsing the equilibrium to the rigid surface.
+  This is the rigid-soft case and is its own dispatch (<code>hydroelastic_calculator.h:22</code>),
+  but it shares most of its machinery with the soft-soft case.
+</p>
+
+<p>
+  This is the moment to flag the philosophical break with Parts 2
+  and 3. Where MuJoCo's <code>solref</code> and PhysX's stiffness
+  parameters are <em>solver hyperparameters</em> (regularizers that
+  happen to look spring-shaped), <code>hydroelastic_modulus</code> is
+  a <em>material property</em>: a Young's-modulus-like number with
+  units of pascals that lives on the geom and is consumed unmodified
+  by the contact-surface computation. It's still a simplified
+  material model (linear in extent, not linear in strain; not a real
+  continuum-mechanics solve), but it's a constitutive description,
+  not a numerical one. The user-facing question changes from "what
+  values make the simulation stable?" to "what material is this
+  meant to be?" &mdash; and that question has answers in physics
+  textbooks rather than in tuning notebooks.
+</p>
+
+<h2>4.2. The equilibrium surface</h2>
+
+<p>
+  The central operation in hydroelastic contact is: given two
+  pressure fields that overlap in space, find the surface where
+  they balance.
+</p>
+
+<p>
+  Why does that surface matter? Picture the simplest case: a soft
+  sphere pressed against a soft block, with the sphere a bit stiffer
+  (larger <em>E</em>) than the block. As the sphere pushes in, both
+  materials "want" to occupy the same region, and the laws of physics
+  pick a compromise: the sphere indents the block more than the block
+  indents the sphere, with the boundary between them landing wherever
+  the block's outward push and the sphere's outward push are equal.
+  That boundary is the <strong>equilibrium surface</strong>. By
+  Newton's third law, the contact force at any point on it is
+  determined by the local pressure (which is the same on both sides
+  because we're at equilibrium), and the integral of pressure times
+  normal over the whole surface gives the net wrench on each body.
+</p>
+
+<p>
+  Hydroelastic computes this surface exactly, in closed form, by
+  exploiting the fact that pressure fields are <em>linear within each
+  tetrahedron</em>. Linear fields equate on a plane &mdash; that's
+  just algebra &mdash; so for any pair of overlapping tetrahedra,
+  there's an analytical equilibrium plane:
+</p>
+
+<p class="code-caption">geometry/proximity/field_intersection.h:54</p>
+<pre><code><span class="c">// Compute the equilibrium plane of two tetrahedra,</span>
+<span class="c">// one from each volume mesh field. The plane is where</span>
+<span class="c">//   field0(x) = field1(x)</span>
+<span class="c">// with normal n_hat = (grad f0 - grad f1) / ||grad f0 - grad f1||.</span>
+<span class="k">bool</span> CalcEquilibriumPlane(<span class="k">int</span> element0, <span class="k">int</span> element1,
+                         <span class="k">const</span> Field&amp; f0, <span class="k">const</span> Field&amp; f1,
+                         Plane&lt;T&gt;* plane);</code></pre>
+
+<p>
+  Two observations. The plane's <strong>normal direction</strong> is
+  the difference of the two fields' gradients (normalized). If the
+  two fields had the same gradient, the equilibrium plane would have
+  no preferred direction &mdash; which makes sense, because the two
+  materials would be indistinguishable in that region. The
+  <strong>position</strong> of the plane is wherever the two scalar
+  fields take the same value, which is fully determined by the
+  intercepts. So the equilibrium plane is a deterministic function of
+  the local geometry and material constants, with no iteration needed.
+</p>
+
+<p>
+  Now the question is: where does this plane intersect the actual
+  geometry? Both tets are bounded; the equilibrium plane is infinite.
+  We want only the portion of the plane that's inside both tets:
+</p>
+
+<p class="code-caption">geometry/proximity/field_intersection.h:90</p>
+<pre><code><span class="c">// Compute the polygon = (tet0 ∩ tet1 ∩ equilibrium-plane).</span>
+<span class="k">bool</span> IntersectTetrahedra(<span class="k">int</span> e0, <span class="k">int</span> e1,
+                        <span class="k">const</span> Mesh&amp; m0, <span class="k">const</span> Mesh&amp; m1,
+                        std::vector&lt;Vector3&lt;T&gt;&gt;* polygon);</code></pre>
+
+<p>
+  This is a 3D polygon-clipping problem. Each tet is the intersection
+  of 4 half-spaces (its 4 faces), so two tets together define a
+  convex region as the intersection of 8 half-spaces. The
+  equilibrium plane adds one more constraint. Drake clips a starting
+  polygon (the equilibrium plane, large enough to contain both tets)
+  against each of the 8 half-spaces in turn, in classical
+  <strong>Sutherland-Hodgman</strong> style:
+</p>
+
+<p class="code-caption">geometry/proximity/mesh_intersection.h:79</p>
+<pre><code><span class="k">void</span> ClipPolygonByHalfSpace(...);</code></pre>
+
+<p>
+  After 8 clipping passes, what survives is a convex polygon &mdash;
+  the slice of the equilibrium plane that's inside the
+  tet-tet overlap region. That polygon, with its vertices, is one
+  "face" of the contact surface. Its area times the local pressure
+  gives the local contribution to the contact force.
+</p>
+
+<p>
+  Now scale this up. A real geom has hundreds or thousands of
+  tetrahedra. In principle every tet of geom A could overlap with
+  every tet of geom B &mdash; quadratic blowup &mdash; but in
+  practice only a tiny fraction overlap (the contact region is small
+  compared to the overall volume). Drake culls the candidate pairs
+  with a <strong>bounding-volume hierarchy</strong> on each tet mesh:
+</p>
+
+<p class="code-caption">geometry/proximity/bvh.h:32</p>
+<pre><code><span class="k">template</span> &lt;<span class="k">class</span> MeshType&gt;
+<span class="k">class</span> <span class="t">Bvh</span> {
+  <span class="c">// Hierarchical bounding boxes; recursively descend</span>
+  <span class="c">// into both trees in tandem to find candidate pairs.</span>
+};</code></pre>
+
+<p>
+  This is essentially "broadphase, but inside the narrowphase":
+  bounding-volume tree intersection in <em>O</em>(log <em>n</em>) per
+  query, the same trick MuJoCo and PhysX use at the geom level, just
+  applied here at the tetrahedron level inside one geom pair. Without
+  it, hydroelastic would be unusably slow on anything but small
+  meshes.
+</p>
+
+<p>
+  The driver that orchestrates the per-tet computation is:
+</p>
+
+<p class="code-caption">geometry/proximity/field_intersection.h:188</p>
+<pre><code><span class="c">// Iterate over candidate tet pairs (BVH-accelerated),</span>
+<span class="c">// compute equilibrium plane and polygon for each,</span>
+<span class="c">// accumulate into surface_M with pressure field e_M on it.</span>
+<span class="k">void</span> IntersectFields(<span class="k">const</span> Field0&amp; f0_M, <span class="k">const</span> Field1&amp; f1_N,
+                     PolygonSurfaceMesh&lt;T&gt;* surface_M,
+                     PolygonSurfaceMeshFieldLinear&lt;T, T&gt;* e_M);</code></pre>
+
+<p>
+  Each surviving tet pair contributes one polygon to the output mesh
+  (<code>surface_M</code>) and one piece of the pressure field
+  (<code>e_M</code>) defined linearly on that polygon. Stitching the
+  polygons together is automatic &mdash; they share edges where their
+  source tets share faces &mdash; and produces a discrete contact
+  surface that's piecewise planar, with a piecewise-linear pressure
+  field defined on it.
+</p>
+
+<p>
+  And the soft-soft entry point that contact code actually calls:
+</p>
+
+<p class="code-caption">geometry/proximity/field_intersection.h:348</p>
+<pre><code>ContactSurface&lt;T&gt; ComputeContactSurfaceFromCompliantVolumes(...);</code></pre>
+
+<p>
+  <strong>Rigid-soft contact</strong> is a separate dispatch that
+  intersects a surface mesh against a tet-mesh field
+  (<code>hydroelastic_calculator.h:22</code>). The output type is the
+  same. Mathematically it's the limit of soft-soft as one geom's
+  modulus goes to infinity: the equilibrium surface collapses onto the
+  rigid geom's surface, which is exactly what the rigid-soft path
+  computes directly. Skipping a step that produces a known answer is
+  faster than computing it through the limit.
+</p>
+
+<p>
+  Why polygons (instead of triangulating)? The output mesh stores
+  polygons of arbitrary vertex count (up to 8, since you can't get
+  more than 8 vertices from clipping a plane by 8 half-spaces).
+  Triangulating them would multiply the number of mesh elements
+  without adding information &mdash; the pressure field is linear over
+  each polygon already, so each polygon only needs one quadrature
+  sample to integrate exactly. Drake keeps the polygons whole. There's
+  also a triangle-mesh output mode if downstream code requires it,
+  hence the <code>std::variant</code> in the result type (we'll see
+  this in &sect;4.3).
+</p>
+
+<h2>4.3. The output: <code>ContactSurface</code></h2>
+
+<p>
+  Where MuJoCo gives you <code>mjContact</code> (a per-point geometric
+  record) and PhysX gives you <code>PxContactPatch</code> (a small
+  bundle of points sharing a normal), Drake gives you a
+  <strong>mesh</strong>:
+</p>
+
+<p class="code-caption">geometry/query_results/contact_surface.h:160</p>
+<pre><code><span class="k">class</span> <span class="t">ContactSurface</span> {
+  <span class="c">// The contact-surface mesh itself: either triangle or polygon.</span>
+  std::variant&lt;std::unique_ptr&lt;TriangleSurfaceMesh&lt;T&gt;&gt;,
+               std::unique_ptr&lt;PolygonSurfaceMesh&lt;T&gt;&gt;&gt; mesh_W_;
+
+  <span class="c">// Pressure field e(x) defined on the mesh.</span>
+  <span class="c">// e_MN_W: pressure of M evaluated at points on the mesh,</span>
+  <span class="c">// in world frame.</span>
+  ...field_;
+
+  <span class="c">// Per-face gradients of the two pressure fields, &nabla;e_M and &nabla;e_N,</span>
+  <span class="c">// kept piecewise constant per face.</span>
+  ...grad_eM_W_, grad_eN_W_;
+
+  <span class="c">// Mesh normal points "out of N and into M".</span>
+};</code></pre>
+
+<p>
+  Walking through the fields:
+</p>
+
+<ul>
+  <li>
+    <strong>The mesh itself</strong> is either a polygon mesh (the
+    raw output of clipping, exact and compact) or a triangle mesh
+    (triangulated for downstream code that wants triangles, e.g.
+    visualization). The <code>std::variant</code> means consumers
+    pick which form they want at construction.
+  </li>
+  <li>
+    <strong>The pressure field</strong> on the mesh, denoted
+    <em>e</em><sub>MN</sub>, is the per-vertex pressure value. For
+    polygon outputs this is a piecewise-linear field; for triangle
+    outputs it's piecewise-linear in barycentric coordinates over
+    each triangle. Either way the mesh and the field together are
+    enough to evaluate the local pressure anywhere on the surface.
+  </li>
+  <li>
+    <strong>The two field gradients</strong>, &nabla;<em>e</em><sub>M</sub>
+    and &nabla;<em>e</em><sub>N</sub>, are stored as piecewise-constant
+    per face. These exist not because the force computation needs
+    them &mdash; pressure on the surface is enough &mdash; but because
+    downstream friction models need to know how the local field
+    direction relates to the actual material gradient. They also let
+    consumers compute differential quantities (e.g. for derivatives
+    of the contact force with respect to body pose) without
+    re-doing the surface intersection.
+  </li>
+  <li>
+    <strong>The normal convention</strong> &mdash; mesh normal points
+    "out of N and into M" &mdash; matters because it's how the force
+    on each body gets the right sign. By convention, M is the
+    "front" of the contact pair and N is the "back"; the per-vertex
+    pressure <em>e</em><sub>MN</sub> is the pressure of M at this
+    point, and the normal points into M, so pressure&times;area&times;normal
+    gives a force <em>pushing M away from N</em>. Newton's third law
+    handles N's force as the negative.
+  </li>
+</ul>
+
+<p>
+  This struct is the heart of the hydroelastic philosophy. The
+  contact between two bodies is not a list of points decorated with
+  tuning knobs; it's a <strong>field</strong> on a discrete surface,
+  and the force will come from integrating that field. There's no
+  <code>solref</code> here, no <code>maxImpulse</code>, no
+  combine-mode-selected friction coefficient sitting on the contact
+  itself. Material parameters are upstream (on the geoms); the
+  surface is just a geometric+field object that downstream code
+  integrates over.
+</p>
+
+<h1>5. From contact surface to spatial force</h1>
+
+<p>
+  Once we have a contact surface (or a point pair, in the
+  <code>kPoint</code> case), it has to become a force on each body.
+  For point contact this is a single per-pair force at the contact
+  point. For hydroelastic, the force is an <strong>integral</strong>
+  over the surface:
+</p>
+
+<blockquote>
+<em>F</em> = &int;<sub><em>S</em></sub> <em>p</em>(<em>x</em>) &middot; <em>n&#770;</em>(<em>x</em>) d<em>A</em>
+</blockquote>
+
+<p>
+  where <em>S</em> is the contact surface, <em>p</em>(<em>x</em>) is
+  the local pressure (from the field on the mesh), and
+  <em>n&#770;</em>(<em>x</em>) is the surface normal. Drake evaluates
+  this integral by <strong>quadrature</strong>: sample the integrand
+  at one or more well-chosen points per face, weight by the face
+  area, sum.
+</p>
+
+<p>
+  Because the pressure field is linear over each polygon face and the
+  normal is constant per face (the face is planar by construction),
+  one quadrature point per face is enough to integrate the normal
+  force exactly. The natural choice is the face centroid, where the
+  linear field's value equals its average, so:
+</p>
+
+<blockquote>
+<em>F</em><sub>face</sub> = <em>p</em>(<em>x</em><sub>centroid</sub>) &middot; <em>A</em><sub>face</sub> &middot; <em>n&#770;</em><sub>face</sub>
+</blockquote>
+
+<p>
+  Sum these face forces over all polygons in the surface, and you
+  have the net force on body M (with the opposite sign on body N by
+  Newton's third law). The torque about the surface centroid comes
+  from the cross-product of each face's centroid-to-surface-centroid
+  offset with the face force; the discrete-update code does this
+  shift directly:
+</p>
+
+<p class="code-caption">multibody/plant/discrete_update_manager.cc:524</p>
+<pre><code><span class="c">// Per-quadrature-point processing on the contact surface:</span>
+<span class="c">//   1. Solver returns local force f_Bq_C at quadrature point Q,</span>
+<span class="c">//      decomposed into normal fn and tangential ft components.</span>
+<span class="c">//   2. Transform to world: f_Aq_W = -(R_WC * f_Bq_C)</span>
+<span class="c">//   3. Shift to spatial force about the surface centroid O:</span>
+<span class="c">//      Fq_Ao_W = SpatialForce(...).Shift(p_QO_W)</span>
+<span class="c">//   4. Accumulate: F_Ao_W_per_surface[i] += Fq_Ao_W</span></code></pre>
+
+<p>
+  Notice the integrand also has a tangential component (<em>ft</em>),
+  not just normal. That's friction. At each quadrature point, the
+  contact solver (SAP, &sect;6) returns a 3D force with a normal piece
+  determined by the pressure and a tangential piece determined by the
+  friction model. Friction in hydroelastic isn't a per-pair scalar
+  cone the way it is in MuJoCo and PhysX &mdash; it's a
+  <strong>per-quadrature-point regularized Coulomb law</strong> with
+  three pieces of information at each point:
+</p>
+
+<ol>
+  <li>
+    <strong>The normal pressure</strong> (which sets the cone
+    radius, &mu;<em>p</em>).
+  </li>
+  <li>
+    <strong>The relative sliding velocity</strong> at this point
+    (which sets the friction direction and magnitude inside the
+    cone, smoothed with SAP's regularization).
+  </li>
+  <li>
+    <strong>The Hunt-Crossley dissipation</strong> coefficient (which
+    adds a normal-direction velocity-proportional damping force at
+    each quadrature point, distinct from SAP's solver-side
+    regularization). This is the user's
+    <code>dissipation</code> value from
+    <code>AddContactMaterial</code>.
+  </li>
+</ol>
+
+<p>
+  This means friction in Drake genuinely varies across the contact
+  surface: a sliding tire has high friction at the rear of the
+  contact patch (where the rubber is being pushed back) and low
+  friction at the front (where it's about to release), and
+  hydroelastic captures this naturally because every face has its
+  own velocity and pressure. MuJoCo and PhysX, with one cone per
+  contact point and 4&ndash;5 contact points per pair, can only
+  approximate this at much coarser resolution.
+</p>
+
+<p>
+  After accumulation, the per-surface result is packaged:
+</p>
+
+<p class="code-caption">multibody/plant/hydroelastic_contact_info.h:35</p>
+<pre><code><span class="k">class</span> <span class="t">HydroelasticContactInfo</span> {
+  <span class="k">const</span> ContactSurface&lt;T&gt;* contact_surface_;
+  SpatialForce&lt;T&gt; F_Ac_W_;   <span class="c">// net spatial force at centroid</span>
+};</code></pre>
+
+<p>
+  One <code>HydroelasticContactInfo</code> per pair of contacting
+  geoms. The pointer to the contact surface is kept around for
+  visualization and downstream queries (e.g., users sometimes want to
+  inspect the pressure distribution, not just the net force); the
+  <code>SpatialForce</code> is what the dynamics actually consume.
+</p>
+
+<h1>6. The constraint solver: SAP</h1>
+
+<p>
+  Once Drake has the geometric and material data assembled into a
+  set of contact constraints, it hands them to <strong>SAP</strong>
+  &mdash; the Semi-Analytic Primal solver. SAP is convex like
+  MuJoCo's solver, and similarly formulates contact as a constrained
+  optimization. The differences are in what variable space the solve
+  happens in, what gets regularized, and how friction is modeled.
+</p>
+
+<h2>6.1. What SAP is, in plain terms</h2>
+
+<p>
+  Three words, "Semi-Analytic Primal":
+</p>
+
+<ul>
+  <li>
+    <strong>Primal</strong>: the optimization variable is the
+    <em>velocity</em> of each body at the next timestep.
+    "Primal" is in contrast to dual formulations like LCPs or QPs in
+    impulse space, where the variable is the contact impulse and you
+    recover velocity afterward. SAP picks velocity as primary because
+    the cost function (kinetic energy plus contact penalty) is more
+    naturally expressed in velocity than in impulse, and because
+    the velocity space's structure matches the regularized friction
+    formulation cleanly.
+  </li>
+  <li>
+    <strong>Semi-Analytic</strong>: per-constraint subproblems are
+    solved in closed form. SAP doesn't iterate inside each contact;
+    given the candidate velocity, the contact impulse and friction
+    direction at that velocity have an analytic solution, which the
+    outer Newton loop uses as gradient/Hessian information. This is
+    the trick that makes the convex solve fast.
+  </li>
+  <li>
+    <strong>Convex</strong>: the cost function is strictly convex,
+    so the global minimum is unique and Newton-style methods are
+    guaranteed to converge.
+  </li>
+</ul>
+
+<p class="code-caption">multibody/contact_solvers/sap/sap_solver.h:17</p>
+<pre><code><span class="k">class</span> <span class="t">SapSolver</span> {
+  <span class="c">// Solves the discrete contact problem as a smooth convex</span>
+  <span class="c">// optimization in the primal velocity variables.</span>
+  <span class="c">// Uses a semi-smooth Newton method with line search.</span>
+
+  <span class="c">// Parameters: rel_tolerance, abs_tolerance, line_search_type,</span>
+  <span class="c">// cost_criterion (used as fallback if optimality cannot be</span>
+  <span class="c">// reached due to ill-conditioning).</span>
+};</code></pre>
+
+<p>
+  Mechanically: SAP iteratively updates the candidate post-step
+  velocity by solving a Newton system at each iteration, with a line
+  search to ensure the cost decreases. The cost combines kinetic
+  energy (deviation from the unconstrained free-flight velocity,
+  weighted by mass) and a contact penalty term per constraint. The
+  contact penalty grows quadratically when the constraint is
+  violated and is zero when it's satisfied, which makes it convex
+  and differentiable. Iterations stop when both gradient norm and
+  step size are below tolerance. The <code>cost_criterion</code>
+  fallback handles ill-conditioned cases (very stiff contact, near-
+  singular Jacobians) where the Newton step can't fully resolve the
+  problem; in those cases SAP returns the lowest-cost iterate it
+  found.
+</p>
+
+<h2>6.2. Friction: a smooth cone, not an LCP</h2>
+
+<p>
+  Classical rigid-body contact solvers (Stewart-Trinkle, the original
+  Bullet, parts of PhysX's PGS) formulate friction as a
+  <strong>linear complementarity problem (LCP)</strong>: the
+  tangential impulse is "either inside the cone with zero sliding, or
+  on the cone boundary with sliding in a specific direction" &mdash;
+  a binary case split per contact, embedded in the math as
+  complementarity conditions. LCPs are non-smooth, NP-hard in
+  general, and have many degenerate cases.
+</p>
+
+<p>
+  SAP avoids this entirely by <strong>regularizing</strong> the cone:
+</p>
+
+<p class="code-caption">multibody/contact_solvers/sap/sap_friction_cone_constraint.h:28</p>
+<pre><code><span class="k">class</span> <span class="t">SapFrictionConeConstraint</span> {
+  <span class="c">// Friction impulse gamma_t obeys:</span>
+  <span class="c">//   ||gamma_t|| &lt;= mu * gamma_n   (kStiction)</span>
+  <span class="c">//   ||gamma_t||  =  mu * gamma_n   (sliding)</span>
+  <span class="c">// with regularization parameters Rt (tangent) and Rn (normal)</span>
+  <span class="c">// adding small compliance to make the cone smooth.</span>
+
+  <span class="t">double</span> Rt_, Rn_;  <span class="c">// regularization (small, positive)</span>
+};</code></pre>
+
+<p>
+  Concretely: instead of "no sliding inside the cone," SAP says "very
+  small sliding inside the cone, proportional to <em>R</em><sub>t</sub>."
+  Instead of "no normal compression below zero," SAP says "very small
+  compression possible, proportional to <em>R</em><sub>n</sub>." The
+  cone becomes a smooth function and the whole problem becomes
+  twice-differentiable, making Newton's method directly applicable.
+</p>
+
+<p>
+  The regularization parameters are small enough that physical
+  predictions match real Coulomb friction within solver tolerance.
+  Drake picks them automatically based on the contact stiffness and
+  timestep; users don't typically tune <em>R</em><sub>t</sub> or
+  <em>R</em><sub>n</sub> directly.
+</p>
+
+<h2>6.3. Comparison with MuJoCo's solver</h2>
+
+<p>
+  Both MuJoCo's Newton solver (Part 2, &sect;7) and SAP solve a
+  convex optimization with primal Newton iterations. The key
+  differences:
+</p>
+
+<ul>
+  <li>
+    <strong>Variable space.</strong> MuJoCo solves in
+    <em>acceleration</em> space (the dual is in contact-force
+    space). SAP solves in <em>velocity</em> space directly. For a
+    discrete-time integrator both are equivalent up to a timestep
+    multiplication; the choice affects the Hessian's conditioning.
+  </li>
+  <li>
+    <strong>What's regularized.</strong> MuJoCo regularizes the
+    <em>constraint</em> (penetration is allowed in proportion to
+    <code>solref</code>/<code>solimp</code>). SAP regularizes the
+    <em>friction cone</em> (tiny stiction creep) and only mildly the
+    normal direction (tiny compression allowed). MuJoCo's regularization
+    is shaped like a stiffness; SAP's is shaped like a smoothing
+    constant.
+  </li>
+  <li>
+    <strong>Where physical parameters enter.</strong> In MuJoCo, the
+    "stiffness" and "damping" of contact come from
+    <code>solref</code>/<code>solimp</code> &mdash; solver-side
+    knobs. In SAP, contact stiffness comes from the hydroelastic
+    pressure field upstream, and SAP's regularization is just enough
+    smoothing to make the math well-behaved.
+  </li>
+</ul>
+
+<p>
+  The two important consequences of SAP's design:
+</p>
+
+<ul>
+  <li>
+    <strong>No LCP code path.</strong> Friction is regularized, the
+    friction cone is smooth, and the whole problem is solvable with
+    a primal Newton method &mdash; the same family of solver as
+    MuJoCo's Newton, but with friction handled differently.
+  </li>
+  <li>
+    <strong>Dissipation is material-rooted, not solver-rooted.</strong>
+    The damping in a hydroelastic contact comes from the
+    Hunt-Crossley dissipation parameter the user set on the geom
+    via <code>AddContactMaterial</code>
+    (<code>proximity_properties.h:114</code>). SAP's regularization
+    adds a small numerical compliance to make the cone smooth, but
+    the physical dissipation is upstream &mdash; specified in
+    physical units (1/(m/s) Hunt-Crossley dissipation), not in solver
+    parameters.
+  </li>
+</ul>
+
+<p>
+  Compare with MuJoCo, where the
+  <em>K</em>&middot;<em>r</em>&minus;<em>B</em>&middot;<em>v</em>
+  reference acceleration's <em>B</em> term is a tunable solver
+  parameter that doubles as a damping model, and PhysX, where
+  damping is a material-level coefficient but only takes effect via
+  the negative-restitution back door. SAP separates the two cleanly:
+  material physics goes in through the contact surface; numerical
+  conditioning goes in through SAP's regularization.
+</p>
+
+<h1>7. Time stepping</h1>
+
+<p>
+  <code>MultibodyPlant</code> by default runs in
+  <strong>discrete-time mode</strong>, advancing state by a fixed
+  timestep on each call. Drake supports continuous-time integration
+  through the System framework's variable-step ODE solvers, but in
+  practice the discrete plant is what almost everyone uses for
+  contact-rich simulation, because it's the mode SAP was designed
+  for.
+</p>
+
+<p>
+  Why discrete? Because SAP's convex formulation is implicitly an
+  integrator: when you solve for the post-step velocity that
+  minimizes "kinetic-energy distance from free flight" plus contact
+  penalty, the result is the velocity-update of an implicit-in-velocity
+  scheme. Solve once, advance by &Delta;<em>t</em>, repeat. There's
+  no separate ODE integrator wrapped around the contact solve; the
+  contact solve <em>is</em> the integrator step. This is similar in
+  spirit to MuJoCo's implicit-in-velocity reference acceleration
+  (Part 2, &sect;6), achieved by a different mechanism &mdash; SAP
+  through convex formulation, MuJoCo through co-solving constraint
+  forces and accelerations.
+</p>
+
+<p>
+  The consequence: stiff contact stays stable at large timesteps.
+  A 1 GPa hydroelastic geom &mdash; harder than steel &mdash; in
+  Drake doesn't need a sub-millisecond timestep the way an
+  explicit integrator would. The convex formulation absorbs the
+  stiffness into its conditioning rather than into the timestep
+  budget.
+</p>
+
+<p>
+  The contact pipeline is driven once per discrete update through
+  this entry point:
+</p>
+
+<p class="code-caption">multibody/plant/discrete_update_manager.h:150</p>
+<pre><code><span class="k">virtual</span> <span class="k">void</span> CalcContactSolverResults(...) <span class="k">const</span> = 0;</code></pre>
+
+<p>
+  Per step, the manager:
+</p>
+
+<ol>
+  <li>
+    <strong>Queries SceneGraph</strong> for point pairs and/or
+    contact surfaces, depending on the contact model. The query
+    returns "everything currently in contact" &mdash; no reuse from
+    the previous step; this is recomputed.
+  </li>
+  <li>
+    <strong>Builds discrete contact pairs</strong> with the
+    constraint Jacobians (the matrices that map body velocities to
+    contact-point velocities) and the combined friction
+    coefficients.
+  </li>
+  <li>
+    <strong>Hands those to SAP</strong>, which solves for post-step
+    velocities and contact impulses.
+  </li>
+  <li>
+    <strong>Integrates impulses into spatial forces</strong>: for
+    point-contact pairs, this is just a force at the contact
+    point; for hydroelastic, it's the quadrature loop from &sect;5
+    (pressure&times;area&times;normal at each face, plus friction at each
+    face).
+  </li>
+  <li>
+    <strong>Advances state</strong>: applies the post-step velocity,
+    integrates positions over &Delta;<em>t</em>.
+  </li>
+</ol>
+
+<p>
+  Note Drake recomputes contact from scratch each step. Unlike
+  PhysX, there's no persistent contact manifold reused across
+  frames. The justification is that hydroelastic's surface
+  computation is itself a continuous function of body pose &mdash;
+  no warm-start needed, because the discontinuities the persistent
+  manifold protects against in PhysX (contact birth/death) don't
+  exist for hydroelastic in the first place.
+</p>
+
+<p>
+  The discrete pair carries minimal data:
+</p>
+
+<p class="code-caption">multibody/plant/discrete_contact_pair.h:70</p>
+<pre><code><span class="k">struct</span> <span class="t">DiscreteContactPair</span> {
+  GeometryId id_A, id_B;
+  <span class="t">int</span> surface_index;       <span class="c">// which contact surface (if hydro)</span>
+  RotationMatrix&lt;T&gt; R_WC;  <span class="c">// contact frame rotation</span>
+  Vector3&lt;T&gt; p_WC;         <span class="c">// contact point / centroid (world)</span>
+  T friction;              <span class="c">// combined friction coefficient</span>
+};</code></pre>
+
+<p>
+  Notice this struct is the closest analog Drake has to MuJoCo's
+  <code>mjContact</code> &mdash; a per-pair record passed to the
+  solver. But it carries pointers <em>into</em> the contact surface
+  (<code>surface_index</code>), so the integration step has access
+  to the full mesh and field, not just a per-point summary. Most
+  of the per-contact data is held by the <code>ContactSurface</code>
+  the index points back to; this struct is mostly bookkeeping.
+</p>
+
+<h1>8. The architectural commitments, in code</h1>
+
+<p>
+  Three things distinguish Drake's contact pipeline at the source-tree
+  level. None of them are hidden &mdash; they're visible from a
+  glance at the file layout:
+</p>
+
+<ol>
+  <li>
+    <strong>Geometry and dynamics are separate components.</strong>
+    <code>geometry/proximity_engine.h</code> owns shapes and queries.
+    <code>multibody/plant/multibody_plant.cc</code> owns inertia
+    and time-stepping. They communicate over a System port. This is
+    why Drake can switch between point and hydroelastic without
+    touching the dynamics, and why deformable-body support could be
+    added without rewriting the rigid-body solver.
+  </li>
+  <li>
+    <strong>Material parameters live on geoms, not on solvers.</strong>
+    <code>AddCompliantHydroelasticProperties</code> takes a Young's
+    modulus. <code>AddContactMaterial</code> takes a friction
+    coefficient and a Hunt-Crossley dissipation. Nowhere does the
+    user tune a regularization parameter shaped like a stiffness;
+    the regularization (in SAP) is a numerical detail with sensible
+    defaults, not a knob.
+  </li>
+  <li>
+    <strong>Contact has spatial extent by construction.</strong>
+    <code>ContactSurface</code> is a mesh with a field on it. The
+    rest of the pipeline integrates that field. There's no
+    contact-reduction step, no "pick four points," no manifold
+    cache &mdash; the surface itself is the contact, and its
+    fineness is set by the user's <code>resolution_hint</code> when
+    the geom was meshed.
+  </li>
+</ol>
+
+<p>
+  This is what people mean when they call hydroelastic
+  "contact-as-constitutive-law": the force at a contact point is
+  prescribed by state (<em>p</em>(<em>x</em>) =
+  <em>E</em>&middot;<em>&epsilon;</em>(<em>x</em>)), the surface is
+  an integral domain, and the solver's job is to enforce Newton's
+  laws and friction &mdash; not to invent the contact force.
+</p>
+
+<h1>9. Recap: a single timestep, narrated</h1>
+
+<ol>
+  <li><strong>Geometry query</strong> (SceneGraph): for each
+      candidate pair, either compute a
+      <code>PenetrationAsPointPair</code> (kPoint) or a
+      <code>ContactSurface</code> with pressure field
+      (kHydroelastic), or both with fallback.</li>
+  <li><strong>Pressure field intersection</strong> (hydroelastic
+      only): for each overlapping tet pair, solve the linear
+      equilibrium plane, clip the two tets against it, accumulate
+      polygons into a surface mesh.</li>
+  <li><strong>DiscreteContactPair construction</strong>: build the
+      Jacobians, friction coefficients, and references to surface
+      data the solver needs.</li>
+  <li><strong>SAP solve</strong>: smooth convex optimization in
+      primal velocity, with regularized friction cones.</li>
+  <li><strong>Spatial force integration</strong>: for each
+      hydroelastic surface, quadrature over the mesh turns
+      pressure&times;normal&times;area into a wrench at the surface
+      centroid.</li>
+  <li><strong>Discrete update</strong>: apply impulses, advance
+      state.</li>
+</ol>
+
+<p>
+  The core difference from Parts 2 and 3 is at step 1. MuJoCo and
+  PhysX both produce a list of contacts and tuning knobs;
+  Drake produces a contact surface and a material-rooted pressure
+  field. Everything downstream follows from that.
+</p>
+
+<h1>10. A short reading list</h1>
+
+<ul>
+  <li>
+    <strong>Elandt, Drumwright, Sherman, Ruppel, "A Pressure Field
+    Model for Fast, Robust Approximation of Net Contact Force and
+    Moment Between Nominally Rigid Objects" (IROS 2019).</strong>
+    The paper that introduces hydroelastic contact. Short and
+    readable. Read this before the source.
+  </li>
+  <li>
+    <strong>Drake's hydroelastic user guide</strong>
+    (<code>doc/_pages/hydroelastic_user_guide.md</code> in the
+    Drake repo). Practical documentation with diagrams of
+    equilibrium surfaces, and the most useful guide to the modulus
+    and resolution-hint values to actually use.
+  </li>
+  <li>
+    <strong>Castro, Permenter, Han, "An Unconstrained Convex
+    Formulation of Compliant Contact" (T-RO 2023).</strong> The
+    paper behind SAP. Worth reading after the hydroelastic paper,
+    because the formulation is what makes the integrator work
+    well at large timesteps.
+  </li>
+  <li>
+    <strong><code>geometry/proximity/field_intersection.h</code>,
+    <code>geometry/query_results/contact_surface.h</code>,
+    <code>multibody/contact_solvers/sap/sap_solver.h</code>.</strong>
+    The three files together cover most of the pipeline above.
+  </li>
+</ul>
+
+<div class="next-up">
+  <span class="label">Series start</span>
+  <h3 style="margin: 0.3rem 0 0.5rem;"><a href="/posts/sim-contact-1-intro/">Part 1 — Intro &amp; comparison</a></h3>
+  <p style="margin: 0; color: var(--text-muted); font-size: 0.92rem;">
+    Now that all three pipelines are on the table, the framing post
+    pulls the comparison into one place: where each engine agrees,
+    where each diverges, and what's actually different when you pick
+    one over another.
+  </p>
+</div>
+
+</div>
+</body>
+</html>

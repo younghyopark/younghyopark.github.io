@@ -4,6 +4,10 @@
    Include via: <link rel="stylesheet" href="/shared/post-base.css">
    ═══════════════════════════════════════════════════════════════ */
 
+/* JetBrains Mono — needed because system monospace fallbacks (Menlo)
+   often only ship 400/700 weights, and our code style relies on 500. */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
+
 /* ── CSS Custom Properties ────────────────────────────────── */
 :root {
   --primary:      #222;
@@ -193,30 +197,83 @@ hr {
 }
 
 /* ── Code ─────────────────────────────────────────────────── */
+/* Design notes:
+   - System monospace at 400 looks thin/washed on tinted backgrounds.
+     Bump to 500 for solid presence; comments stay 400 to recede.
+   - Monochrome by choice: only comments are visually differentiated.
+     Code structure reads from monospace alignment, not color.
+   - Caption is a full-width strip attached to the block, not a floating tab. */
+
 code {
   font-family: var(--font-mono);
-  font-size: 0.875em;
-  background: var(--bg-alt);
-  padding: 0.15em 0.4em;
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
+  font-size: 0.86em;
+  font-weight: 500;
+  background: #f1ede4;
+  padding: 0.12em 0.42em;
+  border-radius: 3px;
+  border: none;
+  color: #1a1a1a;
 }
 
 pre {
-  background: var(--bg-alt);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1rem 1.25rem;
+  background: #faf7f0;
+  border: 1px solid #ece6d6;
+  border-radius: 8px;
+  padding: 1.15rem 1.4rem;
   overflow-x: auto;
-  margin: 1.25rem 0;
-  line-height: 1.5;
+  margin: 1.75rem 0;
+  line-height: 1.7;
+  font-size: 0.92rem;
 }
 
 pre code {
   background: none;
   padding: 0;
   border: none;
-  font-size: 0.85rem;
+  border-radius: 0;
+  font-size: inherit;
+  font-weight: 500;
+  color: #1a1a1a;
+  white-space: pre;
+}
+
+/* Single accent: comments recede so code structure pops */
+pre .c {
+  color: #a8a08c;
+  font-weight: 400;
+}
+/* Keywords get a touch more weight; no color shift */
+pre .k {
+  font-weight: 650;
+  color: #1a1a1a;
+}
+/* Types/strings: kept as plain spans for future flexibility, no styling */
+pre .t,
+pre .s {
+  color: inherit;
+  font-weight: inherit;
+}
+
+/* Filename caption: full-width header strip attached to block above */
+.code-caption {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 500;
+  color: #8a7e63;
+  letter-spacing: 0.03em;
+  margin: 1.75rem 0 0;
+  padding: 0.5rem 1.4rem;
+  background: #ece6d6;
+  border: 1px solid #ece6d6;
+  border-bottom-color: #d8d0bc;
+  border-radius: 8px 8px 0 0;
+  display: block;
+}
+.code-caption + pre {
+  margin-top: 0;
+  border-top: none;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
 
 /* ── Images ───────────────────────────────────────────────── */

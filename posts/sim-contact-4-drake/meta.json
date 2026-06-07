@@ -1,0 +1,8 @@
+{
+  "title": "Contact in 3 Simulators, Part 4 — Drake",
+  "date": "2026-05-07",
+  "author": "Younghyo Park",
+  "tags": ["simulation", "drake", "hydroelastic", "contact", "explainer", "series:contact-pipelines"],
+  "excerpt": "A code-level walkthrough of Drake's contact pipeline: SceneGraph and ProximityEngine, point contact and hydroelastic, pressure fields, equilibrium surfaces, ContactSurface, and the SAP solver.",
+  "publish": false
+}
