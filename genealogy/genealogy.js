@@ -1160,7 +1160,7 @@
         const showsThesis = Boolean(node.thesisTitle) && isLineageCard;
         const width = isLineageCard ? metrics.lineageNodeW : NODE_W;
         const height = isLineageCard ? measureNodeHeight(node, width, isLineageCard, showsThesis) : NODE_H;
-        return { ...item, width, height, isLineageCard, showsThesis };
+        return { ...item, width, height, isContext, isLineageCard, showsThesis };
       });
 
       row.height = Math.max(NODE_H, ...row.items.map((item) => item.height));
@@ -1196,17 +1196,21 @@
     const height = Math.max(metrics.minWorldHeight, rowY - metrics.rowGapY + metrics.treeMargin);
     const focusDepth = COMPACT_DEPTH + PEEK_DEPTH;
     const focusRows = rows.filter((row) => row.offset >= -focusDepth);
+    const fitItemsForRow = (row) => {
+      const lineageItems = row.items.filter((item) => !item.isContext);
+      return lineageItems.length ? lineageItems : row.items;
+    };
     const focusLeft = Math.max(NODE_W / 2, ...focusRows.map((row) => {
-      return Math.max(...row.items.map((item) => {
+      return Math.max(...fitItemsForRow(row).map((item) => {
         return Math.max(0, -item.slot * metrics.treeGapX + item.width / 2);
       }));
     }));
     const focusRight = Math.max(NODE_W / 2, ...focusRows.map((row) => {
-      return Math.max(...row.items.map((item) => {
+      return Math.max(...fitItemsForRow(row).map((item) => {
         return Math.max(0, item.slot * metrics.treeGapX + item.width / 2);
       }));
     }));
-    const rowBasedViewWidth = focusLeft + focusRight + metrics.viewMarginX * 2;
+    const rowBasedViewWidth = Math.max(focusLeft, focusRight) * 2 + metrics.viewMarginX * 2;
     const viewWidth = Math.min(width, Math.max(metrics.minViewWidth, Math.min(metrics.maxCompactViewWidth, rowBasedViewWidth)));
     const upperRows = Math.min(ancestorRows.length, COMPACT_DEPTH);
     const topRowIndex = Math.max(0, selectedRowIndex - upperRows);

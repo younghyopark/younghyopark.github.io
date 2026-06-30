@@ -4,6 +4,7 @@ const path = require('path');
 const DOT_PATH = path.join(__dirname, 'csail.dot');
 const OUT_PATH = path.join(__dirname, 'csail-data.json');
 const THESIS_TITLES_PATH = path.join(__dirname, 'thesis-titles.json');
+const MGP_IMPORTS_PATH = path.join(__dirname, 'mgp-imports.json');
 const THESIS_URLS = {
   'chelsea_finn': 'https://www2.eecs.berkeley.edu/Pubs/TechRpts/2018/EECS-2018-105.html',
   '238967': 'https://www2.eecs.berkeley.edu/Pubs/TechRpts/2018/EECS-2018-133.pdf',
@@ -293,6 +294,34 @@ const CUSTOM_NODES = [
     href: 'https://genealogy.math.ndsu.nodak.edu/id.php?id=98529',
     role: 'other',
     thesisTitle: 'Data-driven Approaches for Texture and Motion'
+  },
+  {
+    id: 'jianbo_shi',
+    label: 'Jianbo Shi\nUC Berkeley 1998',
+    name: 'Jianbo Shi',
+    detail: 'UC Berkeley 1998',
+    year: 1998,
+    href: 'https://jianbo-shi.github.io/',
+    role: 'other'
+  },
+  {
+    id: 'katerina_fragkiadaki',
+    label: 'Katerina Fragkiadaki\nUPenn 2013',
+    name: 'Katerina Fragkiadaki',
+    detail: 'UPenn 2013',
+    year: 2013,
+    href: 'https://www.cs.cmu.edu/~katef/',
+    role: 'other',
+    thesisTitle: 'Multi-granularity Representations for Human Interactions: Pose, Motion and Intention'
+  },
+  {
+    id: 'matthew_bronars',
+    label: 'Matthew Bronars\nCMU',
+    name: 'Matthew Bronars',
+    detail: 'CMU',
+    year: null,
+    href: 'https://mbronars.github.io/',
+    role: 'other'
   },
   {
     id: '259444',
@@ -621,6 +650,22 @@ const CUSTOM_EDGES = [
   {
     source: '70152',
     target: '98529'
+  },
+  {
+    source: '70152',
+    target: 'jianbo_shi'
+  },
+  {
+    source: 'jianbo_shi',
+    target: 'katerina_fragkiadaki'
+  },
+  {
+    source: '343364',
+    target: 'matthew_bronars'
+  },
+  {
+    source: 'katerina_fragkiadaki',
+    target: 'matthew_bronars'
   },
   {
     source: '98529',
@@ -980,6 +1025,43 @@ function applyCustomAdditions(graph) {
   });
 }
 
+function loadMgpImports() {
+  if (!fs.existsSync(MGP_IMPORTS_PATH)) {
+    return { nodes: [], edges: [] };
+  }
+
+  const imports = JSON.parse(fs.readFileSync(MGP_IMPORTS_PATH, 'utf8'));
+  return {
+    nodes: Array.isArray(imports.nodes) ? imports.nodes : [],
+    edges: Array.isArray(imports.edges) ? imports.edges : []
+  };
+}
+
+function applyMgpImports(graph) {
+  const imports = loadMgpImports();
+  const nodeIds = new Set(graph.nodes.map((node) => node.id));
+  const edgeIds = new Set(graph.edges.map((edge) => `${edge.source}->${edge.target}`));
+
+  imports.nodes.forEach((node) => {
+    if (node && node.id && !nodeIds.has(node.id)) {
+      graph.nodes.push(node);
+      nodeIds.add(node.id);
+    }
+  });
+
+  imports.edges.forEach((edge) => {
+    if (!edge || !nodeIds.has(edge.source) || !nodeIds.has(edge.target)) {
+      return;
+    }
+
+    const edgeId = `${edge.source}->${edge.target}`;
+    if (!edgeIds.has(edgeId)) {
+      graph.edges.push({ source: edge.source, target: edge.target });
+      edgeIds.add(edgeId);
+    }
+  });
+}
+
 function loadThesisTitles() {
   if (!fs.existsSync(THESIS_TITLES_PATH)) {
     return {};
@@ -1239,6 +1321,7 @@ function layoutGraph(nodes, edges) {
 const dotText = fs.readFileSync(DOT_PATH, 'latin1');
 const graph = parseDot(dotText);
 applyCustomAdditions(graph);
+applyMgpImports(graph);
 applyThesisTitles(graph);
 const bounds = layoutGraph(graph.nodes, graph.edges);
 
