@@ -5,8 +5,20 @@
   const mapWorld = document.getElementById('map-world');
   const nodeLayer = document.getElementById('node-layer');
   const loading = document.getElementById('loading');
+  const findModeButton = document.getElementById('mode-find');
+  const connectModeButton = document.getElementById('mode-connect');
+  const findPanel = document.getElementById('find-panel');
+  const connectPanel = document.getElementById('connect-panel');
   const searchInput = document.getElementById('person-search');
   const searchResults = document.getElementById('search-results');
+  const connectFromInput = document.getElementById('connect-from-search');
+  const connectToInput = document.getElementById('connect-to-search');
+  const connectFromResults = document.getElementById('connect-from-results');
+  const connectToResults = document.getElementById('connect-to-results');
+  const connectRun = document.getElementById('connect-run');
+  const connectSwap = document.getElementById('connect-swap');
+  const connectClear = document.getElementById('connect-clear');
+  const connectStatus = document.getElementById('connect-status');
   const lineageToggle = document.getElementById('lineage-toggle');
   const lineageFullAction = document.getElementById('lineage-full-action');
   const topbar = document.querySelector('.topbar');
@@ -47,10 +59,17 @@
     nodeElements: new Map(),
     parentsById: new Map(),
     childrenById: new Map(),
+    neighborsById: new Map(),
     edgeByNode: new Map(),
     edgeByPair: new Map(),
+    interactionMode: 'find',
     selectedId: null,
     lineageMode: 'compact',
+    connectionActiveSlot: 'from',
+    connectionFromId: null,
+    connectionToId: null,
+    connectionPathIds: [],
+    connectionEdgeIds: new Set(),
     scale: 1,
     x: 0,
     y: 0,
@@ -214,6 +233,25 @@
     return `${canonicalPathname()}?${encodeURIComponent(slug)}`;
   }
 
+  function connectionPath(fromId, toId) {
+    const fromSlug = state.slugById.get(fromId) || slugify(fromId);
+    const toSlug = state.slugById.get(toId) || slugify(toId);
+    return `${canonicalPathname()}?${encodeURIComponent(`${fromSlug}-and-${toSlug}`)}`;
+  }
+
+  function updateConnectionUrl(fromId, toId, replace) {
+    if (!window.history || !state.nodesById.has(fromId) || !state.nodesById.has(toId)) {
+      return;
+    }
+    const nextPath = connectionPath(fromId, toId);
+    const currentPath = `${window.location.pathname}${window.location.search}`;
+    if (nextPath === currentPath) {
+      return;
+    }
+    const action = replace ? 'replaceState' : 'pushState';
+    window.history[action]({ connectionFromId: fromId, connectionToId: toId }, '', nextPath);
+  }
+
   function updatePersonUrl(id, replace) {
     if (!window.history || !state.nodesById.has(id)) {
       return;
@@ -240,7 +278,7 @@
     window.history[action]({}, '', nextPath);
   }
 
-  function requestedPersonId() {
+  function requestedQueryValue() {
     const rawQuery = window.location.search.replace(/^\?/, '').split('&')[0];
     if (!rawQuery) {
       return null;
@@ -253,12 +291,50 @@
       rawValue = rawQuery;
     }
 
-    const explicitMatch = rawValue.match(/^(?:person|id|name)=(.+)$/);
-    const value = explicitMatch ? explicitMatch[1] : rawValue;
+    return rawValue;
+  }
+
+  function resolvePersonQueryValue(value) {
     if (state.nodesById.has(value)) {
       return value;
     }
     return state.idBySlug.get(slugify(value)) || null;
+  }
+
+  function requestedConnectionIds() {
+    const rawValue = requestedQueryValue();
+    if (!rawValue) {
+      return null;
+    }
+
+    const explicitMatch = rawValue.match(/^(?:connect|connection|path|between)=(.+)$/);
+    const value = explicitMatch ? explicitMatch[1] : rawValue;
+    const normalized = slugify(value);
+    const parts = normalized.split('-and-');
+    if (parts.length < 2) {
+      return null;
+    }
+
+    for (let index = 1; index < parts.length; index += 1) {
+      const fromId = resolvePersonQueryValue(parts.slice(0, index).join('-and-'));
+      const toId = resolvePersonQueryValue(parts.slice(index).join('-and-'));
+      if (fromId && toId) {
+        return { fromId, toId };
+      }
+    }
+
+    return null;
+  }
+
+  function requestedPersonId() {
+    const rawValue = requestedQueryValue();
+    if (!rawValue) {
+      return null;
+    }
+
+    const explicitMatch = rawValue.match(/^(?:person|id|name)=(.+)$/);
+    const value = explicitMatch ? explicitMatch[1] : rawValue;
+    return resolvePersonQueryValue(value);
   }
 
   function clamp(value, min, max) {
@@ -507,12 +583,17 @@
     ctx.setTransform(state.dpr, 0, 0, state.dpr, 0, 0);
     ctx.clearRect(0, 0, state.canvasWidth, state.canvasHeight);
 
-    const filtered = state.selectedId || state.searchMatches.size > 0;
+    const filtered = state.selectedId ||
+      state.searchMatches.size > 0 ||
+      state.connectionFromId ||
+      state.connectionToId ||
+      state.connectionPathIds.length > 0;
     const base = filtered
       ? { color: 'rgba(50, 46, 40, 0.025)', width: 0.65, arrow: false, arrowSize: 0 }
       : { color: 'rgba(50, 46, 40, 0.18)', width: 0.9, arrow: state.scale > 0.16, arrowSize: 4.8 };
     const related = { color: '#1772d0', width: 2.2, arrow: true, arrowSize: 7 };
     const contextEdge = { color: 'rgba(76, 110, 245, 0.13)', width: 1, arrow: false, arrowSize: 0 };
+    const connectionEdge = { color: '#2b8a3e', width: 3, arrow: true, arrowSize: 7.5 };
 
     function lineageStyle(edge) {
       const depth = state.lineageEdgeDepths.get(edge.id) || 1;
@@ -538,6 +619,15 @@
     }
 
     if (state.focusedNodeIds) {
+      if (state.connectionPathIds.length) {
+        state.data.edges.forEach((edge) => {
+          if (state.connectionEdgeIds.has(edge.id)) {
+            drawEdge(edge, connectionEdge);
+          }
+        });
+        return;
+      }
+
       state.data.edges.forEach((edge) => {
         if (state.contextEdgeIds.has(edge.id) && !state.lineageEdgeIds.has(edge.id)) {
           drawEdge(edge, contextEdge);
@@ -590,13 +680,6 @@
       }
     }
 
-    if (explorePanel) {
-      const box = explorePanel.getBoundingClientRect();
-      if (box.width > 0 && box.height > 0) {
-        bottom = Math.min(bottom, box.top - stageBox.top - pad);
-      }
-    }
-
     if (right - left < 260) {
       left = pad / 2;
       right = stageBox.width - pad / 2;
@@ -628,6 +711,182 @@
       x: frame.x + (frame.width - bounds.width * scale) / 2 - boundsX * scale,
       y: frame.y + (frame.height - bounds.height * scale) / 2 - boundsY * scale
     };
+  }
+
+  function frameTopWithChrome(stageBox, pad) {
+    let top = pad;
+    if (topbar) {
+      const box = topbar.getBoundingClientRect();
+      if (box.width > 0 && box.height > 0) {
+        top = Math.max(top, box.bottom - stageBox.top + pad);
+      }
+    }
+    return top;
+  }
+
+  function leftOfControlFrame(stageBox, pad) {
+    if (compactViewport()) {
+      return null;
+    }
+
+    const top = frameTopWithChrome(stageBox, pad);
+    let right = stageBox.width - pad;
+    [explorePanel, sourceStrip].forEach((element) => {
+      if (!element) {
+        return;
+      }
+      const box = element.getBoundingClientRect();
+      if (box.width <= 0 || box.height <= 0) {
+        return;
+      }
+      const localLeft = box.left - stageBox.left;
+      if (localLeft > stageBox.width * 0.45) {
+        right = Math.min(right, localLeft - pad);
+      }
+    });
+
+    if (right - pad < 420) {
+      return null;
+    }
+
+    return {
+      x: pad,
+      y: top,
+      width: right - pad,
+      height: Math.max(1, stageBox.height - top - pad)
+    };
+  }
+
+  function fullConnectionFrame(stageBox, pad) {
+    const top = frameTopWithChrome(stageBox, pad);
+    return {
+      x: pad,
+      y: top,
+      width: Math.max(1, stageBox.width - pad * 2),
+      height: Math.max(1, stageBox.height - top - pad)
+    };
+  }
+
+  function localElementRect(element, stageBox, pad) {
+    if (!element) {
+      return null;
+    }
+
+    const box = element.getBoundingClientRect();
+    if (box.width <= 0 || box.height <= 0) {
+      return null;
+    }
+
+    return {
+      x: box.left - stageBox.left - pad,
+      y: box.top - stageBox.top - pad,
+      width: box.width + pad * 2,
+      height: box.height + pad * 2
+    };
+  }
+
+  function connectionObstacleRects(stageBox, pad) {
+    return [explorePanel, sourceStrip]
+      .map((element) => localElementRect(element, stageBox, pad))
+      .filter(Boolean);
+  }
+
+  function rectOverlapArea(a, b) {
+    const left = Math.max(a.x, b.x);
+    const right = Math.min(a.x + a.width, b.x + b.width);
+    const top = Math.max(a.y, b.y);
+    const bottom = Math.min(a.y + a.height, b.y + b.height);
+    if (right <= left || bottom <= top) {
+      return 0;
+    }
+    return (right - left) * (bottom - top);
+  }
+
+  function totalOverlapArea(rect, obstacles) {
+    return obstacles.reduce((sum, obstacle) => {
+      return sum + rectOverlapArea(rect, obstacle);
+    }, 0);
+  }
+
+  function viewportTransformOnly(transform) {
+    return {
+      scale: transform.scale,
+      x: transform.x,
+      y: transform.y
+    };
+  }
+
+  function transformForFrame(bounds, frame, paddingFactor, options) {
+    const boundsX = bounds.x || 0;
+    const boundsY = bounds.y || 0;
+    const nextScale = Math.min(frame.width / bounds.width, frame.height / bounds.height) * paddingFactor;
+    const scale = clamp(nextScale, state.minScale, state.maxScale);
+    const screenWidth = bounds.width * scale;
+    const screenHeight = bounds.height * scale;
+    const minCenterX = frame.x + screenWidth / 2;
+    const maxCenterX = frame.x + frame.width - screenWidth / 2;
+    const minCenterY = frame.y + screenHeight / 2;
+    const maxCenterY = frame.y + frame.height - screenHeight / 2;
+    const preferredCenterX = options && Number.isFinite(options.preferredCenterX)
+      ? options.preferredCenterX
+      : frame.x + frame.width / 2;
+    const preferredCenterY = options && Number.isFinite(options.preferredCenterY)
+      ? options.preferredCenterY
+      : frame.y + frame.height / 2;
+    const centerX = minCenterX <= maxCenterX
+      ? clamp(preferredCenterX, minCenterX, maxCenterX)
+      : frame.x + frame.width / 2;
+    const centerY = minCenterY <= maxCenterY
+      ? clamp(preferredCenterY, minCenterY, maxCenterY)
+      : frame.y + frame.height / 2;
+    const x = centerX - (boundsX + bounds.width / 2) * scale;
+    const y = centerY - (boundsY + bounds.height / 2) * scale;
+    return {
+      scale,
+      x,
+      y,
+      screenRect: {
+        x: x + boundsX * scale,
+        y: y + boundsY * scale,
+        width: screenWidth,
+        height: screenHeight
+      }
+    };
+  }
+
+  function readableConnectionTransformForBounds(bounds) {
+    const stageBox = stage.getBoundingClientRect();
+    const pad = stageBox.width < 560 ? 12 : 18;
+    const paddingFactor = compactViewport() ? 0.99 : 0.98;
+    const preferredCenterX = stageBox.width / 2;
+    const safeFrame = visibleFrame();
+    const centeredFrame = fullConnectionFrame(stageBox, pad);
+    const centeredTransform = transformForFrame(bounds, centeredFrame, paddingFactor, {
+      preferredCenterX
+    });
+    const obstacles = connectionObstacleRects(stageBox, pad);
+
+    if (totalOverlapArea(centeredTransform.screenRect, obstacles) < 1) {
+      return viewportTransformOnly(centeredTransform);
+    }
+
+    const safeTransform = transformForFrame(bounds, safeFrame, paddingFactor, {
+      preferredCenterX
+    });
+    const sideFrame = leftOfControlFrame(stageBox, pad);
+
+    if (sideFrame) {
+      const sideTransform = transformForFrame(bounds, sideFrame, paddingFactor, {
+        preferredCenterX
+      });
+      const sideOverlap = totalOverlapArea(sideTransform.screenRect, obstacles);
+      const meaningfulScaleGain = sideTransform.scale >= safeTransform.scale * 1.07;
+      if (sideOverlap < 1 && meaningfulScaleGain) {
+        return viewportTransformOnly(sideTransform);
+      }
+    }
+
+    return viewportTransformOnly(safeTransform);
   }
 
   function applyViewportTransform(transform) {
@@ -746,12 +1005,12 @@
 
     card.append(name, detail, thesis, country);
     card.addEventListener('click', () => {
-      selectPerson(node.id, { center: false });
+      activatePersonFromGraph(node.id);
     });
     card.addEventListener('keydown', (event) => {
       if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault();
-        selectPerson(node.id, { center: false });
+        activatePersonFromGraph(node.id);
       }
     });
 
@@ -827,6 +1086,7 @@
       state.slugById.set(node.id, canonicalSlug);
       state.parentsById.set(node.id, new Set());
       state.childrenById.set(node.id, new Set());
+      state.neighborsById.set(node.id, new Set());
       state.edgeByNode.set(node.id, new Set());
 
       state.idBySlug.set(canonicalSlug, node.id);
@@ -840,6 +1100,8 @@
     state.data.edges.forEach((edge) => {
       state.parentsById.get(edge.target).add(edge.source);
       state.childrenById.get(edge.source).add(edge.target);
+      state.neighborsById.get(edge.source).add(edge.target);
+      state.neighborsById.get(edge.target).add(edge.source);
       state.edgeByNode.get(edge.source).add(edge);
       state.edgeByNode.get(edge.target).add(edge);
       state.edgeByPair.set(`${edge.source}->${edge.target}`, edge);
@@ -945,7 +1207,9 @@
   function applyNodeLayout(positions, visibleIds, bounds, fitBounds, contextIds, options) {
     const targetBounds = bounds || state.data.bounds;
     const targetFitBounds = fitBounds || targetBounds;
-    const targetTransform = fitTransformForBounds(targetFitBounds);
+    const targetTransform = options && options.transformForBounds
+      ? options.transformForBounds(targetFitBounds)
+      : fitTransformForBounds(targetFitBounds);
     const shouldAnimate = Boolean(options && options.animate) &&
       !reducedMotion() &&
       state.nodeElements.size > 0;
@@ -1283,7 +1547,16 @@
     state.highlightedNodes.forEach((id) => {
       const element = state.nodeElements.get(id);
       if (element) {
-        element.classList.remove('is-selected', 'is-parent', 'is-descendant', 'is-lineage', 'is-muted-lineage');
+        element.classList.remove(
+          'is-selected',
+          'is-parent',
+          'is-descendant',
+          'is-lineage',
+          'is-muted-lineage',
+          'is-connection-source',
+          'is-connection-target',
+          'is-connection-path'
+        );
       }
     });
     state.highlightedNodes.clear();
@@ -1407,8 +1680,792 @@
     return count;
   }
 
+  function connectionLayoutMetrics() {
+    if (!compactViewport()) {
+      return {
+        nodeW: LINEAGE_NODE_W,
+        treeGapX: TREE_GAP_X,
+        rowGapY: 58,
+        treeMargin: TREE_MARGIN,
+        viewMarginX: 150,
+        viewMarginY: 56,
+        minWorldWidth: 900,
+        minWorldHeight: 520
+      };
+    }
+
+    return {
+      nodeW: 250,
+      treeGapX: 270,
+      rowGapY: 28,
+      treeMargin: 72,
+      viewMarginX: 14,
+      viewMarginY: 24,
+      minWorldWidth: 580,
+      minWorldHeight: 400
+    };
+  }
+
+  function connectionInput(slot) {
+    return slot === 'to' ? connectToInput : connectFromInput;
+  }
+
+  function connectionResults(slot) {
+    return slot === 'to' ? connectToResults : connectFromResults;
+  }
+
+  function connectionId(slot) {
+    return slot === 'to' ? state.connectionToId : state.connectionFromId;
+  }
+
+  function setConnectionId(slot, id) {
+    if (slot === 'to') {
+      state.connectionToId = id;
+    } else {
+      state.connectionFromId = id;
+    }
+  }
+
+  function connectionInputValue(node) {
+    return node ? node.name : '';
+  }
+
+  function connectionEndpointName(id) {
+    const node = state.nodesById.get(id);
+    return node ? displayNameForTitle(node) || node.name : '';
+  }
+
+  function connectionTitleText() {
+    if (!state.connectionFromId || !state.connectionToId) {
+      return DEFAULT_TITLE;
+    }
+
+    return `How ${connectionEndpointName(state.connectionFromId)} and ${connectionEndpointName(state.connectionToId)} Are Connected Academically`;
+  }
+
+  function setConnectionActiveSlot(slot) {
+    state.connectionActiveSlot = slot === 'to' ? 'to' : 'from';
+  }
+
+  function updateConnectionStatus(message) {
+    if (!connectStatus) {
+      return;
+    }
+
+    if (message) {
+      connectStatus.textContent = message;
+      return;
+    }
+
+    if (state.connectionFromId && state.connectionToId) {
+      connectStatus.textContent = 'Click Connect to find the shortest chain.';
+    } else if (state.connectionFromId) {
+      connectStatus.textContent = `Choose a second person to connect from ${connectionEndpointName(state.connectionFromId)}.`;
+    } else if (state.connectionToId) {
+      connectStatus.textContent = `Choose a first person to connect to ${connectionEndpointName(state.connectionToId)}.`;
+    } else {
+      connectStatus.textContent = 'Select two people to find the shortest connection.';
+    }
+  }
+
+  function hideAllSearchResults() {
+    [searchResults, connectFromResults, connectToResults].forEach((results) => {
+      if (results) {
+        results.hidden = true;
+      }
+    });
+  }
+
+  function findPersonMatches(query, limit) {
+    const normalizedQuery = normalize(query);
+    if (!normalizedQuery || !state.data) {
+      return [];
+    }
+
+    return state.data.nodes
+      .map((node) => ({ node, score: scoreNode(node, normalizedQuery) }))
+      .filter((item) => item.score < 99)
+      .sort((a, b) => a.score - b.score || a.node.name.localeCompare(b.node.name))
+      .slice(0, limit || 12);
+  }
+
+  function renderAutocomplete(input, results, onPick) {
+    const query = normalize(input.value);
+    clearSearchMatches();
+    results.replaceChildren();
+
+    if (!query) {
+      results.hidden = true;
+      renderEdges();
+      return [];
+    }
+
+    const matches = findPersonMatches(query, 12);
+    graphHost.classList.add('has-search');
+    matches.forEach(({ node }, index) => {
+      const element = state.nodeElements.get(node.id);
+      if (element) {
+        element.classList.add('is-search-match');
+      }
+      state.searchMatches.add(node.id);
+
+      const button = relationButton(node, onPick);
+      if (index === 0) {
+        button.classList.add('is-active');
+      }
+      results.appendChild(button);
+    });
+
+    if (!matches.length) {
+      const empty = document.createElement('button');
+      const name = document.createElement('span');
+      const meta = document.createElement('span');
+      empty.type = 'button';
+      empty.disabled = true;
+      name.className = 'result-name';
+      name.textContent = 'No matches';
+      meta.className = 'result-meta';
+      meta.textContent = 'Try a different query';
+      empty.append(name, meta);
+      results.appendChild(empty);
+    }
+
+    results.hidden = false;
+    renderEdges();
+    return matches;
+  }
+
+  function hideConnectionResults() {
+    [connectFromResults, connectToResults].forEach((results) => {
+      if (results) {
+        results.hidden = true;
+        results.replaceChildren();
+      }
+    });
+  }
+
+  function clearConnectionPath(options) {
+    state.connectionPathIds = [];
+    state.connectionEdgeIds.clear();
+    state.contextEdgeIds.clear();
+    clearHighlightedClasses();
+    graphHost.classList.remove('has-connection');
+    hideLineageActions();
+    updateSelectionControls();
+
+    if (options && options.restore) {
+      restoreGlobalLayout({ animate: options.animate !== false });
+      return;
+    }
+
+    renderEdges();
+  }
+
+  function clearConnection(options) {
+    state.connectionFromId = null;
+    state.connectionToId = null;
+    state.connectionActiveSlot = 'from';
+    if (connectFromInput) {
+      connectFromInput.value = '';
+    }
+    if (connectToInput) {
+      connectToInput.value = '';
+    }
+    hideConnectionResults();
+    clearSearchMatches();
+    clearConnectionPath({
+      restore: !options || options.restore !== false,
+      animate: !options || options.animate !== false
+    });
+    if (!options || options.updateUrl !== false) {
+      updateBaseUrl(options && options.replaceUrl);
+    }
+    updateConnectionStatus();
+  }
+
+  function refreshConnectionHighlights() {
+    clearHighlightedClasses();
+    graphHost.classList.remove('has-selection');
+
+    const hasConnectionState = state.connectionFromId ||
+      state.connectionToId ||
+      state.connectionPathIds.length > 0;
+    if (!hasConnectionState) {
+      graphHost.classList.remove('has-connection');
+      renderEdges();
+      return;
+    }
+
+    graphHost.classList.add('has-connection');
+    state.connectionEdgeIds.forEach((id) => {
+      state.lineageEdgeIds.add(id);
+      state.lineageEdgeDepths.set(id, 1);
+    });
+
+    if (state.connectionPathIds.length) {
+      state.connectionPathIds.forEach((id) => {
+        if (id === state.connectionFromId) {
+          markNode(id, 'is-connection-source');
+        } else if (id === state.connectionToId) {
+          markNode(id, 'is-connection-target');
+        } else {
+          markNode(id, 'is-connection-path');
+        }
+      });
+    } else {
+      if (state.connectionFromId) {
+        markNode(state.connectionFromId, 'is-connection-source');
+      }
+      if (state.connectionToId && state.connectionToId !== state.connectionFromId) {
+        markNode(state.connectionToId, 'is-connection-target');
+      }
+    }
+
+    renderEdges();
+  }
+
+  function edgeForConnectionStep(leftId, rightId) {
+    return state.edgeByPair.get(`${leftId}->${rightId}`) ||
+      state.edgeByPair.get(`${rightId}->${leftId}`) ||
+      null;
+  }
+
+  function connectionEdgesForPath(pathIds) {
+    const edges = [];
+    for (let index = 1; index < pathIds.length; index += 1) {
+      const edge = edgeForConnectionStep(pathIds[index - 1], pathIds[index]);
+      if (edge) {
+        edges.push(edge);
+      }
+    }
+    return edges;
+  }
+
+  function shortestConnectionPath(fromId, toId) {
+    if (!state.nodesById.has(fromId) || !state.nodesById.has(toId)) {
+      return null;
+    }
+    if (fromId === toId) {
+      return [fromId];
+    }
+
+    const queue = [fromId];
+    const previous = new Map([[fromId, null]]);
+
+    for (let index = 0; index < queue.length; index += 1) {
+      const id = queue[index];
+      const neighbors = sortNodeIds(state.neighborsById.get(id) || new Set());
+      for (const neighborId of neighbors) {
+        if (previous.has(neighborId)) {
+          continue;
+        }
+        previous.set(neighborId, id);
+        if (neighborId === toId) {
+          index = queue.length;
+          break;
+        }
+        queue.push(neighborId);
+      }
+    }
+
+    if (!previous.has(toId)) {
+      return null;
+    }
+
+    const pathIds = [];
+    for (let id = toId; id; id = previous.get(id)) {
+      pathIds.push(id);
+    }
+    return pathIds.reverse();
+  }
+
+  function connectionLayerForStep(prevId, nextId, prevLayer) {
+    const edge = edgeForConnectionStep(prevId, nextId);
+    if (!edge) {
+      return prevLayer + 1;
+    }
+
+    if (edge.source === prevId && edge.target === nextId) {
+      return prevLayer + 1;
+    }
+    if (edge.source === nextId && edge.target === prevId) {
+      return prevLayer - 1;
+    }
+
+    const prevNode = state.nodesById.get(prevId);
+    const nextNode = state.nodesById.get(nextId);
+    const prevRank = prevNode && Number.isFinite(prevNode.rank) ? prevNode.rank : 0;
+    const nextRank = nextNode && Number.isFinite(nextNode.rank) ? nextNode.rank : prevRank + 1;
+    return nextRank >= prevRank ? prevLayer + 1 : prevLayer - 1;
+  }
+
+  function connectionRowsForPath(pathIds) {
+    const layersById = new Map();
+    const pathIndexById = new Map();
+    let minLayer = 0;
+
+    pathIds.forEach((id, index) => {
+      pathIndexById.set(id, index);
+      if (index === 0) {
+        layersById.set(id, 0);
+        return;
+      }
+
+      const prevId = pathIds[index - 1];
+      const layer = connectionLayerForStep(prevId, id, layersById.get(prevId) || 0);
+      layersById.set(id, layer);
+      minLayer = Math.min(minLayer, layer);
+    });
+
+    const rows = [];
+    pathIds.forEach((id) => {
+      const rowIndex = (layersById.get(id) || 0) - minLayer;
+      if (!rows[rowIndex]) {
+        rows[rowIndex] = [];
+      }
+      rows[rowIndex].push(id);
+    });
+
+    return rows.map((ids) => {
+      return ids.sort((a, b) => pathIndexById.get(a) - pathIndexById.get(b));
+    });
+  }
+
+  function connectionPathRelations(pathIds) {
+    const pathSet = new Set(pathIds);
+    const parentIdsById = new Map(pathIds.map((id) => [id, []]));
+    const childIdsById = new Map(pathIds.map((id) => [id, []]));
+
+    connectionEdgesForPath(pathIds).forEach((edge) => {
+      if (!pathSet.has(edge.source) || !pathSet.has(edge.target)) {
+        return;
+      }
+      parentIdsById.get(edge.target).push(edge.source);
+      childIdsById.get(edge.source).push(edge.target);
+    });
+
+    return { parentIdsById, childIdsById };
+  }
+
+  function average(values) {
+    if (!values.length) {
+      return 0;
+    }
+    return values.reduce((sum, value) => sum + value, 0) / values.length;
+  }
+
+  function spreadConnectionRow(items, minGap) {
+    const sorted = items.slice().sort((a, b) => {
+      return a.desiredSlot - b.desiredSlot || a.pathIndex - b.pathIndex;
+    });
+
+    sorted.forEach((item, index) => {
+      item.slot = index === 0
+        ? item.desiredSlot
+        : Math.max(item.desiredSlot, sorted[index - 1].slot + minGap);
+    });
+
+    const desiredCenter = average(sorted.map((item) => item.desiredSlot));
+    const actualCenter = average(sorted.map((item) => item.slot));
+    const shift = desiredCenter - actualCenter;
+    sorted.forEach((item) => {
+      item.slot += shift;
+    });
+  }
+
+  function assignConnectionSlots(rows, pathIds, metrics, cardWidth) {
+    const pathIndexById = new Map(pathIds.map((id, index) => [id, index]));
+    const relations = connectionPathRelations(pathIds);
+    const slotsById = new Map();
+    const minSlotGap = Math.max(1, (cardWidth + 32) / metrics.treeGapX);
+
+    rows.forEach((row) => {
+      const rowCenterOffset = (row.items.length - 1) / 2;
+
+      row.items.forEach((item, index) => {
+        const parentSlots = (relations.parentIdsById.get(item.id) || [])
+          .filter((id) => slotsById.has(id))
+          .map((id) => slotsById.get(id));
+
+        item.pathIndex = pathIndexById.get(item.id) || 0;
+        item.desiredSlot = parentSlots.length
+          ? average(parentSlots)
+          : index - rowCenterOffset;
+      });
+
+      spreadConnectionRow(row.items, minSlotGap);
+      row.items.forEach((item) => {
+        slotsById.set(item.id, item.slot);
+      });
+    });
+  }
+
+  function buildConnectionPathLayout(pathIds) {
+    const metrics = connectionLayoutMetrics();
+    const positions = new Map();
+    const cardWidth = metrics.nodeW;
+    const rows = connectionRowsForPath(pathIds).map((ids) => {
+      const items = ids.map((id) => {
+        const node = state.nodesById.get(id);
+        const showsThesis = Boolean(node.thesisTitle);
+        const height = measureNodeHeight(node, cardWidth, true, showsThesis);
+        return { id, node, width: cardWidth, height, showsThesis };
+      });
+      return {
+        items,
+        height: Math.max(NODE_H, ...items.map((item) => item.height))
+      };
+    });
+
+    assignConnectionSlots(rows, pathIds, metrics, cardWidth);
+    const requiredLeft = Math.max(cardWidth / 2, ...rows.flatMap((row) => {
+      return row.items.map((item) => Math.max(0, -item.slot * metrics.treeGapX + item.width / 2));
+    }));
+    const requiredRight = Math.max(cardWidth / 2, ...rows.flatMap((row) => {
+      return row.items.map((item) => Math.max(0, item.slot * metrics.treeGapX + item.width / 2));
+    }));
+    const centerX = metrics.treeMargin + requiredLeft;
+    const worldWidth = Math.max(metrics.minWorldWidth, requiredLeft + requiredRight + metrics.treeMargin * 2);
+    let rowY = metrics.treeMargin;
+
+    rows.forEach((row) => {
+      row.items.forEach((item) => {
+        positions.set(item.id, {
+          ...item.node,
+          x: Math.round(centerX + item.slot * metrics.treeGapX - item.width / 2),
+          y: Math.round(rowY + (row.height - item.height) / 2),
+          w: item.width,
+          h: item.height,
+          isLineageCard: true,
+          showsThesis: item.showsThesis
+        });
+      });
+      rowY += row.height + metrics.rowGapY;
+    });
+
+    const contentHeight = rowY - metrics.rowGapY + metrics.treeMargin;
+    const worldHeight = Math.max(metrics.minWorldHeight, contentHeight);
+    const boxes = Array.from(positions.values());
+    const left = Math.min(...boxes.map((box) => box.x));
+    const right = Math.max(...boxes.map((box) => box.x + box.w));
+    const top = Math.min(...boxes.map((box) => box.y));
+    const bottom = Math.max(...boxes.map((box) => box.y + box.h));
+    const viewX = clamp(left - metrics.viewMarginX, 0, Math.max(0, worldWidth - 1));
+    const viewY = clamp(top - metrics.viewMarginY, 0, Math.max(0, worldHeight - 1));
+    const viewBounds = {
+      x: Math.round(viewX),
+      y: Math.round(viewY),
+      width: Math.round(Math.min(worldWidth - viewX, right - left + metrics.viewMarginX * 2)),
+      height: Math.round(Math.min(worldHeight - viewY, bottom - top + metrics.viewMarginY * 2))
+    };
+
+    return {
+      positions,
+      visibleIds: new Set(pathIds),
+      worldBounds: {
+        x: 0,
+        y: 0,
+        width: Math.round(worldWidth),
+        height: Math.round(worldHeight)
+      },
+      viewBounds
+    };
+  }
+
+  function activateConnectionPath(pathIds, options) {
+    state.selectedId = null;
+    state.lineageMode = 'compact';
+    state.connectionPathIds = pathIds.slice();
+    state.connectionEdgeIds = new Set(connectionEdgesForPath(pathIds).map((edge) => edge.id));
+    state.lineageEdgeIds.clear();
+    state.lineageEdgeDepths.clear();
+    state.connectionEdgeIds.forEach((id) => {
+      state.lineageEdgeIds.add(id);
+      state.lineageEdgeDepths.set(id, 1);
+    });
+    graphHost.classList.remove('has-selection');
+    updateSelectionControls();
+
+    const layout = buildConnectionPathLayout(pathIds);
+    applyNodeLayout(
+      layout.positions,
+      layout.visibleIds,
+      layout.worldBounds,
+      layout.viewBounds,
+      null,
+      {
+        ...options,
+        transformForBounds: readableConnectionTransformForBounds
+      }
+    );
+    hideLineageActions();
+    refreshConnectionHighlights();
+  }
+
+  function resolveConnectionInput(slot) {
+    if (connectionId(slot)) {
+      return true;
+    }
+
+    const input = connectionInput(slot);
+    const matches = findPersonMatches(input.value, 1);
+    if (!matches.length) {
+      return false;
+    }
+
+    selectConnectionEndpoint(slot, matches[0].node.id, {
+      animate: false,
+      focusNext: false,
+      run: false
+    });
+    return true;
+  }
+
+  function runConnection(options) {
+    const shouldResolve = !options || options.resolve !== false;
+    if (shouldResolve) {
+      resolveConnectionInput('from');
+      resolveConnectionInput('to');
+    }
+
+    hideAllSearchResults();
+    clearSearchMatches();
+
+    const fromId = state.connectionFromId;
+    const toId = state.connectionToId;
+    if (!fromId || !toId) {
+      clearConnectionPath({
+        restore: state.connectionPathIds.length > 0,
+        animate: !options || options.animate !== false
+      });
+      refreshConnectionHighlights();
+      updateConnectionStatus();
+      return;
+    }
+
+    if (fromId === toId) {
+      activateConnectionPath([fromId], { animate: !options || options.animate !== false });
+      if (!options || options.updateUrl !== false) {
+        updateConnectionUrl(fromId, toId, options && options.replaceUrl);
+      }
+      updateConnectionStatus('Same person selected.');
+      return;
+    }
+
+    const pathIds = shortestConnectionPath(fromId, toId);
+    if (!pathIds) {
+      clearConnectionPath({
+        restore: state.connectionPathIds.length > 0,
+        animate: !options || options.animate !== false
+      });
+      refreshConnectionHighlights();
+      updateConnectionStatus(`No connection found between ${connectionEndpointName(fromId)} and ${connectionEndpointName(toId)} in the current graph.`);
+      return;
+    }
+
+    activateConnectionPath(pathIds, { animate: !options || options.animate !== false });
+    if (!options || options.updateUrl !== false) {
+      updateConnectionUrl(fromId, toId, options && options.replaceUrl);
+    }
+    const linkCount = pathIds.length - 1;
+    updateConnectionStatus(`${connectionEndpointName(fromId)} connects to ${connectionEndpointName(toId)} in ${linkCount} advisor-student ${linkCount === 1 ? 'link' : 'links'}.`);
+  }
+
+  function selectConnectionEndpoint(slot, id, options) {
+    if (!state.nodesById.has(id)) {
+      return;
+    }
+
+    setConnectionActiveSlot(slot);
+    setConnectionId(slot, id);
+    connectionInput(slot).value = connectionInputValue(state.nodesById.get(id));
+    connectionResults(slot).hidden = true;
+    clearSearchMatches();
+
+    const shouldRun = state.connectionFromId &&
+      state.connectionToId &&
+      (!options || options.run !== false);
+    if (state.connectionPathIds.length) {
+      clearConnectionPath({
+        restore: !shouldRun,
+        animate: !options || options.animate !== false
+      });
+    }
+
+    if (options && options.focusNext === false) {
+      // Keep the current focus where it is.
+    } else if (slot === 'from' && !state.connectionToId) {
+      setConnectionActiveSlot('to');
+      connectToInput.focus();
+    } else if (slot === 'to' && !state.connectionFromId) {
+      setConnectionActiveSlot('from');
+      connectFromInput.focus();
+    }
+
+    if (shouldRun) {
+      runConnection({
+        animate: !options || options.animate !== false,
+        resolve: false
+      });
+      return;
+    }
+
+    refreshConnectionHighlights();
+    updateConnectionStatus();
+  }
+
+  function syncConnectionSlotFromInput(slot) {
+    const id = connectionId(slot);
+    const node = state.nodesById.get(id);
+    if (!id || !node || connectionInput(slot).value === connectionInputValue(node)) {
+      return false;
+    }
+
+    setConnectionId(slot, null);
+    if (state.connectionPathIds.length) {
+      clearConnectionPath({ restore: true, animate: true });
+    }
+    updateBaseUrl();
+    return true;
+  }
+
+  function updateConnectionSearch(slot) {
+    setConnectionActiveSlot(slot);
+    const changedEndpoint = syncConnectionSlotFromInput(slot);
+    renderAutocomplete(connectionInput(slot), connectionResults(slot), (node) => {
+      selectConnectionEndpoint(slot, node.id);
+    });
+    if (changedEndpoint || !normalize(connectionInput(slot).value)) {
+      refreshConnectionHighlights();
+      updateConnectionStatus();
+    }
+  }
+
+  function clearConnectionSlot(slot) {
+    setConnectionId(slot, null);
+    connectionInput(slot).value = '';
+    connectionResults(slot).hidden = true;
+    if (state.connectionPathIds.length) {
+      clearConnectionPath({ restore: true, animate: true });
+    }
+    updateBaseUrl();
+    refreshConnectionHighlights();
+    updateConnectionStatus();
+  }
+
+  function swapConnectionEndpoints() {
+    const fromId = state.connectionFromId;
+    const toId = state.connectionToId;
+    const fromValue = connectFromInput.value;
+    const toValue = connectToInput.value;
+
+    state.connectionFromId = toId;
+    state.connectionToId = fromId;
+    connectFromInput.value = toValue;
+    connectToInput.value = fromValue;
+    hideConnectionResults();
+    clearSearchMatches();
+
+    if (state.connectionFromId && state.connectionToId) {
+      runConnection({ resolve: false });
+      return;
+    }
+
+    clearConnectionPath({
+      restore: state.connectionPathIds.length > 0,
+      animate: true
+    });
+    refreshConnectionHighlights();
+    updateConnectionStatus();
+  }
+
+  function openConnection(fromId, toId, options) {
+    setInteractionMode('connect', {
+      animate: !options || options.animate !== false,
+      focus: false,
+      updateUrl: !options || options.updateUrl !== false
+    });
+    selectConnectionEndpoint('from', fromId, {
+      animate: !options || options.animate !== false,
+      focusNext: false,
+      run: false
+    });
+    selectConnectionEndpoint('to', toId, {
+      animate: !options || options.animate !== false,
+      focusNext: false,
+      run: false
+    });
+    runConnection({
+      animate: !options || options.animate !== false,
+      resolve: false,
+      updateUrl: !options || options.updateUrl !== false,
+      replaceUrl: options && options.replaceUrl
+    });
+  }
+
+  function activatePersonFromGraph(id) {
+    if (state.interactionMode === 'connect') {
+      setInteractionMode('find', {
+        animate: false,
+        restore: false,
+        updateUrl: false
+      });
+    }
+
+    selectPerson(id, { center: false });
+  }
+
+  function updateModeControls() {
+    const isConnect = state.interactionMode === 'connect';
+    findModeButton.classList.toggle('is-active', !isConnect);
+    connectModeButton.classList.toggle('is-active', isConnect);
+    findModeButton.setAttribute('aria-selected', String(!isConnect));
+    connectModeButton.setAttribute('aria-selected', String(isConnect));
+    findPanel.hidden = isConnect;
+    connectPanel.hidden = !isConnect;
+  }
+
+  function setInteractionMode(mode, options) {
+    if (mode !== 'find' && mode !== 'connect') {
+      return;
+    }
+    if (state.interactionMode === mode) {
+      return;
+    }
+
+    state.interactionMode = mode;
+    updateModeControls();
+    hideAllSearchResults();
+    clearSearchMatches();
+
+    if (mode === 'find') {
+      clearConnection({
+        animate: !options || options.animate !== false,
+        restore: !options || options.restore !== false,
+        updateUrl: !options || options.updateUrl !== false
+      });
+      return;
+    }
+
+    searchInput.value = '';
+    if (state.selectedId) {
+      clearSelection({
+        animate: !options || options.animate !== false,
+        updateUrl: !options || options.updateUrl !== false
+      });
+    } else if (!state.connectionPathIds.length) {
+      restoreGlobalLayout({ animate: !options || options.animate !== false });
+    }
+    updateConnectionStatus();
+    setConnectionActiveSlot(state.connectionFromId && !state.connectionToId ? 'to' : 'from');
+    if (!options || options.focus !== false) {
+      connectionInput(state.connectionActiveSlot).focus();
+    }
+  }
+
   function refreshHighlights() {
     clearHighlightedClasses();
+    graphHost.classList.remove('has-connection');
 
     if (!state.selectedId) {
       graphHost.classList.remove('has-selection');
@@ -1446,7 +2503,7 @@
     renderEdges();
   }
 
-  function relationButton(node) {
+  function relationButton(node, onPick) {
     const button = document.createElement('button');
     const name = document.createElement('span');
     const meta = document.createElement('span');
@@ -1457,20 +2514,23 @@
     meta.className = 'result-meta';
     meta.textContent = node.detail || node.id;
     button.append(name, meta);
-    button.addEventListener('click', () => selectPerson(node.id));
+    button.addEventListener('click', () => onPick(node));
     return button;
   }
 
   function updateTopbarMode() {
     const selectedNode = state.nodesById.get(state.selectedId);
-    const isFocusedTitle = Boolean(selectedNode && state.lineageMode !== 'full');
+    const isConnectionTitle = Boolean(state.connectionPathIds.length && state.connectionFromId && state.connectionToId);
+    const isFocusedTitle = Boolean(isConnectionTitle || (selectedNode && state.lineageMode !== 'full'));
 
     if (topbar) {
       topbar.classList.toggle('is-focused-title', isFocusedTitle);
     }
     if (titleHeading) {
-      const nextTitle = topbarTitle(selectedNode, isFocusedTitle);
-      if (isFocusedTitle && state.selectedId === INITIAL_PERSON_ID) {
+      const nextTitle = isConnectionTitle
+        ? connectionTitleText()
+        : topbarTitle(selectedNode, isFocusedTitle);
+      if (!isConnectionTitle && isFocusedTitle && state.selectedId === INITIAL_PERSON_ID) {
         const name = displayNameForTitle(selectedNode);
         const link = document.createElement('a');
         const suffix = compactViewport()
@@ -1490,7 +2550,9 @@
       titleSubtitle.textContent = DEFAULT_SUBTITLE;
       titleSubtitle.hidden = isFocusedTitle;
     }
-    document.title = isFocusedTitle ? focusedTitle(selectedNode) : DEFAULT_TITLE;
+    document.title = isConnectionTitle
+      ? connectionTitleText()
+      : (isFocusedTitle ? focusedTitle(selectedNode) : DEFAULT_TITLE);
 
     if (isFocusedTitle) {
       searchResults.hidden = true;
@@ -1569,6 +2631,10 @@
       activateFocusedTree(state.selectedId, { animate: false });
       return;
     }
+    if (state.connectionPathIds.length) {
+      activateConnectionPath(state.connectionPathIds, { animate: false });
+      return;
+    }
     fitGraph();
   }
 
@@ -1609,61 +2675,33 @@
   }
 
   function updateSearch() {
-    const query = normalize(searchInput.value);
-    clearSearchMatches();
-    searchResults.replaceChildren();
-
-    if (!query) {
+    renderAutocomplete(searchInput, searchResults, (node) => {
       searchResults.hidden = true;
-      renderEdges();
-      return;
-    }
-
-    const matches = state.data.nodes
-      .map((node) => ({ node, score: scoreNode(node, query) }))
-      .filter((item) => item.score < 99)
-      .sort((a, b) => a.score - b.score || a.node.name.localeCompare(b.node.name))
-      .slice(0, 12);
-
-    graphHost.classList.add('has-search');
-    matches.forEach(({ node }, index) => {
-      const element = state.nodeElements.get(node.id);
-      if (element) {
-        element.classList.add('is-search-match');
-      }
-      state.searchMatches.add(node.id);
-
-      const button = relationButton(node);
-      button.addEventListener('click', () => {
-        searchResults.hidden = true;
-      });
-      if (index === 0) {
-        button.classList.add('is-active');
-      }
-      searchResults.appendChild(button);
+      selectPerson(node.id);
     });
+  }
 
-    if (!matches.length) {
-      const empty = document.createElement('button');
-      const name = document.createElement('span');
-      const meta = document.createElement('span');
-      empty.type = 'button';
-      empty.disabled = true;
-      name.className = 'result-name';
-      name.textContent = 'No matches';
-      meta.className = 'result-meta';
-      meta.textContent = 'Try a different query';
-      empty.append(name, meta);
-      searchResults.appendChild(empty);
+  function handleAutocompleteKeydown(event, input, results, onEscape) {
+    if (event.key === 'Enter') {
+      const first = results.querySelector('button:not([disabled])');
+      if (first) {
+        event.preventDefault();
+        first.click();
+        results.hidden = true;
+        input.blur();
+      }
     }
-
-    searchResults.hidden = false;
-    renderEdges();
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      onEscape();
+    }
   }
 
   function bindControls() {
     document.getElementById('zoom-out').addEventListener('click', () => zoomBy(0.8));
     document.getElementById('zoom-in').addEventListener('click', () => zoomBy(1.25));
+    findModeButton.addEventListener('click', () => setInteractionMode('find'));
+    connectModeButton.addEventListener('click', () => setInteractionMode('connect'));
     lineageToggle.addEventListener('click', toggleLineageMode);
     lineageFullAction.addEventListener('click', () => {
       if (state.selectedId && state.lineageMode !== 'full') {
@@ -1672,26 +2710,36 @@
     });
     document.getElementById('fit-graph').addEventListener('click', fitGraph);
     document.getElementById('clear-selection').addEventListener('click', () => {
-      clearSelection();
-      searchInput.value = '';
-      updateSearch();
-    });
-
-    searchInput.addEventListener('input', updateSearch);
-    searchInput.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter') {
-        const first = searchResults.querySelector('button:not([disabled])');
-        if (first) {
-          first.click();
-          searchResults.hidden = true;
-          searchInput.blur();
-        }
-      }
-      if (event.key === 'Escape') {
+      if (state.interactionMode === 'connect') {
+        clearConnection();
+      } else {
+        clearSelection();
         searchInput.value = '';
         updateSearch();
       }
     });
+
+    searchInput.addEventListener('input', updateSearch);
+    searchInput.addEventListener('keydown', (event) => {
+      handleAutocompleteKeydown(event, searchInput, searchResults, () => {
+        searchInput.value = '';
+        updateSearch();
+      });
+    });
+
+    connectFromInput.addEventListener('focus', () => setConnectionActiveSlot('from'));
+    connectToInput.addEventListener('focus', () => setConnectionActiveSlot('to'));
+    connectFromInput.addEventListener('input', () => updateConnectionSearch('from'));
+    connectToInput.addEventListener('input', () => updateConnectionSearch('to'));
+    connectFromInput.addEventListener('keydown', (event) => {
+      handleAutocompleteKeydown(event, connectFromInput, connectFromResults, () => clearConnectionSlot('from'));
+    });
+    connectToInput.addEventListener('keydown', (event) => {
+      handleAutocompleteKeydown(event, connectToInput, connectToResults, () => clearConnectionSlot('to'));
+    });
+    connectRun.addEventListener('click', () => runConnection());
+    connectSwap.addEventListener('click', swapConnectionEndpoints);
+    connectClear.addEventListener('click', () => clearConnection());
 
     window.addEventListener('resize', scheduleViewportFit);
     if (window.visualViewport) {
@@ -1713,7 +2761,19 @@
       document.fonts.ready.then(scheduleViewportFit);
     }
     window.addEventListener('popstate', () => {
+      const connectionIds = requestedConnectionIds();
+      if (connectionIds) {
+        openConnection(connectionIds.fromId, connectionIds.toId, {
+          animate: false,
+          updateUrl: false
+        });
+        return;
+      }
+
       const personId = requestedPersonId();
+      if (state.interactionMode !== 'find') {
+        setInteractionMode('find', { animate: false, restore: false, updateUrl: false });
+      }
       if (personId) {
         selectPerson(personId, { updateUrl: false });
       } else {
@@ -1793,9 +2853,17 @@
       renderNodes();
       bindPanZoom();
       bindControls();
+      updateModeControls();
+      updateConnectionStatus();
       resizeCanvas();
+      const initialConnectionIds = requestedConnectionIds();
       const initialPersonId = requestedPersonId();
-      if (initialPersonId && state.nodesById.has(initialPersonId)) {
+      if (initialConnectionIds) {
+        openConnection(initialConnectionIds.fromId, initialConnectionIds.toId, {
+          replaceUrl: true,
+          animate: false
+        });
+      } else if (initialPersonId && state.nodesById.has(initialPersonId)) {
         selectPerson(initialPersonId, { replaceUrl: true, animate: false });
       } else {
         fitGraph();

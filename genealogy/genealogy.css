@@ -9,6 +9,7 @@
   --blue: #1772d0;
   --red: #c92a2a;
   --indigo: #4c6ef5;
+  --green: #2b8a3e;
   --shadow: 0 18px 50px rgba(28, 24, 19, 0.18);
   --control-panel-width: min(460px, calc(100vw - 28px));
 }
@@ -204,6 +205,37 @@ button:focus-visible {
   font-size: 12px;
 }
 
+.mode-toggle {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  min-height: 38px;
+  padding: 3px;
+  border: 1px solid rgba(217, 211, 202, 0.9);
+  border-radius: 8px;
+  background: rgba(245, 246, 247, 0.82);
+  gap: 3px;
+}
+
+.mode-toggle button {
+  min-width: 0;
+  min-height: 30px;
+  border-color: transparent;
+  border-radius: 6px;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.mode-toggle button.is-active {
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(34, 30, 26, 0.08);
+  color: var(--accent-dark);
+}
+
+.mode-panel[hidden] {
+  display: none;
+}
+
 .search-box {
   position: relative;
   display: grid;
@@ -220,7 +252,7 @@ button:focus-visible {
   text-transform: uppercase;
 }
 
-#person-search {
+.search-box input[type="search"] {
   width: 100%;
   min-height: 40px;
   padding: 8px 11px;
@@ -230,7 +262,7 @@ button:focus-visible {
   color: var(--ink);
 }
 
-#person-search:focus {
+.search-box input[type="search"]:focus {
   border-color: var(--accent);
   outline: none;
   box-shadow: 0 0 0 3px rgba(204, 102, 0, 0.16);
@@ -238,9 +270,9 @@ button:focus-visible {
 
 .search-results {
   position: absolute;
-  top: auto;
+  top: calc(100% + 8px);
   right: 0;
-  bottom: calc(100% + 8px);
+  bottom: auto;
   left: 0;
   max-height: min(430px, calc(100vh - 112px));
   overflow: auto;
@@ -276,6 +308,40 @@ button:focus-visible {
 .result-meta {
   color: var(--muted);
   font-size: 12px;
+}
+
+.connection-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.connect-search-box .search-results {
+  top: calc(100% + 6px);
+  bottom: auto;
+}
+
+.connect-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  margin-top: 8px;
+}
+
+.connect-actions button {
+  min-width: 0;
+  min-height: 32px;
+  padding: 0 9px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.connect-status {
+  min-height: 18px;
+  margin-top: 7px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.25;
 }
 
 .view-controls {
@@ -326,9 +392,9 @@ button:focus-visible {
 .explore-panel {
   position: fixed;
   z-index: 24;
-  top: auto;
+  top: 14px;
   right: 14px;
-  bottom: 57px;
+  bottom: auto;
   left: auto;
   display: grid;
   width: var(--control-panel-width);
@@ -339,6 +405,10 @@ button:focus-visible {
   background: rgba(255, 255, 255, 0.88);
   box-shadow: 0 14px 36px rgba(34, 30, 26, 0.13);
   backdrop-filter: blur(12px);
+}
+
+.topbar.is-focused-title + .explore-panel {
+  top: 64px;
 }
 
 .stage {
@@ -624,7 +694,17 @@ button:focus-visible {
   opacity: 0.18;
 }
 
-.graph-host.has-search:not(.has-selection) .person-node {
+.graph-host.has-connection .person-node {
+  opacity: 0.12;
+}
+
+.graph-host.has-connection .person-node.is-connection-source,
+.graph-host.has-connection .person-node.is-connection-target,
+.graph-host.has-connection .person-node.is-connection-path {
+  opacity: 1;
+}
+
+.graph-host.has-search:not(.has-selection):not(.has-connection) .person-node {
   opacity: 0.14;
 }
 
@@ -673,6 +753,24 @@ button:focus-visible {
   box-shadow: none;
 }
 
+.person-node.is-connection-source {
+  z-index: 8;
+  border-color: var(--red) !important;
+  box-shadow: 0 0 0 3px rgba(201, 42, 42, 0.18), 0 12px 28px rgba(28, 24, 19, 0.16);
+}
+
+.person-node.is-connection-target {
+  z-index: 8;
+  border-color: var(--green) !important;
+  box-shadow: 0 0 0 3px rgba(43, 138, 62, 0.18), 0 12px 28px rgba(28, 24, 19, 0.16);
+}
+
+.person-node.is-connection-path {
+  z-index: 6;
+  border-color: var(--indigo) !important;
+  background: #f6f8ff;
+}
+
 .graph-host.is-morphing .person-node {
   will-change: transform, opacity;
 }
@@ -684,6 +782,12 @@ button:focus-visible {
 
 .person-node.is-hidden {
   display: none;
+}
+
+@media (max-width: 1240px) {
+  .explore-panel {
+    top: 64px;
+  }
 }
 
 @media (max-width: 900px) {
@@ -725,6 +829,18 @@ button:focus-visible {
     font-size: 16px;
   }
 
+  .mode-toggle {
+    min-height: 32px;
+    padding: 2px;
+    gap: 2px;
+    border-radius: 7px;
+  }
+
+  .mode-toggle button {
+    min-height: 26px;
+    font-size: 13px;
+  }
+
   .search-box {
     gap: 0;
   }
@@ -738,10 +854,31 @@ button:focus-visible {
     white-space: nowrap;
   }
 
-  #person-search {
+  .search-box input[type="search"] {
     min-height: 32px;
     padding: 5px 9px;
     font-size: 16px;
+  }
+
+  .connection-fields {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 5px;
+  }
+
+  .connect-actions {
+    gap: 5px;
+    margin-top: 6px;
+  }
+
+  .connect-actions button {
+    min-height: 28px;
+    padding: 0 5px;
+    font-size: 13px;
+  }
+
+  .connect-status {
+    margin-top: 5px;
+    font-size: 11px;
   }
 
   .view-controls {
@@ -783,9 +920,9 @@ button:focus-visible {
   }
 
   .explore-panel {
-    top: auto;
+    top: 62px;
     right: 8px;
-    bottom: 40px;
+    bottom: auto;
     left: 8px;
     width: auto;
     gap: 6px;

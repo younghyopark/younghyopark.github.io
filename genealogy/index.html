@@ -24,10 +24,36 @@
     </header>
 
     <div class="explore-panel" aria-label="Genealogy exploration controls">
-      <div class="search-box">
-        <label class="search-label" for="person-search">Find Person</label>
-        <input id="person-search" type="search" autocomplete="off" placeholder="Name, school, year, or thesis">
-        <div id="search-results" class="search-results" hidden></div>
+      <div class="mode-toggle" role="tablist" aria-label="Exploration mode">
+        <button type="button" id="mode-find" class="is-active" role="tab" aria-selected="true" aria-controls="find-panel">Find</button>
+        <button type="button" id="mode-connect" role="tab" aria-selected="false" aria-controls="connect-panel">Connect</button>
+      </div>
+      <div id="find-panel" class="mode-panel find-panel" role="tabpanel" aria-labelledby="mode-find">
+        <div class="search-box">
+          <label class="search-label" for="person-search">Find Person</label>
+          <input id="person-search" type="search" autocomplete="off" placeholder="Name, school, year, or thesis">
+          <div id="search-results" class="search-results" hidden></div>
+        </div>
+      </div>
+      <div id="connect-panel" class="mode-panel connect-panel" role="tabpanel" aria-labelledby="mode-connect" hidden>
+        <div class="connection-fields">
+          <div class="search-box connect-search-box">
+            <label class="search-label" for="connect-from-search">From</label>
+            <input id="connect-from-search" type="search" autocomplete="off" placeholder="First person">
+            <div id="connect-from-results" class="search-results" hidden></div>
+          </div>
+          <div class="search-box connect-search-box">
+            <label class="search-label" for="connect-to-search">To</label>
+            <input id="connect-to-search" type="search" autocomplete="off" placeholder="Second person">
+            <div id="connect-to-results" class="search-results" hidden></div>
+          </div>
+        </div>
+        <div class="connect-actions" aria-label="Connection actions">
+          <button type="button" id="connect-run">Connect</button>
+          <button type="button" id="connect-swap">Swap</button>
+          <button type="button" id="connect-clear">Clear</button>
+        </div>
+        <div id="connect-status" class="connect-status" aria-live="polite">Select two people to find the shortest connection.</div>
       </div>
       <div class="view-controls" aria-label="Graph view controls">
         <div class="control-group zoom-group" aria-label="Zoom controls">
