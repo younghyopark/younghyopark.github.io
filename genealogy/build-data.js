@@ -29,6 +29,33 @@ const CUSTOM_NODES = [
     role: 'other'
   },
   {
+    id: 'taeyoon_lee',
+    label: 'Taeyoon Lee\nSNU 2019',
+    name: 'Taeyoon Lee',
+    detail: 'SNU 2019',
+    year: 2019,
+    href: 'https://sites.google.com/view/taeyoon-lee',
+    role: 'other'
+  },
+  {
+    id: 'jaewoon_kwon',
+    label: 'Jaewoon Kwon\nSNU 2022',
+    name: 'Jaewoon Kwon',
+    detail: 'SNU 2022',
+    year: 2022,
+    href: '',
+    role: 'other'
+  },
+  {
+    id: 'yonghyeon_lee',
+    label: 'Yonghyeon Lee\nSNU 2023',
+    name: 'Yonghyeon Lee',
+    detail: 'SNU 2023',
+    year: 2023,
+    href: 'https://www.gabe-yhlee.com/',
+    role: 'other'
+  },
+  {
     id: '18746',
     label: 'Roger Ware Brockett\nCase Western Reserve 1964',
     name: 'Roger Ware Brockett',
@@ -182,6 +209,42 @@ const CUSTOM_NODES = [
     role: 'other'
   },
   {
+    id: 'minyoung_huh',
+    label: 'Minyoung Huh\nMIT 2024',
+    name: 'Minyoung Huh',
+    detail: 'MIT 2024',
+    year: 2024,
+    href: 'https://minyoungg.github.io/me/',
+    role: 'other'
+  },
+  {
+    id: 'anthony_simeonov',
+    label: 'Anthony Simeonov\nMIT 2024',
+    name: 'Anthony Simeonov',
+    detail: 'MIT 2024',
+    year: 2024,
+    href: 'https://anthonysimeonov.github.io/',
+    role: 'other'
+  },
+  {
+    id: 'tao_chen',
+    label: 'Tao Chen\nMIT 2024',
+    name: 'Tao Chen',
+    detail: 'MIT 2024',
+    year: 2024,
+    href: 'https://taochenshh.github.io/',
+    role: 'other'
+  },
+  {
+    id: 'gabe_margolis',
+    label: 'Gabe Margolis\nMIT 2026',
+    name: 'Gabe Margolis',
+    detail: 'MIT 2026',
+    year: 2026,
+    href: 'https://gmargo11.github.io/',
+    role: 'other'
+  },
+  {
     id: '276446',
     label: 'Nima Fazeli\nMIT 2019',
     name: 'Nima Fazeli',
@@ -312,6 +375,16 @@ const CUSTOM_NODES = [
     thesisTitle: 'Connecting Images and Natural Language'
   },
   {
+    id: 'jim_fan',
+    label: 'Linxi "Jim" Fan\nStanford 2021',
+    name: 'Linxi "Jim" Fan',
+    detail: 'Stanford 2021',
+    year: 2021,
+    href: 'https://jimfan.me/',
+    role: 'other',
+    thesisTitle: 'Training and Deploying Visual Agents at Scale'
+  },
+  {
     id: '258990',
     label: 'Justin Johnson\nStanford 2018',
     name: 'Justin Johnson',
@@ -422,6 +495,18 @@ const CUSTOM_EDGES = [
     target: 'younghyo_park'
   },
   {
+    source: '18769',
+    target: 'taeyoon_lee'
+  },
+  {
+    source: '18769',
+    target: 'jaewoon_kwon'
+  },
+  {
+    source: '18769',
+    target: 'yonghyeon_lee'
+  },
+  {
     source: '18746',
     target: '18769'
   },
@@ -494,6 +579,30 @@ const CUSTOM_EDGES = [
     target: 'branden_romero'
   },
   {
+    source: 'phillipi',
+    target: 'minyoung_huh'
+  },
+  {
+    source: '238967',
+    target: 'minyoung_huh'
+  },
+  {
+    source: '238967',
+    target: 'anthony_simeonov'
+  },
+  {
+    source: '215529',
+    target: 'anthony_simeonov'
+  },
+  {
+    source: '238967',
+    target: 'tao_chen'
+  },
+  {
+    source: '238967',
+    target: 'gabe_margolis'
+  },
+  {
     source: '215529',
     target: '276446'
   },
@@ -544,6 +653,10 @@ const CUSTOM_EDGES = [
   {
     source: '100557',
     target: '258986'
+  },
+  {
+    source: '100557',
+    target: 'jim_fan'
   },
   {
     source: '100557',
