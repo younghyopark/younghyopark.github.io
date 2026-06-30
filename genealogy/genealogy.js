@@ -432,7 +432,7 @@
   }
 
   function drawEdgeLabel(edge, curve) {
-    if (!state.focusedNodeIds || state.lineageMode === 'full') {
+    if (!state.focusedNodeIds || state.selectedId !== INITIAL_PERSON_ID || state.lineageMode === 'full') {
       return;
     }
 

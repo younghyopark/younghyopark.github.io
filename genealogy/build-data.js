@@ -173,6 +173,15 @@ const CUSTOM_NODES = [
     role: 'other'
   },
   {
+    id: 'branden_romero',
+    label: 'Branden Romero\nMIT 2025',
+    name: 'Branden Romero',
+    detail: 'MIT 2025',
+    year: 2025,
+    href: '',
+    role: 'other'
+  },
+  {
     id: '276446',
     label: 'Nima Fazeli\nMIT 2019',
     name: 'Nima Fazeli',
@@ -479,6 +488,10 @@ const CUSTOM_EDGES = [
   {
     source: '215529',
     target: 'antonia_bronars'
+  },
+  {
+    source: '144827',
+    target: 'branden_romero'
   },
   {
     source: '215529',
