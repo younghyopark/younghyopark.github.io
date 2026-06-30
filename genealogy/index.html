@@ -21,19 +21,26 @@
         <h1>CSAIL Academic Genealogy</h1>
         <span>2026-06-27 interactive HTML map</span>
       </div>
+    </header>
+
+    <div class="explore-panel" aria-label="Genealogy exploration controls">
       <div class="search-box">
-        <label class="search-label" for="person-search">Search</label>
-        <input id="person-search" type="search" autocomplete="off" placeholder="Name, school, or year">
+        <label class="search-label" for="person-search">Find Person</label>
+        <input id="person-search" type="search" autocomplete="off" placeholder="Name, school, year, or thesis">
         <div id="search-results" class="search-results" hidden></div>
       </div>
       <div class="view-controls" aria-label="Graph view controls">
-        <button type="button" id="zoom-out" aria-label="Zoom out">−</button>
-        <button type="button" id="zoom-in" aria-label="Zoom in">+</button>
-        <button type="button" id="lineage-toggle" hidden>Full</button>
-        <button type="button" id="fit-graph">Fit</button>
-        <button type="button" id="clear-selection">Clear</button>
+        <div class="control-group zoom-group" aria-label="Zoom controls">
+          <button type="button" id="zoom-out" class="icon-control" aria-label="Zoom out" title="Zoom out">−</button>
+          <button type="button" id="zoom-in" class="icon-control" aria-label="Zoom in" title="Zoom in">+</button>
+        </div>
+        <div class="control-group view-group" aria-label="View actions">
+          <button type="button" id="fit-graph" title="Fit the visible graph in the window">Fit view</button>
+          <button type="button" id="lineage-toggle" hidden title="Toggle how much ancestry is shown">Full lineage</button>
+          <button type="button" id="clear-selection" title="Return to the complete genealogy map">Whole graph</button>
+        </div>
       </div>
-    </header>
+    </div>
 
     <section id="stage" class="stage" aria-label="Interactive CSAIL academic genealogy graph">
       <canvas id="edge-canvas" class="edge-canvas" aria-hidden="true"></canvas>

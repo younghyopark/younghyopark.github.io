@@ -12,8 +12,7 @@
   const topbar = document.querySelector('.topbar');
   const titleHeading = document.querySelector('.title-block h1');
   const titleSubtitle = document.querySelector('.title-block span');
-  const searchBox = document.querySelector('.search-box');
-  const viewControls = document.querySelector('.view-controls');
+  const explorePanel = document.querySelector('.explore-panel');
   const sourceStrip = document.querySelector('.source-strip');
   const ctx = edgeCanvas.getContext('2d');
   const NODE_W = 174;
@@ -29,7 +28,7 @@
   const MAX_COMPACT_VIEW_WIDTH = 1680;
   const COMPACT_DEPTH = 3;
   const PEEK_DEPTH = 1;
-  const MORPH_DURATION_MS = 1800;
+  const MORPH_DURATION_MS = 980;
   const INITIAL_PERSON_ID = 'younghyo_park';
   const HOME_URL = 'https://younghyopark.me/';
   const DEFAULT_TITLE = 'CSAIL Academic Genealogy';
@@ -74,6 +73,7 @@
     canvasWidth: 0,
     canvasHeight: 0,
     resizeFrame: 0,
+    pendingViewportFit: false,
     nodeAnimations: new Set(),
     morphCleanup: null,
     dpr: window.devicePixelRatio || 1
@@ -105,9 +105,97 @@
     return /s$/i.test(name) ? `${name}'` : `${name}'s`;
   }
 
+  const COUNTRY_FLAGS = {
+    Austria: '🇦🇹',
+    Belgium: '🇧🇪',
+    Canada: '🇨🇦',
+    Czechia: '🇨🇿',
+    Denmark: '🇩🇰',
+    France: '🇫🇷',
+    Germany: '🇩🇪',
+    Hungary: '🇭🇺',
+    Israel: '🇮🇱',
+    Italy: '🇮🇹',
+    Netherlands: '🇳🇱',
+    Norway: '🇳🇴',
+    Poland: '🇵🇱',
+    Russia: '🇷🇺',
+    Serbia: '🇷🇸',
+    'South Korea': '🇰🇷',
+    Sweden: '🇸🇪',
+    Switzerland: '🇨🇭',
+    Turkey: '🇹🇷',
+    'United Kingdom': '🇬🇧',
+    'United States': '🇺🇸'
+  };
+
+  const ACADEMIC_COUNTRY_RULES = [
+    ['united states', /\b(mit|stanford|uc berkeley|harvard|cmu|princeton|columbia|cornell|caltech|cal tech|case western|michigan|penn|chicago|uw-madison|u\. washington|brown|nyu|uiuc|ucla|usc|wisconsin|jhu|purdue|minnesota|ohio state|florida|pitt|unc-chapel hill|clark|yale|iowa state|illinois)\b/],
+    ['united kingdom', /\b(cambridge|oxford|edinburgh|king's college london|london)\b/],
+    ['germany', /\b(wittenberg|gottingen|göttingen|leipzig|hu berlin|tubingen|tübingen|jena|heidelberg|munchen|münchen|bonn|konigsberg|königsberg|berlin|helmstedt|wurzburg|würzburg|erlangen|giessen|gießen|marburg|rostock|rwth aachen|tu darmstadt|tu munchen|tu münchen|karlsruhe|freiburg|ingolstadt|kiel)\b/],
+    ['austria', /\b(wien|vienna)\b/],
+    ['france', /\b(universite de paris|université de paris|paris|ecole normale|école normale|college de france|collège de france|ecole polytechnique|école polytechnique|faculte des sciences|faculté des sciences|jardin du roi|orsay|grenoble|inp grenoble|orleans|orléans)\b/],
+    ['netherlands', /\b(leiden|utrecht|franeker|deventer)\b/],
+    ['italy', /\b(padua|bologna|florence|rome|ferrara|pavia|pisa|politecnico di milano|accademia)\b/],
+    ['switzerland', /\b(basel|eth zurich|eth zürich)\b/],
+    ['sweden', /\buppsala\b/],
+    ['israel', /\b(hebrew university|technion|tel aviv)\b/],
+    ['canada', /\btoronto\b/],
+    ['belgium', /\blouvain\b/],
+    ['russia', /\b(moscow state|st\. petersburg|saint petersburg)\b/],
+    ['denmark', /\bcopenhagen\b/],
+    ['norway', /\b(oslo|christiania)\b/],
+    ['poland', /\b(uniwersytet jagiellonski|uniwersytet warszawski)\b/],
+    ['hungary', /\beotvos|eötvös\b/],
+    ['turkey', /\bconstantinople\b/],
+    ['czechia', /\bprague\b/],
+    ['serbia', /\bserbian academy\b/],
+    ['south korea', /\b(snu|seoul national)\b/]
+  ];
+
+  function countryDisplayName(countryKey) {
+    return countryKey.replace(/\b\w/g, (letter) => letter.toUpperCase());
+  }
+
+  function academicCountryForText(value) {
+    const text = String(value || '').toLowerCase();
+    const match = ACADEMIC_COUNTRY_RULES.find(([, pattern]) => pattern.test(text));
+    return match ? countryDisplayName(match[0]) : null;
+  }
+
+  function academicCountriesForNode(node) {
+    const detail = String((node && node.detail) || '');
+    if (!detail || /^[?\s]+$/.test(detail) || /self-taught/i.test(detail)) {
+      return [];
+    }
+
+    const seen = new Set();
+    return detail.split(/\s*\/\s*/).reduce((countries, segment) => {
+      const country = academicCountryForText(segment) || academicCountryForText(detail);
+      if (country && !seen.has(country)) {
+        seen.add(country);
+        countries.push(country);
+      }
+      return countries;
+    }, []);
+  }
+
   function focusedTitle(node) {
     const name = displayNameForTitle(node);
     return name ? `${possessiveName(name)} Academic Genealogy` : DEFAULT_TITLE;
+  }
+
+  function topbarTitle(node, isFocusedTitle) {
+    if (!compactViewport()) {
+      return isFocusedTitle ? focusedTitle(node) : DEFAULT_TITLE;
+    }
+
+    if (isFocusedTitle) {
+      const name = displayNameForTitle(node);
+      return name ? `${possessiveName(name)} Genealogy` : 'Genealogy';
+    }
+
+    return 'CSAIL Genealogy';
   }
 
   function registerPersonSlug(slug, id) {
@@ -155,7 +243,7 @@
   function requestedPersonId() {
     const rawQuery = window.location.search.replace(/^\?/, '').split('&')[0];
     if (!rawQuery) {
-      return INITIAL_PERSON_ID;
+      return null;
     }
 
     let rawValue = rawQuery;
@@ -170,7 +258,7 @@
     if (state.nodesById.has(value)) {
       return value;
     }
-    return state.idBySlug.get(slugify(value)) || INITIAL_PERSON_ID;
+    return state.idBySlug.get(slugify(value)) || null;
   }
 
   function clamp(value, min, max) {
@@ -180,6 +268,45 @@
   function reducedMotion() {
     return window.matchMedia &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  function compactViewport() {
+    return window.matchMedia &&
+      window.matchMedia('(max-width: 560px)').matches;
+  }
+
+  function lineageLayoutMetrics() {
+    if (!compactViewport()) {
+      return {
+        lineageNodeW: LINEAGE_NODE_W,
+        treeGapX: TREE_GAP_X,
+        rowGapY: ROW_GAP_Y,
+        parentToSelectedGapY: PARENT_TO_SELECTED_GAP_Y,
+        selectedToChildGapY: SELECTED_TO_CHILD_GAP_Y,
+        treeMargin: TREE_MARGIN,
+        viewMarginX: VIEW_MARGIN_X,
+        viewMarginY: VIEW_MARGIN_Y,
+        maxCompactViewWidth: MAX_COMPACT_VIEW_WIDTH,
+        minViewWidth: 900,
+        minWorldWidth: 900,
+        minWorldHeight: 520
+      };
+    }
+
+    return {
+      lineageNodeW: 250,
+      treeGapX: 270,
+      rowGapY: 22,
+      parentToSelectedGapY: 50,
+      selectedToChildGapY: 62,
+      treeMargin: 72,
+      viewMarginX: 18,
+      viewMarginY: 34,
+      maxCompactViewWidth: 560,
+      minViewWidth: 520,
+      minWorldWidth: 580,
+      minWorldHeight: 400
+    };
   }
 
   function cancelMorphAnimation() {
@@ -196,6 +323,17 @@
       element.style.transformOrigin = '';
       element.style.willChange = '';
     });
+  }
+
+  function hasActiveMorph() {
+    return Boolean(state.morphCleanup || state.nodeAnimations.size);
+  }
+
+  function flushPendingViewportFit() {
+    if (!state.pendingViewportFit || state.resizeFrame || hasActiveMorph()) {
+      return;
+    }
+    scheduleViewportFit();
   }
 
   function roleLabel(role) {
@@ -452,6 +590,13 @@
       }
     }
 
+    if (explorePanel) {
+      const box = explorePanel.getBoundingClientRect();
+      if (box.width > 0 && box.height > 0) {
+        bottom = Math.min(bottom, box.top - stageBox.top - pad);
+      }
+    }
+
     if (right - left < 260) {
       left = pad / 2;
       right = stageBox.width - pad / 2;
@@ -476,7 +621,7 @@
     const frame = visibleFrame();
     const boundsX = bounds.x || 0;
     const boundsY = bounds.y || 0;
-    const nextScale = Math.min(frame.width / bounds.width, frame.height / bounds.height) * 0.92;
+    const nextScale = Math.min(frame.width / bounds.width, frame.height / bounds.height) * (compactViewport() ? 0.98 : 0.92);
     const scale = clamp(nextScale, state.minScale, state.maxScale);
     return {
       scale,
@@ -533,10 +678,36 @@
     applyTransform();
   }
 
+  function setNodeDetailContent(element, node) {
+    const detailText = document.createElement('span');
+
+    detailText.className = 'node-detail-text';
+    detailText.textContent = node.detail || node.id;
+    element.replaceChildren(detailText);
+  }
+
+  function setNodeCountryFlag(element, node) {
+    const countries = node.academicCountries || academicCountriesForNode(node);
+
+    if (!countries.length) {
+      element.hidden = true;
+      return;
+    }
+
+    element.hidden = false;
+    element.title = `Academic country: ${countries.join(', ')}`;
+    element.setAttribute('aria-label', element.title);
+    element.textContent = countries
+      .slice(0, 2)
+      .map((country) => COUNTRY_FLAGS[country] || country)
+      .join('');
+  }
+
   function createNodeElement(node) {
     const card = document.createElement('div');
     const name = document.createElement('span');
     const detail = document.createElement('span');
+    const country = document.createElement('span');
     const thesis = node.thesisUrl ? document.createElement('a') : document.createElement('span');
 
     card.className = 'person-node';
@@ -555,7 +726,9 @@
     name.className = 'node-name';
     name.textContent = node.name;
     detail.className = 'node-detail';
-    detail.textContent = node.detail || node.id;
+    setNodeDetailContent(detail, node);
+    country.className = 'node-country-flag';
+    setNodeCountryFlag(country, node);
     thesis.className = 'node-thesis';
     thesis.textContent = node.thesisTitle || '';
     if (node.thesisUrl) {
@@ -571,7 +744,7 @@
       });
     }
 
-    card.append(name, detail, thesis);
+    card.append(name, detail, thesis, country);
     card.addEventListener('click', () => {
       selectPerson(node.id, { center: false });
     });
@@ -593,6 +766,7 @@
     const button = document.createElement('button');
     const name = document.createElement('span');
     const detail = document.createElement('span');
+    const country = document.createElement('span');
     const thesis = document.createElement('span');
 
     button.type = 'button';
@@ -608,11 +782,12 @@
 
     name.className = 'node-name';
     detail.className = 'node-detail';
+    country.className = 'node-country-flag';
     thesis.className = 'node-thesis';
-    button.append(name, detail, thesis);
+    button.append(name, detail, thesis, country);
     document.body.appendChild(button);
 
-    measureParts = { button, name, detail, thesis };
+    measureParts = { button, name, detail, country, thesis };
     return measureParts;
   }
 
@@ -624,7 +799,8 @@
     parts.button.classList.toggle('is-lineage-card', isLineageCard);
     parts.button.classList.toggle('shows-thesis', showsThesis);
     parts.name.textContent = node.name;
-    parts.detail.textContent = node.detail || node.id;
+    setNodeDetailContent(parts.detail, node);
+    setNodeCountryFlag(parts.country, node);
     parts.thesis.textContent = node.thesisTitle || '';
     return Math.ceil(parts.button.getBoundingClientRect().height);
   }
@@ -645,7 +821,8 @@
         ? `${baseSlug}-${idSlug}`
         : baseSlug;
 
-      node.searchText = normalize(`${node.name} ${node.detail} ${node.thesisTitle || ''} ${roleLabel(node.role)} ${node.id}`);
+      node.academicCountries = academicCountriesForNode(node);
+      node.searchText = normalize(`${node.name} ${node.detail} ${(node.academicCountries || []).join(' ')} ${node.thesisTitle || ''} ${roleLabel(node.role)} ${node.id}`);
       state.nodesById.set(node.id, node);
       state.slugById.set(node.id, canonicalSlug);
       state.parentsById.set(node.id, new Set());
@@ -725,37 +902,41 @@
       return null;
     }
 
+    const shouldFade = Boolean(options && (options.entering || options.leaving));
     const parentScale = state.scale || 1;
     const dx = (fromRect.left - toRect.left) / parentScale;
     const dy = (fromRect.top - toRect.top) / parentScale;
     const sx = toRect.width ? fromRect.width / toRect.width : 1;
     const sy = toRect.height ? fromRect.height / toRect.height : 1;
-    const fromOpacity = options && options.entering ? 0 : 1;
-    const toOpacity = options && options.leaving ? 0 : 1;
-    const middleOpacity = options && options.leaving ? 0.34 : 1;
+    const parsedOpacity = parseFloat(window.getComputedStyle(element).opacity);
+    const targetOpacity = Number.isNaN(parsedOpacity) ? 1 : parsedOpacity;
+    const fromOpacity = options && options.entering ? 0 : targetOpacity;
+    const toOpacity = options && options.leaving ? 0 : targetOpacity;
+    const springTransform = (distance) => {
+      return `translate(${dx * distance}px, ${dy * distance}px) scale(${1 + (sx - 1) * distance}, ${1 + (sy - 1) * distance})`;
+    };
+    const keyframes = [
+      {
+        transform: springTransform(1),
+        easing: 'cubic-bezier(0.18, 0.86, 0.22, 1)'
+      },
+      {
+        transform: springTransform(0)
+      }
+    ];
+
+    if (shouldFade) {
+      keyframes[0].opacity = fromOpacity;
+      keyframes[1].opacity = toOpacity;
+    }
 
     element.style.transformOrigin = 'top left';
-    element.style.willChange = 'transform, opacity';
+    element.style.willChange = shouldFade ? 'transform, opacity' : 'transform';
 
     return element.animate(
-      [
-        {
-          opacity: fromOpacity,
-          transform: `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`
-        },
-        {
-        offset: 0.58,
-          opacity: middleOpacity,
-          transform: `translate(${dx * 0.12}px, ${dy * 0.12}px) scale(${1 + (sx - 1) * 0.12}, ${1 + (sy - 1) * 0.12})`
-        },
-        {
-          opacity: toOpacity,
-          transform: 'translate(0, 0) scale(1, 1)'
-        }
-      ],
+      keyframes,
       {
         duration: MORPH_DURATION_MS,
-        easing: 'cubic-bezier(0.22, 0.72, 0.22, 1)',
         fill: 'both'
       }
     );
@@ -812,6 +993,7 @@
         setNodeElementBox(element, box);
       });
       graphHost.classList.remove('is-morphing');
+      flushPendingViewportFit();
     };
 
     graphHost.classList.add('is-morphing');
@@ -871,7 +1053,7 @@
         const original = state.nodesById.get(item.id);
         positions.set(item.id, {
           ...original,
-          x: Math.round(layout.centerX + item.slot * TREE_GAP_X - item.width / 2),
+          x: Math.round(layout.centerX + item.slot * layout.treeGapX - item.width / 2),
           y: Math.round(row.y),
           w: item.width,
           h: item.height,
@@ -923,6 +1105,7 @@
   }
 
   function buildLineageLayout(lineage) {
+    const metrics = lineageLayoutMetrics();
     const ancestorRows = lineage.ancestors.levels.slice(1).map((ids, index) => {
       const depth = index + 1;
       return { ids, lineageIds: ids, depth, offset: -depth };
@@ -975,14 +1158,14 @@
         const isMuted = state.lineageMode !== 'full' && depth > COMPACT_DEPTH;
         const isLineageCard = !isContext && !isMuted;
         const showsThesis = Boolean(node.thesisTitle) && isLineageCard;
-        const width = isLineageCard ? LINEAGE_NODE_W : NODE_W;
+        const width = isLineageCard ? metrics.lineageNodeW : NODE_W;
         const height = isLineageCard ? measureNodeHeight(node, width, isLineageCard, showsThesis) : NODE_H;
         return { ...item, width, height, isLineageCard, showsThesis };
       });
 
       row.height = Math.max(NODE_H, ...row.items.map((item) => item.height));
       row.items.forEach((item) => {
-        const itemCenter = item.slot * TREE_GAP_X;
+        const itemCenter = item.slot * metrics.treeGapX;
         requiredLeft = Math.max(requiredLeft, Math.max(0, -itemCenter + item.width / 2));
         requiredRight = Math.max(requiredRight, Math.max(0, itemCenter + item.width / 2));
       });
@@ -994,47 +1177,47 @@
       }
     });
 
-    const centerX = TREE_MARGIN + requiredLeft;
+    const centerX = metrics.treeMargin + requiredLeft;
     const selectedRowIndex = ancestorRows.length;
-    let rowY = TREE_MARGIN;
+    let rowY = metrics.treeMargin;
 
     rows.forEach((row) => {
       row.y = rowY;
-      let nextGap = ROW_GAP_Y;
+      let nextGap = metrics.rowGapY;
       if (row.offset === -1) {
-        nextGap = PARENT_TO_SELECTED_GAP_Y;
+        nextGap = metrics.parentToSelectedGapY;
       } else if (row.offset === 0 && descendantRow) {
-        nextGap = SELECTED_TO_CHILD_GAP_Y;
+        nextGap = metrics.selectedToChildGapY;
       }
       rowY += row.height + nextGap;
     });
 
-    const width = Math.max(900, requiredLeft + requiredRight + TREE_MARGIN * 2);
-    const height = Math.max(520, rowY - ROW_GAP_Y + TREE_MARGIN);
+    const width = Math.max(metrics.minWorldWidth, requiredLeft + requiredRight + metrics.treeMargin * 2);
+    const height = Math.max(metrics.minWorldHeight, rowY - metrics.rowGapY + metrics.treeMargin);
     const focusDepth = COMPACT_DEPTH + PEEK_DEPTH;
     const focusRows = rows.filter((row) => row.offset >= -focusDepth);
     const focusLeft = Math.max(NODE_W / 2, ...focusRows.map((row) => {
       return Math.max(...row.items.map((item) => {
-        return Math.max(0, -item.slot * TREE_GAP_X + item.width / 2);
+        return Math.max(0, -item.slot * metrics.treeGapX + item.width / 2);
       }));
     }));
     const focusRight = Math.max(NODE_W / 2, ...focusRows.map((row) => {
       return Math.max(...row.items.map((item) => {
-        return Math.max(0, item.slot * TREE_GAP_X + item.width / 2);
+        return Math.max(0, item.slot * metrics.treeGapX + item.width / 2);
       }));
     }));
-    const rowBasedViewWidth = focusLeft + focusRight + VIEW_MARGIN_X * 2;
-    const viewWidth = Math.min(width, Math.max(900, Math.min(MAX_COMPACT_VIEW_WIDTH, rowBasedViewWidth)));
+    const rowBasedViewWidth = focusLeft + focusRight + metrics.viewMarginX * 2;
+    const viewWidth = Math.min(width, Math.max(metrics.minViewWidth, Math.min(metrics.maxCompactViewWidth, rowBasedViewWidth)));
     const upperRows = Math.min(ancestorRows.length, COMPACT_DEPTH);
     const topRowIndex = Math.max(0, selectedRowIndex - upperRows);
     const peekDistance = topRowIndex > 0 ? (rows[topRowIndex].y - rows[topRowIndex - 1].y) * 0.48 : 0;
     const lowerRows = descendantRow ? 1 : 0;
     const bottomRowIndex = Math.min(rows.length - 1, selectedRowIndex + lowerRows);
-    const viewTop = rows[topRowIndex].y - VIEW_MARGIN_Y - peekDistance;
-    const viewBottom = rows[bottomRowIndex].y + rows[bottomRowIndex].height + VIEW_MARGIN_Y;
+    const viewTop = rows[topRowIndex].y - metrics.viewMarginY - peekDistance;
+    const viewBottom = rows[bottomRowIndex].y + rows[bottomRowIndex].height + metrics.viewMarginY;
     const viewHeight = Math.min(
       height,
-      Math.max(520, viewBottom - viewTop)
+      Math.max(metrics.minWorldHeight, viewBottom - viewTop)
     );
     const viewBounds = {
       x: clamp(centerX - viewWidth / 2, 0, Math.max(0, width - viewWidth)),
@@ -1049,6 +1232,7 @@
       contextEdgeIds,
       descendantIds,
       centerX,
+      treeGapX: metrics.treeGapX,
       worldBounds: {
         x: 0,
         y: 0,
@@ -1073,7 +1257,7 @@
 
   function updateLineageActions(lineage, layout) {
     hideLineageActions();
-    if (state.lineageMode === 'full') {
+    if (state.lineageMode === 'full' || compactViewport()) {
       return;
     }
 
@@ -1138,11 +1322,11 @@
         break;
       }
 
-      const nextLevel = new Set();
+      const nextLevel = [];
       depth += 1;
 
       frontier.forEach((id) => {
-        (state.parentsById.get(id) || new Set()).forEach((parentId) => {
+        sortNodeIds(state.parentsById.get(id) || new Set()).forEach((parentId) => {
           const edge = state.edgeByPair.get(`${parentId}->${id}`);
           if (edge) {
             edgeIds.add(edge.id);
@@ -1152,16 +1336,16 @@
             seen.add(parentId);
             ancestorIds.add(parentId);
             nodeDepths.set(parentId, depth);
-            nextLevel.add(parentId);
+            nextLevel.push(parentId);
           }
         });
       });
 
-      if (!nextLevel.size) {
+      if (!nextLevel.length) {
         break;
       }
 
-      frontier = sortNodeIds(nextLevel);
+      frontier = nextLevel;
       levels.push(frontier);
     }
 
@@ -1281,15 +1465,18 @@
       topbar.classList.toggle('is-focused-title', isFocusedTitle);
     }
     if (titleHeading) {
-      const nextTitle = isFocusedTitle ? focusedTitle(selectedNode) : DEFAULT_TITLE;
+      const nextTitle = topbarTitle(selectedNode, isFocusedTitle);
       if (isFocusedTitle && state.selectedId === INITIAL_PERSON_ID) {
         const name = displayNameForTitle(selectedNode);
         const link = document.createElement('a');
+        const suffix = compactViewport()
+          ? `${/s$/i.test(name) ? "'" : "'s"} Genealogy`
+          : `${/s$/i.test(name) ? "'" : "'s"} Academic Genealogy`;
         link.href = HOME_URL;
         link.textContent = name;
         titleHeading.replaceChildren(
           link,
-          document.createTextNode(`${/s$/i.test(name) ? "'" : "'s"} Academic Genealogy`)
+          document.createTextNode(suffix)
         );
       } else {
         titleHeading.textContent = nextTitle;
@@ -1298,12 +1485,6 @@
     if (titleSubtitle) {
       titleSubtitle.textContent = DEFAULT_SUBTITLE;
       titleSubtitle.hidden = isFocusedTitle;
-    }
-    if (searchBox) {
-      searchBox.hidden = isFocusedTitle;
-    }
-    if (viewControls) {
-      viewControls.hidden = isFocusedTitle;
     }
     document.title = isFocusedTitle ? focusedTitle(selectedNode) : DEFAULT_TITLE;
 
@@ -1315,7 +1496,7 @@
   function updateSelectionControls() {
     updateTopbarMode();
     lineageToggle.hidden = !state.selectedId;
-    lineageToggle.textContent = state.lineageMode === 'full' ? '3 gen' : 'Full';
+    lineageToggle.textContent = state.lineageMode === 'full' ? '3 generations' : 'Full lineage';
     lineageToggle.setAttribute(
       'aria-label',
       state.lineageMode === 'full' ? 'Show three-generation ancestry' : 'Show full lineage'
@@ -1332,8 +1513,8 @@
       updatePersonUrl(id, options && options.replaceUrl);
     }
     updateSelectionControls();
-    activateFocusedTree(id, { animate: !options || options.animate !== false });
     refreshHighlights();
+    activateFocusedTree(id, { animate: !options || options.animate !== false });
     if (options && options.center) {
       centerOnPerson(id);
     }
@@ -1346,8 +1527,8 @@
       updateBaseUrl(options && options.replaceUrl);
     }
     updateSelectionControls();
-    restoreGlobalLayout({ animate: !options || options.animate !== false });
     refreshHighlights();
+    restoreGlobalLayout({ animate: !options || options.animate !== false });
   }
 
   function toggleLineageMode() {
@@ -1357,8 +1538,8 @@
 
     state.lineageMode = state.lineageMode === 'full' ? 'compact' : 'full';
     updateSelectionControls();
-    activateFocusedTree(state.selectedId, { animate: true });
     refreshHighlights();
+    activateFocusedTree(state.selectedId, { animate: true });
   }
 
   function clearSearchMatches() {
@@ -1380,19 +1561,24 @@
     resizeCanvas();
     if (state.selectedId) {
       updateSelectionControls();
-      activateFocusedTree(state.selectedId, { animate: false });
       refreshHighlights();
+      activateFocusedTree(state.selectedId, { animate: false });
       return;
     }
     fitGraph();
   }
 
   function scheduleViewportFit() {
+    state.pendingViewportFit = true;
     if (state.resizeFrame) {
-      window.cancelAnimationFrame(state.resizeFrame);
+      return;
     }
     state.resizeFrame = window.requestAnimationFrame(() => {
       state.resizeFrame = 0;
+      if (hasActiveMorph()) {
+        return;
+      }
+      state.pendingViewportFit = false;
       refitViewport();
     });
   }
@@ -1512,6 +1698,9 @@
       if (topbar) {
         observer.observe(topbar);
       }
+      if (explorePanel) {
+        observer.observe(explorePanel);
+      }
       if (sourceStrip) {
         observer.observe(sourceStrip);
       }
@@ -1520,13 +1709,18 @@
       document.fonts.ready.then(scheduleViewportFit);
     }
     window.addEventListener('popstate', () => {
-      selectPerson(requestedPersonId(), { updateUrl: false });
+      const personId = requestedPersonId();
+      if (personId) {
+        selectPerson(personId, { updateUrl: false });
+      } else {
+        clearSelection({ updateUrl: false });
+      }
     });
   }
 
   function bindPanZoom() {
     stage.addEventListener('pointerdown', (event) => {
-      if (event.button !== 0 || event.target.closest('.topbar, .source-strip, .person-node, .lineage-action')) {
+      if (event.button !== 0 || event.target.closest('.topbar, .explore-panel, .source-strip, .person-node, .lineage-action')) {
         return;
       }
       cancelMorphAnimation();
@@ -1597,7 +1791,7 @@
       bindControls();
       resizeCanvas();
       const initialPersonId = requestedPersonId();
-      if (state.nodesById.has(initialPersonId)) {
+      if (initialPersonId && state.nodesById.has(initialPersonId)) {
         selectPerson(initialPersonId, { replaceUrl: true, animate: false });
       } else {
         fitGraph();

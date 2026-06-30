@@ -59,23 +59,22 @@ button:focus-visible {
 .topbar {
   position: fixed;
   z-index: 30;
-  top: 14px;
+  top: 18px;
   left: 14px;
   right: 14px;
   display: grid;
-  grid-template-columns: auto minmax(210px, 1fr) minmax(260px, 440px) auto;
-  align-items: center;
+  grid-template-columns: minmax(0, 1fr) minmax(0, auto) minmax(0, 1fr);
+  align-items: start;
   gap: 12px;
-  padding: 10px;
-  border: 1px solid rgba(217, 211, 202, 0.82);
-  border-radius: 8px;
-  background: var(--panel);
-  box-shadow: 0 10px 30px rgba(34, 30, 26, 0.12);
-  backdrop-filter: blur(12px);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  pointer-events: none;
+  text-align: center;
 }
 
 .topbar.is-focused-title {
-  top: 18px;
   right: auto;
   left: 50%;
   width: max-content;
@@ -92,14 +91,19 @@ button:focus-visible {
   text-align: center;
 }
 
-.topbar.is-focused-title .title-block {
+.title-block {
   position: relative;
-  grid-column: auto;
+  grid-column: 2;
   min-width: 0;
   padding: 4px 12px 5px;
+  pointer-events: auto;
 }
 
-.topbar.is-focused-title .title-block::before {
+.topbar.is-focused-title .title-block {
+  grid-column: auto;
+}
+
+.title-block::before {
   position: absolute;
   z-index: -1;
   inset: -5px -10px;
@@ -113,34 +117,52 @@ button:focus-visible {
   display: none;
 }
 
-.topbar.is-focused-title .title-block span,
-.topbar.is-focused-title .search-box,
-.topbar.is-focused-title .view-controls {
+.topbar.is-focused-title .title-block span {
   display: none;
 }
 
 .home-link {
+  grid-column: 1;
+  justify-self: start;
   display: inline-flex;
   align-items: center;
   min-height: 36px;
   padding: 0 10px;
-  border-radius: 6px;
+  border: 1px solid rgba(217, 211, 202, 0.82);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 8px 22px rgba(34, 30, 26, 0.08);
   color: var(--blue);
   font-size: 14px;
   font-weight: 700;
+  pointer-events: auto;
+  text-decoration: none;
+  backdrop-filter: blur(10px);
 }
 
 .home-link:hover,
 .home-link:focus-visible {
-  background: #edf5ff;
+  border-color: rgba(23, 114, 208, 0.25);
+  background: rgba(237, 245, 255, 0.9);
   color: var(--blue);
   outline: none;
 }
 
 .title-block h1 {
+  overflow: hidden;
+  max-width: 100%;
   margin: 0;
-  font-size: 18px;
-  line-height: 1.1;
+  color: rgba(33, 31, 31, 0.92);
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.92),
+    0 2px 8px rgba(255, 255, 255, 0.96),
+    0 12px 28px rgba(255, 255, 255, 0.78),
+    0 1px 12px rgba(34, 30, 26, 0.14);
+  white-space: nowrap;
 }
 
 .topbar.is-focused-title .title-block h1 {
@@ -175,7 +197,7 @@ button:focus-visible {
 }
 
 .title-block span {
-  display: block;
+  display: none;
   margin-top: 3px;
   color: var(--muted);
   font-size: 12px;
@@ -184,25 +206,26 @@ button:focus-visible {
 .search-box {
   position: relative;
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: 1fr;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
 }
 
 .search-label {
-  color: var(--muted);
+  color: #4f4b46;
   font-size: 12px;
   font-weight: 700;
+  letter-spacing: 0;
   text-transform: uppercase;
 }
 
 #person-search {
   width: 100%;
-  min-height: 36px;
-  padding: 7px 10px;
+  min-height: 40px;
+  padding: 8px 11px;
   border: 1px solid var(--line);
-  border-radius: 6px;
-  background: #fff;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.96);
   color: var(--ink);
 }
 
@@ -214,9 +237,10 @@ button:focus-visible {
 
 .search-results {
   position: absolute;
-  top: calc(100% + 8px);
+  top: auto;
   right: 0;
-  left: 48px;
+  bottom: calc(100% + 8px);
+  left: 0;
   max-height: min(430px, calc(100vh - 112px));
   overflow: auto;
   padding: 6px;
@@ -254,21 +278,66 @@ button:focus-visible {
 }
 
 .view-controls {
-  display: grid;
-  grid-template-columns: 36px 36px minmax(56px, auto) minmax(44px, auto) minmax(58px, auto);
-  gap: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.control-group {
+  display: inline-flex;
+  min-height: 38px;
+  padding: 3px;
+  border: 1px solid rgba(217, 211, 202, 0.9);
+  border-radius: 8px;
+  background: rgba(245, 246, 247, 0.82);
+  gap: 3px;
+}
+
+.view-group {
+  flex: 1 1 220px;
 }
 
 .view-controls button {
-  padding: 0 10px;
+  min-height: 32px;
+  padding: 0 11px;
+  border-color: transparent;
+  border-radius: 6px;
+  background: transparent;
   font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
-.view-controls #zoom-in,
-.view-controls #zoom-out {
+.view-controls button:hover,
+.view-controls button:focus-visible {
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(34, 30, 26, 0.08);
+}
+
+.view-controls .icon-control {
+  width: 34px;
+  min-width: 34px;
   padding: 0;
   font-size: 22px;
   line-height: 1;
+}
+
+.explore-panel {
+  position: fixed;
+  z-index: 24;
+  top: auto;
+  right: 14px;
+  bottom: 57px;
+  left: auto;
+  display: grid;
+  width: min(460px, calc(100vw - 28px));
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid rgba(217, 211, 202, 0.9);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 14px 36px rgba(34, 30, 26, 0.13);
+  backdrop-filter: blur(12px);
 }
 
 .stage {
@@ -405,12 +474,40 @@ button:focus-visible {
 }
 
 .node-detail {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 4px;
   overflow: hidden;
   color: var(--muted);
   font-size: 10px;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.node-detail-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.node-country-flag {
+  display: none;
+  position: absolute;
+  top: 7px;
+  right: 8px;
+  z-index: 2;
+  width: auto;
+  height: auto;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--ink);
+  font-size: 28px;
+  font-style: normal;
+  line-height: 1;
 }
 
 .node-thesis {
@@ -432,6 +529,7 @@ button:focus-visible {
 }
 
 .person-node.is-lineage-card .node-name {
+  padding-right: 44px;
   font-size: 15px;
   line-height: 1.12;
 }
@@ -440,6 +538,10 @@ button:focus-visible {
   color: #6b6660;
   font-size: 12px;
   line-height: 1.15;
+}
+
+.person-node.is-lineage-card .node-country-flag {
+  display: inline-flex;
 }
 
 .person-node.shows-thesis .node-thesis {
@@ -483,8 +585,9 @@ button:focus-visible {
 .source-strip {
   position: fixed;
   z-index: 20;
-  left: 14px;
+  right: 14px;
   bottom: 14px;
+  left: auto;
   max-width: min(560px, calc(100vw - 28px));
   padding: 8px 10px;
   border: 1px solid rgba(217, 211, 202, 0.9);
@@ -584,39 +687,154 @@ button:focus-visible {
 
 @media (max-width: 900px) {
   .topbar {
-    grid-template-columns: 1fr auto;
+    grid-template-columns: minmax(0, 1fr) minmax(0, auto) minmax(0, 1fr);
   }
 
-  .title-block,
-  .search-box {
-    grid-column: 1 / -1;
-  }
-
-  .search-results {
-    left: 0;
-  }
-
-  .source-strip {
-    right: 14px;
+  .title-block {
+    grid-column: 2;
   }
 }
 
 @media (max-width: 560px) {
   .topbar {
-    top: 8px;
+    top: 7px;
     right: 8px;
     left: 8px;
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
     gap: 8px;
   }
 
+  .topbar.is-focused-title {
+    top: 7px;
+    max-width: calc(100vw - 16px);
+  }
+
+  .home-link {
+    display: none;
+  }
+
+  .title-block {
+    grid-column: 1;
+    max-width: calc(100vw - 32px);
+    padding: 3px 10px 4px;
+  }
+
+  .title-block h1 {
+    font-size: 16px;
+  }
+
+  .search-box {
+    gap: 0;
+  }
+
+  .search-label {
+    position: absolute;
+    overflow: hidden;
+    width: 1px;
+    height: 1px;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  #person-search {
+    min-height: 32px;
+    padding: 5px 9px;
+    font-size: 16px;
+  }
+
   .view-controls {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    grid-column: 1 / -1;
+    gap: 5px;
+  }
+
+  .control-group {
+    min-height: 32px;
+    padding: 2px;
+    gap: 2px;
+    border-radius: 7px;
+  }
+
+  .zoom-group {
+    flex: 0 0 auto;
+  }
+
+  .view-group {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(72px, 1fr));
+    flex: 1 1 230px;
+    flex-wrap: wrap;
+  }
+
+  .view-controls .icon-control {
+    width: 30px;
+    min-width: 30px;
+    font-size: 18px;
+  }
+
+  .view-controls button {
+    min-height: 28px;
+    font-size: 13px;
+  }
+
+  .view-group button {
+    min-width: 0;
+    padding: 0 5px;
+  }
+
+  .explore-panel {
+    top: auto;
+    right: 8px;
+    bottom: 40px;
+    left: 8px;
+    width: auto;
+    gap: 6px;
+    padding: 7px;
   }
 
   .source-strip {
     right: 8px;
     bottom: 8px;
     left: 8px;
+    max-width: none;
+    overflow: hidden;
+    padding: 5px 7px;
+    font-size: 10px;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .source-strip a {
+    font-size: 10px;
+  }
+
+  .person-node.is-lineage-card {
+    gap: 2px;
+    padding: 8px 9px;
+  }
+
+  .person-node.is-lineage-card .node-name {
+    padding-right: 38px;
+    font-size: 20px;
+    line-height: 1.06;
+  }
+
+  .person-node.is-lineage-card .node-detail {
+    font-size: 14px;
+    line-height: 1.08;
+  }
+
+  .person-node.is-lineage-card .node-country-flag {
+    top: 6px;
+    right: 7px;
+    font-size: 24px;
+  }
+
+  .person-node.shows-thesis .node-thesis {
+    margin-top: 4px;
+    padding-top: 5px;
+    font-size: 13px;
+    line-height: 1.15;
+    -webkit-line-clamp: 1;
   }
 }

@@ -5,6 +5,7 @@ const DOT_PATH = path.join(__dirname, 'csail.dot');
 const OUT_PATH = path.join(__dirname, 'csail-data.json');
 const THESIS_TITLES_PATH = path.join(__dirname, 'thesis-titles.json');
 const THESIS_URLS = {
+  'chelsea_finn': 'https://www2.eecs.berkeley.edu/Pubs/TechRpts/2018/EECS-2018-105.html',
   '238967': 'https://www2.eecs.berkeley.edu/Pubs/TechRpts/2018/EECS-2018-133.pdf',
   '18769': 'https://search.proquest.com/openview/b91a32441671fe90c14afe141815fd7c/1?pq-origsite=gscholar&cbl=18750&diss=y'
 };
@@ -71,6 +72,326 @@ const CUSTOM_NODES = [
     year: null,
     href: 'https://genealogy.math.ndsu.nodak.edu/id.php?id=334753',
     role: 'other'
+  },
+  {
+    id: '58481',
+    label: 'Micha Sharir\nTel Aviv University 1976',
+    name: 'Micha Sharir',
+    detail: 'Tel Aviv University 1976',
+    year: 1976,
+    href: 'https://genealogy.math.ndsu.nodak.edu/id.php?id=58481',
+    role: 'other',
+    thesisTitle: 'Extreme Operators Between Banach Spaces'
+  },
+  {
+    id: '89106',
+    label: 'Vladlen Koltun\nTel Aviv University 2002',
+    name: 'Vladlen Koltun',
+    detail: 'Tel Aviv University 2002',
+    year: 2002,
+    href: 'https://genealogy.math.ndsu.nodak.edu/id.php?id=89106',
+    role: 'other',
+    thesisTitle: 'Arrangements in Four Dimensions and Related Structures'
+  },
+  {
+    id: '254743',
+    label: 'Sergey Levine\nStanford 2014',
+    name: 'Sergey Levine',
+    detail: 'Stanford 2014',
+    year: 2014,
+    href: 'https://genealogy.math.ndsu.nodak.edu/id.php?id=254743',
+    role: 'other',
+    thesisTitle: 'Motor Skill Learning with Local Trajectory Methods'
+  },
+  {
+    id: '298803',
+    label: 'Xue Bin Peng\nUC Berkeley 2021',
+    name: 'Xue Bin Peng',
+    detail: 'UC Berkeley 2021',
+    year: 2021,
+    href: 'https://genealogy.math.ndsu.nodak.edu/id.php?id=298803',
+    role: 'other',
+    thesisTitle: 'Acquiring Motor Skills through Motion Imitation and Reinforcement Learning'
+  },
+  {
+    id: 'chelsea_finn',
+    label: 'Chelsea Finn\nUC Berkeley 2018',
+    name: 'Chelsea Finn',
+    detail: 'UC Berkeley 2018',
+    year: 2018,
+    href: 'https://ai.stanford.edu/~cbfinn/',
+    role: 'other',
+    thesisTitle: 'Learning to Learn with Gradients'
+  },
+  {
+    id: '50186',
+    label: 'Kenneth Yigael Goldberg\nCMU 1990',
+    name: 'Kenneth Yigael Goldberg',
+    detail: 'CMU 1990',
+    year: 1990,
+    href: 'https://genealogy.math.ndsu.nodak.edu/id.php?id=50186',
+    role: 'other',
+    thesisTitle: 'Stochastic Plans for Robotic Manipulation'
+  },
+  {
+    id: '94558',
+    label: 'Kevin Michael Lynch\nCMU 1996',
+    name: 'Kevin Michael Lynch',
+    detail: 'CMU 1996',
+    year: 1996,
+    href: 'https://genealogy.math.ndsu.nodak.edu/id.php?id=94558',
+    role: 'other',
+    thesisTitle: 'Nonprehensile Robotic Manipulation: Controllability and Planning'
+  },
+  {
+    id: '245201',
+    label: 'Ross Alan Knepper\nCMU 2011',
+    name: 'Ross Alan Knepper',
+    detail: 'CMU 2011',
+    year: 2011,
+    href: 'https://genealogy.math.ndsu.nodak.edu/id.php?id=245201',
+    role: 'other',
+    thesisTitle: 'On the Fundamental Relationships Among Path Planning Alternatives'
+  },
+  {
+    id: '215529',
+    label: 'Alberto Rodriguez\nCMU 2013',
+    name: 'Alberto Rodriguez',
+    detail: 'CMU 2013',
+    year: 2013,
+    href: 'https://genealogy.math.ndsu.nodak.edu/id.php?id=215529',
+    role: 'other',
+    thesisTitle: 'Shape for Contact'
+  },
+  {
+    id: '276446',
+    label: 'Nima Fazeli\nMIT 2019',
+    name: 'Nima Fazeli',
+    detail: 'MIT 2019',
+    year: 2019,
+    href: 'https://genealogy.math.ndsu.nodak.edu/id.php?id=276446',
+    role: 'other',
+    thesisTitle: 'Inference and Learning for Rigid-Body Models of Manipulation'
+  },
+  {
+    id: '328842',
+    label: 'Rachel Holladay\nMIT 2024',
+    name: 'Rachel Holladay',
+    detail: 'MIT 2024',
+    year: 2024,
+    href: 'https://genealogy.math.ndsu.nodak.edu/id.php?id=328842',
+    role: 'other',
+    thesisTitle: 'Leveraging Mechanics for Multi-step Robotic Manipulation Planning'
+  },
+  {
+    id: '227627',
+    label: 'Dmitry Berenson\nCMU 2011',
+    name: 'Dmitry Berenson',
+    detail: 'CMU 2011',
+    year: 2011,
+    href: 'https://genealogy.math.ndsu.nodak.edu/id.php?id=227627',
+    role: 'other',
+    thesisTitle: 'Constrained Manipulation Planning'
+  },
+  {
+    id: '180587',
+    label: 'Mehmet R. Dogar\nCMU 2013',
+    name: 'Mehmet R. Dogar',
+    detail: 'CMU 2013',
+    year: 2013,
+    href: 'https://genealogy.math.ndsu.nodak.edu/id.php?id=180587',
+    role: 'other',
+    thesisTitle: 'Physics-Based Manipulation Planning in Cluttered Human Environments'
+  },
+  {
+    id: '98529',
+    label: 'Alexei (Alyosha) Efros\nUC Berkeley 2003',
+    name: 'Alexei (Alyosha) Efros',
+    detail: 'UC Berkeley 2003',
+    year: 2003,
+    href: 'https://genealogy.math.ndsu.nodak.edu/id.php?id=98529',
+    role: 'other',
+    thesisTitle: 'Data-driven Approaches for Texture and Motion'
+  },
+  {
+    id: '259444',
+    label: 'Deepak Pathak\nUC Berkeley 2019',
+    name: 'Deepak Pathak',
+    detail: 'UC Berkeley 2019',
+    year: 2019,
+    href: 'https://genealogy.math.ndsu.nodak.edu/id.php?id=259444',
+    role: 'other',
+    thesisTitle: 'Learning to Generalize via Self-supervised Prediction'
+  },
+  {
+    id: '315898',
+    label: 'Tim Brooks\nUC Berkeley 2023',
+    name: 'Tim Brooks',
+    detail: 'UC Berkeley 2023',
+    year: 2023,
+    href: 'https://genealogy.math.ndsu.nodak.edu/id.php?id=315898',
+    role: 'other',
+    thesisTitle: 'Generative Models for Image and Long Video Synthesis'
+  },
+  {
+    id: '315899',
+    label: 'Bill Peebles\nUC Berkeley 2023',
+    name: 'Bill Peebles',
+    detail: 'UC Berkeley 2023',
+    year: 2023,
+    href: 'https://genealogy.math.ndsu.nodak.edu/id.php?id=315899',
+    role: 'other',
+    thesisTitle: 'Generative Models of Images and Neural Networks'
+  },
+  {
+    id: '228020',
+    label: 'Junyan Zhu\nUC Berkeley 2017',
+    name: 'Junyan Zhu',
+    detail: 'UC Berkeley 2017',
+    year: 2017,
+    href: 'https://genealogy.math.ndsu.nodak.edu/id.php?id=228020',
+    role: 'other',
+    thesisTitle: 'Learning to Synthesize and Manipulate Natural Images'
+  },
+  {
+    id: '313253',
+    label: 'Richard Zhang\nUC Berkeley 2018',
+    name: 'Richard Zhang',
+    detail: 'UC Berkeley 2018',
+    year: 2018,
+    href: 'https://genealogy.math.ndsu.nodak.edu/id.php?id=313253',
+    role: 'other',
+    thesisTitle: 'Image Synthesis for Self-Supervised Visual Representation Learning'
+  },
+  {
+    id: '100557',
+    label: 'Fei-Fei Li\nCaltech 2005',
+    name: 'Fei-Fei Li',
+    detail: 'Caltech 2005',
+    year: 2005,
+    href: 'https://genealogy.math.ndsu.nodak.edu/id.php?id=100557',
+    role: 'other',
+    thesisTitle: 'Visual Recognition: Computational Models and Human Psychophysics'
+  },
+  {
+    id: '259004',
+    label: 'Jia Deng\nPrinceton 2012',
+    name: 'Jia Deng',
+    detail: 'Princeton 2012',
+    year: 2012,
+    href: 'https://genealogy.math.ndsu.nodak.edu/id.php?id=259004',
+    role: 'other',
+    thesisTitle: 'Large Scale Visual Recognition'
+  },
+  {
+    id: '258986',
+    label: 'Andrej Karpathy\nStanford 2016',
+    name: 'Andrej Karpathy',
+    detail: 'Stanford 2016',
+    year: 2016,
+    href: 'https://genealogy.math.ndsu.nodak.edu/id.php?id=258986',
+    role: 'other',
+    thesisTitle: 'Connecting Images and Natural Language'
+  },
+  {
+    id: '258990',
+    label: 'Justin Johnson\nStanford 2018',
+    name: 'Justin Johnson',
+    detail: 'Stanford 2018',
+    year: 2018,
+    href: 'https://genealogy.math.ndsu.nodak.edu/id.php?id=258990',
+    role: 'other',
+    thesisTitle: 'Compositional Visual Intelligence'
+  },
+  {
+    id: '258995',
+    label: 'Serena Yeung\nStanford 2018',
+    name: 'Serena Yeung',
+    detail: 'Stanford 2018',
+    year: 2018,
+    href: 'https://genealogy.math.ndsu.nodak.edu/id.php?id=258995',
+    role: 'other',
+    thesisTitle: 'Visual understanding of human activity: towards ambient intelligence in AI-assisted hospitals'
+  },
+  {
+    id: '258989',
+    label: 'Yuke Zhu\nStanford 2019',
+    name: 'Yuke Zhu',
+    detail: 'Stanford 2019',
+    year: 2019,
+    href: 'https://genealogy.math.ndsu.nodak.edu/id.php?id=258989',
+    role: 'other',
+    thesisTitle: 'Closing the perception-action loop: towards general-purpose robot autonomy'
+  },
+  {
+    id: '258997',
+    label: 'Timnit Gebru\nStanford 2017',
+    name: 'Timnit Gebru',
+    detail: 'Stanford 2017',
+    year: 2017,
+    href: 'https://genealogy.math.ndsu.nodak.edu/id.php?id=258997',
+    role: 'other',
+    thesisTitle: 'Visual computational sociology: computer vision methods and challenges'
+  },
+  {
+    id: '343362',
+    label: 'Ranjay Krishna\nStanford 2021',
+    name: 'Ranjay Krishna',
+    detail: 'Stanford 2021',
+    year: 2021,
+    href: 'https://genealogy.math.ndsu.nodak.edu/id.php?id=343362',
+    role: 'other',
+    thesisTitle: 'Visual Intelligence Through Human Learning'
+  },
+  {
+    id: '343367',
+    label: 'Ajay Mandlekar\nStanford 2021',
+    name: 'Ajay Mandlekar',
+    detail: 'Stanford 2021',
+    year: 2021,
+    href: 'https://genealogy.math.ndsu.nodak.edu/id.php?id=343367',
+    role: 'other',
+    thesisTitle: 'Building Robot Intelligence by Scaling Human Supervision'
+  },
+  {
+    id: '343364',
+    label: 'Danfei Xu\nStanford 2021',
+    name: 'Danfei Xu',
+    detail: 'Stanford 2021',
+    year: 2021,
+    href: 'https://genealogy.math.ndsu.nodak.edu/id.php?id=343364',
+    role: 'other',
+    thesisTitle: 'Compositional Reasoning in Robot Learning'
+  },
+  {
+    id: '343371',
+    label: 'Agrim Gupta\nStanford 2024',
+    name: 'Agrim Gupta',
+    detail: 'Stanford 2024',
+    year: 2024,
+    href: 'https://genealogy.math.ndsu.nodak.edu/id.php?id=343371',
+    role: 'other',
+    thesisTitle: 'Generative Models of Vision and Action'
+  },
+  {
+    id: '100558',
+    label: 'Silvio Savarese\nCaltech 2005',
+    name: 'Silvio Savarese',
+    detail: 'Caltech 2005',
+    year: 2005,
+    href: 'https://genealogy.math.ndsu.nodak.edu/id.php?id=100558',
+    role: 'other',
+    thesisTitle: 'Shape Reconstruction from Shadows and Reflections'
+  },
+  {
+    id: '84671',
+    label: 'Stefano Soatto\nCaltech 1996',
+    name: 'Stefano Soatto',
+    detail: 'Caltech 1996',
+    year: 1996,
+    href: 'https://genealogy.math.ndsu.nodak.edu/id.php?id=84671',
+    role: 'other',
+    thesisTitle: 'A Geometric Framework for Dynamic Vision'
   }
 ];
 const CUSTOM_EDGES = [
@@ -101,6 +422,146 @@ const CUSTOM_EDGES = [
   {
     source: '334753',
     target: '323631'
+  },
+  {
+    source: '58481',
+    target: '89106'
+  },
+  {
+    source: '89106',
+    target: '254743'
+  },
+  {
+    source: '254743',
+    target: '298803'
+  },
+  {
+    source: '237131',
+    target: '298803'
+  },
+  {
+    source: '254743',
+    target: 'chelsea_finn'
+  },
+  {
+    source: '237131',
+    target: 'chelsea_finn'
+  },
+  {
+    source: '50075',
+    target: '50186'
+  },
+  {
+    source: '50075',
+    target: '94558'
+  },
+  {
+    source: '50075',
+    target: '245201'
+  },
+  {
+    source: '50075',
+    target: '215529'
+  },
+  {
+    source: '215529',
+    target: '276446'
+  },
+  {
+    source: '215529',
+    target: '328842'
+  },
+  {
+    source: '96135',
+    target: '227627'
+  },
+  {
+    source: '96135',
+    target: '180587'
+  },
+  {
+    source: '70152',
+    target: '98529'
+  },
+  {
+    source: '98529',
+    target: '259444'
+  },
+  {
+    source: '98529',
+    target: '315898'
+  },
+  {
+    source: '98529',
+    target: '315899'
+  },
+  {
+    source: '98529',
+    target: '228020'
+  },
+  {
+    source: '98529',
+    target: '313253'
+  },
+  {
+    source: '84689',
+    target: '100557'
+  },
+  {
+    source: '100557',
+    target: '259004'
+  },
+  {
+    source: '100557',
+    target: '258986'
+  },
+  {
+    source: '100557',
+    target: '258990'
+  },
+  {
+    source: '100557',
+    target: '258995'
+  },
+  {
+    source: '100557',
+    target: '258989'
+  },
+  {
+    source: '100557',
+    target: '258997'
+  },
+  {
+    source: '100557',
+    target: '343362'
+  },
+  {
+    source: '100557',
+    target: '343367'
+  },
+  {
+    source: '100557',
+    target: '343364'
+  },
+  {
+    source: '100557',
+    target: '343371'
+  },
+  {
+    source: '84689',
+    target: '100558'
+  },
+  {
+    source: '100558',
+    target: '343367'
+  },
+  {
+    source: '100558',
+    target: '343364'
+  },
+  {
+    source: '84689',
+    target: '84671'
   }
 ];
 
