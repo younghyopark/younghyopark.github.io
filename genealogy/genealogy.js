@@ -1,10 +1,18 @@
 (function () {
   const stage = document.getElementById('stage');
   const edgeCanvas = document.getElementById('edge-canvas');
+  const appShell = document.querySelector('.genealogy-app');
   const graphHost = document.getElementById('graph-host');
   const mapWorld = document.getElementById('map-world');
   const nodeLayer = document.getElementById('node-layer');
   const loading = document.getElementById('loading');
+  const exploreToggle = document.getElementById('explore-toggle');
+  const exploreClose = document.getElementById('explore-close');
+  const exploreToggleLabel = exploreToggle ? exploreToggle.querySelector('.explore-toggle-label') : null;
+  const exploreToggleDetail = exploreToggle ? exploreToggle.querySelector('.explore-toggle-detail') : null;
+  const mobileConnectionTitle = document.getElementById('mobile-connection-title');
+  const mobileConnectionPeople = document.getElementById('mobile-connection-people');
+  const mobileConnectionLabel = document.getElementById('mobile-connection-label');
   const findModeButton = document.getElementById('mode-find');
   const connectModeButton = document.getElementById('mode-connect');
   const findPanel = document.getElementById('find-panel');
@@ -351,6 +359,76 @@
       window.matchMedia('(max-width: 560px)').matches;
   }
 
+  function mobileControlsOpen() {
+    return Boolean(appShell && appShell.classList.contains('is-controls-open'));
+  }
+
+  function updateMobileControlToggle() {
+    if (!exploreToggleLabel || !exploreToggleDetail) {
+      return;
+    }
+
+    if (state.interactionMode === 'connect') {
+      exploreToggleLabel.textContent = 'Controls';
+      exploreToggleDetail.textContent = state.connectionPathIds.length > 1
+        ? 'Connection'
+        : 'Connect';
+      return;
+    }
+
+    exploreToggleLabel.textContent = 'Controls';
+    exploreToggleDetail.textContent = state.selectedId
+      ? 'Person'
+      : 'Search';
+  }
+
+  function setMobileControlsOpen(open, options) {
+    if (!appShell || !exploreToggle) {
+      return;
+    }
+
+    const shouldOpen = Boolean(open);
+    appShell.classList.toggle('is-controls-open', shouldOpen);
+    exploreToggle.setAttribute('aria-expanded', String(shouldOpen));
+    exploreToggle.setAttribute('aria-label', shouldOpen ? 'Close controls' : 'Open controls');
+    if (!shouldOpen) {
+      hideAllSearchResults();
+      if (!options || options.blur !== false) {
+        [searchInput, connectFromInput, connectToInput].forEach((input) => {
+          if (input && document.activeElement === input) {
+            input.blur();
+          }
+        });
+      }
+    }
+    scheduleViewportFit();
+  }
+
+  function foldMobileControls(options) {
+    if (compactViewport()) {
+      setMobileControlsOpen(false, options);
+    }
+  }
+
+  function openMobileControls(options) {
+    if (!compactViewport()) {
+      return;
+    }
+
+    setMobileControlsOpen(true, { blur: false });
+    if (options && options.focus === false) {
+      return;
+    }
+
+    window.setTimeout(() => {
+      if (state.interactionMode === 'connect') {
+        connectionInput(state.connectionActiveSlot).focus();
+      } else {
+        searchInput.focus();
+      }
+    }, 0);
+  }
+
   function lineageLayoutMetrics() {
     if (!compactViewport()) {
       return {
@@ -663,15 +741,8 @@
     const pad = stageBox.width < 560 ? 12 : 18;
     let left = pad;
     let right = stageBox.width - pad;
-    let top = pad;
+    let top = frameTopWithChrome(stageBox, pad);
     let bottom = stageBox.height - pad;
-
-    if (topbar) {
-      const box = topbar.getBoundingClientRect();
-      if (box.width > 0 && box.height > 0) {
-        top = Math.max(top, box.bottom - stageBox.top + pad);
-      }
-    }
 
     if (sourceStrip) {
       const box = sourceStrip.getBoundingClientRect();
@@ -713,14 +784,32 @@
     };
   }
 
+  function visibleElementBottom(element, stageBox, pad) {
+    if (!element) {
+      return null;
+    }
+
+    const style = window.getComputedStyle(element);
+    if (style.display === 'none' || style.visibility === 'hidden' || parseFloat(style.opacity) === 0) {
+      return null;
+    }
+
+    const box = element.getBoundingClientRect();
+    if (box.width <= 0 || box.height <= 0) {
+      return null;
+    }
+
+    return box.bottom - stageBox.top + pad;
+  }
+
   function frameTopWithChrome(stageBox, pad) {
     let top = pad;
-    if (topbar) {
-      const box = topbar.getBoundingClientRect();
-      if (box.width > 0 && box.height > 0) {
-        top = Math.max(top, box.bottom - stageBox.top + pad);
+    [topbar, mobileConnectionTitle].forEach((element) => {
+      const bottom = visibleElementBottom(element, stageBox, pad);
+      if (bottom !== null) {
+        top = Math.max(top, bottom);
       }
-    }
+    });
     return top;
   }
 
@@ -769,6 +858,11 @@
 
   function localElementRect(element, stageBox, pad) {
     if (!element) {
+      return null;
+    }
+
+    const style = window.getComputedStyle(element);
+    if (style.display === 'none' || style.visibility === 'hidden' || parseFloat(style.opacity) === 0) {
       return null;
     }
 
@@ -1685,7 +1779,7 @@
       return {
         nodeW: LINEAGE_NODE_W,
         treeGapX: TREE_GAP_X,
-        rowGapY: 58,
+        rowGapY: 72,
         treeMargin: TREE_MARGIN,
         viewMarginX: 150,
         viewMarginY: 56,
@@ -1697,7 +1791,7 @@
     return {
       nodeW: 250,
       treeGapX: 270,
-      rowGapY: 28,
+      rowGapY: 48,
       treeMargin: 72,
       viewMarginX: 14,
       viewMarginY: 24,
@@ -1754,6 +1848,7 @@
 
     if (message) {
       connectStatus.textContent = message;
+      updateMobileControlToggle();
       return;
     }
 
@@ -1766,6 +1861,7 @@
     } else {
       connectStatus.textContent = 'Select two people to find the shortest connection.';
     }
+    updateMobileControlToggle();
   }
 
   function hideAllSearchResults() {
@@ -2249,6 +2345,7 @@
         updateConnectionUrl(fromId, toId, options && options.replaceUrl);
       }
       updateConnectionStatus('Same person selected.');
+      foldMobileControls();
       return;
     }
 
@@ -2269,6 +2366,7 @@
     }
     const linkCount = pathIds.length - 1;
     updateConnectionStatus(`${connectionEndpointName(fromId)} connects to ${connectionEndpointName(toId)} in ${linkCount} advisor-student ${linkCount === 1 ? 'link' : 'links'}.`);
+    foldMobileControls();
   }
 
   function selectConnectionEndpoint(slot, id, options) {
@@ -2423,6 +2521,7 @@
     connectModeButton.setAttribute('aria-selected', String(isConnect));
     findPanel.hidden = isConnect;
     connectPanel.hidden = !isConnect;
+    updateMobileControlToggle();
   }
 
   function setInteractionMode(mode, options) {
@@ -2523,14 +2622,49 @@
     const isConnectionTitle = Boolean(state.connectionPathIds.length && state.connectionFromId && state.connectionToId);
     const isFocusedTitle = Boolean(isConnectionTitle || (selectedNode && state.lineageMode !== 'full'));
 
+    if (appShell) {
+      appShell.classList.toggle('has-mobile-connection-title', isConnectionTitle);
+    }
+    if (mobileConnectionTitle) {
+      mobileConnectionTitle.hidden = !isConnectionTitle;
+      mobileConnectionTitle.setAttribute('aria-hidden', String(!isConnectionTitle));
+    }
+    if (mobileConnectionPeople && isConnectionTitle) {
+      const fromName = connectionEndpointName(state.connectionFromId);
+      const toName = connectionEndpointName(state.connectionToId);
+      const from = document.createElement('span');
+      const arrow = document.createElement('span');
+      const to = document.createElement('span');
+
+      from.className = 'mobile-connection-name';
+      from.textContent = fromName;
+      arrow.className = 'mobile-connection-arrow';
+      arrow.setAttribute('aria-hidden', 'true');
+      to.className = 'mobile-connection-name';
+      to.textContent = toName;
+      mobileConnectionPeople.setAttribute('aria-label', `${fromName} and ${toName}`);
+      mobileConnectionPeople.replaceChildren(from, arrow, to);
+    }
+    if (mobileConnectionLabel && isConnectionTitle) {
+      mobileConnectionLabel.textContent = 'Academic Connection Between';
+    }
     if (topbar) {
       topbar.classList.toggle('is-focused-title', isFocusedTitle);
+      topbar.classList.toggle('is-connection-title', isConnectionTitle);
     }
     if (titleHeading) {
       const nextTitle = isConnectionTitle
         ? connectionTitleText()
         : topbarTitle(selectedNode, isFocusedTitle);
-      if (!isConnectionTitle && isFocusedTitle && state.selectedId === INITIAL_PERSON_ID) {
+      if (isConnectionTitle) {
+        const peopleLine = document.createElement('span');
+        const topicLine = document.createElement('span');
+        peopleLine.className = 'connection-title-line';
+        topicLine.className = 'connection-title-line';
+        peopleLine.textContent = `${connectionEndpointName(state.connectionFromId)} and ${connectionEndpointName(state.connectionToId)}`;
+        topicLine.textContent = 'Connected Academically';
+        titleHeading.replaceChildren(peopleLine, topicLine);
+      } else if (isFocusedTitle && state.selectedId === INITIAL_PERSON_ID) {
         const name = displayNameForTitle(selectedNode);
         const link = document.createElement('a');
         const suffix = compactViewport()
@@ -2567,6 +2701,7 @@
       'aria-label',
       state.lineageMode === 'full' ? 'Show three-generation ancestry' : 'Show full lineage'
     );
+    updateMobileControlToggle();
   }
 
   function selectPerson(id, options) {
@@ -2583,6 +2718,9 @@
     activateFocusedTree(id, { animate: !options || options.animate !== false });
     if (options && options.center) {
       centerOnPerson(id);
+    }
+    if (!options || options.foldControls !== false) {
+      foldMobileControls();
     }
   }
 
@@ -2698,6 +2836,12 @@
   }
 
   function bindControls() {
+    if (exploreToggle) {
+      exploreToggle.addEventListener('click', () => openMobileControls({ focus: false }));
+    }
+    if (exploreClose) {
+      exploreClose.addEventListener('click', () => setMobileControlsOpen(false));
+    }
     document.getElementById('zoom-out').addEventListener('click', () => zoomBy(0.8));
     document.getElementById('zoom-in').addEventListener('click', () => zoomBy(1.25));
     findModeButton.addEventListener('click', () => setInteractionMode('find'));
@@ -2720,6 +2864,7 @@
     });
 
     searchInput.addEventListener('input', updateSearch);
+    searchInput.addEventListener('focus', () => openMobileControls({ focus: false }));
     searchInput.addEventListener('keydown', (event) => {
       handleAutocompleteKeydown(event, searchInput, searchResults, () => {
         searchInput.value = '';
@@ -2727,8 +2872,14 @@
       });
     });
 
-    connectFromInput.addEventListener('focus', () => setConnectionActiveSlot('from'));
-    connectToInput.addEventListener('focus', () => setConnectionActiveSlot('to'));
+    connectFromInput.addEventListener('focus', () => {
+      openMobileControls({ focus: false });
+      setConnectionActiveSlot('from');
+    });
+    connectToInput.addEventListener('focus', () => {
+      openMobileControls({ focus: false });
+      setConnectionActiveSlot('to');
+    });
     connectFromInput.addEventListener('input', () => updateConnectionSearch('from'));
     connectToInput.addEventListener('input', () => updateConnectionSearch('to'));
     connectFromInput.addEventListener('keydown', (event) => {
@@ -2784,6 +2935,9 @@
 
   function bindPanZoom() {
     stage.addEventListener('pointerdown', (event) => {
+      if (event.button === 0 && compactViewport() && mobileControlsOpen() && !event.target.closest('.explore-panel, .explore-toggle')) {
+        setMobileControlsOpen(false);
+      }
       if (event.button !== 0 || event.target.closest('.topbar, .explore-panel, .source-strip, .person-node, .lineage-action')) {
         return;
       }

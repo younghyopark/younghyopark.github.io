@@ -23,7 +23,18 @@
       </div>
     </header>
 
-    <div class="explore-panel" aria-label="Genealogy exploration controls">
+    <button type="button" id="explore-toggle" class="explore-toggle" aria-label="Open controls" aria-controls="explore-panel" aria-expanded="false">
+      <span class="explore-toggle-label">Find</span>
+      <span class="explore-toggle-detail">Search</span>
+    </button>
+
+    <div id="mobile-connection-title" class="mobile-connection-title" aria-hidden="true">
+      <span id="mobile-connection-label" class="mobile-connection-label">Academic Connection Between</span>
+      <span id="mobile-connection-people" class="mobile-connection-people"></span>
+    </div>
+
+    <div id="explore-panel" class="explore-panel" aria-label="Genealogy exploration controls">
+      <button type="button" id="explore-close" class="explore-close" aria-label="Fold controls">&times;</button>
       <div class="mode-toggle" role="tablist" aria-label="Exploration mode">
         <button type="button" id="mode-find" class="is-active" role="tab" aria-selected="true" aria-controls="find-panel">Find</button>
         <button type="button" id="mode-connect" role="tab" aria-selected="false" aria-controls="connect-panel">Connect</button>
