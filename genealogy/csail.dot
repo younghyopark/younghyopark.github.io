@@ -1,0 +1,3198 @@
+// CSAIL academic genealogy
+
+// Based on data from The Mathematics Genealogy Project
+// (North Dakota State University and the American Mathematical Society)
+// Additional data from Wikipedia, Web and library research,
+// and the subjects themselves.
+// Even more additional data from Neurotree/Academictree.
+
+// Current CSAIL PIs (as of 2026-06) are in CSAIL orange.
+// Former CSAIL/LCS/AI/MAC PIs are in CSAIL grey.
+
+strict digraph csail {
+	// The main connected component of this graph has a very high
+	// fanout.  Setting the aspect ratio should make it better,
+	// but it takes an enormous amount of memory and CPU.  After
+	// 20 minutes of CPU time, dot(1) had accumulated a *working
+	// set* of 4 gigabytes.  It might be worth letting this run
+	// overnight just to see if it can get it done in 8 hours and
+	// 16 GB of RAM.
+	graph [ charset="iso-8859-1", size="120,44", page="121,45", margin=0.25 ];
+
+	// The current version of GraphViz doesn't properly set up
+	// the PostScript pagedevice to indicate the size of the page.
+	// The comment below should be moved from the comments into
+	// the prologue and uncommented for proper display and printing.
+	// The sed(1) script "fixup.sed" takes care of this by editing
+	// the PostScript output.
+
+    // this is gross
+    // we want the label to be at top left, but graphviz stupidly clears
+    // the entire top part of the layout just for the label (even though
+    // graphviz knows very well how wide the label is, or thinks it does
+    // anyway).  so we bury the label in a node (which neato will float
+    // somewhere).  ick, why can't graphviz just do this right?
+    subgraph just_the_label_thanks {
+	// The current version of GraphViz doesn't correctly handle
+	// large font sizes in HTML-oid labels.  The PostScript code
+	// emitted for the 72-point text line in the label needs to
+	// be manually edited to specify a width of 850 points rather
+	// than the 292 points that GraphViz comes up with.
+	foo [ label=<
+<table valign="top" align="left" border="0">
+<tr><td align="center"><img src="csail-logo.eps" scale="true"/></td>
+<td balign="left" align="left">
+<font point-size="72">CSAIL Academic Genealogy</font><br/>
+<font point-size="24">Based on data from the Mathematics Genealogy Project (NDSU, AMS) and other sources<br/>
+Full CSAIL PIs (as of 2026-06) are outlined in <font color="#cc6600">CSAIL orange</font><br/>
+Associate, emeritus, and former CSAIL, AI, and LCS PIs are outlined in <font color="#514b47">CSAIL grey</font><br/>
+</font>
+<font point-size="16">(Not all former PIs are shown, and some non-PIs may be misidentified.  Teaching relationships become less formal towards the apex.)</font></td>
+</tr></table>
+>, labelloc="t", labeljust="l"
+	 ];
+    }
+	qrcode [ image="url-qrcode.png", shape=none ]
+
+	// CSAIL principal investigators
+	node [ href="http://genealogy.math.ndsu.nodak.edu/id.php?id=\N", shape=box, color="#cc6600", penwidth=5 ];
+
+	// 2017-2026 additions
+	238967 [ label="Pulkit Agrawal\nUC Berkeley 2018" ]
+	260150 [ label="Jacob Daniel Andreas\nUC Berkeley 2018" ]
+	298385 [ label="Sara Beery\nCalTech 2022" ]
+	226821 [ label="Adam Belay\nStanford 2016" ]
+	abobu [ label="Andreea Bobu\nUC Berkeley 2023" ]
+	292647 [ label="Michael John Cafarella\nU. Washington 2009" ]
+	226819 [ label="Christina Delimitrou\nStanford 2015" ]
+	208904 [ label="Mohsen Ghaffari\nMIT 2016" ]
+	ghobadi [ label="Manya Ghobadi\nU. Toronto 2013" ]
+	mlgordon [ label="Mitchell Gordon\nStanford 2023" ]
+	dhm [ label="Dylan Hadfield-Menell\nUC Berkeley 2021" ]
+	kaiming [ label="Kaiming He\nChinese U. of Hong Kong 2011" ]
+	237526 [ label="Samuel B. Hopkins\nCornell 2018" ]
+	huangcza [ label="Anna (Cheng-Zhi) Huang\nHarvard 2019" ]
+	phillipi [ label="Phillip Isola\nMIT 2015" ]
+	304002 [ label="Yael Tauman Kalai\nMIT 2006" ]
+	okhattab [ label="Omar Khattab\nStanford 2024" ]
+	yoonkim [ label="Yoon Kim\nHarvard 2020" ]
+	minakl [ label="Mina Konakovic Lukovic\nEPFL 2019" ]
+	301312 [ label="Tim Kraska\nETH Zürich 2010" ]
+	251187 [ label="Anand Venkat Natarajan\nMIT 2018" ]
+	rnigam [ label="Rachit Nigam\nCornell 2025" ]
+	198812 [ label="Jonathan Millard Ragan-Kelley\nMIT 2014" ]
+	arvindsatya [ label="Arvind Satyanarayan\nStanford 2017" ]
+	205603 [ label="Julian Shun\nCMU 2015" ]
+	sitzmann [ label="Vincent Sitzmann\nStanford 2020" ]
+	mengjiay [ label="Mengjia Yan\nUIUC 2019" ]
+
+	// 2015/2016/2017 additions
+	218793 [ label="Mohammad Alizadeh\nStanford 2013" ]
+	191284 [ label="Tamara Broderick\nUC Berkeley 2014" ]
+	218794 [ label="Michael Carbin\nMIT 2015" ]
+	218795 [ label="Stefanie Sabrina Jegelka\nETH Zürich" ]
+	154866 [ label="Aleksander Madry\nMIT 2011" ]
+	218798 [ label="Stefanie Mueller\nHasso Plattner Institute 2016" ]
+	202654 [ label="Justin Solomon\nStanford 2015" ]
+	155984 [ label="David Alexander Sontag\nMIT 2011" ]
+	117553 [ label="R. Ryan Williams\nCMU 2007" ]
+	129326 [ label="Virginia Vassilevska Williams\nCMU 2008" ]
+
+	// 2014 additions
+	155968 [ label="Ankur Moitra\nMIT 2011" ]
+
+	// 2012/2013 additions
+	160100 [ label="Lalana Kagal\nUMBC 2004" ]
+	166561 [ label="Daniel Sanchez\nStanford 2012" ]
+	133526 [ label="Vinod Vaikuntanathan\nMIT 2009" ]
+
+	// 2011 additions
+	125475 [ label="Adam James Chlipala\nUC Berkeley 2007" ]
+	155972 [ label="Joel S. Emer\nIllinois 1979" ]
+	156588 [ label="D. Fox (Douglas) Harrell, Jr.\nUCSD 2007" ]
+	63754 [ label="Andrew W. Lo\nHarvard 1984" ]
+	153915 [ label="Wojciech Matusik\nMIT 2003" ]
+	oliva [ label="Aude Oliva\nINP Grenoble 1995" href="https://neurotree.org/beta/tree.php?pid=8222" ]
+	221636 [ label="Julie A. Shah\nMIT 2011" ]
+	129334 [ label="Nir Shavit\nHebrew University 1989" ]
+
+	// 2010 additions
+
+	// as of June, 2010
+	24076 [ label="Harold Abelson\nMIT 1973" ]
+	144827 [ label="Edward Adelson\nMichigan 1979" ]
+	71326 [ label="Saman Prabhath Amarasinghe\nStanford 1997" ]
+	83472 [ label="Hari Balakrishnan\nUC Berkeley 1998" ]
+	111228 [ label="Regina Barzilay\nColumbia 2003" ]
+	20170 [ label="Bonnie Anne Berger\nMIT 1990" ]
+	69545 [ label="David Dana Clark\nMIT 1973" ]
+	139732 [ label="Constantinos (Costis) Daskalakis\nUC Berkeley 2008" ]
+	61100 [ label="Randall Davis\nStanford 1976" ]
+	65084 [ label="Erik D. Demaine\nWaterloo 2001" ]
+	144825 [ label="Srinivas Devadas\nUC Berkeley 1988" ]
+	106894 [ label="Frédo Durand\nUniversité Joseph Fourier Grenoble I 1999" ]
+	25177 [ label="Alan Stuart Edelman\nMIT 1989" ]
+	144828 [ label="William Tafel Freeman\nMIT 1992" ]
+	76626 [ label="David Kenneth Gifford\nStanford 1981" ]
+	103685 [ label="James Robert Glass\nMIT 1988" ]
+	35879 [ label="Shafrira Goldwasser\nUC Berkeley 1984" ] // group="blum"
+	144830 [ label="Polina Golland\nMIT 2001" ]
+	65968 [ label="John Vogel Guttag\nToronto 1975" ]
+	71081 [ label="Piotr Indyk\nStanford 2001" ]
+	87375 [ label="Tommi Sakari Jaakkola\nMIT 1997" ]
+	108273 [ label="Daniel Jackson\nMIT 1992" ]
+	61950 [ label="M. Frans Kaashoek\nVrije Universiteit Amsterdam 1992" ]
+	69344 [ label="Leslie Pack Kaelbling\nStanford 1990" ]
+	39231 [ label="David Ron Karger\nStanford 1995" ]
+	104823 [ label="Dina Katabi\nMIT 2003" ]
+	176620 [ label="Boris Katz\nMoscow State University 1975" ]
+	86348 [ label="Manolis Kellis (Kamvysellis)\nMIT 2003" ]
+	100625 [ label="Jonathan A. Kelner\nMIT 2006" ]
+	144832 [ label="Butler W. Lampson\nUC Berkeley 1967" ]
+	50312 [ label="Charles Eric Leiserson\nCMU 1981" ]
+	132711 [ label="John J. Leonard\nOxford 1994" ]
+	61932 [ label="Barbara Jane Huberman Liskov\nStanford 1968" ]
+	63756 [ label="Tomás Lozano-Pérez\nMIT 1980" ]
+	81227 [ label="Nancy Ann Lynch\nMIT 1972" ]
+	89456 [ label="Samuel Ross Madden\nUC Berkeley 2003" ]
+	64768 [ label="Thomas Lee Magnanti\nStanford 1972" ]
+	77138 [ label="Silvio M. Micali\nUC Berkeley 1983" ] // group="blum"
+	103831 [ label="Robert C. Miller\nCMU 2002" ]
+	98161 [ label="Robert Tappan Morris\nHarvard 1999" ]
+	72880 [ label="Una-May O'Reilly\nCarleton 1995" ]
+	71513 [ label="Martin C. Rinard\nStanford 1994" ]
+	50081 [ label="Ronald Linn Rivest\nStanford 1974" ]
+	101772 [ label="Nicholas George Dilip Roy\nCMU 2003" ]
+	26869 [ label="Ronitt A. Rubinfeld\nUC Berkeley 1990" ] // group="blum"
+	76738 [ label="Daniela L. Rus\nCornell 1992" ]
+	144833 [ label="Stephanie Seneff\nMIT 1985" ]
+	80257 [ label="Howard Elliot Shrobe\nMIT 1978" ]
+	142222 [ label="Armando Solar-Lezama\nUC Berkeley 2008" ]
+	31091 [ label="Michael Ralph Stonebraker\nMichigan 1971" ]
+	20655 [ label="Gerald Jay Sussman\nMIT 1973" ] // group="minsky"
+	83084 [ label="Peter Szolovits\nCalTech 1975" ]
+	144835 [ label="Russell L. Tedrake\nMIT 2004" ]	
+	144880 [ label="Bruce Tidor\nHarvard 1990" ]
+	144838 [ label="Antonio Torralba\nInstitut National Polytechnique Grenoble 2000" ]
+	djweitzner [ label="Daniel J. Weitzner\nSUNY Buffalo (J.D.) 1992" ]
+	144973 [ label="Brian Charles Williams\nMIT 1989" ]
+	144839 [ label="Nickolai Zeldovich\nStanford 2008" ]
+
+	// Former CSAIL PIs
+	node [color="#514b47"];
+
+	236554 [ label="Marzyeh Ghassemi\nMIT 2017" ]
+	103677 [ label="Victor Waito Zue\nMIT 1976" ]
+	84647 [ label="Jack Wisdom\nCalTech 1981" ]
+	61072 [ label="Patrick Henry Winston\nMIT 1970" ] // RIP
+	80268 [ label="Ron Weiss\nMIT 2001" ]
+	83082 [ label="Stephen Ashley Ward\nMIT 1974" ]
+	144837 [ label="Christopher Jay Terman\nMIT 1983" ]
+	144836 [ label="Joshua Brett Tenenbaum\nMIT 1999" ]
+	72850 [ label="Madhu Sudan\nUC Berkeley 1992" ]
+	144834 [ label="Karen Rosin Sollins\nMIT 1985" ]
+	64971 [ label="Michael Fredric Sipser\nUC Berkeley 1980" ] // group="blum"
+	69573 [ label="Peter Williston Shor\nMIT 1985" ]
+	104301 [ label="Jerome Howard Saltzer\nMIT 1966" ]
+	103342 [ label="Ruth Ellen Rosenholtz\nUC Berkeley 1994" ]
+	113395 [ label="Tomaso A. Poggio\nGenoa 1970" ]
+	61081 [ label="Joel Moses\nMIT 1967" ] // RIP
+	25184 [ label="Albert Ronald da Silva Meyer\nHarvard 1972" ]
+	144878 [ label="William James Long\nMIT 1977" ]
+	37053 [ label="Frank Thomson (Tom) Leighton\nMIT 1981" ]
+	81226 [ label="Jeffrey Martin Jaffe\nMIT 1979" ]
+	61066 [ label="Berthold Klaus Paul Horn\nMIT 1970" ] // group="minsky"
+	69206 [ label="William Eric Leifur Grimson\nMIT 1980" ]
+	37056 [ label="Michel Xavier Goemans\nMIT 1990" ]
+	144826 [ label="John W. Fisher III\nFlorida 1997" ]
+	65969 [ label="Jack Bonnell Dennis\nMIT 1959" ] // RIP
+	104805 [ label="Fernando José Corbató\nMIT 1956" ] // RIP
+	timbl [ label="Timothy John Berners-Lee\nOxford 1976 (B.A.)\nSouthampton 1995 (h.c.)\n" ]
+	65982 [ label="Arvind\nMinnesota 1973" ] // RIP
+	jbrewer [ label="Judy Brewer\n???" ]
+	67690 [ label="Alan Steven Willsky\nMIT 1973" ]
+	65986 [ label="Whitman Albin Richards\nMIT 1965" ] // RIP 2016
+	218799 [ label="Matei Zaharia\nUC Berkeley 2013" ] // already gone!
+	96847 [ label="Devavrat Shah\nStanford 2004" ]
+	252415 [ label="Mary (Missy) Cummings\nVirginia 2003" ]
+	71060 [ label="Li-Shiuan Peh\nStanford 2001" ]
+	109495 [ label="Scott Joel Aaronson\nUC Berkeley 2004" ] // left 2016-09
+	146013 [ label="Hadar Dana Moshkovitz\nWeizmann 2008" ] // left 2016-09
+	64848 [ label="Robert Mario Fano\nMIT 1947" ] // deceased
+	71812 [ label="Anant Agarwal\nStanford 1987" ] // left 2015 for edX
+	61090 [ label="Rodney Allen Brooks\nStanford 1981" ]
+	132673 [ label="Seth Teller\nUC Berkeley 1992" ] // RIP 2014-07-01
+	61045 [ label="Thomas Frederic Knight, Jr.\nMIT 1983" ]
+	rettberg [ label="Randy Rettberg\nIllinois (M.S.)" ]
+	144903 [ label="Collin Melveton Stultz\nHarvard 1997 (M.D.)\nMIT 1997" ]
+	139535 [ label="Michael Collins\nPenn 1998" ]
+
+	// Old AI people
+	85458 [ label="Robert Cregar Berwick\nMIT 1982" ]
+
+	// Project MAC XI (1974)
+	// E. Fredkin
+	204271 [ label="Edward Fredkin" ]
+	40759 [ label="Michael John Fischer\nHarvard 1968" ]
+	111888 [ label="Frederick Clair Hennie III\nMIT 1961" ]
+	// S. S. Patil
+	40894 [ label="Vaughan Ronald Pratt\nStanford 1972" ]
+	// stoy [ label="Joseph E. Stoy\nOxford ???" ] just a visitor?
+	// Zvi Meir Kedem Technion 1974 11624 -- visitor?
+	61055 [ label="George Anthony Gorry, Jr.\nMIT 1967" ]
+	77153 [ label="Michael Martin Hammer\nMIT 1973" ]
+	// A. Hax
+	22676 [ label="Roy Earl Marsten\nUCLA 1971" ]
+	25263 [ label="Richard Jay Fateman\nHarvard 1971" ]
+	// Vera Stephen Pless Northwestern 1957 7529 -- visitor?
+	// G. R. Ruth
+	// P. S.-H. Wang
+	// Michael David Schroeder MIT 1973 105357 -- postdoc?
+	// E. Wade
+	240988 [ label="Joseph Carl Robnett Licklider\nRochester 1942" ]
+	// Al Vezza
+	61061 [ label="Carl Eddie Hewitt\nMIT 1971" ]
+
+	// LCS XII (1975)
+	// V. Kotov
+	// H. Weber
+	// H.-M. D. Toong
+	// D. D. Redell
+
+	// LCS XIII (1976)
+	// C. A. Ellis
+	// L. Svobodova Stanford 1974 86621 -- visitor?
+	// P. G. Jessel
+	81482 [ label="Joseph Weizenbaum\nWayne State 1950 (M.S.)" ]
+	// L. B. Hawkinson
+	// M. L. Fredman Stanford 1972 40756 -- visitor?
+	// Michael Oser Rabin 8023 below -- visitor?
+	// A. C. Yao  visitor?
+
+	// LCS XIV (1977)
+	// L. Adleman UCB 1976 62298 -- visitor?
+	// S. Even 18988 below -- visitor?
+	// George Steven Sacerdote UIUC 1971 4025 -- visitor?
+	// Adi Shamir Weizmann 1977 19271 -- visitor?
+
+	// LCS 16 (1979)
+	105326 [ label="David Patrick Reed\nMIT 1979" ]
+	112629 [ label="Irene Gloria Greif\nMIT 1975" ]
+	// 71203 [ label="Michael Robert Genesereth\nHarvard 1979" ]
+	// M. Zisman
+	80259 [ label="Richard Cabot Waters\nMIT 1978" ]
+	// S. Turkle
+	31473 [ label="Gary Lee Miller\nUC Berkeley 1975" ] // group="blum"
+	46289 [ label="Christos H. Papadimitriou\nPrinceton 1976" ]
+
+	// LCS 17 (1980)
+	82993 [ label="Richard Eliot Zippel\nMIT 1979" ]
+	// M. S. Blank
+	// R. H. Halstead
+
+	// LCS 21 (1984)
+	83081 [ label="Ramesh Shrikrishna Patil\nMIT 1982" ]
+	143090 [ label="Maurice Vincent Wilkes\nCambridge 1936" ]
+	// L. W. Allen
+	// M. B. Greenwald
+	// A. diSessa
+	// S. Weir
+
+	// LCS 23 (1986)
+	67447 [ label="William Edward Weihl\nMIT 1984" ]
+	24481 [ label="Rishiyur Sivaswami Nikhil\nPenn 1984" ]
+	104177 [ label="Tommaso Toffoli\nMichigan 1977" ]
+	// G. Vichniac
+	81233 [ label="Baruch Awerbuch\nTechnion 1984" ]
+	// L. Heath
+	36705 [ label="David Bernard Shmoys\nUC Berkeley 1984" ]
+
+	// LCS 24 (1987): no changes
+
+	// LCS 27 (1990)
+	55183 [ label="David Lawrence Tennenhouse\nCambridge 1989" ]
+	// G. Rennels
+	110110 [ label="Greg M. Papadopoulos\nMIT 1988" ]
+	65985 [ label="William James Dally\nCalTech 1986" ]
+	204272 [ label="Norman H. Margolus\nMIT 1987" ] // only Res. Sci.?
+	// H. Leung
+	// M. Phillips
+	// Leonidas J. Guibas Stanford 1976 39940 -- visitor?
+	// Mauricio Karchmer Hebrew Univ. 1988 102214 -- visitor?
+	// Eva Tardos Eotvos-Lorand Univ 1984 39422 -- visitor?
+
+	26919 [ label="Edward L. Glaser\nDartmouth 1951 (A.B.)" ]
+	// Glaser: Associate prof. in the mid-1960s, worked on Multics
+	// left in 1967 to start a lab at CWRU
+	83083 [ label="Michael Leonidas Dertouzos\nMIT 1964" ]
+	61077 [ label="William Arthur Martin\nMIT 1967" ]
+	6869 [ label="Marvin Lee Minsky\nPrinceton 1954" ] // group="minsky"
+	64297 [ label="Peter Elias\nHarvard 1950" ]
+	145237 [ label="Krste Asanovic\nUC Berkeley 1998" ]
+	71839 [ label="Michael Dean Ernst\nU. Washington 2000" ]
+	145220 [ label="Trevor Jackson Darrell\nMIT 1996" ]
+	105496 [ label="Lawrence S. Rudolph\nNYU 1982" ]
+	20656 [ label="Seymour Aubrey Papert\nUniversity of the Witwatersrand 1952\nCambridge 1959" ]
+	60870 [ label="Jon Doyle\nMIT 1980" ]
+	65065 [ label="Daniel Alan Spielman\nMIT 1995" ]
+	31373 [ label="Stephen Jay Garland\nUC Berkeley 1967" ]
+	50347 [ label="Santosh S. Vempala\nCMU 1997" ]
+	136465 [ label="Julie O'Brien Dorsey\nCornell 1993" ]
+	144909 [ label="Leonard McMillan, Jr.\nUNC-Chapel Hill 1997" ]
+	79156 [ label="Jovan Popovic\nCMU 2001" ]
+
+	// Gill Pratt
+	// Glenn Rennels
+	// Michael Hawley 61059 -- Media Lab person
+	71324 [ label="John Chapin\nStanford 1997" ]
+	93188 [ label="Lynn Andrea Stein\nBrown 1990" ]
+	// Jonathan How 71102 -- Aero/Astro person
+
+	node [style=solid, color=black, penwidth=1];
+	edge [weight=1];
+
+	// Past alumni
+	// ilh [ label="I. Lee Hetherington\nMIT 1994" ] // <- zue
+
+	// Non-MGP antecedents
+	190880 [ label="José Carlos Santos Carvalho Príncipe\nFlorida 1979" ]
+	252414 [ label="Stephanie Guerlain\nOhio State 1995" ]
+	252413 [ label="Philip John Smith\nMichigan 1979" ]
+	177552 [ label="Jeanny Hérault\nINP Grenoble 1974, 1980" ]
+
+	y_ganjali [ label="Yashar Ganjali\nStanford 2006" ]
+	x_tang [ label="Xiaoou Tang\n???" ]
+	a_rush [ label="Alexander Rush\nMIT 2014" ]
+	m_pauly [ label="Mark Pauly\nETH Zürich 2003" ]
+	g_wetzstein [ label="Gordon Wetzstein\nUBC 2011" ]
+	e_edlund [ label="Erik Edlund\nUppsala 1845" ]
+	b_juhos [ label="Béla Juhos\nWien 1926" ]
+	v_ingram [ label="Vernon Ingram\nLondon 1949" ]
+	// Google summary says Goettingen but the alleged source for the claim
+	// says Strassburg (i.e., Strasbourg) instead. Masters at Birmingham,
+	// postdoc at St. Andrews. There does not seem to be any record of
+	// who was his supervisor either, despite allegedly being at a
+	// prestigious German university where such records would be expected.
+	f_barrow [ label="Fred Barrow\n???" ]
+	j_barcroft [ label="Joseph Barcroft\nCambridge 1896 (M.D.)" ]
+	c_matteucci [ label="Carlo Matteucci\nBologna 1829" ]
+
+	// mail sent
+	p_w_cobb [ label="Percy W. Cobb\nWestern Reserve Univ. 1902 (M.D.)" ]
+	a_s_pearse [ label="Arthur Sperry Pearse\nHarvard 1908" ]
+
+	// XXX neurotree data -- check other sources
+	m_alpern [ label="Matthew Alpern\nOhio State 1950" ]
+	g_a_fry [ label="Glenn A. Fry\nWashington U. of St. Louis 1935" ]
+	g_h_bishop [ label="George Holman Bishop\nWisconsin 1919" ]
+	j_a_movshon [ label="J. Anthony Movshon\nCambridge 1975" ]
+	c_blakemore [ label="Colin Blakemore\nUC Berkeley" ]
+	h_barlow [ label="Horace Barlow\nCambridge" ]
+	e_d_adrian [ label="Edgar Douglas Adrian\nCambridge (postdoc)" ]
+	w_a_h_rushton [ label="William A. H. Rushton\nCambridge 1928" ]
+	k_lucas [ label="Keith Lucas\nCambridge" ]
+	// 156587 [ label="Gilles Raymond Fauconnier\nUCSD 1971" ]
+	66201 [ label="Jeffrey Adam Bilmes\nUC Berkeley 1999" ]
+	
+	// Non-MGP edges
+	252414 -> 252415
+	252413 -> 252414
+	177552 -> 144838
+	177552 -> oliva // wikipedia
+	m_alpern -> 144827
+	g_a_fry -> m_alpern
+	g_h_bishop -> g_a_fry
+	a_s_pearse -> g_h_bishop // http://www.nasonline.org/publications/biographical-memoirs/memoir-pdfs/bishop-george-h.pdf
+	p_w_cobb -> g_a_fry // https://kb.osu.edu/dspace/bitstream/handle/1811/462/Fry%20transcript.pdf?sequence=1
+	j_a_movshon -> 144827
+	c_blakemore -> j_a_movshon
+	h_barlow -> c_blakemore
+	e_d_adrian -> h_barlow
+	w_a_h_rushton -> h_barlow
+	k_lucas -> e_d_adrian
+	e_d_adrian -> w_a_h_rushton
+	190880 -> 144826
+	// 156587 -> 156588 // dissertation
+	// fredkin -> nhm // dissertation
+	70655 -> 218793
+	71513 -> 218794
+	134141 -> 218795
+	66201 -> 218795
+	70074 -> 66201
+	55195 -> 218798
+	143532 -> 218799
+	y_ganjali -> ghobadi
+	176626 -> mlgordon
+	70093 -> mlgordon
+	290811 -> dhm
+	32943 -> dhm
+	237131 -> dhm
+	x_tang -> kaiming
+	171007 -> huangcza
+	252136 -> huangcza
+	144827 -> phillipi
+	322440 -> okhattab
+	238174 -> okhattab
+	218799 -> okhattab
+	a_rush -> yoonkim
+	139535 -> a_rush
+	m_pauly -> minakl
+	54319 -> m_pauly
+	218617 -> rnigam
+	134528 -> arvindsatya
+	70984 -> arvindsatya
+	g_wetzstein -> sitzmann
+	113274 -> g_wetzstein
+	40828 -> mengjiay
+	e_edlund -> 200502 // wikipedia
+	20541 -> e_edlund // wikipedia
+	62983 -> b_juhos // Google
+	f_barrow -> v_ingram // Google
+	j_barcroft -> 168357 // alleged by Google
+
+	// First level of MGP edges
+	edge [weight=2];
+	69206 -> 144830
+	10185 -> 144832
+	82978 -> 144833
+	105326 -> 144834
+	117679 -> 144835
+	65986 -> 144836
+	83082 -> 144837
+	61100 -> 144973
+	61965 -> 144839
+	38686 -> 109495
+	38686 -> 72850
+	1472 -> 24076
+	40909 -> 71812
+	50307 -> 71326
+	19035 -> 65982
+	70077 -> 83472
+	106579 -> 111228
+	77138 -> 20170
+	71445 -> 61090
+	104301 -> 69545
+	97405 -> 139535
+	64503 -> 104805
+	46289 -> 139732
+	22145 -> 61100
+	61956 -> 61100 // per private email
+	65035 -> 65084
+	65036 -> 65084
+	16699 -> 65969
+	84690 -> 106894
+	106886 -> 106894
+	25178 -> 25177
+	63061 -> 64848
+	22791 -> 76626
+	103677 -> 103685
+	82978 -> 103677
+	37057 -> 37056
+	13373 -> 35879
+	67765 -> 69206
+	13815 -> 65968
+	6869 -> 61066
+	41471 -> 71081
+	87388 -> 87375
+	65968 -> 108273
+	69777 -> 61950
+	70729 -> 69344
+	139238 -> 69344
+	22145 -> 69344 // is this right? ask Leslie
+	41471 -> 39231
+	69545 -> 104823
+	29544 -> 86348
+	20170 -> 86348
+	65065 -> 100625
+	13373 -> 64971
+	20655 -> 61045
+	6869 -> 20655
+	20656 -> 20655
+	31473 -> 37053
+	47159 -> 50312
+	50096 -> 50312
+	132712 -> 132711
+	22145 -> 61932
+	61066 -> 63756
+	25184 -> 81227
+	81573 -> 89456
+	63600 -> 31091
+	32292 -> 64768
+	13373 -> 77138
+	13817 -> 103831
+	50227 -> 103831
+	47159 -> 98161
+	6869 -> 61081
+	20656 -> 61081
+	72720 -> 72880
+	65985 -> 71060 [ weight=2 ]
+	113400 -> 113395
+	76889 -> 65986
+	50307 -> 71513
+	69223 -> 50081
+	70152 -> 103342
+	70152 -> 238967
+	100193 -> 101772
+	50076 -> 101772
+	13373 -> 26869
+	73697 -> 76738
+	104805 -> 104301
+	37053 -> 69573
+	20655 -> 80257
+	82262 -> 142222
+	19855 -> 83084
+	32940 -> 132673
+	83083 -> 83082
+	20655 -> 80268
+	61045 -> 80268
+	6869 -> 61072
+	61077 -> 144878
+	113591 -> 144879
+	56280 -> 84647
+	23314 -> 64297
+	18263 -> 145237
+	50230 -> 71839
+	78226 -> 145220
+	95540 -> k_lucas
+	13409 -> 105496
+	36863 -> 105496
+	42570 -> 55183
+	65982 -> 110110
+	25276 -> 36705
+	18988 -> 81233
+	5064 -> 104177
+	24429 -> 24481
+	61932 -> 67447
+	83084 -> 83081
+	61081 -> 82993
+	20655 -> 80259
+	61061 -> 112629
+	20656 -> 61061
+	61081 -> 25263
+	13305 -> 25263
+	66838 -> 22676
+	40759 -> 77153
+	81482 -> 61055
+	10416 -> 40894
+	16699 -> 111888
+	93106 -> 252413	// Krantz's CV
+	76951 -> 176620
+	18523 -> 143090
+	20655 -> 60870
+	8251 -> 31373
+	33035 -> 50347
+	67689 -> 67690
+	78996 -> 79156
+	96122 -> 79156
+	73495 -> 136465
+	144908 -> 144909
+	144824 -> 144825
+	144827 -> 144828
+	144879 -> 144880
+	144879 -> 144903
+	144976 -> 144824
+	102217 -> 146013
+	147661 -> 143090
+	105986 -> 155972 // http://en.wikipedia.org/wiki/Joel_Emer
+	// 71842 -> 156588 // dissertation
+	73406 -> 63754
+	46609 -> 63754
+	144909 -> 153915
+	70994 -> 71324
+	93189 -> 93188
+	19326 -> 129334
+	50191 -> 125475
+	144973 -> 221636
+	91509 -> 160100
+	138242 -> 166561
+	35879 -> 133526
+	// 138280 -> 156587 // dissertation
+	18538 -> 20656
+	31484 -> 156588
+	70655 -> 96847
+	87388 -> 191284
+	37056 -> 154866
+	100625 -> 154866
+	87375 -> 155984
+	39940 -> 202654
+	13373 -> 117553
+	49426 -> 129326
+	37053 -> 155968
+	204271 -> 204272
+	82231 -> 85458
+	238176 -> 260150
+	84689 -> 298385
+	138242 -> 226821
+	71790 -> 292647
+	81302 -> 292647
+	138242 -> 226819
+	81227 -> 208904
+	150842 -> 237526
+	35879 -> 304002
+	166410 -> 301312
+	248207 -> 251187
+	106894 -> 198812
+	71326 -> 198812
+	49426 -> 205603
+	257075 -> 190880
+	290811 -> abobu
+	30518 -> y_ganjali
+	114771 -> 218799 // per Stoica web page
+	83084 -> 236554
+
+	edge [weight=1];
+
+	// First level of MGP antecedents
+	82978 [ label="Kenneth Noble Stevens\nMIT 1952" ]
+	117679 [ label="Hyunjune Sebastian Seung\nHarvard 1990" ]
+	61965 [ label="David Folkman Mazieres\nMIT 2000" ]
+	38686 [ label="Umesh Virkumar Vazirani\nUC Berkeley 1986" ] // group="blum"
+	1472 [ label="Dennis Parnell Sullivan\nPrinceton 1966" ]
+	40909 [ label="John Leroy Hennessy\nStony Brook 1977" ]
+	50307 [ label="Monica Sin-Ling Lam\nCMU 1987" ]
+	19035 [ label="Richard Yerkes Kain\nMIT 1962" ]
+	70077 [ label="Randy Howard Katz\nUC Berkeley 1980" ]
+	106579 [ label="Kathleen Rose McKeown\nPenn 1982" ]
+	71445 [ label="Thomas Oriel Binford\nUW-Madison 1965" ]
+	97405 [ label="Mitchell Philip Marcus\nMIT 1978" ]
+	22145 [ label="John McCarthy\nPrinceton 1951", fillcolor="#e0e0ff", style="filled" ]
+	65035 [ label="Anna Lubiw\nToronto 1985" ]
+	65036 [ label="James Ian Munro\nToronto 1971" ]
+	16699 [ label="Dean Norman Arden\nPurdue 1957" ]
+	84690 [ label="Claude Puech\nUniversité Paris-Sud XI - Orsay 1984" ]
+	106886 [ label="George Drettakis\nToronto 1994" ]
+	25178 [ label="Lloyd Nicholas Trefethen\nStanford 1982" ]
+	22791 [ label="Susan Speer Owicki\nCornell 1975" ]
+	37057 [ label="Dimitris John Bertsimas\nMIT 1988" ]
+	67765 [ label="David Courtenay Marr\nCambridge 1971" ]
+	13815 [ label="James Jay Horning\nStanford 1969" ]
+	41471 [ label="Rajeev Motwani\nUC Berkeley 1988" ]
+	87388 [ label="Michael Irwin Jordan\nUC San Diego 1985" ]
+	69777 [ label="Andrew Stuart Tanenbaum\nUC Berkeley 1971", fillcolor="#e0e0ff", style="filled" ]
+	70729 [ label="Nils John Nilsson\nStanford 1958" ]
+	139238 [ label="Stanley Rosenschein\nPenn 1975" ]
+	// 1975?  should be possible to find thesis
+	29544 [ label="Eric S. Lander\nOxford 1981", fillcolor="#e0e0ff", style="filled" ]
+	50096 [ label="Jon Louis Bentley\nUNC-Chapel Hill 1976" ]
+	132712 [ label="Hugh Durrant-Whyte\nPenn 1986" ]
+	81573 [ label="Michael Jay Franklin\nUW-Madison 1993" ]
+	63600 [ label="Arch Waugh Naylor\nMichigan 1960" ]
+	32292 [ label="George Bernard Dantzig\nUC Berkeley 1946" ] 
+	13817 [ label="Brad Allan Myers\nToronto 1987" ]
+	50227 [ label="David Barnard Garlan\nCMU 1987" ]
+	72720 [ label="Franz Oppacher\nWien 1965" ]
+	113400 [ label="Antonio Borsellino\nPisa 1938" ]
+	76889 [ label="Hans-Lukas Teuber\nHarvard 1947" ]
+	70152 [ label="Jitendra Malik\nStanford 1986" ]
+	100193 [ label="Sebastian Thrun\nBonn 1995" ]
+	50076 [ label="Tom Michael Mitchell\nStanford 1979" ]
+	73697 [ label="John Edward H. Hopcroft\nStanford 1964" ]
+	82262 [ label="Rastislav Bodik\nPitt 1999" ]
+	19855 [ label="Frederick Burtis Thompson\nUC Berkeley 1952" ]
+	32940 [ label="Carlo Heinrich Sequin\nBasel 1969" ]
+	56280 [ label="Peter M. Goldreich\nCornell 1963" ]
+	23314 [ label="Philippe Emmanuel Le Corbeiller\nUniversité de Paris 1926" ]
+	113591 [ label="Linus Pauling\nCalTech 1925", fillcolor="#e0e0ff", style="filled" ]
+	18263 [ label="John Charles Wawrzynek\nCalTech 1987" ]
+	50230 [ label="David Samuel Notkin\nCMU 1984" ]
+	78226 [ label="Alex Paul Pentland\nMIT 1982" ]
+	36863 [ label="Allan Gottlieb\nBrandeis 1972" ]
+	42570 [ label="Roger Michael Needham\nCambridge 1962" ]
+	25276 [ label="Eugene Leighton Lawler\nHarvard 1963" ]
+	18988 [ label="Shimon Even\nHarvard 1963" ]
+	24429 [ label="Peter Oscar Buneman\nWarwick 1970" ]
+	66838 [ label="Arthur Minot Geoffrion\nStanford 1965" ]
+	10416 [ label="Donald Ervin Knuth\nCalTech 1963", fillcolor="#e0e0ff", style="filled" ]
+	93106 [ label="David H. Krantz\nPenn 1964" ]
+	76951 [ label="Evgenii Mikhailovich Landis\nMoscow State University 1953" ]
+	18523 [ label="John E. Lennard-Jones\nCambridge 1924" ]
+	8251 [ label="John West Addison, Jr.\nUW-Madison 1955" ]
+	33035 [ label="Avrim Louis Blum\n1991" ]
+	67689 [ label="Wallace Earl Vander Velde\nMIT 1956" ]
+	78996 [ label="Steven M. Seitz\nUW-Madison 1997" ]
+	96122 [ label="Michael Andreas Erdmann\nMIT 1989" ]
+	73495 [ label="Donald Peter Greenberg\nCornell 1968" ]
+	144908 [ label="Gary Bishop\nUNC-Chapel Hill 1984" ]
+	144824 [ label="Arthur Richard Newton\nUC Berkeley 1978" ]
+	144879 [ label="Martin Karplus\nCalTech 1953" ]
+	102217 [ label="Ran Raz\nHebrew University 1992" ]
+	147661 [ label="John Ashworth Ratcliffe\nCambridge 1924 (M.A.)" ]
+	105986 [ label="Edward Steinberg Davidson\nIllinois 1968" ]
+	// 71842 [ label="Geoffrey Michael Voelker\nWashington 2000" ]
+	73406 [ label="Andrew Bruce Abel\nMIT 1978" ]
+	46609 [ label="Jerry Allen Hausman\nOxford 1973" ]
+	70994 [ label="Mendel Rosenblum\nUC Berkeley 1992" ]
+	93189 [ label="Leora Morgenstern\nNYU 1988" ]
+	19326 [ label="Danny Dolev\nWeizmann Institute of Science 1980" ]
+	50191 [ label="George Ciprian Necula\nCMU 1998" ]
+	144976 [ label="Donald Oscar Pederson\nStanford 1951" ]
+	91509 [ label="Timothy Wilking Finin\nUIUC 1989" ]
+	138242 [ label="Christoforos Christos Kozyrakis\nUC Berkeley 2002" ]
+	// 138280 [ label="Sige-Yuki Kuroda\nMIT 1965" ] // Wikipedia
+	18538 [ label="Frank Smithies\nCambridge 1937" ]
+	31484 [ label="Joseph Amadee Goguen, Jr.\nUC Berkeley 1968" ]
+	70655 [ label="Balaji Prabhakar\nUCLA 1994" ]
+	70590 [ label="Nicholas Bambos\nUC Berkeley 1989" ]
+	70074 [ label="Nelson Harold Morgan\nUC Berkeley 1980" ]
+	134141 [ label="Andreas Krause\nCMU 2008" ]
+	55195 [ label="Patrick Baudisch\nTU Darmstadt 2001" ]
+	39940 [ label="Leonidas John (Ioannis) Guibas\nStanford 1976" ]
+	49426 [ label="Guy Edward Blelloch\nMIT 1989" ]
+	143532 [ label="Scott Shenker\nChicago 1983" ]
+	238176 [ label="Dan Klein\nStanford 2005" ]
+	84689 [ label="Pietro Perona\nUC Berkeley 1990" ]
+	71790 [ label="Oren Etzioni\nCMU 1991" ]
+	81302 [ label="Dan Suciu\nPenn 1995" ]
+	150842 [ label="David Steurer\nPrinceton 2010" ]
+	166410 [ label="Donald Kossmann\nRWTH Aachen 1995" ]
+	248207 [ label="Aram Wettroth Harrow\nMIT 2005" ]
+	257075 [ label="Jack Reginald Smith\nUSC 1964" ]
+	290811 [ label="Anca Dragan\nCMU 2015" ]
+	30518 [ label="Nicholas William McKeown\nUC Berkeley 1995" ]
+	176626 [ label="Michael Scott Bernstein\nMIT 2012" ]
+	70093 [ label="James A. Landay\nCMU 1996" ]
+	32943 [ label="Stuart Jonathan Russell\nStanford 1987" ]
+	237131 [ label="Pieter Abbeel\nStanford 2008" ]
+	171007 [ label="Douglas Eck\nIndiana U. 2000" ]
+	252136 [ label="Aaron C. Courville\nCMU 2006" ]
+	322440 [ label="Christopher Gerards Potts\nUC Santa Cruz 2003" ]
+	54319 [ label="Markus H. Gross\nSaarland 1989" ]
+	218617 [ label="Adrian Sampson\nU. Washington 2015" ]
+	134528 [ label="Jeffrey Michael Heer\nUC Berkeley 2008" ]
+	113274 [ label="Wolfgang Heidrich\nFAU Erlangen-Nürnberg 1999" ]
+	20541 [ label="Adolf Svanberg\nUppsala 1828" ]
+	114771 [ label="Ion Stoica\nCMU 2000" ]
+	62983 [ label="Moritz Schlick\nBerlin 1904" ]
+
+	// Second level of MGP edges
+	13373 -> 38686
+	8597 -> 1472
+	94545 -> 40909
+	47159 -> 50307
+	37262 -> 19035
+	87314 -> 70077
+	29451 -> 71445
+	97404 -> 97405
+	82018 -> 46289
+	7461 -> 22145
+	16108 -> 65035
+	14011 -> 65035
+	42043 -> 65036
+	16468 -> 16699
+	20734 -> 84690
+	67144 -> 106886
+	44353 -> 25178
+	22781 -> 22791
+	82999 -> 82978
+	12895 -> 37057
+	64315 -> 37057
+	42517 -> 67765
+	13120 -> 13815
+	25275 -> 41471
+	71201 -> 87388
+	87401 -> 87388
+	25184 -> 81226
+	13297 -> 25184
+	104776 -> 69777
+	74544 -> 70729
+	26487 -> 29544
+	64971 -> 65065
+	13373 -> 31473
+	5512 -> 50096
+	103222 -> 132712
+	80277 -> 81573
+	80987 -> 63600
+	12694 -> 32292
+	67148 -> 13817
+	66905 -> 13817
+	50067 -> 50227
+	24234 -> 65985
+	106603 -> 76889
+	71445 -> 70152
+	96841 -> 100193
+	50076 -> 100193
+	70204 -> 50076
+	91422 -> 73697
+	36576 -> 82262
+	78225 -> 82262
+	104301 -> 105326
+	13347 -> 19855
+	117660 -> 117679
+	83089 -> 83083
+	61950 -> 61965
+	6869 -> 61077
+	34266 -> 23314
+	84584 -> 56280
+	130122 -> 113591
+	138428 -> 113591
+	123055 -> 18263
+	50067 -> 50230
+	65986 -> 78226
+	32568 -> 36863
+	16946 -> 42570
+	13305 -> 25276
+	29869 -> 18988
+	24417 -> 24429
+	25274 -> 40759
+	6807 -> 10416
+	250002 -> 93106
+	d_jameson -> 93106
+	76948 -> 76951
+	55146 -> 76951
+	18251 -> 18523
+	8012 -> 8251
+	50081 -> 33035
+	67687 -> 67689
+	128548 -> 32940
+	78864 -> 78996
+	63756 -> 96122
+	41454 -> 144908
+	82100 -> 102217
+	142343 -> 102217
+	4799 -> 105986
+	// 69000 -> 71842
+	// 71761 -> 71842
+	76816 -> 73406
+	112651 -> 147661
+	50236 -> 70994
+	69394 -> 93189
+	25494 -> 19326
+	50073 -> 50191
+	139196 -> 144976
+	61092 -> 91509
+	98366 -> 138242
+	127676 -> 66838
+	// 82231 -> 138280
+	17806 -> 18538
+	25206 -> 31484
+	70590 -> 70655
+	108965 -> 70074
+	97379 -> 134141
+	21593 -> 55195
+	135794 -> 55195
+	10416 -> 39940
+	50312 -> 49426
+	61350 -> 143532
+	129486 -> 106579
+	238174 -> 260150
+	238174 -> 238176
+	70152 -> 84689
+	50076 -> 71790
+	81282 -> 81302
+	69543 -> 150842
+	290345 -> 166410
+	250913 -> 248207
+	257074 -> 257075
+	45829 -> 30518
+	39231 -> 176626
+	103831 -> 176626
+	13817 -> 70093
+	71203 -> 32943
+	101043 -> 237131
+	86950 -> 171007
+	50250 -> 252136
+	322442 -> 322440
+	181403 -> 218617
+	186832 -> 218617
+	70984 -> 134528
+	46549 -> 113274
+	160628-> 113400
+	16966 -> 113400
+	96135 -> 290811 // from CV
+	166750 -> 54319 // per Google
+	266131 -> 73495
+	85042 -> 114771
+	129486 -> 139238
+	b_juhos -> 72720 // per Google
+	20750 -> 62983
+
+	// Second level of MGP antecedents
+	13373 [ label="Manuel Blum\nMIT 1964" ] // group="blum"
+	8597 [ label="William Browder\nPrinceton 1958" ]
+	94545 [ label="Richard B. Kieburtz\nU. Washington 1961" ]
+	47159 [ label="Hsiang-Tsung Kung\nCMU 1974" ]
+	37262 [ label="David Albert Huffman\nMIT 1953" ]
+	87314 [ label="Eugene Wong\nPrinceton 1959" ]
+	29451 [ label="Myron Lindsay Good\nDuke 1951" ]
+	97404 [ label="Jonathan Allen\nMIT 1968" ]
+	82018 [ label="Kenneth Steiglitz\nNYU 1963" ]
+	16108 [ label="Rudolf Anton Mathon\nToronto 1972" ]
+	14011 [ label="Stephen Arthur Cook\nHarvard 1966" ]
+	42043 [ label="Allan Bertram Borodin\nCornell 1969" ]
+	16468 [ label="Michael Golomb\nHU Berlin 1933" ]
+	20734 [ label="Philippe Flajolet\nUniversité Paris-Sud XI - Orsay 1973/1979" ]
+	67144 [ label="Eugene Lucas Fiume\nToronto 1986" ]
+	44353 [ label="Joseph E. Oliger\nUppsala 1973" ]
+	22781 [ label="David Gries\nTU München 1966" ]
+	82999 [ label="Leo Leroy Beranek\nHarvard 1940", fillcolor="#e0e0ff", style="filled" ]
+	12895 [ label="Daniel J. Kleitman\nHarvard 1958" ]
+	64315 [ label="Amedeo Rodolfo Odoni\nMIT 1969" ]
+	42517 [ label="Giles Brindley\n??? (M.D.)" ]
+	13120 [ label="Jerome Arthur Feldman\nCMU 1964" ]
+	25275 [ label="Richard Manning Karp\nHarvard 1959" ]
+	71201 [ label="David Everett Rumelhart\nStanford 1967" ]
+	87401 [ label="Donald Arthur Norman\nPenn 1962", fillcolor="#e0e0ff", style="filled" ]
+	13297 [ label="Patrick Carl Fischer\nMIT 1962" ]
+	104776 [ label="John M. Wilcox\nUC Berkeley 1954" ]
+	26487 [ label="Peter J. Cameron\nOxford 1971" ]
+	5512 [ label="Donald Ford Stanat\nMichigan 1966" ]
+	103222 [ label="Richard Paul Collins Paul\nStanford 1972" ]
+	80277 [ label="Michael James Carey\nUC Berkeley 1983" ]
+	80987 [ label="Alan Breck Macnee\nMIT 1948" ]
+	12694 [ label="Jerzy Neyman\nUniwersytet Warszawski 1924" ]
+	67148 [ label="William Buxton\nToronto 1978 (M.Sc.)\nOntario College of Art and Design 2007 (h.c.)" ]
+	66905 [ label="Ronald Michael Baecker\nMIT 1969" ]
+	50067 [ label="Arie Nicolaas Habermann\nTechnische Universiteit Eindhoven 1967" ]
+	24234 [ label="Charles Lewis Seitz\nMIT 1971" ]
+	106603 [ label="Gordon Willard Allport\nHarvard 1922" ]
+	96841 [ label="Armin Bernd Cremers\nUniversität Fridericiana zu Karlsruhe 1972" ]
+	70204 [ label="Bruce Gardner Buchanan\nMichigan State 1966" ]
+	91422 [ label="Richard Lewis Mattson\nStanford 1962" ]
+	36576 [ label="Rajiv Gupta\nMIT 1983" ]
+	78225 [ label="Mary Louise Ehnot Soffa\nPitt 1977" ]
+	13347 [ label="Alfred Tarski\nUniwersytet Warszawski 1924", fillcolor="#e0e0ff", style="filled" ]
+	117660 [ label="David Robert Nelson\nCornell 1975" ]
+	83089 [ label="Alfred Kriss Susskind\nMIT 1950 (S.M.)" ]
+	// Susskind S.M. joint work with Roger Sisson, should check thesis
+	84584 [ label="Thomas Gold\nCambridge 1946 (M.A.)\nCambridge 1969 (h.c.)" ]
+	// Gold bio: http://www.aim25.ac.uk/cgi-bin/vcdf/detail?coll_id=10276&inst_id=18
+	130122 [ label="Roscoe Gilkey Dickinson\nCalTech 1920" ]
+	138428 [ label="Richard Chace Tolman\nMIT 1910" ]
+	123055 [ label="Carver Andress Mead\nCalTech 1960" ]
+	32568 [ label="Michael Ira Shub\nUC Berkeley 1967" ]
+	16946 [ label="David John Wheeler\nCambridge 1951" ]
+	24417 [ label="Eric Christopher Zeeman\nCambridge 1955" ]
+	25274 [ label="Sheila Adele Greibach\nHarvard 1963" ]
+	6807 [ label="Marshall Hall, Jr.\nYale 1936" ]
+	250002 [ label="Leo Maurice Hurvich\nHarvard 1936" ]
+	d_jameson [ label="Dorothea Jameson\nWellesley College\nPenn 1972 (h.c.)", href="http://neurotree.org/neurotree/peopleinfo.php?pid=14899" ]
+	76948 [ label="Aleksandr Semenovich Kronrod\n1949" ]
+	55146 [ label="Ivan Georgievich Petrovsky\nMoscow State University" ]
+	8012 [ label="Stephen Cole Kleene\nPrinceton 1934", fillcolor="#e0e0ff", style="filled" ]
+	67687 [ label="Walter McKay\nMIT 1935" ]
+	128548 [ label="Ernst Baldinger\nETH Zürich 1938" ]
+	78864 [ label="Charles Robert Dyer\nMaryland 1979" ]
+	41454 [ label="Henry Fuchs\nUtah 1975" ]
+	82100 [ label="Avi Wigderson\nPrinceton 1983" ]
+	142343 [ label="Michael Ben-Or\nHebrew University 1982" ]
+	4799 [ label="Gernot Albert Metze\nIllinois 1958" ]
+	// 69000 [ label="Henry M. Levy\nWashington 1981 (M.S.)" ]
+	// 71761 [ label="Anna R. Karlin\nStanford 1987" ]
+	76816 [ label="Rudiger Dornbusch\nChicago 1971" ]
+	112651 [ label="Edward Victor Appleton\nCambridge 1913 (M.A.)" ]
+	50236 [ label="John Kenneth Ousterhout\nCMU 1980" ]
+	69394 [ label="Ernest Simon Davis\nYale 1984" ]
+	25494 [ label="Eli Shamir\nHebrew University 1962" ]
+	50073 [ label="Peter Lee\nMichigan 1987" ]
+	61092 [ label="David Leigh Waltz\nMIT 1972" ]
+	98366 [ label="David Andrew Patterson\nUCLA 1976" ]
+	127676 [ label="Harvey Maurice Wagner\nMIT 1962" ]
+	82231 [ label="Avram Noam Chomsky\nPenn 1955", fillcolor="#e0e0ff", style="filled" ] // Wikipedia
+	17806 [ label="Godfrey Harold Hardy\nCambridge (M.A.)", fillcolor="#e0e0ff", style="filled" ]
+	25206 [ label="Hans-Joachim Bremermann\nWestfälische Wilhelms-Universität Münster 1951" ]
+	45829 [ label="Jean Camille Walrand\nUC Berkeley 1979" ]
+	108965 [ label="Robert William Brodersen\nMIT 1972" ]
+	97379 [ label="Carlos Ernesto Guestrin\nStanford 2003" ]
+	21593 [ label="Erich J. Neuhold\nTU Wien 1967" ]
+	135794 [ label="Joseph Andrew Konstan\nUC Berkeley 1993" ]
+	61350 [ label="Leo Philip Kadanoff\nHarvard 1960" ]
+	129486 [ label="Aravind Krishna Joshi\nPenn 1960" ]
+	238174 [ label="Christopher David Manning\nStanford 1995" ]
+	81282 [ label="Valeriu Breazu-Tannan\nMIT 1987" ]
+	69543 [ label="Sanjeev Arora\nUC Berkeley 1994" ]
+	290345 [ label="Alfons Heinrich Kemper\nUSC 1984" ]
+	250913 [ label="Isaac L. Chuang\nStanford 1997" ]
+	257074 [ label="Nasser Emamzadeh Nahi\nPurdue 1960" ]
+	71203 [ label="Michael Robert Genesereth\nHarvard 1979" ]
+	101043 [ label="Andrew Ng\nUC Berkeley 2003" ]
+	86950 [ label="Michael Edward Gasser\nUCLA 1988" ]
+	50250 [ label="David Stuart Touretzky\nCMU 1984" ]
+	322442 [ label="Geoffrey K. Pullum\nLondon 1976" ]
+	181403 [ label="Luis Ceze\nUIUC ???" ]
+	186832 [ label="Daniel Grossman\nCornell 2003" ]
+	70984 [ label="Maneesh Agrawala\nStanford 2002" ]
+	46549 [ label="Hans-Peter Seidel\nTübingen 1987" ]
+	160628 [ label="Giulio Racah\nFlorence 1930" ]
+	96135 [ label="Siddhartha Srinivasa\nCMU 2005" ]
+	166750 [ label="José Luis Moraira da Encarnação\nTU Berlin 1970" ]
+	266131 [ label="Richard Norman White\nUW-Madison 1961" ]
+	85042 [ label="Hui Zhang\nUC Berkeley 1993" ]
+	20750 [ label="Max Planck\nMaximilians-Universität München 1879", fillcolor="#e0e0ff", style="filled" ]
+
+	// Third level of MGP edges
+	6869 -> 13373
+	4350 -> 8597
+	21212 -> 94545
+	18492 -> 47159
+	10802 -> 37262
+	74505 -> 87314
+	131805 -> 29451
+	97403 -> 97404
+	98916 -> 82018
+	44303 -> 16108
+	29869 -> 14011
+	10404 -> 42043
+	7361 -> 16468
+	20742 -> 16468
+	76348 -> 20734
+	82671 -> 20734
+	978 -> 67144
+	24014 -> 67144
+	12003 -> 44353
+	21232 -> 22781
+	15198 -> 12895
+	15199 -> 12895
+	66066 -> 64315
+	13112 -> 13120
+	13305 -> 25275
+	8021 -> 13297
+	28732 -> 26487
+	5064 -> 5512
+	13120 -> 103222
+	31091 -> 80277
+	7829 -> 80987
+	12545 -> 12694
+	26919 -> 66905
+	45747 -> 50067
+	107675 -> 24234
+	106604 -> 106603
+	57411 -> 96841
+	21670 -> 96841
+	71304 -> 70204
+	62480 -> 91422
+	32101 -> 36576
+	45628 -> 78225
+	13345 -> 13347
+	43998 -> 117660
+	144889 -> 82999
+	138036 -> 130122
+	138036 -> 138428
+	130911 -> 123055
+	5086 -> 32568
+	143090 -> 16946
+	1406 -> 24417
+	13305 -> 25274
+	11890 -> 6807
+	144997 -> 71201
+	10479 -> 76948
+	24109 -> 55146
+	8011 -> 8012
+	67688 -> 67687
+	63075 -> 128548
+	37407 -> 78864
+	47571 -> 41454
+	69524 -> 82100
+	8023 -> 142343
+	92718 -> 4799
+	// 69232 -> 69000
+	// 44128 -> 71761
+	50701 -> 112651
+	102483 -> 112651
+	50067 -> 50236
+	61079 -> 69394
+	9347 -> 25494
+	79878 -> 50073
+	170212 -> 76816 // Wikipedia
+	10801 -> 83089 // MIT Libraries catalog entry for S.M. thesis
+	61072 -> 61092
+	70595 -> 98366
+	46610 -> 127676
+	51175 -> 127676
+	76341 -> 82231
+	31354 -> 17806
+	18571 -> 17806
+	71687 -> 87401 // neurotree edge
+	45829 -> 70590
+	40888 -> 97379
+	70097 -> 135794
+	143086 -> 61350
+	15199 -> 61350
+	161379 -> 84584
+	// After a few months, Gold went to carry out research into
+	// the mechanism of hearing in mammalian ears at the Zoological
+	// Laboratory, Cambridge, with Richard Pumphrey, whom he had met
+	// during the war. In 1947, he was awarded a prize fellowship from
+	// Trinity College for a thesis based on that research ...
+	194780 -> 104776
+	131779 -> 238174
+	25184 -> 81282
+	38686 -> 69543
+	82736 -> 290345
+	251177 -> 250913
+	132996 -> 250002
+	257073 -> 257074
+	61081 -> 71203
+	87388 -> 101043
+	70503 -> 86950
+	50064 -> 50250
+	322443 -> 322442
+	40828 -> 181403
+	50224 -> 186832
+	70976 -> 70984
+	20984 -> 46549
+	155590 -> 160628
+	14167 -> 160628
+	50075 -> 96135
+	96122 -> 96135
+	15253 -> 25206
+	197226 -> 166750
+	9929 -> 129486
+	266132 -> 266131
+	32850 -> 85042
+	18599 -> 20750
+
+	// Third level of MGP antecedents
+	4350 [ label="John Coleman Moore\nBrown 1952" ]
+	21212 [ label="Akira Ishimaru\nU. Washington 1958" ]
+	18492 [ label="Joseph F. Traub\nColumbia 1959" ]
+	10802 [ label="Samuel Hawks Caldwell\nMIT 1933" ]
+	74505 [ label="John Bowman Thomas\nStanford 1955" ]
+	131805 [ label="Henry Winston Newson\nChicago 1934" ]
+	97403 [ label="Francis Fan Lee\nMIT 1966" ]
+	98916 [ label="Sheldon Shou-Lien Chang\nPurdue 1947" ]
+	44303 [ label="Robert Laurence Johnston\nCWRU 1965" ]
+	29869 [ label="Hao Wang\nHarvard 1948" ]
+	10404 [ label="Juris Hartmanis\nCalTech 1955" ]
+	7361 [ label="Erhard Schmidt\nGöttingen 1905" ]
+	20742 [ label="Adolf Hammerstein\nGöttingen 1919" ]
+	76348 [ label="Maurice Paul Nivat\nUniversité Joseph Fourier Grenoble I 1967" ]
+	82671 [ label="Jean Vuillemin\nStanford 1973" ]
+	978 [ label="Alain Fournier\nUT Dallas 1980" ]
+	24014 [ label="Eric Charles Roy Hehner\nToronto 1974" ]
+	12003 [ label="Heinz-Otto Kreiss\nKTH 1959" ]
+	21232 [ label="Friedrich Ludwig Bauer\nMünchen 1951" ]
+	15198 [ label="Julian Seymour Schwinger\nColumbia 1939" ]
+	15199 [ label="Roy Jay Glauber\nHarvard 1949" ]
+	66066 [ label="Robert Warren Simpson\nMIT 1964" ]
+	13305 [ label="Anthony Gervin Oettinger\nHarvard 1954" ]
+	8021 [ label="Hartley Rogers, Jr.\nPrinceton 1952" ]
+	28732 [ label="Peter M. Neumann\nOxford 1966" ]
+	5064 [ label="John Henry Holland\nMichigan 1959" ]
+	7829 [ label="Henry Wallman\nPrinceton 1937" ]
+	12545 [ label="Waclaw Sierpinski\nUniwersytet Jagiellonski 1906" ]
+	45747 [ label="Edsger Wybe Dijkstra\nUniversiteit van Amsterdam 1959", fillcolor="#e0e0ff", style="filled" ]
+	107675 [ label="Donald Eugene Troxel\nMIT 1962" ]
+	106604 [ label="Herbert Sidney Langfeld\nHU Berlin 1909" ]
+	57411 [ label="Otto Mayer\nUniversität Fridericiana zu Karlsruhe 1968 " ]
+	71304 [ label="Gerald J. Massey\nPrinceton 1964" ]
+	62480 [ label="Bernard Widrow\nMIT 1956" ]
+	32101 [ label="Harold Mead Stark\nUC Berkeley 1964" ]
+	45628 [ label="Gary Edward Lindstrom\nCMU 1971" ]
+	13345 [ label="Stanislaw Lesniewski\nUniversity of Lwow 1912" ]
+	43998 [ label="Michael Ellis Fisher\nKing's College London 1957" ]
+	144889 [ label="Frederick Vinton Hunt\nHarvard 1934" ]
+	138036 [ label="Arthur Amos Noyes\nLeipzig 1890" ]
+	130911 [ label="Robert David Middlebrook\nStanford 1955" ]
+	5086 [ label="Stephen Smale\nMichigan 1957" ]
+	1406 [ label="Shaun Wylie\nPrinceton 1937" ]
+	11890 [ label="Öystein Ore\nOslo 1924" ]
+	11890 -> 15664; 15664 [ label="Grace Murray Hopper\nYale 1934", fillcolor="#e0e0ff", style="filled" ]
+	144997 [ label="William Kaye Estes\nMinnesota 1943", href="http://neurotree.org/neurotree/peopleinfo.php?pid=1025" ]
+	10479 [ label="Nikolai Nikolayevich Luzin\nMoscow State University 1915" ]
+	67688 [ label="Charles Stark Draper\nMIT 1938", fillcolor="#e0e0ff", style="filled" ]
+	63075 [ label="Paul Scherrer\nGöttingen 1916" ]
+	37407 [ label="Azriel Rosenfeld\nColumbia 1960" ]
+	47571 [ label="Robert Patrick Plummer\nUT-Austin 1970" ]
+	69524 [ label="Richard Jay Lipton\nCMU 1973" ]
+	92718 [ label="Sundaram Seshu\nIllinois 1955" ]
+	// 69232 [ label="Edward Delano Lazowska\nToronto 1977" ]
+	// 44128 [ label="Jeffrey David Ullman\nPrinceton 1966" ]
+	50701 [ label="Joseph John Thomson\nCambridge 1883 (M.A.)", fillcolor="#e0e0ff", style="filled" ]
+	102483 [ label="George Gabriel Stokes\nCambridge 1841 (B.A.)" ]
+	61079 [ label="Drew Vincent McDermott\nMIT 1976" ]
+	9347 [ label="Shmuel Agmon\nUniversité Paris IV-Sorbonne 1949" ]
+	79878 [ label="Uwe Frederik Pleban\nKansas 1981" ]
+	170212 [ label="Robert Alexander Mundell\nMIT 1956" ]
+	70595 [ label="David Frederic Martin\nUCLA 1966" ]
+	46610 [ label="Robert Merton Solow\nHarvard 1951" ]
+	51175 [ label="Kenneth Joseph Arrow\nColumbia 1951", fillcolor="#e0e0ff", style="filled"]
+	76341 [ label="Zellig Sabbettai Harris\nPenn 1934" ] // Chomsky's dissertation
+	31354 [ label="Augustus Edward Hough Love\nETH Zürich" ]
+	18571 [ label="Edmund Taylor Whittaker\nCambridge 1895 (M.A.)" ]
+	71687 [ label="Robert Duncan Luce\nMIT 1950" ]
+	53579 [ label="Pravin Pratap Varaiya\nUC Berkeley 1966" ]
+	40888 [ label="Daphne Koller\nStanford 1994" ]
+	70097 [ label="Lawrence Arnold Rowe\nUC Irvine 1976" ]
+	143086 [ label="Paul Cecil Martin\nHarvard 1953" ]
+	161379 [ label="Richard Julius Pumphrey\nCambridge 1932\nCambridge 1949 (Sc.D.)" ] // per Oxford DNB
+	// "In Cambridge in 1929 the experimental approach to biology was being
+	// actively fostered by James Gray, and it was natural that Pumphrey
+	// should start his research career in experimental cytology. He worked
+	// on the physical chemistry of the surface membrane of trout eggs and
+	// duly obtained his Ph.D. in 1932."
+	// Biographical Memoirs of the F.R.S. 14 (Nov. 1968)
+	// unfortunately does not explicitly state that Gray was Pumphrey's
+	// advisor.
+	194780 [ label="Burton Jones Moyer\nU. Washington 1939" ]
+	131779 [ label="Joan Wanda Bresnan\nMIT 1972" ]
+	82736 [ label="Ellis Horowitz\nUW-Madison 1969" ]
+	251177 [ label="Yoshihisa Yamamoto\nU. Tokyo 1978" ]
+	257073 [ label="F. J. Friedlaender\n???" ]
+	70503 [ label="Michael George Dyer\nYale 1982" ]
+	50064 [ label="Scott Elliott Fahlman\nMIT 1977" ]
+	322443 [ label="Neilson Voyne Smith\nUCL 1964" ]
+	40828 [ label="Josep Torrellas\nStanford 1992" ]
+	50224 [ label="Gregory Morrisett\nCMU 1995" ]
+	70976 [ label="Patrick Matthew Hanrahan\nUW-Madison 1985" ]
+	20984 [ label="Rainer Löwen\nTübingen 1975" ]
+	155590 [ label="Enrico Persico\nRome La Sapienza 1921" ]
+	14167 [ label="Enrico Fermi\nPisa 1922", fillcolor="#e0e0ff", style="filled" ]
+	50075 [ label="Matthew Thomas Mason\nMIT 1982" ]
+	15253 [ label="Heinrich Adolph Behnke\nHamburg 1923" ]
+	197226 [ label="Wolfgang K. Giloi\nTH Stuttgart 1960" ]
+	9929 [ label="Seymour Sherman\nCornell 1940" ]
+	266132 [ label="W. S. Cottingham\n???" ]
+	32850 [ label="Domenico Ferrari\nPolitecnico di Milano 1963" ]
+	18599 [ label="Alexander Wilhelm von Brill\nJustus-Liebig-Universität Gießen 1864" ]
+
+	// Fourth level of MGP edges
+	15198 -> 143086
+	8581 -> 6869
+	6374 -> 4350
+	35108 -> 21212
+	30091 -> 18492
+	84507 -> 10802
+	74544 -> 74505
+	97400 -> 97403
+	97402 -> 97403
+	111345 -> 98916
+	2675 -> 44303
+	73831 -> 29869
+	10395 -> 10404
+	7298 -> 7361
+	7862 -> 20742
+	127867 -> 76348
+	19351 -> 82671
+	11624 -> 978
+	79314 -> 24014
+	61929 -> 24014
+	20034 -> 12003
+	25129 -> 21232
+	36548 -> 21232
+	84659 -> 15198
+	15198 -> 15199
+	66024 -> 66066
+	18953 -> 13305
+	8011 -> 8021
+	22466 -> 28732
+	91923 -> 5064
+	7461 -> 7829
+	12546 -> 12545
+	12544 -> 12545
+	59162 -> 45747
+	97400 -> 107675
+	54762 -> 106604
+	21670 -> 57411
+	21264 -> 57411
+	8011 -> 71304
+	20686 -> 71304
+	10801 -> 62480
+	4283 -> 32101
+	13112 -> 45628
+	13344 -> 13345
+	130914 -> 43998
+	32921 -> 43998
+	// per Leo Beranek's memoir
+	144888 -> 144889
+	137132 -> 138036
+	139196 -> 130911
+	7583 -> 5086
+	7461 -> 1406
+	18237 -> 11890
+	155510 -> 144997
+	24109 -> 10479
+	64879 -> 67688
+	25025 -> 63075
+	37381 -> 37407
+	86340 -> 69524
+	92644 -> 92718
+	// 66903 -> 69232
+	// 82013 -> 44128
+	// 82034 -> 44128
+	101979 -> 50701
+	42016 -> 102483
+	20655 -> 61079
+	144871 -> 131805
+	22456 -> 9347
+	77012 -> 79878
+	197837 -> 170212 // Wikipedia
+	69930 -> 70595
+	108515 -> 47571
+	137087 -> 46610 // Wikipedia
+	35422 -> 51175
+	129621 -> 76341
+	17829 -> 18571
+	17467 -> 18571
+	22861 -> 71687 
+	53579 -> 45829
+	40889 -> 40888
+	135611 -> 70097
+	200824 -> 194780
+	82231 -> 131779
+	75933 -> 82736
+	251178 -> 251177
+	251179 -> 251177
+	16979 -> 70503
+	20655 -> 50064
+	322444 -> 322443
+	40909 -> 40828
+	50068 -> 50224
+	50090 -> 50224
+	35097 -> 70976
+	82321 -> 70976
+	30527 -> 20984
+	155591 -> 155590
+	16966 -> 14167
+	63756 -> 50075
+	61066 -> 50075
+	7379 -> 15253
+	197207 -> 197226
+	42849 -> 9929
+	158121 -> 32850
+	18607 -> 18599
+
+	// Fourth level of MGP antecedents
+	8581 [ label="Albert William Tucker\nPrinceton 1932" ]
+	6374 [ label="George William Whitehead, Jr.\nChicago 1941" ]
+	35108 [ label="Gedaliah Held\nUC Berkeley 1954" ]
+	30091 [ label="Henry Michael Foley\nMichigan 1943" ]
+	84507 [ label="Vannevar Bush\nMIT 1916", fillcolor="#e0e0ff", style="filled" ]
+	74544 [ label="Willis W. Harman\nStanford 1948" ]
+	97400 [ label="Samuel Jefferson Mason\nMIT 1952" ]
+	97402 [ label="Morris Halle\nHarvard 1955" ]
+	111345 [ label="Robert Peer Siskind\nHarvard 1925 (S.M.)" ]
+	2675 [ label="Richard Steven Varga\nHarvard 1954" ]
+	73831 [ label="Willard Van Orman Quine\nHarvard 1932", fillcolor="#e0e0ff", style="filled" ]
+	10395 [ label="Robert Palmer Dilworth\nCalTech 1939" ]
+	7298 [ label="David Hilbert\nUniversitàet Koenigsberg 1885", fillcolor="#e0e0ff", style="filled" ]
+	7862 [ label="Edmund Landau\nHU Berlin 1899" ]
+	127867 [ label="Marcel-Paul Schützenberger\nFaculté des Sciences, Paris 1953" ]
+	19351 [ label="Zohar Manna\nCMU 1968" ]
+	11624 [ label="Zvi Meir Kedem\nTechnion 1974" ]
+	79314 [ label="David Barkley Wortman\nStanford 1973" ]
+	61929 [ label="William Marshall McKeeman\nStanford 1966" ]
+	20034 [ label="Goeran Borg\nUppsala 1945" ]
+	25129 [ label="Fritz Bopp\nGöttingen 1937\nBreslau 1941" ]
+	36548 [ label="Georg Aumann\nMünchen 1931" ]
+	84659 [ label="Isidor Isaac Rabi\nColumbia 1927" ]
+	66024 [ label="Rene Harcourt Miller\nCambridge 1954" ]
+	18953 [ label="Howard Hathaway Aiken\nHarvard 1939", fillcolor="#e0e0ff", style="filled" ]
+	22466 [ label="Graham Higman\nOxford 1941" ]
+	91923 [ label="Arthur Walter Burks\nMichigan 1941" ]
+	12546 [ label="Stanislaw Zaremba\nUniversité Paris IV-Sorbonne 1889" ]
+	12544 [ label="Georgy Fedoseevich Voronoy\nSt. Petersburg State University 1896" ]
+	59162 [ label="Adriaan J. van Wijngaarden\nTU Delft 1945" ]
+	54762 [ label="Carl Stumpf\nGöttingen 1869" ]
+	21670 [ label="Ulrich W. Kulisch\nTU München 1961" ]
+	21264 [ label="Karl Nickel\nTübingen 1949" ]
+	20686 [ label="Karl Gustav Hempel\nHU Berlin 1934" ]
+	10801 [ label="William Kirby Linvill\nMIT 1949" ]
+	4283 [ label="Derrick Henry Lehmer\nBrown 1930" ]
+	13344 [ label="Kazimierz Twardowski\nWien 1891" ]
+	130914 [ label="Donald MacCrimmon MacKay\nKing's College London 1952" ]
+	32921 [ label="Cyril Domb\nCambridge 1949" ]
+	144888 [ label="Frederick Albert Saunders\nJHU 1899" href="http://aip.org/history/acap/biographies/bio.jsp?saundersf" ]
+	137132 [ label="Friedrich Wilhelm Ostwald\nTartu University 1878" ]
+	139196 [ label="Joseph Mayo Pettit\nStanford 1942" ]
+	7583 [ label="Raoul H. Bott\nCMU 1949" ]
+	18237 [ label="Thoralf Albert Skolem\nOslo 1926" ]
+	155510 [ label="Burrhus Frederick Skinner\nHarvard 1936", fillcolor="#e0e0ff", style="filled" ]
+	24109 [ label="Dimitri Fedorowitsch Egorov\nMoscow State University 1901" ]
+	64879 [ label="Philip McCord Morse\nPrinceton 1929" ]
+	25025 [ label="Peter Debye\nMünchen 1908" ]
+	37381 [ label="Ellis Robert Kolchin\nColumbia 1942" ]
+	108515 [ label="John Clinton Loehlin\nUC Berkeley 1957" ]
+	86340 [ label="David Lorge Parnas\nCMU 1965" ]
+	92644 [ label="Willis Laurens Emery\nIowa State 1947" ]
+	// 66903 [ label="Kenneth Clem Sevcik\nChicago 1972" ]
+	// 82013 [ label="Arthur Jay Bernstein\nColumbia 1962" ]
+	// 82034 [ label="Archie Charles McKellar\nIllinois 1965" ]
+	101979 [ label="John William Strutt (Lord Rayleigh)\nCambridge 1868 (M.A.)" ]
+	144871 [ label="William Draper Harkins\nStanford 1907" ]
+	22456 [ label="Szolem Mandelbrojt\nUniversité Paris IV-Sorbonne 1923" ]
+	77012 [ label="Steven Stanley Muchnick\nCornell 1973" ]
+	197837 [ label="Charles Poor Kindleberger\nColumbia 1937" ]
+	69930 [ label="Gerald Estrin\nUW-Madison 1951" ]
+	137087 [ label="Wassily Wassilyovitch Leontief\nHU Berlin 1928" ]
+	35422 [ label="Harold Hotelling\nPrinceton 1924" ]
+	129621 [ label="James Alan Montgomery\nPenn 1904" ]
+	17829 [ label="Andrew Russell Forsyth\nCambridge 1881" ]
+	17467 [ label="George Howard Darwin\nCambridge 1871 (M.A.)" ]
+	22861 [ label="Irvin Sol Cohen\nJHU 1942" ]
+	32837 [ label="Lofti A. Zadeh\nColumbia 1949" ]
+	40889 [ label="Joseph Yehuda Halpern\nHarvard 1981" ]
+	135611 [ label="Fred M. Tonge, Jr.\n???" ]
+	200824 [ label="Donald Holt Loughridge\nCalTech 1927" ]
+	75933 [ label="George Edwin Collins\nCornell 1955" ]
+	251178 [ label="Hisayoshi Yanai\n???" ]
+	251179 [ label="Takeshi Kamiya\n???" ]
+	16979 [ label="Wendy Grace Lehnert\nYale 1977" ]
+	322444 [ label="Dennis Butler Fry\n???" ]
+	50068 [ label="Robert William Harper\nCornell 1985" ]
+	50090 [ label="Jeannette Marie Wing\nMIT 1983" ]
+	35097 [ label="Antony Oliver Ward Stretton\nCambridge 1960" ]
+	82321 [ label="Leonard Merrick Uhr\nU. Michigan 1957" ]
+	30527 [ label="Helmut R. Salzmann\nTübingen 1957" ]
+	155591 [ label="Orso Mario Corbino\nPalermo 1896" ]
+	16966 [ label="Luigi Puccianti\nPisa 1898" ]
+	7379 [ label="Erich Hecke\nGöttingen 1910" ]
+	197207 [ label="Walter Wolman\nRWTH Aachen 1927" ]
+	42849 [ label="John Adam Fitz Randolph\nCornell 1934" ]
+	158121 [ label="Luigi Dadda\nPolitecnico di Milano 1947" ]
+	18607 [ label="Rudolf Friedrich Alfred Clebsch\nKönigsberg 1854" ]
+
+	// Fifth level of MGP edges
+	7461 -> 8581
+	7811 -> 6374
+	144842 -> 35108 [href="http://www.csl.cornell.edu/~martinez/"]
+	92249 -> 30091
+	24154 -> 84507
+	76967 -> 74544
+	63061 -> 97400
+	4929 -> 2675
+	78732 -> 73831
+	10385 -> 10395
+	7404 -> 7298
+	4642 -> 7862
+	11370 -> 7862
+	81193 -> 127867
+	95227 -> 127867
+	69223 -> 19351
+	13112 -> 19351
+	8737 -> 11624
+	74435 -> 11624
+	4319 -> 61929
+	61847 -> 61929
+	19779 -> 20034
+	57661 -> 25129
+	106421 -> 25129
+	57471 -> 36548
+	7517 -> 36548
+	84657 -> 84659
+	25248 -> 18953
+	1423 -> 22466
+	111540 -> 91923
+	34254 -> 12546
+	34266 -> 12546
+	12543 -> 12544
+	58909 -> 59162
+	64465 -> 54762
+	21559 -> 21670
+	7394 -> 21264
+	25067 -> 20686
+	63061 -> 10801
+	4740 -> 4283
+	141831 -> 13344
+	82968 -> 32921
+	125585 -> 144888 [href="http://books.nap.edu/html/biomems/fsaunders.pdf"]
+	137314 -> 137132
+	127736 -> 139196
+	13113 -> 7583
+	18236 -> 18237
+	132996 ->  155510
+	155508 -> 155510
+	24101 -> 24109
+	31357 -> 25025
+	37354 -> 37381
+	13112 -> 86340
+	90571 -> 86340
+	92761 -> 92644
+	// 79967 -> 66903
+	// 92760 -> 82013
+	// 92718 -> 82034
+	101929 -> 101979
+	129420 -> 101979
+	147836 -> 64879
+	144870 -> 144871
+	24555 -> 22456
+	9041 -> 77012
+	29801 -> 69930
+	167323 -> 108515
+	167324 -> 108515
+	137068 -> 137087
+	63407 -> 137087
+	805 -> 35422
+	145782 -> 129621
+	7824 -> 17829
+	101929 -> 17467
+	18926 -> 22861
+	32837 -> 53579
+	25184 -> 40889
+	22616 -> 40889
+	61929 -> 79314
+	176931 -> 97402
+	72167 -> 200824
+	207148 -> 197837
+	207149 -> 197837
+	8013 -> 75933
+	78231 -> 16979
+	9041 -> 50068
+	65968 -> 50090
+	132258 -> 82321
+	25302 -> 30527
+	7394 -> 30527
+	270058 -> 155591
+	270059 -> 155591
+	24210 -> 16966
+	7298 -> 7379
+	195604 -> 197207
+	7365 -> 42849
+	158188 -> 158121
+	18600 -> 18607
+	269812 -> 130914
+	v_ingram -> 35097 // Wikipedia
+
+	// Fifth level of MGP antecedents
+	7461 [ label="Solomon Lefschetz\nClark 1911" ]
+	7811 [ label="Norman Earl Steenrod\nPrinceton 1936" ]
+	144842 [ label="Samuel Silver\nMIT 1940" ] // Barton search
+	92249 [ label="David Mathias Dennison\nMichigan 1924" ]
+	24154 [ label="Arthur Edwin Kennelly\nself-taught" ]
+	76967 [ label="Karl Ralph Spangenberg\nOhio State 1937" ]
+	63061 [ label="Ernst Adolph Guillemin\nMünchen 1926" ]
+	4929 [ label="Joseph Leonard Walsh\nHarvard 1920" ]
+	78732 [ label="Alfred North Whitehead\nCambridge 1884", fillcolor="#e0e0ff", style="filled" ]
+	10385 [ label="Morgan Ward\nCalTech 1928" ]
+	4642 [ label="Georg Ferdinand Frobenius\nHU Berlin 1870" ]
+	11370 [ label="Lazarus Immanuel Fuchs\nHU Berlin 1858" ]
+	81193 [ label="Georges Darmois\nUniversité de Paris 1921" ]
+	95227 [ label="Albert Chatelet\n1911" ]
+	69223 [ label="Robert W Floyd\nChicago 1953 (B.A.)" ]
+	13112 [ label="Alan Jay Perlis\nMIT 1950", fillcolor="#e0e0ff", style="filled" ]
+	8737 [ label="Shmuel Winograd\nNYU 1968" ]
+	74435 [ label="Azaria Paz\nTechnion" ]
+	4319 [ label="George Elmer Forsythe\nBrown 1941" ]
+	61847 [ label="Niklaus Emil Wirth\nUC Berkeley 1963", fillcolor="#e0e0ff", style="filled" ]
+	19779 [ label="Arne Beurling\nUppsala 1933" ]
+	57661 [ label="Fritz Sauter\nInnsbruck 1928" ]
+	106421 [ label="Erwin Richard Fues\nMünchen 1919" ]
+	57471 [ label="Heinrich Tietze\nWien 1904" ]
+	7517 [ label="Constantin Caratheodory\nGöttingen 1904" ]
+	84657 [ label="Albert Potter Wills\nClark 1897" ]
+	25248 [ label="Emory Leon Chaffee\nHarvard 1911" ]
+	1423 [ label="John Henry Constantine Whitehead\nPrinceton 1930" ]
+	111540 [ label="Cooper Harold Langford\nHarvard 1924" ]
+	34266 [ label="Charles Émile Picard\nÉcole Normale Supérieure Paris 1877" ]
+	58909 [ label="Cornelis Benjamin Biezeno\nAmsterdam 1933 (h.c.)" ]
+	64465 [ label="Rudolf Hermann Lotze\nLeipzig 1838" ]
+	21559 [ label="Josef Heinhold\nMünchen 1939" ]
+	7394 [ label="Hellmuth Kneser\nGöttingen 1921" ]
+	25067 [ label="Wolfgang Koehler\nHU Berlin 1909" ]
+	141831 [ label="Robert Zimmermann\nWien 1846" ]
+	82968 [ label="Fred Hoyle\nCambridge", fillcolor="#e0e0ff", style="filled" ]
+	125585 [ label="Henry Augustus Rowland\nRPI 1870 (B.Sc.)" ]
+	137314 [ label="Carl Ernst Heinrich Schmidt\n1844\nGöttingen 1845" ]
+	127736 [ label="Frederick Emmons Terman\nMIT 1924" ]
+	13113 [ label="Richard James Duffin\nUIUC 1936" ]
+	18236 [ label="Axel Thue\nUniversity of Christiania 1889" ]
+	155508 [ label="William John Crozier\nHarvard 1915" ]
+	24101 [ label="Nicolai Bugaev\nMoscow State University 1866" ]
+	37354 [ label="Joseph Fels Ritt\nColumbia 1917" ]
+	90571 [ label="Everard Mott Williams\nYale 1939" ]
+	92761 [ label="John Douglas Ryder\nIowa State 1944" ]
+	// 79967 [ label="Linus Edward Schrage\nCornell 1966" ]
+	// 92760 [ label="Wan-Hui Kim\nUtah 1956" ]
+	147836 [ label="Karl Taylor Compton\nPrinceton 1912" ]
+	144870 [ label="Robert Eccles Swain\nYale 1904" ]
+	24555 [ label="Jacques Salomon Hadamard\nÉcole Normale Supérieure Paris 1892" ]
+	9041 [ label="Robert Lee Constable\nWisconsin 1968" ]
+	29801 [ label="Vincent C. Rideout\nCalTech 1940 (M.S.)" ]
+	167323 [ label="Donald W. MacKinnon\nHarvard 1933" ]
+	167324 [ label="Richard Stanley Crutchfield\nUC Berkeley 1938" ]
+	137068 [ label="Werner Sombart\nHU Berlin 1888" ]
+	63407 [ label="Ladislaus von Bortkewitsch\nGöttingen 1892" ]
+	145782 [ label="Hermann Vollrat Hilprecht\nLeipzig 1883" ]
+	7824 [ label="Arthur Cayley\nOxford 1864 (law)\nDublin 1864 (law)\nLeiden 1875" ]
+	18926 [ label="Oscar Ascher Zariski\nRome 1925" ]
+	95228 [ label="John Ralph Ragazzini\nColumbia 1941" ]
+	22616 [ label="Gerald Enoch Sacks\nCornell 1961" ]
+	176931 [ label="Roman Osipovich Jakobson\nCharles U. Prague 1930" ]
+	72167 [ label="Robert Andrews Millikan\nColumbia 1895" ]
+	207148 [ label="Henry Parker Wilis\nChicago 1897" ]
+	207149 [ label="James Waterhouse Angell\nHarvard 1924" ]
+	78231 [ label="Roger Carl Schank\nUT Austin 1969" ]
+	132258 [ label="E. Lowell Kelly\nStanford 1934" ]
+	25302 [ label="Günter Pickert\nGöttingen 1939" ]
+	270058 [ label="Enrico Stracciati\n???" ]
+	270059 [ label="Adolfo Bartoli\nPisa 1874" ]
+	24210 [ label="Angelo Battelli\nTurin 1884" ]
+	195604 [ label="Walter Rogowski\nTH Danzig 1907" ]
+	7365 [ label="David Clinton Gillespie\nGöttingen 1906" ]
+	158188 [ label="Ercole Bottani\nPolitecnico di Milano 1922" ]
+	18600 [ label="Franz Ernst Neumann\nBerlin 1825" ]
+	269812 [ label="John Turton Randall\n???" ]
+
+	// Sixth level of MGP edges
+	7451 -> 7461
+	7461 -> 7811
+	64503 -> 144842
+	115036 -> 92249
+	115037 -> 92249
+	83975 -> 76967
+	31357 -> 63061
+	7431 -> 4929
+	5879 -> 4929
+	101929 -> 78732
+	7868 -> 10385
+	7486 -> 4642
+	18331 -> 4642
+	7486 -> 11370
+	18331 -> 11370
+	96283 -> 81193
+	34260 -> 95227
+	1488 -> 13112
+	13409 -> 8737
+	8023 -> 74435
+	4740 -> 4319
+	33019 -> 4319
+	10185 -> 61847
+	61956 -> 61847
+	19965 -> 19779
+	138330 -> 57661
+	31357 -> 106421
+	27259 -> 57471
+	29675 -> 7517
+	84506 -> 84657
+	141987 -> 25248
+	805 -> 1423
+	132996 -> 111540
+	34254 -> 34266
+	106605 -> 64465
+	46877 -> 21559
+	7298 -> 7394
+	54762 -> 25067
+	96330 -> 141831
+	44061 -> 82968
+	42857 -> 82968
+	18524 -> 82968
+	49057 -> 125585
+	138500 -> 137314
+	141834 -> 137314
+	141835 -> 137314
+	141836 -> 137314
+	84507 -> 127736
+	35764 -> 13113
+	5655 -> 13113
+	77898 -> 18236
+	155507 -> 155508
+	7486 -> 24101
+	18331 -> 24101
+	37342 -> 37354
+	131580 -> 92761
+	// 79965 -> 79967
+	// 128055 -> 92760 implausible: 1956 Ph.D. supervised by 1958 Ph.D.?
+	90415 -> 147836
+	144869 -> 144870
+	34266 -> 24555
+	34260 -> 24555
+	8012 -> 9041
+	168357 -> 167323
+	137066 -> 137068
+	137067 -> 137068
+	136936 -> 63407
+	145781 -> 145782
+	156004 -> 145782
+	42016 -> 7824
+	18925 -> 18926
+	95228 -> 32837
+	8013 -> 22616
+	148580 -> 72167
+	72170 -> 72167
+	200949 -> 207148
+	207624 -> 207149
+	207625 -> 207149
+	167146 -> 167324 // Neurotree edge (both were psychologists)
+	15709 -> 78231
+	133300 -> 132258
+	34230 -> 25302
+	270060 -> 270059
+	26323 -> 270059
+	25212 -> 24210
+	222430 -> 29801
+	9719 -> 195604
+	7298 -> 7365
+	66319 -> 18600
+	252402 -> 90571
+
+	// Sixth level of MGP antecedents
+	7451 [ label="William Edward Story\nLeipzig 1875" ]
+	64503 [ label="John Clarke Slater\nHarvard 1923" ]
+	115036 [ label="Walter Francis Colby\nMichigan 1909" ]
+	115037 [ label="Oskar Klein\nStockholm 1921" ]
+	83975 [ label="William Littell Everitt\nOhio State 1933" ]
+	31357 [ label="Arnold Johannes Wilhelm Sommerfeld\nUniversität Königsberg 1891" ]
+	7431 [ label="Maxime Boecher\nGöttingen 1891" ]
+	5879 [ label="George David Birkhoff\nChicago 1907" ]
+	101929 [ label="Edward John Routh\nCambridge 1857" ]
+	7868 [ label="Eric Temple Bell\nColumbia 1912" ]
+	7486 [ label="Karl Theodor Wilhelm Weierstrass\nUniversität Königsberg 1854", fillcolor="#e0e0ff", style="filled" ]
+	18331 [ label="Ernst Eduard Kummer\nWittenberg 1831" ]
+	96283 [ label="Edouard Goursat\nÉcole Normale Supérieure 1881" ]
+	34260 [ label="Jules Tannery\nÉcole Normale Supérieure Paris 1874" ]
+	1488 [ label="Philip Franklin\nPrinceton 1921" ]
+	13409 [ label="Jacob T. Schwartz\nYale 1952" ]
+	8023 [ label="Michael Oser Rabin\nPrinceton 1957" ]
+	33019 [ label="Willi K. Feller\nGöttingen 1926" ]
+	10185 [ label="Harry Douglas Huskey\nOhio State 1943" ] 
+	61956 [ label="Edward Albert Feigenbaum\nCMU 1960" ]
+	19965 [ label="Anders Wiman\nLund University 1892" ]
+	138330 [ label="Arthur March\nUniversität Innsbruck 1913" ]
+	27259 [ label="Gustav Ritter von Escherich\nTechnische Universität Graz 1873" ]
+	29675 [ label="Hermann Minkowski\nUniversität Königsberg 1885" ]
+	84506 [ label="Arthur Gordon Webster\nHU Berlin 1890" ]
+	141987 [ label="George Washington Pierce\nHarvard 1900" ]
+	132996 [ label="Edwin Garrigues Boring\nCornell 1915" ]
+	106605 [ label="Ernst Heinrich Weber\nWittenberg 1815 (M.D.)" ]
+	46877 [ label="Oskar Perron\nMünchen 1902" ]
+	44061 [ label="Rudolf Peierls\nLeipzig 1929" ]
+	42857 [ label="Maurice Henry Lecorney Pryce\nPrinceton 1937" ]
+	18524 [ label="Paul Adrien Maurice Dirac\nCambridge 1926", fillcolor="#e0e0ff", style="filled" ]
+	138500 [ label="Justus von Liebig\nErlangen-Nürnberg 1823", fillcolor="#e0e0ff", style="filled" ]
+	141834 [ label="Friedrich Wöhler\nHeidelberg 1823 (M.D.)" ]
+	141835 [ label="Rudolph Wagner\nGöttingen" href="http://neurotree.org/neurotree/peopleinfo.php?pid=9519" ]
+	141836 [ label="Julius Vogel\nMünchen 1836 (M.D.)" ]
+	35764 [ label="Harold Meade Mott-Smith\nUIUC 1933" ]
+	5655 [ label="David Gordon Bourgin\nHarvard 1926" ]
+	77898 [ label="Elling Bolt Holst\nOslo 1882" ]
+	155507 [ label="Jacques Loeb\nStrasbourg 1884 (M.D.)" ]
+	37342 [ label="Edward Kasner\nColumbia 1899" ]
+	131580 [ label="Wallace L. Cassell\nColorado 1928 (E.E.?)\nPurdue 1946 (M.S.)" ]
+	// http://www.colorado.edu/engineering/deaa/cgi-bin/display.pl?id=31
+	// calls 1928 "his professional degree" without stating what it was
+	// 79965 [ label="William Laughlin Maxwell\nCornell 1961" ]
+	90415 [ label="Owen W. Richardson\nLondon 1904" ]
+	144869 [ label="Lafayette Benedict Mendel\nYale 1893" ]
+	168357 [ label="Henry Alexander Murray, Jr.\nColumbia 1919 (M.D.)\nCambridge 1927" ]
+	137066 [ label="Gustav von Schmoller\nTübingen 1860 (Dr.oec.publ.)" ]
+	137067 [ label="Adolph Heinrich Gotthelf Wagner\nGöttingen 1857 (Dr.rer.pol.)" ]
+	136936 [ label="Wilhelm Hektor Richard Albrecht Lexis\nHeidelberg 1859" ]
+	145781 [ label="Friedrich Delitzsch\nLeipzig 1873" ]
+	156004 [ label="Heinrich Leberecht Fleischer\nLeipzig 1824" ]
+	30175 [ label="Francis Galton\nCambridge 1847 (M.A.)", fillcolor="#e0e0ff", style="filled" ]
+	105806 [ label="James Clerk Maxwell\nCambridge 1854 (M.A.)", fillcolor="#e0e0ff", style="filled" ]
+	18925 [ label="Guido Castelnuovo\nPadua 1886" ]
+	128062 [ label="John B. Russell, Jr.\nMIT 1950" ]
+	8013 [ label="John Barkley Rosser\nPrinceton 1934" ]
+	148580 [ label="Ogden Rood\nYale ???" ]
+	72170 [ label="Albert Abraham Michelson\nNaval Academy 1873 (B.S.)\nBerlin, Heidelberg, Collège de France (ind. research)" ]
+	200949 [ label="James Laurence Laughlin\nHarvard 1876" ]
+	207624 [ label="Frank William Taussig\nHarvard 1883" ]
+	207625 [ label="Allyn Abbott Young\nUW-Madison 1902" ]
+	167146 [ label="Edward Chace Tolman\nHarvard 1915" ]
+	15709 [ label="Jacob Mey\nCopenhagen 1960" ]
+	133300 [ label="Lewis Madison Terman\nClark 1905" ]
+	34230 [ label="Helmut Hasse\nMarburg 1922" ]
+	270060 [ label="Riccardo Felici\nPisa ???" ]
+	26323 [ label="Enrico Betti\nPisa 1846" ]
+	25212 [ label="Andrea Naccari\nPadua 1862" ]
+	222430 [ label="Royal Wasson Sorensen\nCalTech 1938 (h.c.)" ]
+	9719 [ label="Hans Carl Friedrich von Mangoldt\nBerlin 1878" ]
+	66319 [ label="Chr. Samuel Weiss\nLeipzig 1801" ]
+	252402 [ label="Francis Thomas McNamara\nYale 1924" ]
+
+	// Seventh level of MGP edges
+	32858 -> 7451
+	7401 -> 7451
+	79749 -> 64503
+	84005 -> 83975
+	7404 -> 31357
+	7401 -> 7431
+	806 -> 5879
+	42016 -> 101929
+	129420 -> 101929
+	7611 -> 7868
+	37346 -> 7868
+	29458 -> 7486
+	25484 -> 18331
+	34254 -> 96283
+	32960 -> 34260
+	805 -> 1488
+	4299 -> 13409
+	8011 -> 8023
+	7378 -> 33019
+	10323 -> 10185
+	87903 -> 61956
+	20367 -> 19965
+	138329 -> 138330
+	27258 -> 27259
+	49523 -> 27259
+	7404 -> 29675
+	49057 -> 84506
+	67041 -> 141987
+	133027 -> 132996
+	7404 -> 46877
+	51469 -> 44061
+	18245 -> 42857
+	18251 -> 42857
+	18251 -> 18524
+	138971 -> 138500
+	4918 -> 35764
+	22385 -> 5655
+	5879 -> 5655
+	145264 -> 141835
+	18235 -> 77898
+	155359 -> 155507
+	7401 -> 37342
+	7298 -> 37342
+	// 79968 -> 79965
+	50701 -> 90415
+	144868 -> 144869
+	145114 -> 141834
+	126355 -> 141834
+	137028 -> 136936
+	145779 -> 145781
+	145780 -> 145781
+	42016 -> 30175
+	42016 -> 105806
+	18924 -> 18925
+	128062 -> 95228
+	8011 -> 8013
+	180221 -> 137066
+	209188 -> 137067
+	199522 -> 106605
+	179033 -> 115036
+	49057 -> 72170
+	207150 -> 200949
+	209182 -> 200949
+	209182 -> 207624
+	208347 -> 207625
+	207733 -> 207625
+	200502 -> 115037
+	95237 -> 167146
+	86401 -> 15709
+	143417 -> 133300
+	34268 -> 34230
+	195203 -> 26323
+	114765 -> 25212
+	7486 -> 9719
+	18331 -> 9719
+	141835 -> 141836
+	124285 -> 66319
+	124286 -> 66319
+	c_matteucci -> 270060 // Wikipedia
+
+	// Seventh level of MGP antecedents
+	32858 [ label="Carl Gottfried Neumann\nUniversität Königsberg 1856" ]
+	7401 [ label="Chr. Felix Klein\nBonn 1868", fillcolor="#e0e0ff", style="filled" ]
+	79749 [ label="Percy Williams Bridgman\nHarvard 1908" ]
+	84005 [ label="Frederic Columbus Blake\nColumbia 1906" ]
+	7404 [ label="C. L. Ferdinand (Carl Louis) Lindemann\nErlangen-Nürnberg 1873" ]
+	806 [ label="E. H. (Eliakim Hastings) Moore\nYale 1885" ]
+	42016 [ label="William Hopkins\nCambridge 1830 (M.A.)" ]
+	129420 [ label="Isaac Todhunter\nCambridge 1848 (M.A.)" ]
+	7611 [ label="Frank Nelson Cole\nHarvard 1886" ]
+	37346 [ label="Cassius Jackson Keyser\nColumbia 1902" ]
+	29458 [ label="Christoph Gudermann\nGöttingen 1841" ]
+	25484 [ label="Heinrich Ferdinand Scherk\nHU Berlin 1823" ]
+	34254 [ label="Gaston Darboux\nÉcole Normale Supérieure Paris 1866" ]
+	32960 [ label="Charles Hermite\nParis (licence) 1848" ]
+	805 [ label="Oswald Veblen\nChicago 1903" ]
+	4299 [ label="Nelson Dunford\nBrown 1936" ]
+	8011 [ label="Alonzo Church\nPrinceton 1927", fillcolor="#e0e0ff", style="filled" ]
+	7378 [ label="Richard Courant\nGöttingen 1910" ]
+	10323 [ label="Tibor Radó\nUniversity of Szeged 1922" ]
+	87903 [ label="Herbert Alexander Simon\nChicago 1943" ]
+	20367 [ label="Carl Fabian Emanuel Bjorling\nUppsala 1863" ]
+	138329 [ label="Ottokar Tumlirz\nCharles University 1879" ]
+	27258 [ label="Johannes Frischauf\nWien 1861" ]
+	49523 [ label="Karl Friesach\nWien 1846" ]
+	133027 [ label="Edward Bradford Titchener\nLeipzig 1892" ]
+	51469 [ label="Werner Karl Heisenberg\nMünchen 1923", fillcolor="#e0e0ff", style="filled" ]
+	18245 [ label="Max Born\nGöttingen 1906" ]
+	18251 [ label="Ralph Howard Fowler\nCambridge 1915" ]
+	138971 [ label="Karl Wilhelm Gottlob Kastner\nJena 1805" ]
+	4918 [ label="Robert Daniel Carmichael\nPrinceton 1911" ]
+	22385 [ label="Edwin Crawford Kemble\nHarvard 1917" ]
+	145264 [ label="Johann Lukas Schönlein\nWürzburg 1816" ]
+	53213 [ label="John (János Lajos) von Neumann\nEötvös Loránd University 1926", fillcolor="#e0e0ff", style="filled" ]
+	18235 [ label="Marius Sophus Lie\nUniversity of Christiania 1872" ]
+	155359 [ label="Friedrich Leopold Goltz\nStrasbourg 1858" ]
+	// 79968 [ label="Richard Walter Conway\nCornell 1958" ]
+	144868 [ label="Russell Henry Chittenden\nYale 1880" ]
+	126355 [ label="Leopold Gmelin\nGöttingen 1812" ]
+	137028 [ label="August Beer\nBonn 1848" ]
+	145779 [ label="Franz Julius Delitzsch\nLeipzig 1836" ]
+	145780 [ label="Eberhard Schrader\nGöttingen 1860" ]
+	18924 [ label="Giuseppe Veronese\nRome 1877" ]
+	133813 [ label="Lawrence Baker Arguimbau\n???" ]
+	180221 [ label="Karl Wolfgang Christoph Schütz\nTübingen 1835 (Dr.rer.pol.habil.)" ]
+	209188 [ label="Georg Hanssen\nKiel 1831" ]
+	199522 [ label="Johann Christian Rosenmuller\nLeipzig 1797" ]
+	179033 [ label="Harrison McAllister Randall\nMichigan 1902" ]
+	207150 [ label="Henry Brooks Adams\n???" ]
+	209182 [ label="Charles Franklin Dunbar\nHarvard College 1851 (B.A.)\nHarvard Law 1858 (LL.B.)" ]
+	208347 [ label="Walter Francis Willcox\nColumbia 1891" ]
+	207733 [ label="Ruchard Theodore Ely\nHeidelberg 1879" ]
+	200502 [ label="Svante Arrhenius\nUppsala 1884" ]
+	95237 [ label="Edwin Bissell Holt\nHarvard 1901" ]
+	86401 [ label="Louis Hjelmslev\nCopenhagen 1923" ]
+	143417 [ label="Granville Stanley Hall\nHarvard 1878" ]
+	34268 [ label="Kurt Hensel\nBerlin 1884" ]
+	195203 [ label="Giuseppe Doveri\nPisa 1813" ]
+	114765 [ label="Francesco Rossetti\nWien 1857" ]
+	141835 [ label="Rudolph Wagner\nWürzburg 1826 (M.D.)" ]
+	124285 [ label="Abraham Gottlob Werner\nLeipzig 1774" ]
+	124286 [ label="René Just Haüy\n???" ]
+
+	// Eighth level of MGP edges
+	57706 -> 32858
+	46967 -> 32858
+	7402 -> 7401
+	19964 -> 7401
+	35094 -> 79749
+	84012 -> 84005
+	7401 -> 7404
+	7865 -> 806
+	102043 -> 42016
+	7401 -> 7611
+	18231 -> 29458
+	18603 -> 25484
+	65162 -> 25484
+	26995 -> 34254
+	100550 -> 32960
+	806 -> 805
+	4740 -> 4299
+	805 -> 8011
+	7298 -> 7378
+	11321 -> 10323
+	7488 -> 10323
+	122119 -> 87903
+	122490 -> 87903
+	113011 -> 138329
+	96357 -> 27258
+	96350 -> 27258
+	46065 -> 133027
+	31357 -> 51469
+	18344 -> 18245
+	50423 -> 18251
+	139498 -> 138971
+	5879 -> 4918
+	79749 -> 22385
+	101865 -> 145264
+	145283 -> 145264
+	7488 -> 53213
+	66101 -> 18235
+	66102 -> 18235
+	49057 -> 155359
+	// 79969 -> 79968
+	144867 -> 144868
+	145124 -> 144868
+	123979 -> 126355
+	126371 -> 126355
+	145778 -> 145780
+	42016 -> 129420
+	20542 -> 20367
+	18923 -> 18924
+	133813 -> 128062
+	84507 -> 128062
+	210252 -> 209188
+	7402 -> 137028
+	201545 -> 199522
+	209584 -> 208347
+	194422 -> 207733
+	29244 -> 95237
+	66377 -> 86401
+	29244 -> 143417
+	17982 -> 34268
+	298301 -> 195203
+	113010 -> 114765
+	173802 -> 114765
+	96350 -> 114765
+	145264 -> 141835
+	124490 -> 124285
+
+	// Eighth level of MGP antecedents
+	57706 [ label="Friedrich Julius Richelot\nUniversität Königsberg 1831" ]
+	46967 [ label="Otto Hesse\nUniversität Königsberg 1840" ]
+	7402 [ label="Julius Plücker\nMarburg 1823" ]
+	19964 [ label="Rudolf Otto Sigismund Lipschitz\nHU Berlin 1853" ]
+	35094 [ label="Wallace Clement Sabine\nHarvard 1888" ]
+	84012 [ label="Ernest Fox Nichols\nCornell 1897" ]
+	7865 [ label="Hubert Anson Newton\nYale 1850" ]
+	102043 [ label="Adam Sedgwick\nCambridge 1811 (M.A.)" ]
+	18603 [ label="Friedrich Wilhelm Bessel\nGöttingen 1810", fillcolor="#e0e0ff", style="filled" ]
+	65162 [ label="Heinrich Wilhelm Brandes\nGöttingen 1800" ]
+	100550 [ label="Eugene-Charles Catalan\nUniversité de Paris 1841" ]
+	4740 [ label="Jacob David Tamarkin\nSt. Petersburg State University 1917" ]
+	11321 [ label="Frigyes (Frédéric) Riesz\nEötvös Loránd University 1902" ]
+	7488 [ label="Leopold (Lipót) Fejér\nEötvös Loránd University 1902" ]
+	122119 [ label="Harold Dwight Lasswell\nChicago 1926" ]
+	122490 [ label="Henry Schultz\nColumbia 1925" ]
+	113011 [ label="Ernst Mach\nWien 1860" ]
+	96357 [ label="Jozef Maximilian Petzval\nEötvös Loránd University 1832" ]
+	96350 [ label="Franz Xaver Moth\nUniversity of Prague 1822" ]
+	46065 [ label="Wilhelm Max Wundt\nHeidelberg 1856" ]
+	18344 [ label="Carl David Tolme Runge\nHU Berlin 1880" ]
+	50423 [ label="Archibald Vivian Hill\nCambridge 1909" ]
+	139498 [ label="Johann Friedrich August Gottling\nJena 1789" ]
+	145283 [ label="Ignaz Döllinger\nUniversità di Modena 1794" ]
+	// 145283 -> Louis Agassiz
+	66101 [ label="Carl Anton Bjerknes\nOslo 1848" ]
+	66102 [ label="Cato Maximilian Guldberg\n???" ]
+	// 79969 [ label="Andrew Schultz, Jr.\nCornell 1941" ]
+	144867 [ label="Samuel William Johnson\nYale 1857 (M.A.)" ]
+	145124 [ label="Wilhelm Friedrich Kühne\nGöttingen 1856" ]
+	123979 [ label="Friedrich Stromeyer\nGöttingen 1800" ]
+	126371 [ label="Joseph Franz von Jacquin\nWien 1788 (M.D.)" ]
+	145778 [ label="Georg Heinrich August Ewald\nGöttingen 1823" ]
+	20542 [ label="Emanuel Gabriel Björling\nUppsala 1830" ]
+	18923 [ label="Antonio Luigi Gaudenzio Giuseppe Cremona\nPavia 1853" ]
+	199304 [ label="Joseph Warren Horton\nMIT 1935" ]
+	210252 [ label="August Christian Niemann\nKiel 1784" ]
+	201545 [ label="Johann Gottlob Haase\nLeipzig 1764" ]
+	209584 [ label="Richmond Mayo-Smith\nHeidelberg 1878" ]
+	29244 [ label="William James\nHarvard 1869 (M.D.)" ]
+	66377 [ label="Holger Pedersen\nCopenhagen 1897" ]
+	17982 [ label="Leopold Kronecker\nBerlin 1845" ]
+	298301 [ label="Giovanni Inghirami\n???" ]
+	173802 [ label="August Kunzek\nWien 1822" ]
+	145264 [ label="Johann Lukas Schönlein\nWürzburg 1816 (M.D.)" ]
+	124490 [ label="Johann Carl Gehler\nLeipzig 1758 (M.D.)" ]
+
+	// Ninth level of MGP edges
+	15635 -> 57706
+	15635 -> 46967
+	29642 -> 7402
+	17946 -> 19964
+	47064 -> 19964
+	67041 -> 35094
+	84010 -> 84012
+	26995 -> 7865
+	102036 -> 102043
+	102037 -> 102043
+	18231 -> 18603
+	66476 -> 65162
+	65161 -> 65162
+	55185 -> 100550
+	12543 -> 4740
+	107016 -> 11321
+	7487 -> 7488
+	122120 -> 122119
+	122450 -> 122490
+	113010 -> 113011
+	96327 -> 96350
+	96330 -> 96350
+	49057 -> 46065
+	7486-> 18344
+	18331 -> 18344
+	50522 -> 50423
+	139687 -> 139498
+	145284 -> 145283
+	77899 -> 66101
+	17946 -> 66101
+	18232 -> 66101
+	// 80136 -> 79969
+	144866 -> 144867
+	141835 -> 145124
+	141834 -> 145124
+	76485 -> 123979
+	124486 -> 126371
+	145706 -> 145778
+	145777 -> 145778
+	20543 -> 20542
+	18922 -> 18923
+	199304 -> 133813
+	194422 -> 209584
+	49057 -> 29244
+	99605 -> 29244
+	62547 -> 17982
+	17946 -> 17982
+	24182 -> 298301
+	145283 -> 145264
+	101865 -> 145264
+	124845 -> 124490
+
+	// Ninth level of MGP antecedents
+	15635 [ label="Carl Gustav Jacob Jacobi\nHU Berlin 1825" ]
+	29642 [ label="Christian Ludwig Gerling\nGöttingen 1812" ]
+	17946 [ label="Gustav Peter Lejeune Dirichlet\nBonn 1827", fillcolor="#e0e0ff", style="filled" ]
+	47064 [ label="Martin Ohm\nErlangen-Nürnberg 1811" ]
+	67041 [ label="John Trowbridge\nHarvard 1873" ]
+	84010 [ label="Edward Leamington Nichols\nGöttingen 1879" ]
+	26995 [ label="Michel Chasles\nÉcole Polytechnique 1814" ]
+	102036 [ label="Thomas Jones\nCambridge 1782" ]
+	102037 [ label="John Dawson\n???" ]
+	55185 [ label="Joseph Liouville\nFaculté des Sciences, Paris 1836" ]
+	12543 [ label="Andrei Andreyevich Markov\nSt. Petersburg State University 1884", fillcolor="#e0e0ff", style="filled" ]
+	107016 [ label="Gyula Vályi\nUniversity of Kolozsvár 1880" ]
+	7487 [ label="Hermann Amandus Schwarz\nHU Berlin 1864" ]
+	122120 [ label="Charles Edward Merriam\nColumbia 1900" ]
+	122450 [ label="Henry Ludwell Moore\nJohns Hopkins 1892" ]
+	113010 [ label="Andreas von Ettingshausen\nKaiserlich-königliche Technische Militärakademie\nWien 1817" ]
+	96327 [ label="Franz Josef Ritter von Gerstner\n1777" ]
+	96330 [ label="Bernard(us) Placidus Johann Nepomuk Bolzano\nUniversity of Prague 1805" ]
+	50522 [ label="Walter Morley Fletcher\nCambridge 1904" ]
+	139687 [ label="Johann Christian Wiegleb\nLangensalza 1765" ]
+	145284 [ label="Antonio Scarpa\nPadua 1770" ]
+	77899 [ label="Bernt Michael Holmboe\nOslo 1818" ]
+	// 80136 [ label="John R. Bangs\nCornell 1921" ]
+	144866 [ label="John Pitkin Norton\nYake 1845" ]
+	76485 [ label="Johann Friedrich Gmelin\nTübingen 1768 (M.D.)" ]
+	124486 [ label="Nikolaus Joseph von Jacquin\nLeiden 1750\nWien 1754 (M.D.)" ]
+	145706 [ label="Gottlieb Jacob Planck\nTübingen 1774" ]
+	145777 [ label="Heinrich Ludwig Planck\nGöttingen 1806 (M.A.)" ]
+	20543 [ label="Jöns Svanberg\nUppsala 1796" ]
+	18922 [ label="Francesco Brioschi\nPavia 1845" ]
+	99605 [ label="Pierre Janet\nUniversité de Paris 1889" ]
+	62547 [ label="Johann Franz Friedrich Encke" ]
+	18232 [ label="(Georg Friedrich) Bernhard Riemann\nGöttingen 1851" ]
+	124845 [ label="Chr. Gottlieb Ludwig\nLeipzig 1737 (M.D.)" ]
+
+	// Tenth level of MGP edges
+	41423 -> 15635
+	18231 -> 29642
+	17865 -> 17946
+	17981 -> 17946
+	47025 -> 47064
+	132487 -> 67041
+	49057 -> 84010
+	17865 -> 26995
+	133301 -> 102036
+	103066 -> 102036
+	129421 -> 102037
+	129422 -> 102037
+	17865 -> 55185
+	104652 -> 55185
+	12542 -> 12543
+	18331 -> 7487
+	7486 -> 7487
+	127845 -> 122120
+	122449 -> 122450
+	122448 -> 122450
+	128056 -> 113010
+	143091 -> 96327
+	96327 -> 96330
+	95539 -> 50522
+	139735 -> 139687
+	145286 -> 145284
+	77900 -> 77899
+	193720 -> 77899
+	122535 -> 144866
+	145006 -> 144866
+	76484 -> 76485
+	123957 -> 76485
+	115093 -> 124486
+	101854 -> 124486
+	145774 -> 145706
+	145706 -> 145777
+	145776 -> 145777
+	90711 -> 107016
+	145113 -> 20543
+	41758 -> 18922
+	18231 -> 18232
+	125001 -> 124845
+	125002  -> 124845
+
+	// Tenth level of MGP antecedents
+	41423 [ label="Enno Heeren Dirksen\nGöttingen 1820" ]
+	// normal English spelling of Gauss is intentional
+	18231 [ label="Carl Friedrich Gauss\nHelmstedt 1799", fillcolor="#e0e0ff", style="filled" ]
+	17865 [ label="Simeon Denis Poisson\nÉcole Polytechnique 1800", fillcolor="#e0e0ff", style="filled" ]
+	17981 [ label="Jean-Baptiste Joseph Fourier\nÉcole Normale Supérieure", fillcolor="#e0e0ff", style="filled" ]
+	47025 [ label="Karl Christian von Langsdorf\nGöttingen\nJustus-Liebig-Universität Gießen\nErfurt 1781" ]
+	132487 [ label="Joseph Lovering\nHarvard 1833 (A.B.)" ]
+	49057 [ label="Hermann Ludwig Ferdinand von Helmholtz\nHU Berlin 1842" ]
+	133301 [ label="Thomas Postlethwaite\nCambridge 1756" ]
+	103066 [ label="John Cranke\nCambridge 1774" ]
+	129421 [ label="Edward Waring\nCambridge 1760 (B.A.)" ]
+	129422 [ label="Henry Bracken\nLeiden ???" ]
+	104652 [ label="Louis Jacques Thenard\nÉcole Polytechnique" ]
+	12542 [ label="Pafnuty Lvovich Chebyshev\nSt. Petersburg State University 1849", fillcolor="#e0e0ff", style="filled" ]
+	127845 [ label="William Archibald Dunning\nColumbia 1885" ]
+	122449 [ label="Simon Newcomb\nHarvard 1858 (B.S.)" ]
+	122448 [ label="John Bates Clark\nHeidelberg 1877" ]
+	128056 [ label="Ignaz Lindner\n???" ]
+	143091 [ label="Jan Tesanek\n1748" ]
+	95539 [ label="John Newport Langley\nCambridge 1874" ]
+	139735 [ label="Ernst Gottfried Baldinger\nJena 1760" ]
+	145286 [ label="Giovanbattista Morgagni\nBologna" ]
+	77900 [ label="Søren Rasmussen\nUniversitet i Oslo" ]
+	122535 [ label="Benjamin Silliman\nYale 1796 (A.B.)" ]
+	145006 [ label="James Finlay Weir Johnston\nUppsala 1833" ]
+	76484 [ label="Phillip Friedrich Gmelin\nTübingen 1742 (M.D.)" ]
+	123957 [ label="Ferdinand Christoph Oetinger\nWittenberg 1739 (M.D.)" ]
+	115093 [ label="Adriaan van Royen\nLeiden 1728 (M.D.)" ]
+	145774 [ label="Jeremias Friedrich Reuß\nTübingen 1723/1727" ]
+	145776 [ label="Johann Gottfried Eichhorn\nGöttingen 1774 (M.A.)" ]
+	90711 [ label="Moritz Réthy\nHeidelberg 1874" ]
+	145113 [ label="Johann Afzelius\nUppsala 1776 (M.S.)" ]
+	41758 [ label="Antonio Bordoni\nUniversità degli Studi di of Pavia 1807 (laurea)" ]
+	193720 [ label="Christopher Hansteen\nCopenhagen 1806" ]
+	125001 [ label="Chr. Friedrich Haase\n????" ]
+	125002 [ label="Augustin Friedrich Walther\nWittenberg 1712" ]
+
+	// Eleventh level of MGP edges
+	57659 -> 41423
+	57667 -> 41423
+	18230 -> 18231
+	17864 -> 17865
+	108295 -> 17865
+	17864 -> 17981
+	66476 -> 47025
+	23194 -> 49057
+	133367 -> 133301
+	12541 -> 12542
+	140909 -> 128056
+	143129 -> 143091
+	95540 -> 95539
+	139734 -> 139735
+	145289 -> 145286
+	122418 -> 122535
+	122397 -> 122535
+	145114 -> 145006
+	80886 -> 132487
+	76483 -> 76484
+	123968 -> 123957
+	101856 -> 115093
+	80886 -> 122449 // http://www-groups.dcs.st-and.ac.uk/~history/Biographies/Newcomb.html
+	145772 -> 145774
+	145773 -> 145774
+	145771 -> 145774
+	145775 -> 145776
+	126124 -> 145776
+	18336 -> 90711
+	158571 -> 104652
+	46039 -> 41758
+	201548 -> 127845
+	194422 -> 122448
+	234380 -> 193720
+	101856 -> 129422
+	125107 -> 125002
+
+	// Eleventh level of MGP antecedents
+	57659 [ label="Johann Tobias Mayer\nGöttingen 1773" ]
+	57667 [ label="Bernhard Friedrich Thibaut\nGöttingen 1796" ]
+	18230 [ label="Johann Friedrich Pfaff\nGöttingen 1786" ]
+	17864 [ label="Joseph Louis Lagrange\nprotégé of Euler\nTorino 1754 (B.A.)", fillcolor="#e0e0ff", style="filled" ]
+	108295 [ label="Pierre-Simon Laplace\nCaen 1769 (maitrise)", fillcolor="#e0e0ff", style="filled" ]
+	23194 [ label="Johannes Peter Mueller\nBonn 1822" ]
+	133367 [ label="Stephen Whisson\nCambridge 1742" ]
+	12541 [ label="Nikolai Dmitrievich Brashman\nMoscow State University 1834" ]
+	140909 [ label="Georg Jurij Bartolomej Veha von Vega\nLyceum of Ljubljana 1775" ]
+	143129 [ label="Joseph Stepling\nUniversitas Carolina Prague 1743" ]
+	95540 [ label="Michael Foster\nUniversity of London 1859" ]
+	139734 [ label="Christoph A. Mangold\nErfurt 1751" ]
+	145289 [ label="Antonio Valsalva\nBologna" ]
+	122418 [ label="James Woodhouse\nPenn 1792" ]
+	122397 [ label="Thomas Charles Hope\nEdinburgh 1787" ]
+	145114 [ label="Jöns Jacob Berzelius\nUppsala 1802 (M.D.)", fillcolor="#e0e0ff", style="filled" ]
+	80886 [ label="Benjamin Peirce\nHarvard 1829 (B.A.)" ]
+	76483 [ label="Burchard David Mauchart\nTübingen 1722 (M.D.)" ]
+	123968 [ label="Michael Alberti\nWittenberg 1703, 1704 (M.D.)" ]
+	145772 [ label="Georg Bernhard Bilfinger\nTübingen 1711" ]
+	145773 [ label="Christian Hagmaier\n???" ]
+	145771 [ label="Christoph Matthäus Pfaff\nTübingen 1702 (M.A.)\nWittenberg 1706" ]
+	145775 [ label="Johann David Michaelis\nWittenberg 1739 (Th.D.)" ]
+	126124 [ label="Christian Gottlob Heyne\nLeipzig 1752 (M.J.)" ]
+	18336 [ label="Leo Königsberger\nHU Berlin 1860" ]
+	158571 [ label="Nicolas Louis Vauquelin\n???" ]
+	46039 [ label="Vincenzo Brunacci\nPisa 1788 (laur.med.)" ]
+	201548 [ label="John William Burgess\n???" ]
+	194422 [ label="Karl Knies\nMarburg 1846" ]
+	234380 [ label="Hans Christian Ørsted\nCopenhagen 1799\nJena 1801" ]
+	125107 [ label="Johann Gottfried von Berger\nJena 1682" ]
+
+	// Twelfth level of MGP edges
+	66476 -> 57659
+	65161 -> 57659
+	66476 -> 57667
+	65161 -> 57667
+	66476 -> 18230
+	127710 -> 18230
+	38586 -> 17864 [ style=dashed ]
+	108266 -> 108295
+	101865 -> 23194
+	104394 -> 23194
+	133368 -> 133367
+	12540 -> 12541
+	140923 -> 140909
+	140924 -> 140909
+	143130 -> 143129
+	95541 -> 95540
+	113082 -> 95540
+	125886 -> 139734
+	145290 -> 145289
+	122226 -> 122418
+	122200 -> 122397
+	145113 -> 145114
+	147797 -> 80886
+	76482 -> 76483
+	123977 -> 123968
+	127414 -> 145771
+	127390 -> 145771
+	145770 -> 145771
+	146035 -> 145775
+	126120 -> 126124
+	126119 -> 126124
+	7486 -> 18336
+	18331 -> 18336
+	158735 -> 158571
+	146036 -> 17864
+	24181 -> 46039
+	24182 -> 46039
+	177156 -> 194422
+	191289 -> 145772
+	145771 -> 145772
+	234381 -> 234380
+	125143 -> 125107
+
+	// Twelfth level of MGP antecedents
+	66476 [ label="Abraham Gotthelf Kästner\nLeipzig 1739" ]
+	65161 [ label="Georg Christoph Lichtenberg\nGöttingen 1765" ]
+	127710 [ label="Johann Elert Bode\nHandelsakademie Hamburg" ]
+	38586 [ label="Leonhard Euler\nBasel 1726", fillcolor="#e0e0ff", style="filled" ]
+	108266 [ label="Jean Le Rond d'Alembert\nCollège Mazarin 1735 (maitrise)" ]
+	101865 [ label="Philipp Franz von Walther\nLudwig-Maximilians-Universität Landshut 1803" ]
+	104394 [ label="Karl Asmund Rudolphi\nGreifswald 1795" ]
+	133368 [ label="Walter Taylor\nCambridge 1723" ]
+	12540 [ label="Joseph Johann von Littrow\nWien 1838 (h.c.)" ]
+	140923 [ label="Gabriel Gruber\nUniversität Graz 1767" ]
+	140924 [ label="Joseph Giuseppe Jakob von Maffei\nGraz 1762" ]
+	143130 [ label="Ignatz Mühlwenzel\n???" ]
+	95541 [ label="Thomas Henry Huxley\nCharing Cross (medicine)", fillcolor="#e0e0ff", style="filled" ]
+	113082 [ label="William Sharpey\nEdinburgh", href="http://neurotree.org/neurotree/peopleinfo.php?pid=5963" ]
+	125886 [ label="Georg Erhard Hamberger\nJena 1721" ]
+	145290 [ label="Marcello Malpighi\nUniversità di Messina 1653" ]
+	122226 [ label="Benjamin Rush\nEdinburgh 1768 (M.D.)" ]
+	147797 [ label="Nathaniel Bowditch\nHarvard 1802 (M.A., h.c.)" ]
+	76482 [ label="Elias Rudolph Camerarius, Jr.\nTübingen 1691 (M.D.)" ]
+	123977 [ label="Georg Ernst Stahl\nJena 1684 (M.D.)" ]
+	145770 [ label="Johann Heinrich Michaelis\nWittenberg 1694 (M.A.)\nEuropa-Frankfurt (Oder) 1699" ]
+	146035 [ label="Christian Benedict Michaelis\nWittenberg 1706 (M.A.)" ]
+	126120 [ label="Johann August Bach\nLeipzig 1744 (M.Phil.)" ]
+	158735 [ label="Antoine Francois de Fourcroy\nParis (M.D.)" ]
+	146036 [ label="Giovanni Battista (Giambattista) Beccaria\n???" ]
+	24181 [ label="Pietro Paoli\nPisa 1778" ]
+	24182 [ label="Stanislao Canovai\n???" ]
+	177156 [ label="Bruno Hildebrand\nBreslau 1836" ]
+	191289 [ label="Gottfried Hoffmann\n???" ]
+	234381 [ label="Johann Wilhelm Ritter\nJena 1798" ]
+	125143 [ label="Augustin Heinrich Fasch\nJena 1663 (M.D.)" ]
+
+	// Thirteenth level of MGP edges
+	57670 -> 66476
+	66476 -> 65161
+	127668 -> 127710
+	53410 -> 38586
+	101851 -> 101865
+	101852 -> 101865
+	106530 -> 104394
+	103068 -> 133368
+	141273 -> 140923
+	95542 -> 95541
+	125846 -> 125886
+	145291 -> 145290
+	j_barclay -> 113082
+	122200 -> 122226
+	121004 -> 122226
+	145115 -> 145113
+	76481 -> 76482
+	124000 -> 123977
+	146034 -> 145770
+	145708 -> 145770
+	145770 -> 146035
+	126895 -> 126120
+	127636 -> 126120
+	158900 -> 158735
+	234382 -> 234381
+	294942 -> 108266
+	141273 -> 140924
+	199699 -> 177156
+	125154 -> 125143
+
+	// Thirteenth level of MGP antecedents
+	57670 [ label="Christian August Hausen\nWittenberg 1713" ]
+	127668 [ label="Johann Georg Buesch\nTübingen 1745" ]
+	53410 [ label="Johann Bernoulli\nBasel 1690, 1694 (M.D.)" ]
+	101851 [ label="Georg Joseph Beer\nWien 1786" ]
+	101852 [ label="Johan Peter Frank\nHeidelberg 1766" ]
+	106530 [ label="Christian Ehrenfried von Weigel\nGöttingen 1771" ]
+	103068 [ label="Robert Smith\nCambridge 1715" ]
+	141273 [ label="Nikolaus Boda Poda von Neuhaus\n???" ]
+	95542 [ label="Thomas Wharton Jones\nImperial College" ]
+	125846 [ label="Johann Adolph Wedel\nJena 1694" ]
+	145291 [ label="Giovanni Alfonso Borelli\nUniversità di Roma" ]
+	j_barclay [ label="John Barclay\nEdinburgh", href="http://neurotree.org/neurotree/peopleinfo.php?pid=5983" ]
+	145115 [ label="Torbern Olof Bergman\nUppsala 1758" ]
+	124000 [ label="Rudolf Wilhelm Krause\nLeiden 1671 (M.D.)" ]
+	122200 [ label="Joseph Black\nEdinburgh 1754 (M.D.)" ]
+	146034 [ label="August Hermann Francke\nLeipzig 1685 (M.Phil.)" ]
+	145708 [ label="Hiob Ludolf\nErfurt 1645 (J.D.)\nLeiden 1646 (M.A.)" ]
+	126895 [ label="Christian Wilhelm Küstner\nLeipzig 1742 (M.Phil.)" ]
+	127636 [ label="Johann Friedrich Christ\nWittenberg 1727 (J.D.)" ]
+	158900 [ label="Jean Baptiste Michel Bucquet\nParis 1768 (M.D.)" ]
+	234382 [ label="Alexander von Humboldt\nGöttingen 1790" ]
+	294942 [ label="Léonor Caron\nCollège Mazarin 1710 (maitrise)" ]
+	199699 [ label="Maximilian Wolfgang Duncker\nHU Berlin 1834" ]
+
+	// 14th level of MGP edges
+	72669 -> 57670
+	128986 -> 57670
+	127602 -> 127668
+	54440 -> 53410
+	129628 -> 53410
+	101850 -> 101851
+	101855 -> 101852
+	92586 -> 106530
+	103067 -> 103068
+	104900 -> 95542
+	125488 -> 125846
+	136575 -> 145291
+	j_bell -> j_barclay
+	145116 -> 145115
+	101860 -> 124000
+	121004 -> 122200
+	146374 -> 145708
+	125408 -> 145708
+	145707 -> 145708
+	126119 -> 126895
+	127671 -> 127636
+	159761 -> 158900
+	65161 -> 234382
+	112689 -> 294942
+	229406 -> 199699
+	229407 -> 199699
+
+	// 14th level of MGP antecedents
+	72669 [ label="Johann Christoph Wichmannshausen\nLeipzig 1685" ]
+	128986 [ label="Johann Andreas Planer\nWittenberg 1686\nTübingen 1709" ]
+	127602 [ label="Christian Eberhard Weismann\nTübingen 1696, 1700" ]
+	54440 [ label="Jacob Bernoulli\nBasel 1676 (Th.D.), 1684 (D.Sc.)" ]
+	129628 [ label="Nikolaus Eglinger\nBasel 1660, 1661 (M.D.)" ]
+	101850 [ label="Joseph Barth\nWien 1772" ]
+	101855 [ label="Georg Matthaeus Gattenhof\nWürzburg 1748" ]
+	92586 [ label="Johann Christian Polykarp Erxleben\nGöttingen 1767" ]
+	103067 [ label="Roger Cotes\nCambridge 1706" ]
+	104900 [ label="William McKenzie\nWien 1818" ]
+	125488 [ label="Georg Wolffgang Wedel\nJena\nLeiden 1667" ]
+	136575 [ label="Benedetto Castelli\nPadua" ]
+	j_bell [ label="John Bell\nEdinburgh", href="http://neurotree.org/neurotree/peopleinfo.php?pid=5984" ]
+	121004 [ label="William Cullen\nEdinburgh 1736 (M.D.)" ]
+	145116 [ label="Bengt Ferrner\nUppsala 1751" ]
+	146374 [ label="Johann Möller\n???" ]
+	145707 [ label="Constantijn l'Empereur van Oppyck\nUniversiteit Franeker 1617 (Th.D.)" ]
+	126119 [ label="Johann August Ernesti\nLeipzig 1730 (M.Phil.)" ]
+	127671 [ label="Karl Gottlieb Knorre\nWittenberg 1721 (J.D.)" ]
+	159761 [ label="Pierre Joseph Macquer\nParis 1742 (M.D.)" ]
+	112689 [ label="Pierre Varignon\nAcadémie royale des sciences 1687" ]
+	229406 [ label="Felix Papencordt\nHU Berlin 1832" ]
+	229407 [ label="Wilhelm Bogen\nBonn 1849" ]
+
+	// 15th level of MGP edges
+	21235 -> 72669
+	128046 -> 128986
+	128938 -> 128986
+	127414 -> 127602
+	127390 -> 127602
+	143084 -> 54440
+	143011 -> 54440
+	125125 -> 129628
+	129708 -> 129628
+	101853 -> 101850
+	121249 -> 101855
+	66476 -> 92586
+	74313 -> 103067
+	101851 -> 104900
+	125154 -> 125488
+	101860 -> 125488
+	134975 -> 136575
+	a_wood -> j_bell
+	115094 -> 121004
+	145118 -> 145116
+	145119 -> 145116
+	130913 -> 145707
+	127647 -> 126119
+	127803 -> 127671
+	167450 -> 159761
+	143011 -> 112689
+	267033 -> 229406
+	231031 -> 229407
+
+	// 15th level of MGP antecedents
+	21235 [ label="Otto Mencke\nLeipzig 1665" ]
+	128046 [ label="Johann Pasch\nWittenberg 1683" ]
+	128938 [ label="Rudolf Jakob Camerarius\nTübingen 1684, 1686" ]
+	127414 [ label="Michael Förtsch\nJustus-Liebig-Universität Gießen 1682 (M.A.)" ]
+	127390 [ label="Christoph Reuchlin\nWittenberg 1681 (M.A.)" ]
+	143084 [ label="Peter Werenfels\nBasel 1649 (Th.D.)" ]
+	143011 [ label="Nicolas Malebranche\n1672" ]
+	129708 [ label="Johann Caspar Bauhin\nBasel 1649" ]
+	101853 [ label="Anton von Stoerck\nWien 1757" ]
+	121249 [ label="Georg Ludwig Hueber\nWürzburg 1726" ]
+	74313 [ label="Isaac Newton\nCambridge 1668", fillcolor="#e0e0ff", style="filled" ]
+	a_wood [ label="Alexander (lang Sandy) Wood\nEdinburgh", href="http://neurotree.org/neurotree/peopleinfo.php?pid=6003" ]
+	115094 [ label="Andrew Plummer\nLeiden 1722" ]
+	145118 [ label="Samuel Klingenstierna\nUppsala 1717 (LL.B.)\nMarburg 1728" ]
+	145119 [ label="Mårten Strömer\nUppsala 1730 (M.Phil.)" ]
+	130913 [ label="Johannes (van den Driesche) Drusius\nCambridge 1572 (M.A.)" ]
+	127647 [ label="Johann Matthias Gesner\nJena 1715 (M.A.)" ]
+	127803 [ label="Johann Peter von Ludewig\nWittenberg 1690 (M.Phil.)" ]
+	167450 [ label="Gillaume-Francois Rouelle\nParis 1725" ]
+	267033 [ label="Christian August Brandis\nCopenhagen 1812" ]
+	231031 [ label="Friedrich Wilhelm Ritschl\nWittenberg 1829" ]
+
+	// 16th level of MGP edges
+	137705 -> 21235
+	127962 -> 128046
+	123974 -> 128938
+	76481 -> 128938
+	127413 -> 127414
+	143083 -> 143084
+	60985 -> 143011
+	125125 -> 129708
+	101854 -> 101853
+	121242 -> 121249
+	67643 -> 74313
+	121201 -> 74313
+	123552 -> a_wood
+	101856 -> 115094
+	145120 -> 145118
+	47793 -> 145118
+	130995 -> 130913
+	127646 -> 127647
+	127945 -> 127803
+	127946 -> 127803
+	168615 -> 167450
+	145118 -> 145119
+
+	// 16th level of MGP antecedents
+	137705 [ label="Jakob Thomasius\nLeipzig 1643" ]
+	127962 [ label="Michael Walther, Jr.\nWittenberg 1661, 1687" ]
+	123974 [ label="Georg Balthasar Metzger\nJena 1644\nBasel 1650" ]
+	76481 [ label="Elias Rudolph Camerarius, Sr.\nTübingen 1663" ]
+	127413 [ label="Kilian Rudrauf\nJustus-Liebig-Universität Gießen 1663" ]
+	143083 [ label="Theodor Zwinger, Jr.\nBasel 1630 (Th.D.)" ]
+	60985 [ label="Gottfried Wilhelm Leibniz\nLeipzig 1666\nAltdorf 1667 (J.D.)\nAcadémie royale des sciences de Paris 1676", fillcolor="#e0e0ff", style="filled" ]
+	101854 [ label="Gerard van Swieten\nLeiden 1725" ]
+	121242 [ label="Adam Beringer\n???" ]
+	67643 [ label="Isaac Barrow\nCambridge 1652" ]
+	121201 [ label="Benjamin Pulleyn\n???" ]
+	123552 [ label="Thomas Young\nEdinburgh 1761" ]
+	145120 [ label="Anders Gabriel Duhre\nUppsala 1711" ]
+	130995 [ label="Raoul (Rodolphus Cavellerius) le Chevalier\nCollège de France\nOxford (M.A.)" ]
+	127646 [ label="Johann Franz Buddeus\nWittenberg 1687 (M.A.)" ]
+	127945 [ label="Samuel Stryk\n???" ]
+	127946 [ label="Christian Thomasius\nLeipzig 1672 (M.Phil.)\nEuropa-Frankfurt (Oder) 1679 (J.D.)" ]
+	168615 [ label="Johann Gottlob Spitzley\nJardin du Roi" ]
+	47793 [ label="Christian M. von Wolff\nLeipzig 1703" ]
+
+	// 17th level of MGP edges
+	143630 -> 137705
+	127923 -> 127962
+	127956 -> 127962
+	128743 -> 123974
+	125125 -> 123974
+	123974 -> 76481
+	143082 -> 143083
+	143859 -> 60985
+	137705 -> 60985
+	60984 -> 60985
+	125561 -> 60985
+	101856 -> 101854
+	133302 -> 67643
+	133303 -> 67643
+	123429 -> 123552
+	145121 -> 145120
+	131235 -> 130995
+	131236 -> 130995
+	127962 -> 127646
+	137717 -> 127946
+	137705 -> 127946
+	177440 -> 127946
+	169018 -> 168615
+	113719 -> 47793
+	60985 -> 47793
+
+	// 17th level of MGP antecedents
+	143630 [ label="Friedrich Leibniz\nLeipzig 1622 (M.Phil.)" ]
+	// http://neurotree.org/neurotree/peopleinfo.php?pid=31991
+	127923 [ label="Aegidius Strauch\nWittenberg 1651, 1657" ]
+	127956 [ label="Johann Andreas Quenstedt\nHelmstedt 1643\nWittenberg 1644" ]
+	128743 [ label="Johann Georg Macasius\nJena 1638, 1640" ]
+	125125 [ label="Emmanuel Stupanus\nBasel 1613 (M.D.)" ]
+	143082 [ label="Sebastian Beck\nBasel 1610 (Th.D.)" ]
+	143859 [ label="Bartholomäus Leonhard Schwendendörffer\nLeipzig 1656 (J.D.)" ]
+	60984 [ label="Erhard Weigel\nLeipzig 1650" ]
+	125561 [ label="Christiaan Huygens\nLeiden 1647 (A.L.M.)\nUniversité d'Angers 1655 (J.U.D.)", fillcolor="#e0e0ff", style="filled" ]
+	101856 [ label="Herman Boerhaave\nLeiden 1690\nUniversiteit Harderwijk 1693" ]
+	133302 [ label="Vincenzio Viviani\nAccademia dell'Arte del Disegno 1639", href="http://neurotree.org/neurotree/peopleinfo.php?pid=22905" ]
+	133303 [ label="Gilles Personne de Roberval\n???" ]
+	123429 [ label="John Rutherford\nLeiden\nUniversité de Reims Champagne-Ardenne 1719" ]
+	145121 [ label="Petrus Elvius (the Elder)\nUppsala 1688 (M.A.)" ]
+	131235 [ label="François Vatable\nParis 1511/1513 (M.A.)" ]
+	131236 [ label="Paul (Paul Büchlein) Fagius\nHeidelberg 1527 (M.A.)\nCollège Saint-Guillaume à Strasbourg 1537 (Th.D.)" ]
+	137717 [ label="Valentin Alberti\nLeipzig 1678 (Th.D.)" ]
+	169018 [ label="Nicolas Lemery\nJardin du Roi" ]
+	113719 [ label="Ehrenfried Walter von Tschirnhaus\nLeiden 1669 (M.Phil.)\nLeiden 1679 (M.D.)" ]
+	177440 [ label="Johann Friedrich Rhetius\nWittenberg 1652 (Th.D.)" ]
+
+	// 18th level of MGP edges
+	74384 -> 127923
+	127911 -> 127923
+	128097 -> 127956
+	127724 -> 127956
+	128931 -> 128743
+	128411 -> 128743
+	130248 -> 125125
+	143045 -> 143082
+	144221 -> 60984
+	125450 -> 125561
+	125416 -> 125561
+	115155 -> 101856
+	101858 -> 101856
+	134975 -> 133302
+	154455 -> 133302
+	101856 -> 123429
+	j_mueller -> 143630
+	145122 -> 145121
+	125434 -> 133303
+	127181 -> 131235
+	131398 -> 131235
+	131399 -> 131236
+	131400 -> 131236
+	170525 -> 169018
+	119293 -> 113719
+	101860 -> 113719
+	132725 -> 113719
+	194305 -> 177440
+
+	// 18th level of MGP antecedents
+	74384 [ label="Abraham Klein (Calovius)\nRostock 1632" ]
+	127911 [ label="Andreas Kunad\nLeipzig 1628 (M.A.)" ]
+	128097 [ label="Georg Calixt\nHelmstedt 1607" ]
+	127724 [ label="Christoph Notnagel\nWittenberg 1630" ]
+	128931 [ label="Johannes Musaeus\nErfurt 1634" ]
+	128411 [ label="Balthasar Widmarcter\nJena 1640" ]
+	130248 [ label="Petrus Ryff\nBasel 1584 (M.D.)" ]
+	143045 [ label="Johann Jacob Grynaeus\nBasel 1559 (M.A.)\nTübingen 1564 (Th.D.)" ]
+	144221 [ label="Philipp Müller\nLeipzig 1604 (M.A.)" ]
+	125450 [ label="Frans van Schooten, Jr.\nLeiden 1635 (A.L.M.)" ]
+	125416 [ label="Jan Jansz Stampioen, Jr.\n???" ]
+	115155 [ label="Wolferd Senguerdius\nAthenaeum Illustre Amsterdam 1666\nLeiden 1667" ]
+	101858 [ label="Burchard de Volder\nUtrecht 1660\nLeiden 1664" ]
+	134975 [ label="Galileo di Vincenzo Bonaiuti de' Galilei\nPisa", fillcolor="#e0e0ff", style="filled" ]
+	j_mueller [ label="Johann Müller\n???", href="http://neurotree.org/neurotree/peopleinfo.php?pid=31991" ]
+	154455 [ label="Evangelista Torricelli\nRome", fillcolor="#e0e0ff", style="filled" ]
+	126406 [ label="Blaise Pascal\n???", fillcolor="#e0e0ff", style="filled" ]
+	145122 [ label="Petrus Hoffvenius\nLeiden 1660 (M.D.)" ]
+	131399 [ label="Wolfgang Fabricius Capito\nIngolstadt 1506 (M.A.)\nFreiburg 1515 (Th.D.)" ]
+	131400 [ label="Elijah ben Asher Levita\n???" ]
+	170525 [ label="Christoph Jacob Glaser\nAltdorf 1688" ]
+	119293 [ label="Arnold Geulincx\nUniversité Catholique de Louvain 1646" ]
+	132725 [ label="Pieter van Schooten\nLeiden 1655 (A.L.M.)" ]
+	194305 [ label="Josias Christoph Neander\n???" ]
+
+	// 19th level of MGP edges
+	128104 -> 128097
+	128105 -> 128097
+	127606 -> 127724
+	128991 -> 128931
+	125154 -> 128411
+	182090 -> 130248
+	143044 -> 143045
+	182092 -> 143045
+	144220 -> 144221
+	125408 -> 125450
+	125434 -> 125450
+	115471 -> 115155
+	114945 -> 101858
+	101860 -> 101858
+	136245 -> 134975
+	145123 -> 145122
+	136575 -> 154455
+	126659 -> 131399
+	125938 -> 131399
+	17240 -> 170525
+	119272 -> 119293
+	125450 -> 132725
+
+	// 19th level of MGP antecedents
+	128104 [ label="Johannes Caselius\nWittenberg\nLeipzig 1560\nPisa 1566" ]
+	128105 [ label="Cornelius Martini\nHelmstedt 1592" ]
+	127606 [ label="Ambrosius Rhodius\nWittenberg 1600, 1610" ]
+	128991 [ label="Georg Grosshain\nWittenberg 1629" ]
+	125154 [ label="Werner Rolfinck\nWittenberg\nPadua 1625" ]
+	143044 [ label="Jacob Andreae\nTübingen 1553 (Th.D.)" ]
+	144220 [ label="Christoph Meurer\nLeipzig 1582 (M.A.)" ]
+	125408 [ label="Jacobus Golius\nLeiden 1621" ]
+	125434 [ label="Marin Mersenne\nUniversité Paris IV-Sorbonne 1611 (M.Phil.)" ]
+	125434 -> 126406
+	115471 [ label="Arnold Senguerdius\nLeiden 1630" ]
+	114945 [ label="Johannes de Bruyn\nUtrecht 1644" ]
+	101860 [ label="Franciscus de le Boe Sylvius\nLeiden 1634\nBasel 1637" ]
+	136245 [ label="Ostilio Ricci\nBrescia" ]
+	145123 [ label="Johannes Antonides van der Linden\nUniversiteit Franeker 1630 (M.D.)" ]
+	182092 [ label="Simon Sulzer\nCollège Saint-Guillaume à Strasbourg 1531 (M.A.)\nBasel 1532 (M.A.)" ]
+	182090 [ label="Felix Plater\nMontpellier 1557 (M.D.)" ]
+	17240 [ label="Johann Christoph Sturm\nJena 1662" ]
+	119272 [ label="Henrick van den Putte (Erycius Puteanus)\nCologne 1595 (A.L.M.)\nUniversité Catholique de Louvain 1595 (J.U.D.)" ]
+
+	// 20th level of MGP edges
+	126956 -> 128104
+	128122 -> 128105
+	127459 -> 127606
+	127461 -> 127606
+	129009 -> 128991
+	127848 -> 128991
+	126111 -> 125154
+	125006 -> 125154
+	127790 -> 144220
+	125302 -> 125408
+	125378 -> 125408
+	115395 -> 115471
+	115008 -> 115471
+	114927 -> 114945
+	125023 -> 101860
+	125125 -> 101860
+	136514 -> 136245
+	127165 -> 145123
+	152648 -> 143044
+	131399 -> 182092
+	182045 -> 182092
+	158329 -> 182090
+	60984 -> 17240
+	115139 -> 17240
+	119254 -> 119272
+
+	// 20th level of MGP antecedents
+	126956 [ label="Philipp Melanchthon\nHeidelberg 1511 (B.A.)\nTübingen 1514 (M.A.)" ]
+	128122 [ label="Duncan Lidell\nFrankfurt (Oder)\nBreslau 1582\nHelmstedt 1596" ]
+	127459 [ label="Melchior Joestel\nWittenberg 1583, 1600" ]
+	127461 [ label="Ernestus Hettenbach\nWittenberg 1576, 1591" ]
+	129009 [ label="Paul Roeber\nWittenberg 1613, 1617" ]
+	127848 [ label="Jacobus Martini\nHelmstedt 1596" ]
+	126111 [ label="Daniel Sennert\nWittenberg 1594, 1599" ]
+	125006 [ label="Adriaan van den Spieghel\nUniversité Catholique de Louvain\nPadua 1603" ]
+	127790 [ label="Moritz Valentin Steinmetz\nLeipzig 1550 (M.A.), 1567 (M.D.)" ]
+	125302 [ label="Willebrord (Snel van Royen) Snellius\nLeiden 1607 (A.L.M.)" ]
+	125378 [ label="Thomas Erpenius\nLeiden 1608 (A.L.M.)" ]
+	115395 [ label="Antonius Thysius\nGeneva 1585\nHeidelberg 1589" ]
+	115008 [ label="Franck Pieterszoon Burgersdijk\nLeiden 1614" ]
+	114927 [ label="Daniel Berckringer\nRijksuniversiteit Groningen 1640\n" ]
+	125023 [ label="Adolph Vorstius\nLeiden 1610\nPadua 1622" ]
+	136514 [ label="Niccolò Fontana Tartaglia\nself-taught" ]
+	127165 [ label="Menelaus Winsemius\nLeiden 1613 (M.D.)" ]
+	152648 [ label="Jakob Beuerlin\nTübingen 1551 (Th.D.)" ]
+	182045 [ label="Simon Grynaeus\nTübingen 1511 (M.A.)\nWittenberg 1523 (Th.D.)" ]
+	158329 [ label="Guillaume Rondelet\nUniversité de Paris (M.D.)" ]
+	115139 [ label="Johannes de Raey\nLeiden 1641\nUtrecht 1647" ]
+	119254 [ label="Joost Lips (Justus Lipsius)\nUniversité Catholique de Louvain 1569 (M.Phil.)" ]
+
+	// 21st level of MGP edges
+	127107 -> 126956
+	125760 -> 126956
+	128305 -> 128122
+	128348 -> 128122
+	127061 -> 127459
+	127275 -> 127459
+	127275 -> 127461
+	127252 -> 127461
+	127606 -> 129009
+	143642 -> 129009
+	128105 -> 127848
+	127848 -> 126111
+	127278 -> 126111
+	125109 -> 125006
+	126827 -> 127790
+	184935 -> 127790
+	125232 -> 125302
+	125181 -> 125302
+	131577 -> 125378
+	131821 -> 115395
+	114992 -> 115008
+	144265 -> 114927
+	114992 -> 125023
+	125006 -> 125023
+	125390 -> 127165
+	152647 -> 152648
+	125760 -> 182045
+	126956 -> 182045
+	119159 -> 158329
+	115030 -> 115139
+	115095 -> 115139
+
+	// 21st level of MGP antecedents
+	127107 [ label="Johannes Stöffler\nIngolstadt 1476 (M.A.)" ]
+	125760 [ label="Johann (Johannes Kapnion) Reuchlin\nBasel 1477 (M.A.)\nUniversité de Poitiers 1481 (J.U.D.)" ]
+	128305 [ label="John Craig\nBasel 1580" ]
+	128348 [ label="Paul Wittich\nLeipzig\nWittenberg 1566" ]
+	127061 [ label="Valentin (Valentinus Otho) Otto\nWittenberg 1570" ]
+	127275 [ label="Andreas Schato\nWittenberg 1562, 1578" ]
+	143642 [ label="Wolfgang Franz\nWittenberg 1590 (Th.D.)" ]
+	127278 [ label="Jan Jessenius\nLeipzig 1588\nPadua 1591" ]
+	125232 [ label="Ludolph van Ceulen\n???" ]
+	125181 [ label="Rudolph (Snel van Royen) Snellius\nCologne\nHeidelberg 1572 (A.L.M.)" ]
+	131577 [ label="Joseph Justus Scaliger\nCollège de France 1563 (M.A.)" ]
+	131821 [ label="Theodorus (Theodore de Beze) Beza\nUniversité d'Orleans 1534, 1539" ]
+	114992 [ label="Gilbert Jacchaeus\nSt. Andrews 1601\nHelmstedt 1603\nLeiden 1611" ]
+	144265 [ label="Martinus Schoock\nUtrecht 1636" ]
+	125390 [ label="Pieter (Petrus Pavius) Pauw\nLeiden\nRostock 1585 (M.D.)" ]
+	152647 [ label="Balthasar Kaeuffelin\nTübingen 1521 (Th.D.)" ]
+	184935 [ label="Johann Hoffmann\n???" ]
+	115030 [ label="Hendrik de Roy (Henricus Regius)\nUniversiteit Franeker 1617 (A.L.M.)\nLeiden and Padua 1623 (M.D.)" ]
+	115095 [ label="Adriaan Heereboord\nLeiden 1631" ]
+
+	// 22nd level of MGP edges
+	131444 -> 125760
+	125755 -> 125760
+	125148 -> 128305
+	127092 -> 128348
+	126827 -> 127061
+	126957 -> 127275
+	127252 -> 127275
+	125109 -> 127278
+	125160 -> 125181
+	125159 -> 125181
+	131606 -> 131577
+	131905 -> 131821
+	128122 -> 114992
+	126489 -> 114992
+	144264 -> 144265
+	132468 -> 144265
+	125124 -> 125390
+	125373 -> 125390
+	152669 -> 143642
+	125173 -> 115030
+	125006 -> 115030
+	115008 -> 115095
+
+	// 22nd level of MGP antecedents
+	131444 [ label="Johannes Argyropoulos\nPadua 1444 (Th.D.)" ]
+	125755 [ label="Jacob ben Jehiel Loans\n???" ]
+	125148 [ label="Theodor Zwinger\nCollège de France\nPadua 1559" ]
+	127092 [ label="Valentin Thau\nLeipzig 1555" ]
+	126827 [ label="Georg Joachim von Leuchen Rheticus\nWittenberg 1535 (M.A.)" ]
+	126957 [ label="Sebastian (Theodoricus) Dietrich\nWittenberg 1544" ]
+	127252 [ label="Salomon Alberti\nWittenberg 1564\nPadua 1574" ]
+	125160 [ label="Valentine Naibod\nWittenberg\nErfurt (M.A.)" ]
+	125159 [ label="Immanuel Tremellius\nCambridge 1549\nHeidelberg 1561 (Th.D.)" ]
+	131606 [ label="Adrien Turnebe\nCollège de France 1532 (M.A.)" ]
+	131905 [ label="Melchior Wolmar\nUniversité de Paris 1528" ]
+	126489 [ label="Jacobus (Jacob Harmensz.) Arminius\nMarburg\nLeiden 1582" ]
+	144264 [ label="Henricus Renerius\nLeiden 1617" ]
+	132468 [ label="Gisbertus Voetius\nLeiden 1611" ]
+	125274 [ label="William Harvey\nPadua 1602", fillcolor="#e0e0ff", style="filled" ]
+	125124 [ label="Johannes (Johan van Heurne) Heurnius\nCollège de France\nPadua 1566 (Ph.M.)\nPavia 1571 (M.D.)" ]
+	125373 [ label="Henricus Brucaeus\nCollège de France 1554 (A.Lib.M.)\nBologna 1560 (M.D.)" ]
+	152669 [ label="Heinrich Maius\nJena 1582 (Th.D.)" ]
+	125173 [ label="Otto van Heurne (Otho Heurnius)\nLeiden 1599 (A.L.M.)\nLeiden 1601 (M.D.)" ]
+
+	// 23rd level of MGP edges
+	131561 -> 131444
+	125047 -> 125148
+	125142 -> 125148
+	127011 -> 127092
+	126730 -> 126827
+	126177 -> 126827
+	126736 -> 126957
+	126827 -> 126957
+	126875 -> 127252
+	125109 -> 127252
+	126736 -> 125160
+	141571 -> 125159
+	131546 -> 131606
+	131398 -> 131905
+	131517 -> 131905
+	125181 -> 126489
+	144263 -> 144264
+	115008 -> 144264
+	132488 -> 132468
+	125047 -> 125124
+	125109 -> 125124
+	125047 -> 125373
+	125124 -> 125173
+	125233 -> 125173
+
+	// 23rd level of MGP antecedents
+	131561 [ label="Basilios Bessarion\nMystras 1436" ]
+	125047 [ label="Petrus (Pierre de La Ramee) Ramus\nCollège de Navarre 1536" ]
+	125142 [ label="Gabriele Falloppio\nPadua\nFerrara 1547", fillcolor="#e0e0ff", style="filled" ]
+	127011 [ label="Johannes Hommel\nWittenberg 1543" ]
+	126730 [ label="Johannes Volmar\nWittenberg 1515 (M.A.)" ]
+	126177 [ label="Nicolaus (Mikolaj Kopernik) Copernicus\nBologna\nPadua\nUniwersytet Jagiellonski\nFerrara 1499 (J.U.D.)", fillcolor="#e0e0ff", style="filled" ]
+	126875 [ label="Caspar Peucer\nWittenberg 1545" ]
+	125379 [ label="Tycho (Tyge Ottesen) Brahe\nCopenhagen\nLeipzig 1562\nWittenberg 1565", fillcolor="#e0e0ff", style="filled" ]
+	125109 [ label="Hieronymus (Girolamo Fabrici d'Acquapendente) Fabricius\nPadua 1559" ]
+	125109 -> 125274
+	141571 [ label="Thomas Cranmer\nCambridge 1515 (M.A.)\nCambridge 1526 (D.D.)" ]
+	131398 [ label="Jacques (Jacobus Faber) Lefevre d'Etaples\nUniversité de Paris\nAccademia Romana 1480" ]
+	144263 [ label="Johannes Polyander van Kerckhoven\nHeidelberg 1589\nGeneva 1590" ]
+	132488 [ label="Franciscus (Francois Gomaer) Gomarus\nCollège Saint-Guillaume à Strasbourg 1580\nHeidelberg 1594" ]
+	125233 [ label="Pierre du Moulin (Petrus Molinaeus)\n???" ]
+
+	// 24th level of MGP edges
+	131575 -> 131561
+	125665 -> 125047
+	131546 -> 125047
+	127245 -> 125142
+	125303 -> 125142
+	126736 -> 127011
+	126956 -> 127011
+	126724 -> 126730
+	126113 -> 126177
+	126112 -> 126177
+	126736 -> 126875
+	126827 -> 126875
+	127092 -> 125379
+	126875 -> 125379
+	125142 -> 125109
+	131443 -> 131398
+	131444 -> 131398
+	144262 -> 144263
+	131821 -> 144263
+	125665 -> 132488
+
+	// 24th level of MGP antecedents
+	131575 [ label="Georgios Plethon Gemistos\n1380, 1393" ]
+	125665 [ label="Johannes (Johann Sturm) Sturmius\nUniversité Catholique de Louvain 1527" ]
+	131546 [ label="Jacques Toussain\nUniversité de Paris 1521 (M.A.)" ]
+	127245 [ label="Antonio Musa Brasavola\nFerrara 1520" ]
+	125303 [ label="Matteo Realdo (Renaldus Columbus) Colombo\nPadua 1544" ]
+	126736 [ label="Erasmus Reinhold\nWittenberg 1535 (M.A.)" ]
+	126724 [ label="Bonifazius Erasmi\nWittenberg 1509 (M.A.)" ]
+	126113 [ label="Leonhard (Leonard Vitreatoris z Dobczyc) von Dobschütz\nUniwersytet Jagiellonski 1489 (M.A.)" ]
+	126112 [ label="Domenico Maria Novara da Ferrara\nFlorence 1483" ]
+	144262 [ label="François Du Jon, Sr.\n???" ]
+
+	// 25th level of MGP edges
+	134780 -> 131575
+	134781 -> 131575
+	125658 -> 125665
+	119159 -> 125665
+	131517 -> 131546
+	127166 -> 127245
+	119178 -> 125303
+	126667 -> 126736
+	126109 -> 126112
+	126888 -> 126112
+	132044 -> 144262
+
+	// 25th level of MGP antecedents
+	134780 [ label="Demetrios Kydones\nConstantinople" ]
+	// http://neurotree.org/neurotree/peopleinfo.php?pid=9648
+	// only gives one more rank and Kydones is already at the root
+	134781 [ label="Elissaeus Judaeus\n???" ]
+	125658 [ label="Nicolas (Nicolaes Cleynaerts) Clenard\nUniversité Catholique de Louvain 1515, 1521" ]
+	119159 [ label="Johannes Winter von Andernach\nUniversité Catholique de Louvain 1527 (M.A.)\nCollège de Tréguier 1532 (M.D.)" ]
+	131517 [ label="Guillaume Bude\nUniversité d'Orleans 1486\nUniversité de Paris 1491 (M.A.)" ]
+	127166 [ label="Niccolo Leoniceno\nPadua 1453" ]
+	119178 [ label="Andreas (Andries van Wesel) Vesalius\nUniversité Catholique de Louvain\nPadua 1537", fillcolor="#e0e0ff", style="filled" ]
+	126667 [ label="Jakob Milich\nFreiburg 1420 (A.L.M.)\nWien 1524 (M.D.)" ]
+	126109 [ label="Johannes (Johann Mueller) Regiomontanus\nLeipzig\nWien 1457 (M.A.)" ]
+	126888 [ label="Luca Pacioli\n???" ]
+	132044 [ label="John Calvin (Johannes Calvinus)\nUniversité d'Orléans 1529\nUniversité de Bourges 1531 (J.D.)" ]
+
+	// 26th level of MGP edges
+	125681 -> 125658
+	125682 -> 125658
+	126571 -> 119159
+	125422 -> 119159
+	131443 -> 131517
+	131541 -> 131517
+	136726 -> 127166
+	119159 -> 119178
+	119097 -> 119178
+	125938 -> 126667
+	126659 -> 126667
+	126087 -> 126109
+	131561 -> 126109
+	146365 -> 134780
+	131905 -> 132044
+	132045 -> 132044
+
+	// 26th level of MGP antecedents
+	125681 [ label="Jacobus (Jacques Masson) Latomus\nCollège de Montaigu 1502" ]
+	125682 [ label="Jan (Johannes Campensis) van Campen\nUniversité Catholique de Louvain\nIngolstadt 1519" ]
+	126571 [ label="Rutger Rescius\nUniversité de Paris 1513 (A.B.)" ]
+	125422 [ label="Jacobus (Jacques Dubois) Sylvius\nUniversité de Paris 1530 (M.A.)\nMontpellier (M.D.)" ]
+	131443 [ label="Georgius Hermonymus\n???" ]
+	131541 [ label="Janus Lascaris\nPadua 1472 (M.A.)" ]
+	136726 [ label="Pietro Roccabonella\nPadua (M.D.)" ]
+	119097 [ label="Gemma (Jemme Reinerszoon) Frisius\nUniversité Catholique de Louvain 1529, 1536" ]
+	125938 [ label="Desiderius Erasmus\nCollège de Montaigu 1497 (Th.B.)\nTorino 1506 (D.D.)" ]
+	126659 [ label="Ulrich Zasius\nFreiburg 1501 (LL.D.)" ]
+	126087 [ label="Georg von Peuerbach\nWien 1440 (M.A.)" ]
+	146365 [ label="Nilos Kabasilas\n1363" ]
+	132045 [ label="Andrea Alciati\nPavia\nBologna 1518 (J.D.)" ]
+
+	// 27th level of MGP edges
+	125888 -> 125681
+	125794 -> 125682
+	125760 -> 125682
+	127181 -> 126571
+	128987 -> 125422
+	128921 -> 125422
+	131561 -> 131541
+	131576 -> 131541
+	125892 -> 119097
+	125888 -> 125938
+	125898 -> 125938
+	126887 -> 126087
+	148882 -> 136726
+	164338 -> 136726
+	176844 -> 146365
+
+	// 27th level of MGP antecedents
+	125888 [ label="Jan Standonck\nCollège Sainte-Barbe 1474 (M.A.)\nCollège de Montaigu 1490 (Th.D.)" ]
+	125794 [ label="Matthaeus Adrianus\n(M.D.)" ]
+	127181 [ label="Girolamo (Hieronymus Aleander) Aleandro\nPadua 1499 (M.A.)\nPadua 1508 (Th.D.)" ]
+	128987 [ label="Francois Dubois\nUniversité de Paris 1516 (M.A.)" ]
+	128921 [ label="Jean Tagault\nSorbonne 1524 (M.D.)" ]
+	131576 [ label="Demetrios Chalcocondyles\nMystras\nAccademia Romana 1452 (M.A.)" ]
+	125892 [ label="Petrus (Pieter de Corte) Curtius\nUniversité Catholique de Louvain 1513, 1530" ]
+	125898 [ label="Alexander Hegius\nRostock 1463 (M.A.)" ]
+	126887 [ label="Johannes von Gmunden\nWien 1406 (M.A.)" ]
+	148882 [ label="Gaetano da Thiene\nPadua ???" ]
+	176844 [ label="Gregory Palamas\nConstantinople 1316" ]
+	164338 [ label="Sigismondo Polcastro\nPadua 1424 (M.D.)" ]
+
+	// 28th level of MGP edges
+	131446 -> 127181
+	131447 -> 127181
+	131584 -> 131576
+	125894 -> 125892
+	128012 -> 125898
+	140181 -> 125898
+	127264 -> 126887
+	184631 -> 176844
+	232227 -> 148882
+
+	// 28th level of MGP antecedents
+	131446 [ label="Moses Perez\n???" ]
+	131447 [ label="Scipione Fortiguerra\nFlorence 1493 (M.A.)" ]
+	131584 [ label="Theodoros Gazes\nConstantinople\nMantua 1433 (M.A.)" ]
+	125894 [ label="Maarten (Martinus Dorpius) van Dorp\nUniversité Catholique de Louvain 1504, 1515" ]
+	128012 [ label="Rudolf Agricola\nFerrara 1478 (M.A.)" ]
+	140181 [ label="Thomas von Kempen à Kempis\nDeventer" ]
+	// http://neurotree.org/neurotree/peopleinfo.php?pid=7042
+	127264 [ label="Heinrich von Langenstein\nUniversité de Paris 1363 (M.A.)\nUniversité de Paris 1375 (Th.D.)" ]
+	184631 [ label="Theodore Metochites\n1315" ]
+	232227 [ label="Paolo (Nicoletti) da Venezia\nPadua 1405" ]
+
+	// 29th level of MGP edges
+	131535 -> 131447
+	134873 -> 131584
+	125897 -> 125894
+	131584 -> 128012
+	179836 -> 140181
+	179837 -> 140181
+	199357 -> 127264
+	184632 -> 184631
+
+	// 29th level of MGP antecedents
+	131535 [ label="Angelo Poliziano\nFlorence 1477 (M.A.)" ]
+	134873 [ label="Vittorino da Feltre\nPadua 1416" ]
+	125897 [ label="Leo Outers\nUniversité Catholique de Louvain 1485 (Th.D.)" ]
+	199357 [ label="Nicole Oresme\nParis 1356" ]
+	184632 [ label="Manuel Bryennios\nConstantinople 1300" ]
+	179837 [ label="Florens (Florentius Radwyn) Radewyns\nCharles University Prague 1378 (M.A.)" ]
+
+	// 30th level of MGP edges
+	131539 -> 131535
+	131540 -> 131535
+	134931 -> 134873
+	201288 -> 184632
+	179836 -> 179837
+
+	// 30th level of MGP antecedents
+	131539 [ label="Marsilio Ficino\nFlorence 1462 (M.A.)" ]
+	131540 [ label="Cristoforo Landino\n???" ]
+	134931 [ label="Guarino da Verona\n1408" ]
+	201288 [ label="Gregory Chioniadis\nIlkhans Court at Tabriz 1296" ]
+	179836 [ label="Geert Garardus Magnus Groote\nDeventer" ]
+
+	// 31st level of MGP edges
+	131444 -> 131539
+	135185 -> 134931
+	204293 -> 201288
+	298240 -> 179836 // per Neurotree
+	298288 -> 131540
+
+	// 31st level of MGP antecedents
+	135185 [ label="Manuel Chrysoloras\n???" ]
+	204293 [ label="Shams ad-Din al-Bukhari\nMaragheh Observatory ???" ]
+	// http://neurotree.org/neurotree/peopleinfo.php?pid=8889
+	298240 [ label="William of Ockham\nOxford 1321 (unfinished)", href="http://neurotree.org/neurotree/peopleinfo.php?pid=7045", fillcolor="#e0e0ff", style="filled" ]
+	298288 [ label="George of Trebizond\n???" ]
+
+	// 32nd level of MGP edges
+	134780 -> 135185
+	j_d_scotus -> 298240
+	134873 -> 298288
+	217509 -> 204293
+
+	// 33rd level of antecedents
+	j_d_scotus [ label="John Duns Scotus\nUniversité de Paris", href="http://neurotree.org/neurotree/peopleinfo.php?pid=7047" ]
+	217509 [ label="Nasir al-Din al-Tusi\n???" ]
+
+	// 33rd level of edges
+	p_f_hispanus -> j_d_scotus
+	// We are excluding this branch of Islamic scholars for the time
+	// being because not much is known about them and they result in
+	// a very tall tree that isn't very informative to modern-day
+	// readers.  Leave al-Din al-Tusi as the root of the tree.
+	//223724 -> 217509
+	//287480 -> 217509
+
+	// 34th level of antecedents
+	p_f_hispanus [ label="Petrus Ferrandi (Peter of Spain) Hispanus\nUniversité de Paris", href="http://neurotree.org/neurotree/peopleinfo.php?pid=7048" ]
+	//223724 [ label="Kamal al-Din ibn Yunus\n???" ]
+	//287480 [ label="Athir al-Din al-Mufaddal al-Abhari\n??? 1264" ]
+
+	// 34th level of edges
+	j_pagus -> p_f_hispanus
+	a_magnus -> p_f_hispanus
+	//230926 -> 223724
+	//287466 -> 223724
+	//223724 -> 287480
+	//287479 -> 287480
+
+	// 35th level of antecedents
+	j_pagus [ label="Johannes Pagus\n???", href="http://neurotree.org/neurotree/peopleinfo.php?pid=7049" ]
+	a_magnus [ label="Albertus Magnus\n???", href="http://neurotree.org/neurotree/peopleinfo.php?pid=7050", fillcolor="#e0e0ff", style="filled" ]
+	//230926 [ label="Sharaf al-Din al-Tusi\n???" ]
+	//287466 [ label="Sarah al-Din Muhammad al-Mas'udi al-Marwazi\n???" ]
+	//287479 [ label="Qutb al-Din Ibrahim al-Misri\n??? 1222" ]
+
+	// 35th level of edges
+	j_of_saxony -> a_magnus
+	//295739 -> 287466
+	//287478 -> 287479
+
+	// 36th level of antecedents
+	j_of_saxony [ label="Jordan of Saxony\nUniversité de Paris", href="http://neurotree.org/neurotree/peopleinfo.php?pid=7052" ]
+	//295739 [ label="Ghiyath al-Din Abu al-Fath 'Umar ibn Ibrahim al-Khayyam al-Nisaburi\n???? 1068" ]
+	//287478 [ label="Fakhr al-Din Muhammad al-Rezi\n???" ]
+
+	// 36th level of edges
+	r_of_st_gilles -> j_of_saxony
+	//287468 -> 295739
+	//287466 -> 287478
+
+	// 37th level of antecedents
+	r_of_st_gilles [ label="Reginald of Saint-Gilles\n???", href="http://neurotree.org/neurotree/peopleinfo.php?pid=7084" ]
+	//287468 [ label="Bahmanyar ibn al-Marzuban\n???" ]
+
+	// 37th level of edges
+	st_dominic -> r_of_st_gilles
+	//298616 -> 287468
+
+	// 38th level of antecedents
+	st_dominic [ label="Dominic de Guzman (St. Dominic)\nPalencia", href="http://neurotree.org/neurotree/peopleinfo.php?pid=7053" ]
+	//298616 [ label="Abu 'Ali al-Husayn (Avicenna) ibn Sina\n???" ]
+
+	// 38th level of edges
+	//316872 -> 298616
+	//310782 -> 298616
+	//316873 -> 298616
+
+	// 39th level of antecedents
+	//316872 [ label="Abu Abdallah Al-Husayn ibn Ibrahim al-Natili\n???" ]
+	//310782 [ label="Abu Sahl 'Isa ibn Yahya al-Masihi\n???" ]
+	//316873 [ label="Abu Mansur al-Hasan ibn Nuh al-Qumri\n???" ]
+}
+//
+// Local variables:
+// buffer-file-coding-system: iso-8859-1
+// End:
+//

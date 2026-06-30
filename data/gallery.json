@@ -1,0 +1,52 @@
+[
+  {
+    "id": "around-the-lab",
+    "image": "images/new_younghyo4.jpeg",
+    "alt": "Younghyo Park portrait",
+    "date": "2026-06-06",
+    "location": "MIT CSAIL",
+    "caption": "A small corner of the robotics life.",
+    "tags": ["Life", "Lab"],
+    "likes": 128
+  },
+  {
+    "id": "vision-pro-teleop",
+    "image": "images/visionpro_still.png",
+    "alt": "Vision Pro teleoperation project still",
+    "date": "2026-04-27",
+    "location": "Cambridge, MA",
+    "caption": "Interfaces are part of the robot learning stack too.",
+    "tags": ["Robotics", "Projects"],
+    "likes": 214
+  },
+  {
+    "id": "dart-data",
+    "image": "images/dart_still.png",
+    "alt": "DART teleoperation platform still",
+    "date": "2025-05-20",
+    "location": "ICRA",
+    "caption": "Teleoperation, simulation, and lots of careful data plumbing.",
+    "tags": ["Robotics", "Travel"],
+    "likes": 183
+  },
+  {
+    "id": "daily-profile",
+    "image": "images/profile_pic8.jpeg",
+    "alt": "Casual personal photo",
+    "date": "2025-11-07",
+    "location": "Seoul",
+    "caption": "Notes from a week between talks, coffee, and machines.",
+    "tags": ["Life", "Travel"],
+    "likes": 97
+  },
+  {
+    "id": "april-cube",
+    "image": "images/IMG_0524.jpeg",
+    "alt": "Personal gallery photo",
+    "date": "2025-10-02",
+    "location": "Boston",
+    "caption": "A small square in the camera roll.",
+    "tags": ["Life"],
+    "likes": 76
+  }
+]

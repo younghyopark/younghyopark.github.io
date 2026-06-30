@@ -24,7 +24,7 @@
   nav.id = 'post-nav';
   nav.innerHTML = `
     <div class="pn-inner">
-      <a href="/blog.html" class="pn-back">
+      <a href="/blog" class="pn-back">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
         All Posts
       </a>
@@ -35,6 +35,7 @@
       </div>
       <div class="pn-links">
         <a href="/">About Me</a>
+        <a href="/gallery">Gallery</a>
       </div>
     </div>
   `;

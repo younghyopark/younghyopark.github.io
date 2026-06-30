@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CSAIL Academic Genealogy</title>
+  <meta name="author" content="Younghyo Park">
+  <meta name="description" content="An interactive viewer for the CSAIL academic genealogy graph.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="CSAIL Academic Genealogy">
+  <meta property="og:description" content="Search, zoom, and explore the CSAIL academic genealogy graph.">
+  <meta property="og:url" content="https://younghyopark.me/genealogy/">
+  <link rel="stylesheet" href="/stylesheet.css">
+  <link rel="stylesheet" href="genealogy.css">
+</head>
+<body>
+  <main class="genealogy-app">
+    <header class="topbar">
+      <a class="home-link" href="/">Younghyo Park</a>
+      <div class="title-block">
+        <h1>CSAIL Academic Genealogy</h1>
+        <span>2026-06-27 interactive HTML map</span>
+      </div>
+      <div class="search-box">
+        <label class="search-label" for="person-search">Search</label>
+        <input id="person-search" type="search" autocomplete="off" placeholder="Name, school, or year">
+        <div id="search-results" class="search-results" hidden></div>
+      </div>
+      <div class="view-controls" aria-label="Graph view controls">
+        <button type="button" id="zoom-out" aria-label="Zoom out">−</button>
+        <button type="button" id="zoom-in" aria-label="Zoom in">+</button>
+        <button type="button" id="lineage-toggle" hidden>Full</button>
+        <button type="button" id="fit-graph">Fit</button>
+        <button type="button" id="clear-selection">Clear</button>
+      </div>
+    </header>
+
+    <section id="stage" class="stage" aria-label="Interactive CSAIL academic genealogy graph">
+      <canvas id="edge-canvas" class="edge-canvas" aria-hidden="true"></canvas>
+      <div id="graph-host" class="graph-host">
+        <div id="map-world" class="map-world">
+          <div id="node-layer" class="node-layer"></div>
+          <button type="button" id="lineage-full-action" class="lineage-action lineage-action-full" hidden>Show full lineage</button>
+        </div>
+      </div>
+      <div id="loading" class="loading">Loading graph...</div>
+    </section>
+
+    <footer class="source-strip">
+      Data from
+      <a href="https://people.csail.mit.edu/wollman/genealogy/" target="_blank" rel="noopener">Garrett Wollman's CSAIL Academic Genealogy</a>
+      ·
+      <a href="csail.dot" target="_blank" rel="noopener">DOT</a>
+      ·
+      <a href="csail-data.json" target="_blank" rel="noopener">JSON</a>
+    </footer>
+  </main>
+
+  <script src="genealogy.js"></script>
+</body>
+</html>

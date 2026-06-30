@@ -1,0 +1,148 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Gallery - Younghyo Park</title>
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2RCCCZEBV7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-2RCCCZEBV7');
+  </script>
+
+  <meta name="author" content="Younghyo Park">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" type="text/css" href="gallery.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🦾</text></svg>">
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@younghyo_park" />
+  <meta name="twitter:title" content="Gallery - Younghyo Park" />
+  <meta name="twitter:description" content="Personal photo gallery and visual notes" />
+  <meta name="twitter:image" content="https://raw.githubusercontent.com/younghyopark/younghyopark.github.io/new/images/new_younghyo4.jpeg" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Gallery - Younghyo Park" />
+  <meta property="og:description" content="Personal photo gallery and visual notes" />
+  <meta property="og:url" content="https://younghyopark.me/gallery" />
+  <meta property="og:image" content="https://raw.githubusercontent.com/younghyopark/younghyopark.github.io/new/images/new_younghyo4.jpeg" />
+</head>
+
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="header-content">
+        <h1 class="site-title">
+          <a href="/">Younghyo Park</a>
+          <span class="site-subtitle">Robotics PhD student at MIT CSAIL</span>
+        </h1>
+        <nav class="nav" aria-label="Primary navigation">
+          <a href="/">Home</a>
+          <a href="/blog">Blog</a>
+          <a href="/gallery" class="active">Gallery</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="gallery-main">
+      <section class="profile-header" aria-label="Gallery profile">
+        <div class="profile-photo-wrap">
+          <img src="images/new_younghyo4.jpeg" alt="Younghyo Park profile photo" class="profile-avatar">
+        </div>
+        <div class="profile-info">
+          <div class="profile-topline">
+            <h2>younghyo</h2>
+            <button type="button" class="upload-trigger" id="upload-trigger">Add photo</button>
+            <input type="file" id="photo-input" class="photo-input" accept="image/*" multiple>
+          </div>
+          <div class="profile-stats">
+            <span><strong id="post-count">0</strong> posts</span>
+            <span><strong id="tag-count">0</strong> tags</span>
+            <span><strong>MIT</strong> CSAIL</span>
+          </div>
+          <div class="profile-bio">
+            <strong>Younghyo Park</strong>
+            <p>Visual notes from research, travel, robots, and ordinary days.</p>
+            <div id="upload-status" class="upload-status" aria-live="polite"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="gallery-controls" aria-label="Gallery filters">
+        <div id="gallery-tags" class="gallery-tags"></div>
+      </section>
+
+      <section class="grid-section" aria-label="Photo grid">
+        <div class="grid-tabs">
+          <button type="button" class="grid-tab active">Posts</button>
+          <button type="button" class="grid-tab" id="clear-filter">All photos</button>
+        </div>
+        <div id="gallery-grid" class="gallery-grid"></div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>&copy; 2026 Younghyo Park. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <dialog class="detail-modal" id="detail-modal">
+    <div class="detail-shell">
+      <div class="detail-media-wrap">
+        <img id="detail-image" class="detail-image" alt="">
+      </div>
+      <aside class="detail-panel">
+        <div class="detail-header">
+          <img src="images/new_younghyo4.jpeg" alt="" class="mini-avatar">
+          <div>
+            <strong>younghyo</strong>
+            <span id="detail-location"></span>
+          </div>
+          <button type="button" class="icon-button" id="detail-close" aria-label="Close">x</button>
+        </div>
+        <p id="detail-caption" class="detail-caption"></p>
+        <div id="detail-tags" class="detail-tags"></div>
+        <div class="detail-meta">
+          <strong id="detail-likes"></strong>
+          <time id="detail-date"></time>
+        </div>
+      </aside>
+    </div>
+  </dialog>
+
+  <dialog class="composer" id="composer">
+    <form method="dialog" class="composer-form" id="composer-form">
+      <div class="composer-preview-wrap">
+        <img id="composer-preview" class="composer-preview" alt="">
+      </div>
+      <div class="composer-fields">
+        <div class="composer-header">
+          <h3>New post</h3>
+          <button type="button" class="icon-button" id="composer-close" aria-label="Close">x</button>
+        </div>
+        <label>
+          <span>Caption</span>
+          <textarea id="caption-input" rows="4" placeholder="Write a caption"></textarea>
+        </label>
+        <label>
+          <span>Location</span>
+          <input type="text" id="location-input" placeholder="Location">
+        </label>
+        <label>
+          <span>Tags</span>
+          <input type="text" id="tags-input" placeholder="Life, Lab, Travel">
+        </label>
+        <div class="composer-actions">
+          <button type="button" class="secondary-button" id="skip-current">Skip</button>
+          <button type="submit" class="primary-button">Post</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="gallery.js"></script>
+</body>
+</html>
