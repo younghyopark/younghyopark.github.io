@@ -164,6 +164,15 @@ const CUSTOM_NODES = [
     thesisTitle: 'Shape for Contact'
   },
   {
+    id: 'antonia_bronars',
+    label: 'Antonia Bronars\nMIT 2026',
+    name: 'Antonia Bronars',
+    detail: 'MIT 2026',
+    year: 2026,
+    href: '',
+    role: 'other'
+  },
+  {
     id: '276446',
     label: 'Nima Fazeli\nMIT 2019',
     name: 'Nima Fazeli',
@@ -462,6 +471,14 @@ const CUSTOM_EDGES = [
   {
     source: '50075',
     target: '215529'
+  },
+  {
+    source: '238967',
+    target: 'antonia_bronars'
+  },
+  {
+    source: '215529',
+    target: 'antonia_bronars'
   },
   {
     source: '215529',

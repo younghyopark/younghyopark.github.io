@@ -10,6 +10,7 @@
   --red: #c92a2a;
   --indigo: #4c6ef5;
   --shadow: 0 18px 50px rgba(28, 24, 19, 0.18);
+  --control-panel-width: min(460px, calc(100vw - 28px));
 }
 
 * {
@@ -330,7 +331,7 @@ button:focus-visible {
   bottom: 57px;
   left: auto;
   display: grid;
-  width: min(460px, calc(100vw - 28px));
+  width: var(--control-panel-width);
   gap: 10px;
   padding: 12px;
   border: 1px solid rgba(217, 211, 202, 0.9);
@@ -588,7 +589,7 @@ button:focus-visible {
   right: 14px;
   bottom: 14px;
   left: auto;
-  max-width: min(560px, calc(100vw - 28px));
+  width: var(--control-panel-width);
   padding: 8px 10px;
   border: 1px solid rgba(217, 211, 202, 0.9);
   border-radius: 8px;
@@ -795,6 +796,7 @@ button:focus-visible {
     right: 8px;
     bottom: 8px;
     left: 8px;
+    width: auto;
     max-width: none;
     overflow: hidden;
     padding: 5px 7px;
