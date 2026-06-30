@@ -26,6 +26,7 @@
   const connectRun = document.getElementById('connect-run');
   const connectSwap = document.getElementById('connect-swap');
   const connectClear = document.getElementById('connect-clear');
+  const connectionStrict = document.getElementById('connection-strict');
   const connectStatus = document.getElementById('connect-status');
   const lineageToggle = document.getElementById('lineage-toggle');
   const lineageFullAction = document.getElementById('lineage-full-action');
@@ -76,6 +77,7 @@
     connectionActiveSlot: 'from',
     connectionFromId: null,
     connectionToId: null,
+    connectionStrictCommonAncestor: false,
     connectionPathIds: [],
     connectionEdgeIds: new Set(),
     scale: 1,
@@ -1853,7 +1855,9 @@
     }
 
     if (state.connectionFromId && state.connectionToId) {
-      connectStatus.textContent = 'Click Connect to find the shortest chain.';
+      connectStatus.textContent = state.connectionStrictCommonAncestor
+        ? 'Click Connect to find the strict common-ancestor chain.'
+        : 'Click Connect to find the shortest chain.';
     } else if (state.connectionFromId) {
       connectStatus.textContent = `Choose a second person to connect from ${connectionEndpointName(state.connectionFromId)}.`;
     } else if (state.connectionToId) {
@@ -2037,7 +2041,23 @@
     return edges;
   }
 
-  function shortestConnectionPath(fromId, toId) {
+  function connectionStepDirection(fromId, toId) {
+    const edge = edgeForConnectionStep(fromId, toId);
+    if (!edge) {
+      return null;
+    }
+    return edge.source === fromId && edge.target === toId ? 'down' : 'up';
+  }
+
+  function connectionSearchKey(id, phase) {
+    return `${phase}\u0000${id}`;
+  }
+
+  function connectionSearchId(key) {
+    return key.slice(key.indexOf('\u0000') + 1);
+  }
+
+  function shortestConnectionPath(fromId, toId, options) {
     if (!state.nodesById.has(fromId) || !state.nodesById.has(toId)) {
       return null;
     }
@@ -2045,32 +2065,45 @@
       return [fromId];
     }
 
-    const queue = [fromId];
-    const previous = new Map([[fromId, null]]);
+    const strict = Boolean(options && options.strictCommonAncestor);
+    const startKey = connectionSearchKey(fromId, strict ? 'up' : 'any');
+    const queue = [{ id: fromId, phase: strict ? 'up' : 'any', key: startKey }];
+    const previous = new Map([[startKey, null]]);
+    let targetKey = null;
 
     for (let index = 0; index < queue.length; index += 1) {
-      const id = queue[index];
+      const { id, phase, key } = queue[index];
       const neighbors = sortNodeIds(state.neighborsById.get(id) || new Set());
       for (const neighborId of neighbors) {
-        if (previous.has(neighborId)) {
+        const direction = connectionStepDirection(id, neighborId);
+        if (strict && phase === 'down' && direction === 'up') {
           continue;
         }
-        previous.set(neighborId, id);
+
+        const nextPhase = strict && (phase === 'down' || direction === 'down')
+          ? 'down'
+          : phase;
+        const neighborKey = connectionSearchKey(neighborId, nextPhase);
+        if (previous.has(neighborKey)) {
+          continue;
+        }
+        previous.set(neighborKey, key);
         if (neighborId === toId) {
+          targetKey = neighborKey;
           index = queue.length;
           break;
         }
-        queue.push(neighborId);
+        queue.push({ id: neighborId, phase: nextPhase, key: neighborKey });
       }
     }
 
-    if (!previous.has(toId)) {
+    if (!targetKey) {
       return null;
     }
 
     const pathIds = [];
-    for (let id = toId; id; id = previous.get(id)) {
-      pathIds.push(id);
+    for (let key = targetKey; key; key = previous.get(key)) {
+      pathIds.push(connectionSearchId(key));
     }
     return pathIds.reverse();
   }
@@ -2345,18 +2378,22 @@
         updateConnectionUrl(fromId, toId, options && options.replaceUrl);
       }
       updateConnectionStatus('Same person selected.');
-      foldMobileControls();
+      if (!options || options.foldControls !== false) {
+        foldMobileControls();
+      }
       return;
     }
 
-    const pathIds = shortestConnectionPath(fromId, toId);
+    const pathIds = shortestConnectionPath(fromId, toId, {
+      strictCommonAncestor: state.connectionStrictCommonAncestor
+    });
     if (!pathIds) {
       clearConnectionPath({
         restore: state.connectionPathIds.length > 0,
         animate: !options || options.animate !== false
       });
       refreshConnectionHighlights();
-      updateConnectionStatus(`No connection found between ${connectionEndpointName(fromId)} and ${connectionEndpointName(toId)} in the current graph.`);
+      updateConnectionStatus(`No ${state.connectionStrictCommonAncestor ? 'strict common-ancestor chain' : 'connection'} found between ${connectionEndpointName(fromId)} and ${connectionEndpointName(toId)} in the current graph.`);
       return;
     }
 
@@ -2365,8 +2402,10 @@
       updateConnectionUrl(fromId, toId, options && options.replaceUrl);
     }
     const linkCount = pathIds.length - 1;
-    updateConnectionStatus(`${connectionEndpointName(fromId)} connects to ${connectionEndpointName(toId)} in ${linkCount} advisor-student ${linkCount === 1 ? 'link' : 'links'}.`);
-    foldMobileControls();
+    updateConnectionStatus(`${connectionEndpointName(fromId)} connects to ${connectionEndpointName(toId)} in ${linkCount} advisor-student ${linkCount === 1 ? 'link' : 'links'}${state.connectionStrictCommonAncestor ? ' with a strict common-ancestor chain' : ''}.`);
+    if (!options || options.foldControls !== false) {
+      foldMobileControls();
+    }
   }
 
   function selectConnectionEndpoint(slot, id, options) {
@@ -2474,6 +2513,18 @@
       animate: true
     });
     refreshConnectionHighlights();
+    updateConnectionStatus();
+  }
+
+  function updateConnectionStrictMode() {
+    state.connectionStrictCommonAncestor = Boolean(connectionStrict && connectionStrict.checked);
+    if (state.connectionFromId && state.connectionToId) {
+      runConnection({ resolve: false, foldControls: false });
+      return;
+    }
+    if (state.connectionPathIds.length) {
+      clearConnectionPath({ restore: true, animate: true });
+    }
     updateConnectionStatus();
   }
 
@@ -2891,6 +2942,10 @@
     connectRun.addEventListener('click', () => runConnection());
     connectSwap.addEventListener('click', swapConnectionEndpoints);
     connectClear.addEventListener('click', () => clearConnection());
+    if (connectionStrict) {
+      connectionStrict.checked = state.connectionStrictCommonAncestor;
+      connectionStrict.addEventListener('change', updateConnectionStrictMode);
+    }
 
     window.addEventListener('resize', scheduleViewportFit);
     if (window.visualViewport) {

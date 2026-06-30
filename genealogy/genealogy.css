@@ -357,6 +357,61 @@ button:focus-visible {
   font-weight: 800;
 }
 
+.connection-strict-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 30px;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  user-select: none;
+}
+
+.connection-strict-toggle input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.connection-strict-control {
+  position: relative;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 20px;
+  border: 1px solid rgba(217, 211, 202, 0.95);
+  border-radius: 999px;
+  background: rgba(245, 246, 247, 0.92);
+  transition: background 0.16s ease, border-color 0.16s ease;
+}
+
+.connection-strict-control::after {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(34, 30, 26, 0.16);
+  content: "";
+  transition: transform 0.16s ease;
+}
+
+.connection-strict-toggle input:checked + .connection-strict-control {
+  border-color: rgba(159, 78, 0, 0.32);
+  background: rgba(204, 102, 0, 0.22);
+}
+
+.connection-strict-toggle input:checked + .connection-strict-control::after {
+  transform: translateX(16px);
+}
+
+.connection-strict-toggle:focus-within .connection-strict-control {
+  box-shadow: 0 0 0 3px rgba(204, 102, 0, 0.16);
+}
+
 .connect-status {
   min-height: 18px;
   margin-top: 7px;
