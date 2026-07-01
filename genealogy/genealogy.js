@@ -52,7 +52,7 @@
   const MORPH_DURATION_MS = 980;
   const INITIAL_PERSON_ID = 'younghyo_park';
   const HOME_URL = 'https://younghyopark.me/';
-  const DEFAULT_TITLE = 'CSAIL Academic Genealogy';
+  const DEFAULT_TITLE = 'Find Your Academic Lineage';
   const DEFAULT_SUBTITLE = '2026-06-27 interactive HTML map';
   const EDGE_LABELS = new Map([
     ['18769->younghyo_park', 'SNU (Undergrad)'],
@@ -224,7 +224,7 @@
       return name ? `${possessiveName(name)} Genealogy` : 'Genealogy';
     }
 
-    return 'CSAIL Genealogy';
+    return 'Academic Lineage';
   }
 
   function registerPersonSlug(slug, id) {
