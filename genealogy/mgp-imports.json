@@ -234,6 +234,201 @@
       "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=123999",
       "role": "other",
       "thesisTitle": "Mirchondi historia Thaheridarum historicis nostris hucusque incognitorum Persiae principum"
+    },
+    {
+      "id": "122849",
+      "label": "Aaron Michael Dollar\nHarvard University 2006",
+      "name": "Aaron Michael Dollar",
+      "detail": "Harvard University 2006",
+      "year": 2006,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=122849",
+      "role": "other",
+      "thesisTitle": "Design Principles for Robust Grasping in Unstructured Environments"
+    },
+    {
+      "id": "122829",
+      "label": "Robert Donald Howe\nStanford University 1990",
+      "name": "Robert Donald Howe",
+      "detail": "Stanford University 1990",
+      "year": 1990,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=122829",
+      "role": "other",
+      "thesisTitle": "Dynamic Tactile Sensing"
+    },
+    {
+      "id": "122831",
+      "label": "Mark Robert Cutkosky\nCarnegie Mellon University 1985",
+      "name": "Mark Robert Cutkosky",
+      "detail": "Carnegie Mellon University 1985",
+      "year": 1985,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=122831",
+      "role": "other",
+      "thesisTitle": "Grasping and Fine Manipulation for Automated Manufacturing"
+    },
+    {
+      "id": "122830",
+      "label": "Paul Kenneth Wright\nUniversity of Birmingham 1971",
+      "name": "Paul Kenneth Wright",
+      "detail": "University of Birmingham 1971",
+      "year": 1971,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=122830",
+      "role": "other",
+      "thesisTitle": "The Metallurgical Aspects of Metal-cutting with High-speed Tools"
+    },
+    {
+      "id": "167333",
+      "label": "Edward Moor Trent\nUniversity of Sheffield 1938",
+      "name": "Edward Moor Trent",
+      "detail": "University of Sheffield 1938",
+      "year": 1938,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=167333",
+      "role": "other",
+      "thesisTitle": "Some Properties of Cold-worked and Treated Steel"
+    },
+    {
+      "id": "vatsal_patel",
+      "label": "Vatsal Patel\nYale 2026",
+      "name": "Vatsal Patel",
+      "detail": "Yale 2026",
+      "year": 2026,
+      "href": "",
+      "role": "other"
+    },
+    {
+      "id": "69485",
+      "label": "Thomas Allen Funkhouser\nUniversity of California, Berkeley 1993",
+      "name": "Thomas Allen Funkhouser",
+      "detail": "University of California, Berkeley 1993",
+      "year": 1993,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=69485",
+      "role": "other",
+      "thesisTitle": "Database and Display Algorithms for Interactive Visualization of Architectural Models"
+    },
+    {
+      "id": "shuran_song",
+      "label": "Shuran Song\nPrinceton 2018",
+      "name": "Shuran Song",
+      "detail": "Princeton 2018",
+      "year": 2018,
+      "href": "",
+      "role": "other"
+    },
+    {
+      "id": "andy_zeng",
+      "label": "Andy Zeng\nPrinceton 2019",
+      "name": "Andy Zeng",
+      "detail": "Princeton 2019",
+      "year": 2019,
+      "href": "",
+      "role": "other"
+    },
+    {
+      "id": "99961",
+      "label": "Misha Kazhdan\nPrinceton University 2004",
+      "name": "Misha Kazhdan",
+      "detail": "Princeton University 2004",
+      "year": 2004,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=99961",
+      "role": "other",
+      "thesisTitle": "Shape Representations and Algorithms for 3D Model Retrieval"
+    },
+    {
+      "id": "178796",
+      "label": "Vladimir Georgievich Kim\nPrinceton University 2013",
+      "name": "Vladimir Georgievich Kim",
+      "detail": "Princeton University 2013",
+      "year": 2013,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=178796",
+      "role": "other",
+      "thesisTitle": "Understanding the Structure of Large, Diverse Collections of Shapes"
+    },
+    {
+      "id": "194837",
+      "label": "Tianqiang Liu\nPrinceton University 2015",
+      "name": "Tianqiang Liu",
+      "detail": "Princeton University 2015",
+      "year": 2015,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=194837",
+      "role": "other",
+      "thesisTitle": "Analyzing, Optimizing and Synthesizing Scenes by Reasoning About Relationships Between Objects"
+    },
+    {
+      "id": "99962",
+      "label": "Patrick Min\nPrinceton University 2003",
+      "name": "Patrick Min",
+      "detail": "Princeton University 2003",
+      "year": 2003,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=99962",
+      "role": "other",
+      "thesisTitle": "A 3D Model Search Engine"
+    },
+    {
+      "id": "69518",
+      "label": "Rudrajit Samanta\nPrinceton University 2002",
+      "name": "Rudrajit Samanta",
+      "detail": "Princeton University 2002",
+      "year": 2002,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=69518",
+      "role": "other",
+      "thesisTitle": "High-Performance Parallel Rendering on Commodity Clusters"
+    },
+    {
+      "id": "108760",
+      "label": "Asuman Ozdaglar\nMassachusetts Institute of Technology 2003",
+      "name": "Asuman Ozdaglar",
+      "detail": "Massachusetts Institute of Technology 2003",
+      "year": 2003,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=108760",
+      "role": "other",
+      "thesisTitle": "Pseudonormality and a Lagrange Multiplier Theory for Constrained Optimization"
+    },
+    {
+      "id": "chanwoo_park",
+      "label": "Chanwoo Park\nMIT 2027",
+      "name": "Chanwoo Park",
+      "detail": "MIT 2027",
+      "year": 2027,
+      "href": "",
+      "role": "other"
+    },
+    {
+      "id": "chonghyuk_song",
+      "label": "Chonghyuk Song\nMIT 2028",
+      "name": "Chonghyuk Song",
+      "detail": "MIT 2028",
+      "year": 2028,
+      "href": "",
+      "role": "other"
+    },
+    {
+      "id": "22925",
+      "label": "Dimitri Panteli Bertsekas\nMassachusetts Institute of Technology 1971",
+      "name": "Dimitri Panteli Bertsekas",
+      "detail": "Massachusetts Institute of Technology 1971",
+      "year": 1971,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=22925",
+      "role": "other",
+      "thesisTitle": "Control of Uncertain Systems with a Set-Membership Description of the Uncertainty"
+    },
+    {
+      "id": "81408",
+      "label": "Ian Burton Rhodes\nStanford University 1968",
+      "name": "Ian Burton Rhodes",
+      "detail": "Stanford University 1968",
+      "year": 1968,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=81408",
+      "role": "other",
+      "thesisTitle": "Optimal Control of a Dynamic System by Two Controllers with Conflicting Objectives"
+    },
+    {
+      "id": "108223",
+      "label": "David Gilbert Luenberger\nStanford University 1963",
+      "name": "David Gilbert Luenberger",
+      "detail": "Stanford University 1963",
+      "year": 1963,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=108223",
+      "role": "other",
+      "thesisTitle": "Determining the State of a Linear System with Observers of Low Dynamic Order"
     }
   ],
   "edges": [
@@ -344,6 +539,82 @@
     {
       "source": "315559",
       "target": "318338"
+    },
+    {
+      "source": "122829",
+      "target": "122849"
+    },
+    {
+      "source": "122849",
+      "target": "vatsal_patel"
+    },
+    {
+      "source": "122831",
+      "target": "122829"
+    },
+    {
+      "source": "122830",
+      "target": "122831"
+    },
+    {
+      "source": "167333",
+      "target": "122830"
+    },
+    {
+      "source": "32940",
+      "target": "69485"
+    },
+    {
+      "source": "69485",
+      "target": "shuran_song"
+    },
+    {
+      "source": "69485",
+      "target": "andy_zeng"
+    },
+    {
+      "source": "69485",
+      "target": "99961"
+    },
+    {
+      "source": "69485",
+      "target": "178796"
+    },
+    {
+      "source": "69485",
+      "target": "194837"
+    },
+    {
+      "source": "69485",
+      "target": "99962"
+    },
+    {
+      "source": "69485",
+      "target": "69518"
+    },
+    {
+      "source": "22925",
+      "target": "108760"
+    },
+    {
+      "source": "81408",
+      "target": "22925"
+    },
+    {
+      "source": "108223",
+      "target": "81408"
+    },
+    {
+      "source": "10801",
+      "target": "108223"
+    },
+    {
+      "source": "108760",
+      "target": "chanwoo_park"
+    },
+    {
+      "source": "sitzmann",
+      "target": "chonghyuk_song"
     }
   ]
 }
