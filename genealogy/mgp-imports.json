@@ -602,6 +602,104 @@
       "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=164027",
       "role": "other",
       "thesisTitle": "From Human to Robot Grasping"
+    },
+    {
+      "id": "16786",
+      "label": "Sang-Bae Kim\nPurdue University 1993",
+      "name": "Sang-Bae Kim",
+      "detail": "Purdue University 1993",
+      "year": 1993,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=16786",
+      "role": "other",
+      "thesisTitle": "Parallel Numerical Methods For Partial Differential Equations."
+    },
+    {
+      "id": "11745",
+      "label": "John Rischard Rice\nCalifornia Institute of Technology 1959",
+      "name": "John Rischard Rice",
+      "detail": "California Institute of Technology 1959",
+      "year": 1959,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=11745",
+      "role": "other",
+      "thesisTitle": "The Characterization of Best Nonlinear Tchebycheff Approximations"
+    },
+    {
+      "id": "11741",
+      "label": "Arthur Erdélyi\nKarl-Ferdinand-Universität Prag 1938",
+      "name": "Arthur Erdélyi",
+      "detail": "Karl-Ferdinand-Universität Prag 1938",
+      "year": 1938,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=11741",
+      "role": "other",
+      "thesisTitle": "(None) He had published 29 papers by 1937, and submitted them in lieu of a thesis."
+    },
+    {
+      "id": "16612",
+      "label": "Elias Nicholaos Houstis\nPurdue University 1974",
+      "name": "Elias Nicholaos Houstis",
+      "detail": "Purdue University 1974",
+      "year": 1974,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=16612",
+      "role": "other",
+      "thesisTitle": "Finite Element Methods For Solving Initial Boundary Value Problems."
+    },
+    {
+      "id": "58268",
+      "label": "Apostolos Hadjidimos\nUniversity of Liverpool 1968",
+      "name": "Apostolos Hadjidimos",
+      "detail": "University of Liverpool 1968",
+      "year": 1968,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=58268",
+      "role": "other",
+      "thesisTitle": "Extrapolated alternating direction implicit methods for the numerical solution of elliptic partial differential equations"
+    },
+    {
+      "id": "42628",
+      "label": "Gordon J. Makinson\nUniversity of Liverpool 1962",
+      "name": "Gordon J. Makinson",
+      "detail": "University of Liverpool 1962",
+      "year": 1962,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=42628",
+      "role": "other",
+      "thesisTitle": "The stability of difference and integral methods of solving differential equations"
+    },
+    {
+      "id": "137714",
+      "label": "Andrew Young\nUniversity of Liverpool 1959",
+      "name": "Andrew Young",
+      "detail": "University of Liverpool 1959",
+      "year": 1959,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=137714",
+      "role": "other",
+      "thesisTitle": "The Rotation of the Earth's Axis"
+    },
+    {
+      "id": "18584",
+      "label": "Harold Jeffreys\nUniversity of Cambridge 1917",
+      "name": "Harold Jeffreys",
+      "detail": "University of Cambridge 1917",
+      "year": 1917,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=18584",
+      "role": "other"
+    },
+    {
+      "id": "13135",
+      "label": "Henry Frederick Baker\nUniversity of Cambridge",
+      "name": "Henry Frederick Baker",
+      "detail": "University of Cambridge",
+      "year": null,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=13135",
+      "role": "other"
+    },
+    {
+      "id": "121238",
+      "label": "Marc Harold Raibert\nMassachusetts Institute of Technology 1977",
+      "name": "Marc Harold Raibert",
+      "detail": "Massachusetts Institute of Technology 1977",
+      "year": 1977,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=121238",
+      "role": "other",
+      "thesisTitle": "Motor Control and Learning by the State Space Model"
     }
   ],
   "edges": [
@@ -852,6 +950,58 @@
     {
       "source": "139511",
       "target": "164027"
+    },
+    {
+      "source": "11745",
+      "target": "16786"
+    },
+    {
+      "source": "11741",
+      "target": "11745"
+    },
+    {
+      "source": "18571",
+      "target": "11741"
+    },
+    {
+      "source": "16612",
+      "target": "16786"
+    },
+    {
+      "source": "11745",
+      "target": "16612"
+    },
+    {
+      "source": "58268",
+      "target": "16786"
+    },
+    {
+      "source": "42628",
+      "target": "58268"
+    },
+    {
+      "source": "137714",
+      "target": "42628"
+    },
+    {
+      "source": "18584",
+      "target": "137714"
+    },
+    {
+      "source": "13135",
+      "target": "18584"
+    },
+    {
+      "source": "7824",
+      "target": "13135"
+    },
+    {
+      "source": "61066",
+      "target": "121238"
+    },
+    {
+      "source": "65986",
+      "target": "121238"
     }
   ]
 }
