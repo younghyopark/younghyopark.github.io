@@ -323,6 +323,15 @@
       "role": "other"
     },
     {
+      "id": "jiajun_wu",
+      "label": "Jiajun Wu\nMIT 2019",
+      "name": "Jiajun Wu",
+      "detail": "MIT 2019",
+      "year": 2019,
+      "href": "",
+      "role": "other"
+    },
+    {
       "id": "99961",
       "label": "Misha Kazhdan\nPrinceton University 2004",
       "name": "Misha Kazhdan",
@@ -429,6 +438,170 @@
       "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=108223",
       "role": "other",
       "thesisTitle": "Determining the State of a Linear System with Observers of Low Dynamic Order"
+    },
+    {
+      "id": "309690",
+      "label": "Philippe Coiffet\nUniversité Paris-Saclay 1970",
+      "name": "Philippe Coiffet",
+      "detail": "Université Paris-Saclay 1970",
+      "year": 1970,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=309690",
+      "role": "other",
+      "thesisTitle": "Les Faisceaux d'électrons libres polarisés: étude et réalisation d'une source utilisant l'ionisation photonique d'un jet atomique orienté"
+    },
+    {
+      "id": "105977",
+      "label": "Jan Reinhard Peters\nUniversity of Southern California 2007",
+      "name": "Jan Reinhard Peters",
+      "detail": "University of Southern California 2007",
+      "year": 2007,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=105977",
+      "role": "other",
+      "thesisTitle": "Machine Learning for Motor Skills in Robotics"
+    },
+    {
+      "id": "89418",
+      "label": "Stefan Schaal\nTechnische Universität München 1992",
+      "name": "Stefan Schaal",
+      "detail": "Technische Universität München 1992",
+      "year": 1992,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=89418",
+      "role": "other",
+      "thesisTitle": "Integrierte Wissensverarbeitung mit CAD am Beispiel der konstruktionsbegleitenden Kalkulation"
+    },
+    {
+      "id": "89417",
+      "label": "Klaus Ehrlenspiel\nTechnische Universität München 1962",
+      "name": "Klaus Ehrlenspiel",
+      "detail": "Technische Universität München 1962",
+      "year": 1962,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=89417",
+      "role": "other",
+      "thesisTitle": "Statische Reibung geschmierter Metallkörper"
+    },
+    {
+      "id": "53272",
+      "label": "Gustav Niemann\nTechnische Universität Berlin 1928",
+      "name": "Gustav Niemann",
+      "detail": "Technische Universität Berlin 1928",
+      "year": 1928,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=53272",
+      "role": "other",
+      "thesisTitle": "über Wippkrane mit wagrechtem Lastwippweg"
+    },
+    {
+      "id": "168832",
+      "label": "Otto Kammerer\nTechnische Hochschule Breslau 1908",
+      "name": "Otto Kammerer",
+      "detail": "Technische Hochschule Breslau 1908",
+      "year": 1908,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=168832",
+      "role": "other"
+    },
+    {
+      "id": "13697",
+      "label": "Heinrich Aumund\n???",
+      "name": "Heinrich Aumund",
+      "detail": "???",
+      "year": null,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=13697",
+      "role": "other"
+    },
+    {
+      "id": "105955",
+      "label": "Firdaus E. Udwadia\nCalifornia Institute of Technology 1972",
+      "name": "Firdaus E. Udwadia",
+      "detail": "California Institute of Technology 1972",
+      "year": 1972,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=105955",
+      "role": "other",
+      "thesisTitle": "Investigation of earthquake and microtremor ground motions"
+    },
+    {
+      "id": "168830",
+      "label": "Donald E. Hudson\n???",
+      "name": "Donald E. Hudson",
+      "detail": "???",
+      "year": null,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=168830",
+      "role": "other"
+    },
+    {
+      "id": "168831",
+      "label": "George W. Housner\nCalifornia Institute of Technology 1941",
+      "name": "George W. Housner",
+      "detail": "California Institute of Technology 1941",
+      "year": 1941,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=168831",
+      "role": "other",
+      "thesisTitle": "An investigation of the effects of earthquakes on buildings"
+    },
+    {
+      "id": "196161",
+      "label": "Romeo Raoul Martel\n???",
+      "name": "Romeo Raoul Martel",
+      "detail": "???",
+      "year": null,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=196161",
+      "role": "other"
+    },
+    {
+      "id": "242871",
+      "label": "Robert Katzschmann\nMassachusetts Institute of Technology 2018",
+      "name": "Robert Katzschmann",
+      "detail": "Massachusetts Institute of Technology 2018",
+      "year": 2018,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=242871",
+      "role": "other",
+      "thesisTitle": "Building and Controlling Fluidically Actuated Soft Robots: From Open-loop to Model-based Control"
+    },
+    {
+      "id": "139511",
+      "label": "Danica Kragic\nKungliga Tekniska Högskolan (KTH) 2001",
+      "name": "Danica Kragic",
+      "detail": "Kungliga Tekniska Högskolan (KTH) 2001",
+      "year": 2001,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=139511",
+      "role": "other",
+      "thesisTitle": "Visual Servoing: Robustness and Integration Issues"
+    },
+    {
+      "id": "144493",
+      "label": "Henrik Iskov Christensen\nAalborg Universitet 1990",
+      "name": "Henrik Iskov Christensen",
+      "detail": "Aalborg Universitet 1990",
+      "year": 1990,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=144493",
+      "role": "other",
+      "thesisTitle": "Aspects of Real-Time Image Sequence Analysis"
+    },
+    {
+      "id": "144492",
+      "label": "Erik Granum\n???",
+      "name": "Erik Granum",
+      "detail": "???",
+      "year": null,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=144492",
+      "role": "other"
+    },
+    {
+      "id": "162184",
+      "label": "Jeannette Bohg\nKungliga Tekniska Högskolan (KTH) 2011",
+      "name": "Jeannette Bohg",
+      "detail": "Kungliga Tekniska Högskolan (KTH) 2011",
+      "year": 2011,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=162184",
+      "role": "other"
+    },
+    {
+      "id": "164027",
+      "label": "Javier Romero\nKungliga Tekniska Högskolan (KTH) 2011",
+      "name": "Javier Romero",
+      "detail": "Kungliga Tekniska Högskolan (KTH) 2011",
+      "year": 2011,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=164027",
+      "role": "other",
+      "thesisTitle": "From Human to Robot Grasping"
     }
   ],
   "edges": [
@@ -573,6 +746,14 @@
       "target": "andy_zeng"
     },
     {
+      "source": "144828",
+      "target": "jiajun_wu"
+    },
+    {
+      "source": "144836",
+      "target": "jiajun_wu"
+    },
+    {
       "source": "69485",
       "target": "99961"
     },
@@ -615,6 +796,62 @@
     {
       "source": "sitzmann",
       "target": "chonghyuk_song"
+    },
+    {
+      "source": "89418",
+      "target": "105977"
+    },
+    {
+      "source": "89417",
+      "target": "89418"
+    },
+    {
+      "source": "53272",
+      "target": "89417"
+    },
+    {
+      "source": "168832",
+      "target": "53272"
+    },
+    {
+      "source": "13697",
+      "target": "53272"
+    },
+    {
+      "source": "105955",
+      "target": "105977"
+    },
+    {
+      "source": "168830",
+      "target": "105955"
+    },
+    {
+      "source": "168831",
+      "target": "105955"
+    },
+    {
+      "source": "196161",
+      "target": "168831"
+    },
+    {
+      "source": "76738",
+      "target": "242871"
+    },
+    {
+      "source": "144493",
+      "target": "139511"
+    },
+    {
+      "source": "144492",
+      "target": "144493"
+    },
+    {
+      "source": "139511",
+      "target": "162184"
+    },
+    {
+      "source": "139511",
+      "target": "164027"
     }
   ]
 }
