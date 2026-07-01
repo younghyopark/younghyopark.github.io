@@ -1479,15 +1479,18 @@
       { ids: [lineage.startId], lineageIds: [lineage.startId], depth: 0, offset: 0 },
       ...(descendantRow ? [descendantRow] : [])
     ];
+    const descendantIds = new Set(childIds);
+    const focusLineageIds = new Set(lineage.nodeIds);
     const contextIds = new Set();
     const contextEdgeIds = new Set();
-    const descendantIds = new Set(childIds);
     let requiredLeft = NODE_W / 2;
     let requiredRight = NODE_W / 2;
 
+    descendantIds.forEach((id) => focusLineageIds.add(id));
+
     rows.forEach((row) => {
       const rowLineageIds = new Set(row.lineageIds);
-      const context = row.isDescendantRow ? { ids: [], edgeIds: [] } : branchContext(row.lineageIds, lineage.nodeIds);
+      const context = row.isDescendantRow ? { ids: [], edgeIds: [] } : branchContext(row.lineageIds, focusLineageIds);
       const midpoint = Math.ceil(context.ids.length / 2);
       const left = context.ids.slice(0, midpoint);
       const right = context.ids.slice(midpoint);
