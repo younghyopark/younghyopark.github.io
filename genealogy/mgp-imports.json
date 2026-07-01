@@ -700,6 +700,116 @@
       "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=121238",
       "role": "other",
       "thesisTitle": "Motor Control and Learning by the State Space Model"
+    },
+    {
+      "id": "71100",
+      "label": "Oussama Khatib\nInstitut supérieur de l'aéronautique et de l'espace 1980",
+      "name": "Oussama Khatib",
+      "detail": "Institut supérieur de l'aéronautique et de l'espace 1980",
+      "year": 1980,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=71100",
+      "role": "other",
+      "thesisTitle": "Dynamic Control in Operational Space of Robot Manipulators in the Presence of Obstacles"
+    },
+    {
+      "id": "61379",
+      "label": "Jean-François Maitre\nUniversité Joseph Fourier Grenoble I 1974",
+      "name": "Jean-François Maitre",
+      "detail": "Université Joseph Fourier Grenoble I 1974",
+      "year": 1974,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=61379",
+      "role": "other",
+      "thesisTitle": "Sur certaines normes et fonctionnelles dans les espaces de matrices et d'opérateurs"
+    },
+    {
+      "id": "58747",
+      "label": "Noël Gastinel\nUniversité Joseph Fourier Grenoble I 1960",
+      "name": "Noël Gastinel",
+      "detail": "Université Joseph Fourier Grenoble I 1960",
+      "year": 1960,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=58747",
+      "role": "other",
+      "thesisTitle": "Matrices du second degré et normes générales en analyse numérique linéaire. Le théorème de Stone Weirstrass"
+    },
+    {
+      "id": "78519",
+      "label": "Jean Kuntzmann\nUniversité de Paris 1940",
+      "name": "Jean Kuntzmann",
+      "detail": "Université de Paris 1940",
+      "year": 1940,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=78519",
+      "role": "other",
+      "thesisTitle": "Contribution à l'étude des systèmes multiformes"
+    },
+    {
+      "id": "73816",
+      "label": "Georges Valiron\nUniversité de Paris 1914",
+      "name": "Georges Valiron",
+      "detail": "Université de Paris 1914",
+      "year": 1914,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=73816",
+      "role": "other",
+      "thesisTitle": "Sur les fonctions entieres d'ordre nul et d'ordre fini et en particulier les fonctions a correspondance reguliere"
+    },
+    {
+      "id": "39071",
+      "label": "Émile Borel\nécole Normale Supérieure Paris 1893",
+      "name": "Émile Borel",
+      "detail": "école Normale Supérieure Paris 1893",
+      "year": 1893,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=39071",
+      "role": "other",
+      "thesisTitle": "Sur quelques points de la théorie des fonctions"
+    },
+    {
+      "id": "71156",
+      "label": "Oliver Brock\nStanford University 2000",
+      "name": "Oliver Brock",
+      "detail": "Stanford University 2000",
+      "year": 2000,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=71156",
+      "role": "other",
+      "thesisTitle": "Generating Robot Motion: The Integration of Planning and Execution"
+    },
+    {
+      "id": "103807",
+      "label": "Jaeheung Park\nStanford University 2006",
+      "name": "Jaeheung Park",
+      "detail": "Stanford University 2006",
+      "year": 2006,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=103807",
+      "role": "other",
+      "thesisTitle": "Control Strategies for Robots in Contact"
+    },
+    {
+      "id": "99865",
+      "label": "Dieter Fox\nRheinische Friedrich-Wilhelms-Universität Bonn 1998",
+      "name": "Dieter Fox",
+      "detail": "Rheinische Friedrich-Wilhelms-Universität Bonn 1998",
+      "year": 1998,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=99865",
+      "role": "other",
+      "thesisTitle": "Markov Localization: A Probabilistic Framework for Mobile Robot Localization and Navigation"
+    },
+    {
+      "id": "263147",
+      "label": "Vikash Kumar\nUniversity of Washington 2016",
+      "name": "Vikash Kumar",
+      "detail": "University of Washington 2016",
+      "year": 2016,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=263147",
+      "role": "other",
+      "thesisTitle": "Manipulators and Manipulation in High Dimensional Spaces"
+    },
+    {
+      "id": "107214",
+      "label": "Emanuel Vassilev Todorov\nMassachusetts Institute of Technology 1998",
+      "name": "Emanuel Vassilev Todorov",
+      "detail": "Massachusetts Institute of Technology 1998",
+      "year": 1998,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=107214",
+      "role": "other",
+      "thesisTitle": "Studies of Goal-Directed Movements"
     }
   ],
   "edges": [
@@ -1002,6 +1112,54 @@
     {
       "source": "65986",
       "target": "121238"
+    },
+    {
+      "source": "61379",
+      "target": "71100"
+    },
+    {
+      "source": "58747",
+      "target": "61379"
+    },
+    {
+      "source": "78519",
+      "target": "58747"
+    },
+    {
+      "source": "73816",
+      "target": "78519"
+    },
+    {
+      "source": "39071",
+      "target": "73816"
+    },
+    {
+      "source": "34254",
+      "target": "39071"
+    },
+    {
+      "source": "71100",
+      "target": "71156"
+    },
+    {
+      "source": "71100",
+      "target": "103807"
+    },
+    {
+      "source": "96841",
+      "target": "99865"
+    },
+    {
+      "source": "107214",
+      "target": "263147"
+    },
+    {
+      "source": "87388",
+      "target": "107214"
+    },
+    {
+      "source": "65986",
+      "target": "107214"
     }
   ]
 }
