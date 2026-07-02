@@ -810,6 +810,36 @@
       "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=107214",
       "role": "other",
       "thesisTitle": "Studies of Goal-Directed Movements"
+    },
+    {
+      "id": "66236",
+      "label": "Karen Cheng-Yun Liu\nUniversity of Washington 2005",
+      "name": "Karen Cheng-Yun Liu",
+      "detail": "University of Washington 2005",
+      "year": 2005,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=66236",
+      "role": "other",
+      "thesisTitle": "Towards a Generative Model of Natural Motion"
+    },
+    {
+      "id": "50118",
+      "label": "Zoran Popovic\nCarnegie Mellon University 1999",
+      "name": "Zoran Popovic",
+      "detail": "Carnegie Mellon University 1999",
+      "year": 1999,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=50118",
+      "role": "other",
+      "thesisTitle": "Motion Transformation by Physically Based Spacetime Optimization"
+    },
+    {
+      "id": "50091",
+      "label": "Andrew Paul Witkin\nMassachusetts Institute of Technology 1980",
+      "name": "Andrew Paul Witkin",
+      "detail": "Massachusetts Institute of Technology 1980",
+      "year": 1980,
+      "href": "https://genealogy.math.ndsu.nodak.edu/id.php?id=50091",
+      "role": "other",
+      "thesisTitle": "Shape from Contour"
     }
   ],
   "edges": [
@@ -1160,6 +1190,18 @@
     {
       "source": "65986",
       "target": "107214"
+    },
+    {
+      "source": "50118",
+      "target": "66236"
+    },
+    {
+      "source": "50091",
+      "target": "50118"
+    },
+    {
+      "source": "65986",
+      "target": "50091"
     }
   ]
 }
