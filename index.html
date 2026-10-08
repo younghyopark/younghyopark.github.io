@@ -292,18 +292,41 @@
             <img src='images/aiofranka.png' width="100%" >
           </td>
           <td style="padding:20px;width:75%;vertical-align:middle">
-            <a href="https://github.com/Improbable-AI/aiofranka">
+            <a href="https://github.com/younghyopark/aiofranka">
               <papertitle>aiofranka</papertitle>
             </a>
             <br>
-            <a href="https://github.com/Improbable-AI/aiofranka">github</a>
+            <a href="https://github.com/younghyopark/aiofranka">github</a>
             /
-            <a href="https://improbableai.com/aiofranka">docs</a>
+            <a href="https://younghyopark.me/aiofranka/">docs</a>
+            /
+            <a href="https://pypi.org/project/aiofranka/">PyPI</a>
             <br>
-            <a class="star-badge" href="https://github.com/Improbable-AI/aiofranka"><img src="https://img.shields.io/github/stars/Improbable-AI/aiofranka?style=social" alt="GitHub stars"></a>
+            <a class="star-badge" href="https://github.com/younghyopark/aiofranka"><img src="https://img.shields.io/github/stars/younghyopark/aiofranka?style=social" alt="GitHub stars"></a>
             <p></p>
             <p>
-            An asyncio-based Python library for controlling Franka Emika robots. Provides a high-level, asynchronous interface combining pylibfranka for 1kHz torque control, MuJoCo for kinematics/dynamics, and Ruckig for smooth trajectory generation.
+            Run your own custom 1 kHz torque controller on a Franka, right from your Mac (or Linux): write it in Python, and aiofranka runs it in a C++ loop that never waits for Python. Plus helpful commands so you never have to touch the Desk GUI: unlock and lock the robot, run self-tests, hand-guide it, identify payloads, and calibrate cameras.
+            </p>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding:20px;width:25%;vertical-align:middle">
+            <img src='images/aioflexiv.png' width="100%" >
+          </td>
+          <td style="padding:20px;width:75%;vertical-align:middle">
+            <a href="https://github.com/younghyopark/aioflexiv">
+              <papertitle>aioflexiv</papertitle>
+            </a>
+            <br>
+            <a href="https://github.com/younghyopark/aioflexiv">github</a>
+            /
+            <a href="https://pypi.org/project/aioflexiv/">PyPI</a>
+            <br>
+            <a class="star-badge" href="https://github.com/younghyopark/aioflexiv"><img src="https://img.shields.io/github/stars/younghyopark/aioflexiv?style=social" alt="GitHub stars"></a>
+            <p></p>
+            <p>
+            The aiofranka counterpart for Flexiv robots (Rizon 4 and 4S). An asyncio-based Python library that pairs flexivrdk with a small pybind11 shim for real-time joint-torque control, offering joint impedance, operational-space, and direct torque control, smooth Ruckig moves, and a MuJoCo backend for payload-aware dynamics and simulation.
             </p>
           </td>
         </tr>
@@ -344,7 +367,47 @@
     </tbody></table>
 
     <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
-				
+
+
+      <tr>
+        <td style="padding:20px;width:25%;vertical-align:middle">
+          <img src="images/inertia-mismatch.jpg" width="100%" alt="A heavy robot arm and light everyday objects on opposite ends of a seesaw">
+        </td>
+        <td style="padding:20px;width:75%;vertical-align:middle">
+          <papertitle>When Robots Outweigh Objects: How Inertia Mismatch Shapes Robot Policy Learning</papertitle>
+          <br>
+          <strong>Younghyo Park</strong>, <a href="https://abronars.github.io/">Antonia Bronars</a>, <a href="https://people.csail.mit.edu/pulkitag/">Pulkit Agrawal</a>
+          <br>
+          <em>Under review</em>
+          <br>
+          <a href="https://youtu.be/roAMfFdbC5A">video</a>
+          <p></p>
+          <p>
+            Robot arms are often far heavier than the everyday objects they manipulate. Through controlled experiments that vary robot and object masses, we show that this inertia mismatch carries a hidden cost for behavior cloning, and that choosing workspace placements and demonstrations that favor lower task-space inertia improves imitation-learned policies without replacing the robot.
+          </p>
+        </td>
+      </tr>
+
+      <tr>
+        <td style="padding:20px;width:25%;vertical-align:middle">
+          <video width="100%" muted autoplay loop playsinline poster="images/blind-insertion-poster.jpg">
+            <source src="images/blind-insertion.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        </td>
+        <td style="padding:20px;width:75%;vertical-align:middle">
+          <papertitle>Blind Precise Assembly: Proprioceptive Sim-to-Real Peg-in-Hole for Diverse Parts</papertitle>
+          <br>
+          <a href="https://abronars.github.io/">Antonia Bronars*</a>, <strong>Younghyo Park*</strong>, Kushal Kedia, <a href="https://people.csail.mit.edu/pulkitag/">Pulkit Agrawal</a>
+          <br>
+          <em>Under review</em>
+          <p></p>
+          <p>
+            A blind insertion policy that senses contact only through its own joint encoders, with no vision, force, or tactile input, is trained entirely in simulation and transfers zero-shot to a real robot, inserting pegs of diverse shapes and sizes with millimeter-scale clearance. Blind policies are slower than matched visual ones, but generalize far better to unseen parts.
+          </p>
+          <p style="font-size: 0.9em; color: #666;">* equal contribution</p>
+        </td>
+      </tr>
 
       <tr>
         <td style="padding:20px;width:25%;vertical-align:middle">
@@ -468,6 +531,7 @@
           <p>
             Most robotics practitioners spend most time shaping the environments (e.g. rewards, observation/action spaces, low-level controllers, simulation dynamics) than to tune RL algorithms to obtain a desirable controller. We posit that the community should focus more on (a) automating environment shaping procedures and/or (b) developing stronger RL algorithms that can tackle unshaped environments.
           </p>
+          <p style="font-size: 0.9em; color: #666;">* equal contribution</p>
         </td>
       </tr>
   
@@ -516,6 +580,7 @@
         An algorithm that can discover diverse and useful set of skills from scratch that is inherently safe to be composed for unseen downstream tasks. 
         Considering safety during skill discovery phase is a must when solving safety-critical downstream tasks.
         </p>
+        <p style="font-size: 0.9em; color: #666;">* equal contribution</p>
       </td>
     </tr>
     <!-- bgcolor="#ffffd0" -->
@@ -555,6 +620,7 @@
 				<a href="https://ieeexplore.ieee.org/abstract/document/9981633">paper</a>
         <p></p>
         <p>Drawing robot ARTO-1 performs complex drawings in real-world by learning low-level stroke drawing skills, requiring delicate force control, from human demonstrations. This approach eases the planning required to actually perform an artistic drawing.</p>
+        <p style="font-size: 0.9em; color: #666;">* equal contribution</p>
       </td>
     </tr>
 
