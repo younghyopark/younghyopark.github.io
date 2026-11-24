@@ -221,9 +221,20 @@ mark {
 }
 
 .news-list {
-  max-height: var(--news-collapsed-height, 80px);
-  overflow: hidden;
+  max-height: var(--news-collapsed-height, 150px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
   transition: max-height 0.35s ease;
+}
+
+.news-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.news-list::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
 }
 
 .news-list.expanded {
@@ -260,7 +271,8 @@ mark {
   transition: opacity 0.2s ease;
 }
 
-.news-wrap.expanded .news-fade {
+.news-wrap.expanded .news-fade,
+.news-wrap.at-end .news-fade {
   opacity: 0;
 }
 
@@ -289,6 +301,96 @@ mark {
 
 .news-wrap.expanded .news-toggle::after {
   content: " ▴";
+}
+
+/* Open-source Software: a scrolling row of cards. Two show in full and
+   the edge of the next one peeks in, so it's clear there are more. */
+.oss-carousel {
+  position: relative;
+}
+
+.oss-track {
+  display: flex;
+  gap: 28px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  /* Zero width keeps the page's tables from stretching to fit every
+     card; min-width still fills the cell, so the track scrolls. */
+  width: 0;
+  min-width: 100%;
+}
+
+.oss-track::-webkit-scrollbar {
+  display: none;
+}
+
+.oss-card {
+  flex: 0 0 calc((100% - 28px) / 2.18);
+  scroll-snap-align: start;
+}
+
+.oss-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.oss-thumb {
+  position: relative;
+  flex: none;
+  width: 100px;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+}
+
+.oss-thumb > img,
+.oss-thumb > video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.oss-meta {
+  min-width: 0;
+  line-height: 1.5;
+}
+
+.oss-card > p {
+  margin: 12px 0 0;
+}
+
+.oss-arrow {
+  position: absolute;
+  top: 34px;
+  width: 32px;
+  height: 32px;
+  padding: 0 0 3px;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+  color: #555;
+  font: 22px/1 'Lato', Verdana, Helvetica, sans-serif;
+  cursor: pointer;
+}
+
+.oss-arrow:hover {
+  color: #f09228;
+}
+
+.oss-arrow[hidden] {
+  display: none;
+}
+
+.oss-prev {
+  left: -14px;
+}
+
+.oss-next {
+  right: -14px;
 }
 
 @media (max-width: 600px) {
@@ -343,6 +445,13 @@ mark {
   .one.diagram-thumb > img {
     height: auto !important;
     object-fit: contain;
+  }
+
+  .oss-card {
+    flex-basis: 84%;
+  }
+  .oss-arrow {
+    display: none;
   }
 
   /* Standalone media (cards without a .one wrapper) */
@@ -427,5 +536,273 @@ mark {
   }
   .one > .two + img {
     display: none;
+  }
+}
+
+/* Research Vision: the color-coded training loop from the research
+   statement (robotics half in blue, learning half in pink). Every few
+   seconds it morphs into the two-box diagram: the blue lines merge into
+   the robot box, the pink lines into the learning box, and the two
+   arrows draw in. Transition timings live on the destination state, so
+   each direction gets its own sequence. */
+.loop-fig {
+  float: right;
+  width: 300px;
+  margin: 2px 0 10px 22px;
+}
+
+.loop-toggle {
+  display: flex;
+  width: fit-content;
+  margin: 0 auto 6px;
+  padding: 2px;
+  border: 1px solid #ddd;
+  border-radius: 999px;
+  font-size: 0.85em;
+}
+
+.loop-toggle button {
+  padding: 3px 14px;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: #999;
+  font: inherit;
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.loop-toggle button:hover {
+  color: #444;
+}
+
+.loop-toggle button.active {
+  background: #ececec;
+  color: #333;
+}
+
+.loop-toggle button:focus-visible {
+  outline: 2px solid #1772d0;
+  outline-offset: 1px;
+}
+
+.loop-chips {
+  margin-top: 4px;
+  text-align: right;
+  font-size: 0.75em;
+  transition: opacity 0.35s ease 1.3s;
+}
+
+.loop-chips span {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  color: #222;
+}
+
+.loop-chips .ctrl, .loop-line.ctrl { background: #DAE6F5; }
+.loop-chips .learn, .loop-line.learn { background: #EACAE9; }
+
+.loop-stage {
+  position: relative;
+  width: 300px;
+  height: 124px;
+}
+
+.loop-bg {
+  position: absolute;
+  left: 0;
+  top: 4px;
+  width: 300px;
+  height: 120px;
+  background: #f4f4f4;
+  border-radius: 5px;
+  transition: opacity 0.35s ease 1.3s;
+}
+
+.loop-line {
+  position: absolute;
+  left: 4px;
+  width: 292px;
+  height: 20px;
+  box-sizing: border-box;
+  padding: 0 6px;
+  overflow: hidden;
+  white-space: pre;
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 1px rgba(16, 32, 44, 0);
+  font-family: Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+  font-size: 12.5px;
+  line-height: 20px;
+  color: #222;
+  transition: top 0.5s ease-in-out 0.3s, height 0.5s ease-in-out 0.3s,
+              left 0.5s ease-in-out 0.8s, width 0.5s ease-in-out 0.8s,
+              border-radius 0.4s ease 0.3s, box-shadow 0.2s ease 0.2s;
+}
+
+.loop-line.l0 { top: 8px; }
+.loop-line.l1 { top: 30px; transition: opacity 0.35s ease 1.3s; }
+.loop-line.l2 { top: 52px; }
+.loop-line.l3 { top: 74px; }
+.loop-line.l4 { top: 96px; }
+
+.loop-line > span {
+  transition: opacity 0.35s ease 1.3s;
+}
+
+.c-env, .c-pol {
+  font-weight: bold;
+}
+
+.c-env { color: #3E6FB8; }
+.c-pol { color: #A94BA6; }
+
+code.c-env, code.c-pol {
+  font-family: Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+  font-size: 0.92em;
+}
+
+.loop-box-label {
+  position: absolute;
+  top: 40px;
+  width: 132px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 11.5px;
+  line-height: 1.25;
+  color: #10202C;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.loop-box-label.left { left: 8px; }
+.loop-box-label.right { left: 160px; }
+
+.loop-arrows {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+}
+
+.arrow-line {
+  fill: none;
+  stroke: #10202C;
+  stroke-width: 1.3;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  opacity: 0;
+  transition: opacity 0.2s ease, stroke-dashoffset 0s linear 0.25s;
+}
+
+.arrow-head {
+  fill: #10202C;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.arrow-label {
+  position: absolute;
+  left: 0;
+  width: 300px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: bold;
+  line-height: 14px;
+  color: #10202C;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.arrow-label span {
+  background: #fff;
+  padding: 0 4px;
+}
+
+.arrow-label.a { top: 9px; }
+.arrow-label.b { top: 101px; }
+
+.loop-caption {
+  display: grid;
+  margin-top: 5px;
+  font-size: 0.85em;
+  line-height: 1.3;
+  color: #666;
+}
+
+.loop-caption span {
+  grid-area: 1 / 1;
+}
+
+.loop-caption .cap-a { transition: opacity 0.3s ease 0.5s; }
+.loop-caption .cap-b { opacity: 0; transition: opacity 0.3s ease; }
+
+/* Morphed state: the two-box diagram. */
+.morphed .loop-chips,
+.morphed .loop-bg,
+.morphed .loop-line.l1 {
+  opacity: 0;
+  transition: opacity 0.3s ease 0.1s;
+}
+
+.morphed .loop-line > span {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.morphed .loop-line.ctrl,
+.morphed .loop-line.learn {
+  top: 40px;
+  width: 132px;
+  height: 46px;
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px #10202C;
+  transition: left 0.5s ease-in-out 0.25s, width 0.5s ease-in-out 0.25s,
+              top 0.5s ease-in-out 0.75s, height 0.5s ease-in-out 0.75s,
+              border-radius 0.4s ease 0.85s, box-shadow 0.3s ease 1.05s;
+}
+
+.morphed .loop-line.ctrl { left: 8px; }
+.morphed .loop-line.learn { left: 160px; }
+
+.morphed .loop-box-label {
+  opacity: 1;
+  transition: opacity 0.35s ease 1.25s;
+}
+
+.morphed .arrow-line {
+  opacity: 1;
+  stroke-dashoffset: 0;
+  transition: opacity 0s linear 1.4s, stroke-dashoffset 0.6s ease-in-out 1.4s;
+}
+
+.morphed .arrow-line.b {
+  transition: opacity 0s linear 1.8s, stroke-dashoffset 0.6s ease-in-out 1.8s;
+}
+
+.morphed .arrow-head.a { opacity: 1; transition: opacity 0.15s ease 1.95s; }
+.morphed .arrow-head.b { opacity: 1; transition: opacity 0.15s ease 2.35s; }
+.morphed .arrow-label.a { opacity: 1; transition: opacity 0.35s ease 1.7s; }
+.morphed .arrow-label.b { opacity: 1; transition: opacity 0.35s ease 2.1s; }
+
+.morphed .loop-caption .cap-a { opacity: 0; transition: opacity 0.3s ease; }
+.morphed .loop-caption .cap-b { opacity: 1; transition: opacity 0.3s ease 0.5s; }
+
+@media (max-width: 600px) {
+  .loop-fig {
+    float: none;
+    margin: 4px auto 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loop-fig *, .loop-fig *::before, .loop-fig *::after {
+    transition: none !important;
   }
 }

@@ -44,6 +44,7 @@
               </p>
               <p>I am a Ph.D. student in <a href="https://eecs.mit.edu/">EECS</a> at <a href="https://csail.mit.edu/">MIT CSAIL</a>,
                 advised by Professor <a href="https://people.csail.mit.edu/pulkitag/">Pulkit Agrawal</a>.
+                I study how a robot's own dynamics, control and sensing act as inductive biases on learning.
 	            </p>
 
               <p>I received my Bachelors degree (Summa Cum Laude) in Mechanical Engineering at <a href="https://snu.ac.kr">Seoul National University</a>.
@@ -76,6 +77,18 @@
               <heading>Recent News</heading>
               <div class="news-wrap" id="news-wrap">
                 <div class="news-list" id="news-list">
+                  <p class="news-item">
+                    <span class="news-date">[2026 Dec 02]</span><span style="font-size: 1.1em; vertical-align: middle;">🎙️</span> Upcoming invited talk at the <a href="https://www.ttic.edu/young-researcher" style="text-decoration: underline;">TTIC Young Researcher Seminar Series</a>.
+                  </p>
+                  <p class="news-item">
+                    <span class="news-date">[2026 Nov 20]</span><span style="font-size: 1.1em; vertical-align: middle;">🌟</span> Selected as one of the <a href="https://risingstars.cs.washington.edu/" style="text-decoration: underline;">Rising Stars in EECS 2026–27</a>!
+                  </p>
+                  <p class="news-item">
+                    <span class="news-date">[2026 Nov 20]</span><span style="font-size: 1.1em; vertical-align: middle;">🎙️</span> Gave an invited talk to the <a href="https://www.cs.jhu.edu/research/robotics-vision-graphics/" style="text-decoration: underline;">Johns Hopkins University robotics community</a>.
+                  </p>
+                  <p class="news-item">
+                    <span class="news-date">[2026 Nov 12]</span><span style="font-size: 1.1em; vertical-align: middle;">🤖</span> Organized the <a href="https://beneath-the-policy.github.io/" style="text-decoration: underline;">Everything Beneath the Policy</a> workshop at <em>CoRL 2026</em>.
+                  </p>
                   <p class="news-item">
                     <span class="news-date">[2026 Oct 19]</span><span style="font-size: 1.1em; vertical-align: middle;">📄</span> New preprint! <a href="/blind-proprioceptive-assembly" style="text-decoration: underline;">Blind Precise Assembly</a> is out on <a href="https://arxiv.org/abs/2610.23849" style="text-decoration: underline;">arXiv</a>: robots can assemble precise parts by feel alone, sensing contact only through their own joints. See the <a href="https://x.com/younghyo_park/status/2112182379091501136" style="text-decoration: underline;">twitter thread</a> for a quick overview.
                   </p>
@@ -120,21 +133,34 @@
                   btn.firstChild.nodeValue = expanded ? 'Show less' : 'Show more';
                 }
                 (function() {
+                  // Show this many items in full, with the next one half visible;
+                  // the rest of the list scrolls inside the box.
+                  var VISIBLE = 5;
+                  var wrap = document.getElementById('news-wrap');
                   var list = document.getElementById('news-list');
                   var btn = document.getElementById('news-toggle');
                   var fade = document.getElementById('news-fade');
                   var items = list.querySelectorAll('.news-item');
-                  if (items.length < 3) {
+                  if (items.length <= VISIBLE) {
                     btn.style.display = 'none';
                     fade.style.display = 'none';
                     list.style.maxHeight = 'none';
                     return;
                   }
-                  var listTop = list.getBoundingClientRect().top;
-                  var third = items[2];
-                  var thirdRect = third.getBoundingClientRect();
-                  var collapsed = (thirdRect.top - listTop) + (thirdRect.height * 0.5);
-                  list.style.setProperty('--news-collapsed-height', collapsed + 'px');
+                  function setHeight() {
+                    var listTop = list.getBoundingClientRect().top - list.scrollTop;
+                    var peek = items[VISIBLE].getBoundingClientRect();
+                    var collapsed = (peek.top - listTop) + (peek.height * 0.5);
+                    list.style.setProperty('--news-collapsed-height', collapsed + 'px');
+                  }
+                  function updateFade() {
+                    var atEnd = list.scrollTop + list.clientHeight >= list.scrollHeight - 2;
+                    wrap.classList.toggle('at-end', atEnd);
+                  }
+                  setHeight();
+                  updateFade();
+                  list.addEventListener('scroll', updateFade);
+                  window.addEventListener('resize', function() { setHeight(); updateFade(); });
                 })();
               </script>
             </td>
@@ -144,31 +170,98 @@
             <tr>
             <td style="padding:20px;width:100%;vertical-align:middle">
               <heading>Research Vision</heading>
-              <span style="color: #888; font-size: 0.85em; margin-left: 8px;">(last updated Apr 2026)</span>
+              <span style="color: #888; font-size: 0.85em; margin-left: 8px;">(last updated Nov 2026)</span>
               <p>
-                I want a world where robots can perform every dexterous manipulation task a five-year-old can do with their two hands —
-                and where building such a system is genuinely easy, not a multi-year research effort.
-                Some argue we can get there by following the same playbook that drove rapid progress in vision and language.
-                I'm not so sure.
+                Anyone who has trained a robot knows the moment when a policy that has failed for days suddenly starts to work.
+                As thrilling as that moment is, it also shows how young the field still is, since in more mature engineering disciplines,
+                success rarely comes as a surprise: it rests on <em>predictive</em> principles that engineers <em>exploit</em> to build working systems.
+                As much as I enjoy these moments of surprise, I believe robot learning should eventually become just as predictable:
+                <strong>an engineering principle that people build upon</strong>.
+              </p>
+              <figure class="loop-fig" id="loop-fig">
+                <div class="loop-toggle" role="group" aria-label="Diagram view">
+                  <button type="button" class="active" data-view="quo" aria-pressed="true">Status quo</button><button type="button" data-view="vision" aria-pressed="false">My vision</button>
+                </div>
+                <div class="loop-stage">
+                  <div class="loop-bg"></div>
+                  <div class="loop-line ctrl l0"><span><span class="c-env">env</span> = gym.make("push")</span></div>
+                  <div class="loop-line l1"><span>while True:</span></div>
+                  <div class="loop-line learn l2"><span>    action = <span class="c-pol">policy</span>.get_action(obs)</span></div>
+                  <div class="loop-line ctrl l3"><span>    obs = <span class="c-env">env.step</span>(action)</span></div>
+                  <div class="loop-line learn l4"><span>    <span class="c-pol">policy.update</span>(obs, action)</span></div>
+                  <div class="loop-box-label left">Robot dynamics,<br>control and sensing</div>
+                  <div class="loop-box-label right">ML/RL<br>algorithms</div>
+                  <svg class="loop-arrows" width="300" height="124" viewBox="0 0 300 124" aria-hidden="true">
+                    <path class="arrow-line a" pathLength="100" d="M20 40 V16 H280 V34"/>
+                    <path class="arrow-line b" pathLength="100" d="M280 86 V108 H20 V92"/>
+                    <path class="arrow-head a" d="M275.5 33 L284.5 33 L280 40 Z"/>
+                    <path class="arrow-head b" d="M15.5 93 L24.5 93 L20 86 Z"/>
+                  </svg>
+                  <div class="arrow-label a"><span>Study the robot as an inductive bias</span></div>
+                  <div class="arrow-label b"><span>Rethink Robotics 101</span></div>
+                </div>
+                <div class="loop-chips"><span class="ctrl">robotics</span><span class="learn">learning</span></div>
+                <figcaption class="loop-caption">
+                  <span class="cap-a">Now, roboticists and ML/RL researchers each own half of a tightly coupled loop.</span>
+                  <span class="cap-b">I aim to study the two halves together, in both directions.</span>
+                </figcaption>
+              </figure>
+              <script type="text/javascript">
+                (function() {
+                  // The toggle switches between the code loop (status quo) and the
+                  // two-box diagram (my vision). The first time the figure scrolls
+                  // into view it plays one loop on its own, then waits for clicks.
+                  var fig = document.getElementById('loop-fig');
+                  if (!fig) return;
+                  var buttons = fig.querySelectorAll('.loop-toggle button');
+                  var timers = [];
+                  function show(vision) {
+                    fig.classList.toggle('morphed', vision);
+                    for (var i = 0; i < buttons.length; i++) {
+                      var on = (buttons[i].getAttribute('data-view') === 'vision') === vision;
+                      buttons[i].classList.toggle('active', on);
+                      buttons[i].setAttribute('aria-pressed', on ? 'true' : 'false');
+                    }
+                  }
+                  function stopAutoplay() {
+                    for (var i = 0; i < timers.length; i++) clearTimeout(timers[i]);
+                    timers = [];
+                  }
+                  for (var i = 0; i < buttons.length; i++) {
+                    buttons[i].addEventListener('click', function() {
+                      stopAutoplay();
+                      show(this.getAttribute('data-view') === 'vision');
+                    });
+                  }
+                  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+                  function playOnce() {
+                    timers.push(setTimeout(function() { show(true); }, 2500));
+                    timers.push(setTimeout(function() { show(false); }, 8500));
+                  }
+                  if ('IntersectionObserver' in window) {
+                    var seen = new IntersectionObserver(function(entries) {
+                      if (entries[0].isIntersecting) { seen.disconnect(); playOnce(); }
+                    }, { threshold: 0.6 });
+                    seen.observe(fig);
+                  } else {
+                    playOnce();
+                  }
+                })();
+              </script>
+              <p>
+                One reason we are not there yet, and perhaps the biggest, lies in how we divide the training loop:
+                roboticists own <code class="c-env">env.step</code>, ML/RL researchers own <code class="c-pol">policy.update</code>,
+                and each community often treats the other half as little more than an abstraction.
+                I believe, however, that this division is a <strong><em>false dichotomy</em></strong>,
+                since the two halves are so intertwined that every decision in one affects the conclusions of the other.
               </p>
               <p>
-                I believe robot learning is fundamentally different from language or vision.
-                A robot is inherently interdisciplinary — a tightly coupled system of hardware, controllers, sensor configurations, data collection interfaces, and learning algorithms —
-                and changing any one of them rewires how the others behave.
-                This makes robotics much closer to biology than to modern ML:
-                the real scientific question isn't just <em>which model is best</em>,
-                but how these many interacting pieces shape what a robot can ultimately learn.
-                And we're still in the early days of building that kind of <strong>science</strong>.
+                With this in mind, my research aims to <strong>write down the laws</strong> behind this coupling,
+                bringing robot dynamics and control back as a first-class subject of study in the age of learning.
+                So far, my work has shown that a robot's controller, body and sensors dictate the scaling laws and performance ceilings
+                of robot learning algorithms, and that a robot can, in turn, be optimized for learning.
               </p>
-              <p>
-                My research aims to build this missing science.
-                I develop <strong>open-source infrastructure</strong> that the community uses to collect and process robot data at scale,
-                and I use that infrastructure to run <strong>controlled empirical studies</strong> that reveal
-                how under-examined design choices — from low-level controller gains to data collection interfaces —
-                fundamentally determine learning outcomes.
-                The goal is a future where training a robot to perform a new task is
-                <strong>less art and prayer, more engineering</strong>: principled, scalable, and reproducible.
-              </p>
+              <div style="clear: both;"></div>
             </td>
           </tr>
         </tbody></table>
@@ -219,6 +312,14 @@
             <td style="padding:20px;width:100%;vertical-align:middle">
               <ul style="margin:0;padding-left:20px;">
                 <li style="margin-bottom:8px;">
+                  <span style="color:#666;">[2026 Dec 02]</span>
+                  <a href="https://www.ttic.edu/young-researcher">Young Researcher Seminar Series</a>, Toyota Technological Institute at Chicago (upcoming)
+                </li>
+                <li style="margin-bottom:8px;">
+                  <span style="color:#666;">[2026 Nov 20]</span>
+                  <a href="https://www.cs.jhu.edu/research/robotics-vision-graphics/">Robotics community</a>, Johns Hopkins University
+                </li>
+                <li style="margin-bottom:8px;">
                   <span style="color:#666;">[2025 Nov 07]</span>
                   <a href="https://fab.snu.ac.kr/">Prof. Sunghoon Ahn's lab (IDIM)</a>, Seoul National University
                 </li>
@@ -245,143 +346,205 @@
       </tbody></table>
 
       <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
-				
-        <tr onmouseout="zipnerf_stop()" onmouseover="zipnerf_start()">
-          <td style="padding:20px;width:25%;vertical-align:middle">
-            <div class="one">
-              <div class="two" id='zipnerf_image'><video  width=100% height=100% muted autoplay loop playsinline>
-              <source src="images/personal_website_visionpro_2.mp4" type="video/mp4">
-              Your browser does not support the video tag.
-              </video></div>
-              <img src='images/visionpro_still.png' width="100%" >
+        <tr>
+          <td style="padding:20px;vertical-align:top">
+            <div class="oss-carousel" id="oss-carousel">
+              <div class="oss-track">
+              <div class="oss-card">
+                <div class="oss-head">
+                  <div class="oss-thumb">
+                    <video muted autoplay loop playsinline poster="images/visionpro_still.png">
+                      <source src="images/personal_website_visionpro_2.mp4" type="video/mp4">
+                    </video>
+                  </div>
+                  <div class="oss-meta">
+                    <a href="https://github.com/Improbable-AI/VisionProTeleop">
+                      <papertitle>VisionProTeleop</papertitle>
+                    </a>
+                    <br>
+                    <strong>Younghyo Park</strong>, <a href="https://people.csail.mit.edu/pulkitag/">Pulkit Agrawal</a>
+                    <br>
+                      <a href="https://github.com/Improbable-AI/VisionProTeleop">github</a>
+                      /
+                      <a href="https://apps.apple.com/us/app/tracking-streamer/id6478969032">App Store</a>
+                      /
+                      <a href="https://x.com/younghyo_park/status/1766274298422161830?s=20">twitter</a>
+                      /
+                      <a href="data/using_vision_pro_to_control_and_train_robots.pdf">short paper</a>
+                    <br>
+                    <a class="star-badge" href="https://github.com/Improbable-AI/VisionProTeleop"><img src="https://img.shields.io/github/stars/Improbable-AI/VisionProTeleop?style=social" alt="GitHub stars"></a>
+                  </div>
+                </div>
+                <p>
+                A complete ecosystem for using Apple Vision Pro in robotics research — stream hand/head tracking from Vision Pro, send video/audio/simulation back for real-world teleoperation, simulation teleoperation, and egocentric dataset recording.
+                </p>
+              </div>
+
+              <div class="oss-card">
+                <div class="oss-head">
+                  <div class="oss-thumb">
+                    <video muted autoplay loop playsinline>
+                      <source src="images/aprilcube-square.mp4" type="video/mp4">
+                    </video>
+                  </div>
+                  <div class="oss-meta">
+                    <a href="https://github.com/younghyopark/aprilcube">
+                      <papertitle>aprilcube</papertitle>
+                    </a>
+                    <br>
+                    <strong>Younghyo Park</strong>
+                    <br>
+                      <a href="https://github.com/younghyopark/aprilcube">github</a>
+                    <br>
+                    <a class="star-badge" href="https://github.com/younghyopark/aprilcube"><img src="https://img.shields.io/github/stars/younghyopark/aprilcube?style=social" alt="GitHub stars"></a>
+                  </div>
+                </div>
+                <p>
+                Generate 3D-printable cubes with ArUco or AprilTag fiducial markers on all six faces, then detect their full 6-DoF pose from a single camera image. A two-part pipeline: a generator that produces multi-color 3MF files ready for dual-color 3D printing, and a detector that estimates rotation and translation given camera intrinsics.
+                </p>
+              </div>
+
+              <div class="oss-card">
+                <div class="oss-head">
+                  <div class="oss-thumb">
+                    <img src='images/mjfit.png' alt="mjfit">
+                  </div>
+                  <div class="oss-meta">
+                    <a href="https://github.com/younghyopark/mjfit">
+                      <papertitle>mjfit</papertitle>
+                    </a>
+                    <br>
+                      <a href="https://github.com/younghyopark/mjfit">github</a>
+                      /
+                      <a href="https://arxiv.org/abs/2610.23849">paper</a>
+                      /
+                      <a href="/blind-proprioceptive-assembly">project page</a>
+                    <br>
+                    <a class="star-badge" href="https://github.com/younghyopark/mjfit"><img src="https://img.shields.io/github/stars/younghyopark/mjfit?style=social" alt="GitHub stars"></a>
+                  </div>
+                </div>
+                <p>
+                Exact convex collision geometry for MuJoCo assemblies: pegs and holes from any outline, threads, and gears. MuJoCo only collides convex shapes, and a hole is concave, so mjfit builds each part from convex pieces whose union is the exact part, keeping every peg exactly one clearance from its hole. It steps an order of magnitude faster than MuJoCo's mesh SDF, and can sample thousands of procedural assemblies for training. It is the simulator behind <a href="/blind-proprioceptive-assembly">Blind Precise Assembly</a>.
+                </p>
+              </div>
+
+              <div class="oss-card">
+                <div class="oss-head">
+                  <div class="oss-thumb">
+                    <img src='images/aiofranka.png' alt="aiofranka">
+                  </div>
+                  <div class="oss-meta">
+                    <a href="https://github.com/younghyopark/aiofranka">
+                      <papertitle>aiofranka</papertitle>
+                    </a>
+                    <br>
+                      <a href="https://github.com/younghyopark/aiofranka">github</a>
+                      /
+                      <a href="https://younghyopark.me/aiofranka/">docs</a>
+                      /
+                      <a href="https://pypi.org/project/aiofranka/">PyPI</a>
+                    <br>
+                    <a class="star-badge" href="https://github.com/younghyopark/aiofranka"><img src="https://img.shields.io/github/stars/younghyopark/aiofranka?style=social" alt="GitHub stars"></a>
+                  </div>
+                </div>
+                <p>
+                Run your own custom 1 kHz torque controller on a Franka, right from your Mac (or Linux): write it in Python, and aiofranka runs it in a C++ loop that never waits for Python. Plus helpful commands so you never have to touch the Desk GUI: unlock and lock the robot, run self-tests, hand-guide it, identify payloads, and calibrate cameras.
+                </p>
+              </div>
+
+              <div class="oss-card">
+                <div class="oss-head">
+                  <div class="oss-thumb">
+                    <img src='images/aioflexiv.png' alt="aioflexiv">
+                  </div>
+                  <div class="oss-meta">
+                    <a href="https://github.com/younghyopark/aioflexiv">
+                      <papertitle>aioflexiv</papertitle>
+                    </a>
+                    <br>
+                      <a href="https://github.com/younghyopark/aioflexiv">github</a>
+                      /
+                      <a href="https://pypi.org/project/aioflexiv/">PyPI</a>
+                    <br>
+                    <a class="star-badge" href="https://github.com/younghyopark/aioflexiv"><img src="https://img.shields.io/github/stars/younghyopark/aioflexiv?style=social" alt="GitHub stars"></a>
+                  </div>
+                </div>
+                <p>
+                The aiofranka counterpart for Flexiv robots (Rizon 4 and 4S). An asyncio-based Python library that pairs flexivrdk with a small pybind11 shim for real-time joint-torque control, offering joint impedance, operational-space, and direct torque control, smooth Ruckig moves, and a MuJoCo backend for payload-aware dynamics and simulation.
+                </p>
+              </div>
+
+              <div class="oss-card">
+                <div class="oss-head">
+                  <div class="oss-thumb">
+                    <img src='images/aiowuji.png' alt="aiowuji">
+                  </div>
+                  <div class="oss-meta">
+                    <a href="https://github.com/younghyopark/aiowuji">
+                      <papertitle>aiowuji</papertitle>
+                    </a>
+                    <br>
+                      <a href="https://github.com/younghyopark/aiowuji">github</a>
+                      /
+                      <a href="https://pypi.org/project/aiowuji/">PyPI</a>
+                    <br>
+                    <a class="star-badge" href="https://github.com/younghyopark/aiowuji"><img src="https://img.shields.io/github/stars/younghyopark/aiowuji?style=social" alt="GitHub stars"></a>
+                  </div>
+                </div>
+                <p>
+                The aiofranka counterpart for the Wuji Hand 2, on Linux and Apple Silicon macOS. An asyncio-based Python library that streams joint targets to the hand's firmware PD controller from a 1 kHz background loop, checks every joint's telemetry on each tick, uses Ruckig for smooth joint-space moves, and records every tick for simulator system identification.
+                </p>
+              </div>
+
+              <div class="oss-card">
+                <div class="oss-head">
+                  <div class="oss-thumb">
+                    <img src='images/aiocamera.png' alt="aiocamera">
+                  </div>
+                  <div class="oss-meta">
+                    <a href="https://github.com/younghyopark/aiocamera">
+                      <papertitle>aiocamera</papertitle>
+                    </a>
+                    <br>
+                      <a href="https://github.com/younghyopark/aiocamera">github</a>
+                      /
+                      <a href="https://pypi.org/project/aiocamera/">PyPI</a>
+                    <br>
+                    <a class="star-badge" href="https://github.com/younghyopark/aiocamera"><img src="https://img.shields.io/github/stars/younghyopark/aiocamera?style=social" alt="GitHub stars"></a>
+                  </div>
+                </div>
+                <p>
+                Cameras as a service: a background daemon finds every connected camera (Intel RealSense, Luxonis OAK, USB webcams), captures from each in its own thread, and serves the latest frame to any Python process over ZMQ. Saved profiles remember each setup's resolution, frame rate, and exposure, which can also change while it runs, and a browser viewer helps with debugging.
+                </p>
+              </div>
+              </div>
+              <button class="oss-arrow oss-prev" type="button" aria-label="Previous">&#8249;</button>
+              <button class="oss-arrow oss-next" type="button" aria-label="Next">&#8250;</button>
             </div>
             <script type="text/javascript">
-              function zipnerf_start() {
-                document.getElementById('zipnerf_image').style.opacity = "1";
-              }
-    
-              function zipnerf_stop() {
-                document.getElementById('zipnerf_image').style.opacity = "0";
-              }
-              zipnerf_stop()
+              (function () {
+                var root = document.getElementById('oss-carousel');
+                var track = root.querySelector('.oss-track');
+                var prev = root.querySelector('.oss-prev');
+                var next = root.querySelector('.oss-next');
+                function step() {
+                  var cards = track.children;
+                  return cards[1].offsetLeft - cards[0].offsetLeft;
+                }
+                function update() {
+                  prev.hidden = track.scrollLeft <= 1;
+                  next.hidden = track.scrollLeft + track.clientWidth >= track.scrollWidth - 1;
+                }
+                prev.addEventListener('click', function () { track.scrollBy({left: -step(), behavior: 'smooth'}); });
+                next.addEventListener('click', function () { track.scrollBy({left: step(), behavior: 'smooth'}); });
+                track.addEventListener('scroll', update, {passive: true});
+                window.addEventListener('resize', update);
+                update();
+              })();
             </script>
           </td>
-          <td style="padding:20px;width:75%;vertical-align:middle">
-            <a href="https://github.com/Improbable-AI/VisionProTeleop">
-              <papertitle>VisionProTeleop</papertitle>
-            </a>
-            <br>
-            <strong>Younghyo Park</strong>, <a href="https://people.csail.mit.edu/pulkitag/">Pulkit Agrawal</a>
-            
-            <br>
-            <a href="https://github.com/Improbable-AI/VisionProTeleop">github</a>
-            /
-            <a href="https://apps.apple.com/us/app/tracking-streamer/id6478969032">App Store</a>
-            /
-            <a href="https://x.com/younghyo_park/status/1766274298422161830?s=20">twitter</a>
-            /
-            <a href="data/using_vision_pro_to_control_and_train_robots.pdf">short paper</a>
-            <br>
-            <a class="star-badge" href="https://github.com/Improbable-AI/VisionProTeleop"><img src="https://img.shields.io/github/stars/Improbable-AI/VisionProTeleop?style=social" alt="GitHub stars"></a>
-            <p></p>
-            <p>
-            A complete ecosystem for using Apple Vision Pro in robotics research — stream hand/head tracking from Vision Pro, send video/audio/simulation back for real-world teleoperation, simulation teleoperation, and egocentric dataset recording.
-            </p>
-          </td>
         </tr>
-
-        <tr>
-          <td style="padding:20px;width:25%;vertical-align:middle">
-            <img src='images/aiofranka.png' width="100%" >
-          </td>
-          <td style="padding:20px;width:75%;vertical-align:middle">
-            <a href="https://github.com/younghyopark/aiofranka">
-              <papertitle>aiofranka</papertitle>
-            </a>
-            <br>
-            <a href="https://github.com/younghyopark/aiofranka">github</a>
-            /
-            <a href="https://younghyopark.me/aiofranka/">docs</a>
-            /
-            <a href="https://pypi.org/project/aiofranka/">PyPI</a>
-            <br>
-            <a class="star-badge" href="https://github.com/younghyopark/aiofranka"><img src="https://img.shields.io/github/stars/younghyopark/aiofranka?style=social" alt="GitHub stars"></a>
-            <p></p>
-            <p>
-            Run your own custom 1 kHz torque controller on a Franka, right from your Mac (or Linux): write it in Python, and aiofranka runs it in a C++ loop that never waits for Python. Plus helpful commands so you never have to touch the Desk GUI: unlock and lock the robot, run self-tests, hand-guide it, identify payloads, and calibrate cameras.
-            </p>
-          </td>
-        </tr>
-
-        <tr>
-          <td style="padding:20px;width:25%;vertical-align:middle">
-            <img src='images/aioflexiv.png' width="100%" >
-          </td>
-          <td style="padding:20px;width:75%;vertical-align:middle">
-            <a href="https://github.com/younghyopark/aioflexiv">
-              <papertitle>aioflexiv</papertitle>
-            </a>
-            <br>
-            <a href="https://github.com/younghyopark/aioflexiv">github</a>
-            /
-            <a href="https://pypi.org/project/aioflexiv/">PyPI</a>
-            <br>
-            <a class="star-badge" href="https://github.com/younghyopark/aioflexiv"><img src="https://img.shields.io/github/stars/younghyopark/aioflexiv?style=social" alt="GitHub stars"></a>
-            <p></p>
-            <p>
-            The aiofranka counterpart for Flexiv robots (Rizon 4 and 4S). An asyncio-based Python library that pairs flexivrdk with a small pybind11 shim for real-time joint-torque control, offering joint impedance, operational-space, and direct torque control, smooth Ruckig moves, and a MuJoCo backend for payload-aware dynamics and simulation.
-            </p>
-          </td>
-        </tr>
-
-        <tr>
-          <td style="padding:20px;width:25%;vertical-align:middle">
-            <img src='images/mjfit.png' width="100%" >
-          </td>
-          <td style="padding:20px;width:75%;vertical-align:middle">
-            <a href="https://github.com/younghyopark/mjfit">
-              <papertitle>mjfit</papertitle>
-            </a>
-            <br>
-            <a href="https://github.com/younghyopark/mjfit">github</a>
-            /
-            <a href="https://arxiv.org/abs/2610.23849">paper</a>
-            /
-            <a href="/blind-proprioceptive-assembly">project page</a>
-            <br>
-            <a class="star-badge" href="https://github.com/younghyopark/mjfit"><img src="https://img.shields.io/github/stars/younghyopark/mjfit?style=social" alt="GitHub stars"></a>
-            <p></p>
-            <p>
-            Exact convex collision geometry for MuJoCo assemblies: pegs and holes from any outline, threads, and gears. MuJoCo only collides convex shapes, and a hole is concave, so mjfit builds each part from convex pieces whose union is the exact part, keeping every peg exactly one clearance from its hole. It steps an order of magnitude faster than MuJoCo's mesh SDF, and can sample thousands of procedural assemblies for training. It is the simulator behind <a href="/blind-proprioceptive-assembly">Blind Precise Assembly</a>.
-            </p>
-          </td>
-        </tr>
-
-        <tr>
-          <td style="padding:20px;width:25%;vertical-align:middle">
-            <video width="100%" muted autoplay loop playsinline>
-              <source src="images/aprilcube-square.mp4" type="video/mp4">
-              Your browser does not support the video tag.
-            </video>
-          </td>
-          <td style="padding:20px;width:75%;vertical-align:middle">
-            <a href="https://github.com/younghyopark/aprilcube">
-              <papertitle>aprilcube</papertitle>
-            </a>
-            <br>
-            <strong>Younghyo Park</strong>
-            <br>
-            <a href="https://github.com/younghyopark/aprilcube">github</a>
-            <br>
-            <a class="star-badge" href="https://github.com/younghyopark/aprilcube"><img src="https://img.shields.io/github/stars/younghyopark/aprilcube?style=social" alt="GitHub stars"></a>
-            <p></p>
-            <p>
-            Generate 3D-printable cubes with ArUco or AprilTag fiducial markers on all six faces, then detect their full 6-DoF pose from a single camera image. A two-part pipeline: a generator that produces multi-color 3MF files ready for dual-color 3D printing, and a detector that estimates rotation and translation given camera intrinsics.
-            </p>
-          </td>
-        </tr>
-
-          </table>
+      </tbody></table>
 
       <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;margin-bottom:-25px"><tbody>
         <tr>
